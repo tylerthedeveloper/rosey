@@ -31,7 +31,7 @@ router.post('/friends', async (req, res) => {
 });
 
 router.get('/friends/:friend_id', async (req, res) => {
-    // TODO:
+// TODO: i imagine option 2 is better
     const friend_id = req.params.friend_id;
     console.time('handler name');
 // option 1: map over the list here
