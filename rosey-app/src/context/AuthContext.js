@@ -2,6 +2,7 @@ import createDataContext from './createDataContext';
 import roseyApi from '../api/roseyApi';
 import { AsyncStorage } from 'react-native';
 import { navigate } from "../../navigationRef";
+
 // Reducer
 const authReducer = (state, action) => {
     switch (action.type) {
@@ -18,7 +19,6 @@ const authReducer = (state, action) => {
             return state;
     }
 }
-// 
 
 // List of action functions
 const signup = (dispatch) => async ({ email, password }) => {
@@ -50,18 +50,22 @@ const signin = (dispatch) => async ({ email, password }) => {
     }
 };
 
-const tryLocalSignin = (dispatch) => async ({ email, password }) => {
-
+const tryLocalSignin = (dispatch) => async () => {
+    const token = AsyncStorage.getItem('token');
+    if (token) {
+        dispatch({ type: 'signin', payload: token });
+        console.log('success');
+        navigate('drawerFlow');
+    } else { 
+        navigate('loginFlow');
+    }
 };
-
 
 const clearErrorMessage = (dispatch) => () => {
     dispatch({ type: 'clear_error_message' });
 };
 
 const signout = (dispatch) => async () => { };
-
-//
 
 //Main
 export const { Context, Provider } = createDataContext(
