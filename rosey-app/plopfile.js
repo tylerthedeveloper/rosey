@@ -27,4 +27,19 @@ module.exports = function (plop) {
             templateFile: 'plop-templates/component.js'
         }]
     });
+
+    plop.setGenerator('context', {
+        description: 'this is a skeleton context',
+        prompts: [{
+            type: 'input',
+            name: 'name',
+            message: 'context name'
+        }],
+        actions: [{
+            type: 'add',
+            path: 'src/context/{{name}}Context.js',
+            templateFile: 'plop-templates/context.js'
+        }]
+    });
+
 };

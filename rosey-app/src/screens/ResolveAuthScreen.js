@@ -11,7 +11,7 @@ const ResolveAuthScreen = ({ navigation }) => {
     return (
         <View style={styles.container}>
             <ActivityIndicator
-                size="large" style={{ marginTop: 300 }}
+                size="large" 
             />
         </View>
     )
@@ -19,7 +19,8 @@ const ResolveAuthScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1
+        flex: 1,
+        justifyContent: 'center'
     }
 });
 
