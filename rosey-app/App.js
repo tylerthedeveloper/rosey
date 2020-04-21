@@ -16,9 +16,9 @@ import ResolveAuthScreen from './src/screens/ResolveAuthScreen';
 import SigninScreen from './src/screens/SigninScreen';
 import SignupScreen from './src/screens/SignupScreen';
 import MapScreen from './src/screens/MapScreen';
-import FriendListScreen from './src/screens/FriendListScreen';
-import FriendDetailScreen from './src/screens/FriendDetailScreen';
-import AddFriendScreen from './src/screens/AddFriendScreen';
+import RoseListScreen from './src/screens/RoseListScreen';
+import RoseDetailScreen from './src/screens/RoseDetailScreen';
+import AddRoseScreen from './src/screens/AddRoseScreen';
 import AccountScreen from './src/screens/AccountScreen';
 
 import { FontAwesome } from '@expo/vector-icons';
@@ -26,9 +26,11 @@ import MainPlusButton from './src/components/MainPlusButton';
 
 // PROVIDERS
 import { Provider as AuthProvider } from './src/context/AuthContext';
+import { Provider as RoseProvider } from './src/context/RoseContext';
 
 import { setNavigator } from "./navigationRef";
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { Text, AsyncStorage } from 'react-native';
 
 const loginFlow = createStackNavigator({
   Signup: SignupScreen,
@@ -36,15 +38,14 @@ const loginFlow = createStackNavigator({
 });
 
 const listFlow = createStackNavigator({
-  FriendList: FriendListScreen,
-  FriendDetail: FriendDetailScreen
+  RoseList: RoseListScreen,
+  RoseDetail: RoseDetailScreen
 });
 
 listFlow.navigationOptions = {
   title: '',
   tabBarIcon: <FontAwesome name="list" size={20} />,
   header: { visible: false },
-  // headerLeft: () => <FontAwesome name="list" size={20} />
 };
 
 const mainTabFlow = createBottomTabNavigator({
@@ -59,7 +60,7 @@ const mainTabFlow = createBottomTabNavigator({
       tabBarOnPress: (event) => {
         event.preventDefault();
         console.log('pplus pushed')
-        navigation.navigate('AddFriend')
+        navigation.navigate('AddRose')
       }
     }),
   },
@@ -67,22 +68,38 @@ const mainTabFlow = createBottomTabNavigator({
 },
 );
 
+// TODO: add signout here?
 const drawerFlow = createDrawerNavigator({
-  mainTabFlow,
-  AddFriend: AddFriendScreen,
   Account: AccountScreen,
+  mainTabFlow,
+  AddRose: AddRoseScreen,
+  // FIXME: this is now how to handle logout!!!
+  Logout: {
+    label: "lag",
+    screen: () => {
+      return (
+        <TouchableOpacity onPress={async () => {
+          await AsyncStorage.removeItem('token')
+          console.log(await AsyncStorage.getItem('token'))
+        }} >
+          <Text> Logout </Text>
+        </TouchableOpacity >
+      )
+    }
+  }
 },
   {
+    // FIXME: initialRouteName: mainTabFlow,
     navigationOptions: ({ navigation }) => ({
       headerLeft: () => {
         return (
-          <TouchableOpacity onPress={() => navigation.toggleDrawer()} style={{marginLeft: 20}}>
+          <TouchableOpacity onPress={() => navigation.toggleDrawer()} style={{ marginLeft: 20 }}>
             <FontAwesome name="list" size={20} />
           </TouchableOpacity >
         )
       },
       title: '',
-    })
+    }),
   }
 );
 
@@ -108,8 +125,10 @@ const App = createAppContainer(switchNavigator);
 export default () => {
   return (
     <AuthProvider>
-      {/* https://reactnavigation.org/docs/navigating-without-navigation-prop/ */}
-      <App ref={(navigator) => setNavigator(navigator)} />
+      <RoseProvider>
+        {/* https://reactnavigation.org/docs/navigating-without-navigation-prop/ */}
+        <App ref={(navigator) => setNavigator(navigator)} />
+      </RoseProvider>
     </AuthProvider>
   )
 }

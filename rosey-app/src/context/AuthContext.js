@@ -51,12 +51,12 @@ const signin = (dispatch) => async ({ email, password }) => {
 };
 
 const tryLocalSignin = (dispatch) => async () => {
-    const token = AsyncStorage.getItem('token');
+    const token = await AsyncStorage.getItem('token');
     if (token) {
         dispatch({ type: 'signin', payload: token });
-        console.log('success');
-        navigate('drawerFlow');
-    } else { 
+        // console.log('success', token);
+        navigate('fullAppFlow');
+    } else {
         navigate('loginFlow');
     }
 };
@@ -65,7 +65,10 @@ const clearErrorMessage = (dispatch) => () => {
     dispatch({ type: 'clear_error_message' });
 };
 
-const signout = (dispatch) => async () => { };
+const signout = (dispatch) => async () => {
+    await AsyncStorage.removeItem('token');
+    // dispatch...
+};
 
 //Main
 export const { Context, Provider } = createDataContext(

@@ -1,6 +1,6 @@
 const mongoose = require('mongoose');
 
-const friendSchema = new mongoose.Schema({
+const roseSchema = new mongoose.Schema({
     userId: {
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
@@ -14,6 +14,7 @@ const friendSchema = new mongoose.Schema({
     },
     placeMetAt: {
         timestamp: Number,
+        placeName: String,
         coords: {
             latitude: Number,
             longitude: Number,
@@ -26,4 +27,4 @@ const friendSchema = new mongoose.Schema({
     tags: [String],
 });
 
-mongoose.model('Friend', friendSchema);
+mongoose.model('Rose', roseSchema);

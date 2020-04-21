@@ -4,7 +4,7 @@ import { Button } from 'react-native-elements';
 import { FontAwesome } from '@expo/vector-icons';
 import Spacer from '../components/Spacer';
 
-const AddFriendScreen = ({ navigation }) => {
+const AddRoseScreen = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
@@ -23,7 +23,7 @@ const AddFriendScreen = ({ navigation }) => {
     )
 }
 
-AddFriendScreen.navigationOptions = {
+AddRoseScreen.navigationOptions = {
     title: 'Add Friend',
     tabBarIcon: <FontAwesome name="plus" size={30} />
 };
@@ -35,4 +35,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default AddFriendScreen;
+export default AddRoseScreen;

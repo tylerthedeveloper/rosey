@@ -1,19 +1,19 @@
 require('./models/User');
-require('./models/Friend');
+require('./models/Rose');
 require('dotenv').config()
 
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const authRoutes = require('./routes/authRoutes');
-const friendRoutes = require('./routes/friendRoutes');
+const roseRoutes = require('./routes/roseRoutes');
 const requireAuth = require('./middlewares/requireAuth');
 
 const app = express();
 
 app.use(bodyParser.json());
 app.use(authRoutes);
-app.use(friendRoutes);
+app.use(roseRoutes);
 
 const mongoUser = process.env.MONGO_USERNAME;
 const mongoPass = process.env.MONGO_PASSWORD;
