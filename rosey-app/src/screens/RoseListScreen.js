@@ -1,10 +1,8 @@
-import React, { AsyncStorage, useEffect, useContext } from 'react';
-import { StyleSheet, Text, View, TouchableOpacity, FlatList } from 'react-native';
-import { Context as RoseContext } from '../context/RoseContext';
-import { Button } from 'react-native-elements';
+import React, { useContext, useEffect } from 'react';
 import { FontAwesome } from '@expo/vector-icons';
-import Spacer from '../components/Spacer';
+import { FlatList, StyleSheet } from 'react-native';
 import RoseListItem from '../components/RoseListItem';
+import { Context as RoseContext } from '../context/RoseContext';
 
 // TODO: I can pass navigation?
 const RoseListScreen = ({ navigation }) => {

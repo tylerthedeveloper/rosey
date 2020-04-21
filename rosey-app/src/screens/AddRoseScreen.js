@@ -1,17 +1,21 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, KeyboardAvoidingView } from 'react-native';
 import { Button } from 'react-native-elements';
 import { FontAwesome } from '@expo/vector-icons';
+import RoseForm from '../components/RoseForm';
 import Spacer from '../components/Spacer';
 
 const AddRoseScreen = ({ navigation }) => {
 
     return (
-        <View style={styles.container}>
-            <Text> AddFriend</Text>
-            <Spacer />
-            <Button
-                title="Add Friend"
+        <KeyboardAvoidingView
+            style={styles.container}
+            behavior="padding"
+        >
+            <RoseForm
+                headerText="Add Friend"
+                submitButtonText="Add Friend"
+                onSubmit={console.log}
             />
             <Spacer />
             <Button
@@ -19,7 +23,7 @@ const AddRoseScreen = ({ navigation }) => {
                 onPress={() => navigation.goBack()}
             />
 
-        </View>
+        </KeyboardAvoidingView>
     )
 }
 

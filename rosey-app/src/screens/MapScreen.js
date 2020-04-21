@@ -1,14 +1,20 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import { } from 'react-native-elements';
 import { FontAwesome } from '@expo/vector-icons';
+import React, { useContext, useEffect } from 'react';
+import { StyleSheet } from 'react-native';
 import MapComponent from '../components/MapComponent';
+import { Context as RoseContext } from '../context/RoseContext';
 
 const MapScreen = () => {
 
+    const { state: { roses }, fetchAllRoses } = useContext(RoseContext);
+
+    useEffect(() => {
+        fetchAllRoses();
+    }, []); //TODO: 
+
     return (
         <>
-            <MapComponent height={900} />
+            <MapComponent height={900} roses={roses} />
         </>
     )
 }

@@ -3,16 +3,24 @@ import { StyleSheet } from 'react-native';
 import { Button, Input, Text } from 'react-native-elements';
 import Spacer from './Spacer';
 
-const AuthForm = ({ headerText, errorMessage, onSubmit, submitButtonText }) => {
+const RoseForm = ({ headerText, submitButtonText, onSubmit }) => {
 
+    const [name, setName] = useState('');
     const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
+    const [picture, setPicture] = useState('');
 
     return (
         <>
             <Spacer>
                 <Spacer>
                     <Text h3> {headerText} </Text>
+                </Spacer>
+                <Spacer>
+                    <Input label="Name"
+                        value={name}
+                        onChangeText={setName}
+                        autoCorrect={false}
+                    />
                 </Spacer>
                 <Spacer>
                     <Input label="Email"
@@ -22,18 +30,16 @@ const AuthForm = ({ headerText, errorMessage, onSubmit, submitButtonText }) => {
                     />
                 </Spacer>
                 <Spacer>
-                    <Input label="Password"
-                        value={password}
-                        onChangeText={setPassword}
+                    <Input label="Picture"
+                        value={picture}
+                        onChangeText={setPicture}
                         autoCorrect={false}
-                        secureTextEntry
                     />
                 </Spacer>
-                {(errorMessage) ? <Text style={styles.errorMessage}> {errorMessage} </Text> : null}
                 <Spacer>
                     <Button
                         title={submitButtonText}
-                        onPress={() => onSubmit({ email, password })}
+                        onPress={() => onSubmit({ name, email, picture })}
                     />
                 </Spacer>
             </Spacer>
@@ -52,5 +58,5 @@ const styles = StyleSheet.create({
     }
 });
 
-export default AuthForm;
+export default RoseForm;
 
