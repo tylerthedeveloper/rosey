@@ -1,7 +1,7 @@
 import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
 import { } from 'react-native-elements';
-import { withNavigation } from 'react-navigation';
+// import { withNavigation } from '@react-navigation/compat';
 
 const RoseListItem = ({ navigation, rose }) => {
 
@@ -30,4 +30,5 @@ const styles = StyleSheet.create({
     }
 });
 
-export default withNavigation(RoseListItem);
+// export default withNavigation(RoseListItem);
+export default RoseListItem;

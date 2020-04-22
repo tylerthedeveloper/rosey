@@ -1,8 +1,9 @@
 import React from 'react';
 import { StyleSheet, Text, View, Image, ScrollView } from 'react-native';
 import { } from 'react-native-elements';
-import { DrawerItems } from 'react-navigation-drawer';
-import { SafeAreaView } from 'react-navigation';
+// import { DrawerItems } from 'react-navigation-drawer';
+// import { SafeAreaView } from 'react-navigation';
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 const CustomDrawer = () => {
 

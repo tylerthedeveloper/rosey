@@ -2,21 +2,24 @@ import React, { useContext } from 'react';
 import { StyleSheet, View, Button } from 'react-native';
 import AuthForm from '../components/AuthForm';
 // import Spacer from '../components/Spacer';
-import { Context as AuthContext } from '../context/AuthContext';
-import { NavigationEvents } from 'react-navigation';
+import { AuthContext } from '../context/AuthContext';
 
 const SignupScreen = ({ navigation }) => {
-    const { state: { errorMessage }, signup, clearErrorMessage } = useContext(AuthContext);
+
+    // useEffect(() => navigation.addListener('focus', clearErrorMessage), []);
+    // const contObj = useContext(AuthContext);
+    const { state, signout } = useContext(AuthContext);
+    console.log(state);
 
     return (
         <View style={styles.container}>
-            <NavigationEvents onWillFocus={() => clearErrorMessage()} />
-            <AuthForm
+            {/* <NavigationEvents onWillFocus={() => clearErrorMessage()} /> */}
+            {/* <AuthForm
                 headerText="Sign up for Rosey"
                 submitButtonText="Sign Up"
                 errorMessage={errorMessage}
                 onSubmit={signup}
-            />
+            /> */}
             <Button
                 title="Already registed, go to signin"
                 onPress={() => navigation.navigate('Signin')}

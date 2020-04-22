@@ -1,17 +1,19 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { StyleSheet, Text, View, Button } from 'react-native';
 import AuthForm from '../components/AuthForm';
 import Spacer from '../components/Spacer';
-import { Context as AuthContext } from '../context/AuthContext';
-import { NavigationEvents } from 'react-navigation';
+import { AuthContext } from '../context/AuthContext';
+
+// import { NavigationActions } from '@react-navigation/compat';
 
 const SigninScreen = ({ navigation }) => {
 
-    const { state: { errorMessage }, signin, clearErrorMessage } = useContext(AuthContext);
+    const { errorMessage , signin, clearErrorMessage } = useContext(AuthContext);
+    // useEffect(() => navigation.addListener('focus', clearErrorMessage), []);
 
     return (
         <View style={styles.container}>
-            <NavigationEvents onWillFocus={() => clearErrorMessage()} />
+            {/* <NavigationEvents onWillFocus={() => clearErrorMessage()} /> */}
             <AuthForm
                 headerText="Sign in for Rosey"
                 submitButtonText="Sign In"

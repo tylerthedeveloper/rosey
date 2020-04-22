@@ -5,6 +5,7 @@ const roseSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
     },
+    // TODO: Nickname...
     name: {
         type: String,
         required: true

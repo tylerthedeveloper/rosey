@@ -1,6 +1,6 @@
 import createDataContext from './createDataContext';
 import roseyApi from '../api/roseyApi';
-import { navigate } from "../../navigationRef";
+import * as RootNavigation from '../../RootNavigation';
 
 // Reducer
 const roseReducer = (state, action) => {

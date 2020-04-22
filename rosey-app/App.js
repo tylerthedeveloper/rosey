@@ -1,8 +1,10 @@
-import React from 'react';
-import { createAppContainer, createSwitchNavigator } from 'react-navigation';
-import { createStackNavigator } from 'react-navigation-stack';
-import { createBottomTabNavigator } from 'react-navigation-tabs';
-import { createDrawerNavigator } from 'react-navigation-drawer';
+import React, { useEffect, useContext, useMemo, useReducer } from 'react';
+
+// React Nav
+import { NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createDrawerNavigator } from '@react-navigation/drawer';
 
 // import {
 //   MapScreen,
@@ -26,223 +28,144 @@ import { FontAwesome } from '@expo/vector-icons';
 import MainPlusButton from './src/components/MainPlusButton';
 import Icon from '@expo/vector-icons/FontAwesome';
 
-// PROVIDERS
-import { Provider as AuthProvider } from './src/context/AuthContext';
+// Context and PROVIDERS
+// import { Provider as AuthProvider, Context as AuthContext } from './src/context/AuthContext';
+import { AuthContext } from './src/context/AuthContext';
 import { Provider as RoseProvider } from './src/context/RoseContext';
+import roseyApi from './src/api/roseyApi';
 
-import { setNavigator } from "./navigationRef";
+// import { setNavigator } from "./navigationRef";
 import { TouchableOpacity } from 'react-native-gesture-handler';
 import { Text, AsyncStorage } from 'react-native';
+import { navigationRef, isMountedRef } from './RootNavigation';
 
-const loginFlow = createStackNavigator({
-  Signup: SignupScreen,
-  Signin: SigninScreen
-});
-
-const listFlow = createStackNavigator({
-  RoseList: RoseListScreen,
-  RoseDetail: RoseDetailScreen
-});
-
-listFlow.navigationOptions = {
-  title: '',
-  tabBarIcon: <FontAwesome name="list" size={20} />,
-  header: { visible: false },
-};
-
-const Routes = {
-  Map: 'MapScreen',
-  Add: 'AddRoseScreen',
-  List: 'listFlow'
-};
-
-const _mainTabFlow = createBottomTabNavigator({
-  Map: {
-    screen: MapScreen,
-  },
-  Plus: {
-    screen: () => null,
-    navigationOptions: ({ navigation }) => ({
-      tabBarIcon: <MainPlusButton />,
-      tabBarLabel: () => null,
-      tabBarOnPress: (event) => {
-        event.preventDefault();
-        console.log('pplus pushed')
-        navigation.navigate('AddRose')
-      }
-    }),
-  },
-  listFlow
-});
-
-const mainTabFlow = createBottomTabNavigator({
-  [Routes.Map]: {
-    screen: MapScreen,
-    navigationOptions: () => ({
-      tabBarIcon: ({ tintColor }) => (
-        <Icon
-          name="map"
-          color={tintColor}
-          size={24}
-        />
-      )
-    })
-  },
-  MultiBar: {
-    screen: () => null,
-    navigationOptions: ({ navigation }) => ({
-      tabBarIcon: () => (
-        <MultiBarToggle
-          navigation={navigation}
-          actionSize={30}
-          routes={[
-            {
-              routeName: Routes.Map,
-              color: '#FF8360',
-              icon: (
-                <Icon
-                  name="map"
-                  color="#333333"
-                  size={15}
-                />
-              )
-            },
-            {
-              routeName: 'Account',
-              color: '#E8E288',
-              icon: (
-                <Icon
-                  name="plus"
-                  color="#333333"
-                  size={15}
-                />
-              )
-            },
-            {
-              routeName: Routes.List,
-              color: '#7DCE82',
-              icon: (
-                <Icon
-                  name="list"
-                  color="#333333"
-                  size={15}
-                />
-              )
-            },
-          ]}
-          icon={(
-            <Icon
-              name="plus"
-              color="#FFFFFF"
-              size={24}
-            />
-          )}
-        />
-      )
-    }),
-    params: {
-      // navigationDisabled: true
-    }
-  },
-  [Routes.List]: {
-    screen: listFlow,
-    navigationOptions: () => ({
-      tabBarIcon: ({ tintColor }) => (
-        <Icon
-          name="list"
-          color={tintColor}
-          size={24}
-        />
-      )
-    })
-  },
-},
-  {
-    tabBarComponent: MultiBar,
-    tabBarOptions: {
-      showLabel: false,
-      activeTintColor: '#F8F8F8',
-      inactiveTintColor: '#586589',
-      style: {
-        backgroundColor: '#171F33'
-      },
-      tabStyle: {}
-    }
-  }
-);
-
-
-// TODO: Remove
-import CustomDrawer from './src/components/CustomDrawer';
-
-
-// TODO: add signout here?
-const _drawerFlow = createDrawerNavigator({
-  Account: AccountScreen,
-  mainTabFlow,
-  AddRose: AddRoseScreen,
-  // FIXME: this is now how to handle logout!!!
-  Logout: {
-    label: "lag",
-    screen: () => {
-      return (
-        <TouchableOpacity onPress={async () => {
-          await AsyncStorage.removeItem('token')
-          console.log(await AsyncStorage.getItem('token'))
-        }} >
-          <Text> Logout </Text>
-        </TouchableOpacity >
-      )
-    }
-  }
-},
-  {
-    initialRouteName: 'AddRose',
-    // FIXME: contentComponent: CustomDrawer,
-    contentOptions: {
-      activeTintColor: '#000000',
-      activeBackgroundColor: '#e6e6e6',
-    },
-    // FIXME: initialRouteName: mainTabFlow,
-    navigationOptions: ({ navigation }) => ({
-      headerLeft: () => {
-        return (
-          <TouchableOpacity onPress={() => navigation.toggleDrawer()} style={{ marginLeft: 20 }}>
-            <FontAwesome name="list" size={20} />
-          </TouchableOpacity >
-        )
-      },
-      // title: '',
-    }),
-  }
-);
-
-
-// TODO: test putting navigation options here
-const fullAppFlow = createStackNavigator({
-  drawerFlow: _drawerFlow
-});
-
-const switchNavigator = createSwitchNavigator({
-  ResolveAuth: ResolveAuthScreen,
-  loginFlow,
-  fullAppFlow
-},
-  {
-    initialRouteName: 'ResolveAuth'
-  }
-);
-
-const App = createAppContainer(switchNavigator);
-
-// TODO: Test without function call
-export default () => {
+const AuthStack = createStackNavigator();
+const AuthStackScreen = () => {
   return (
-    <AuthProvider>
+    <AuthStack.Navigator headerMode="none">
+      <AuthStack.Screen name="Signup" component={SignupScreen} />
+      <AuthStack.Screen name="Signin" component={SigninScreen} />
+    </AuthStack.Navigator>
+  );
+}
+
+
+export default () => {
+
+  const AppStack = createStackNavigator();
+
+  const [state, dispatch] = useReducer((state, action) => {
+    switch (action.type) {
+      case 'add_error':
+        return { ...state, errorMessage: action.payload };
+      case 'signup':
+      case 'signin':
+        return { errorMessage: '', token: action.payload, isLoading: false };
+      case 'clear_error_message':
+        return { ...state, errorMessage: '' };
+      case 'signout':
+        return { errorMessage: '', token: null, isLoading: false };
+      case 'need_to_signin':
+        return { ...state, isLoading: false };
+      default:
+        return state;
+    }
+  },
+    { isLoading: true, token: null, errorMessage: '' }
+  );
+
+  const authContext = useMemo(() => {
+    return {
+      signup: async ({ email, password }) => {
+        try {
+          const response = await roseyApi.post('/signup', { email, password });
+          const token = response.data.token;
+          console.log(token);
+          await AsyncStorage.setItem('token', token);
+          dispatch({ type: 'sign_up', payload: token });
+          RootNavigation.navigate('Account');
+        } catch (err) {
+          console.log(err.message);
+          dispatch({ type: 'add_error', payload: 'Something went wrong with sign up' });
+        }
+      },
+      signin: async ({ email, password }) => {
+        try {
+          const response = await roseyApi.post('/signin', { email, password });
+          const token = response.data.token;
+          await AsyncStorage.setItem('token', token);
+          dispatch({ type: 'signin', payload: token });
+          RootNavigation.navigate('Account');
+          // navigate('drawerFlow');
+        } catch (err) {
+          console.log(err.message);
+          dispatch({ type: 'add_error', payload: 'Something went wrong with sign up' });
+        }
+      },
+      tryLocalSignin: async () => {
+        console.log('tryLocalSignin');
+        const token = await AsyncStorage.getItem('token');
+        if (token) {
+          console.log(token);
+          dispatch({ type: 'signin', payload: token });
+          // RootNavigation.navigate('Account');
+        } else {
+          // RootNavigation.navigate('AuthStack');
+          dispatch({ type: 'need_to_signin' });
+        }
+      },
+      clearErrorMessage: () => {
+        dispatch({ type: 'clear_error_message' });
+      },
+      signout: async () => {
+        console.log('signout')
+        await AsyncStorage.removeItem('token');
+        dispatch({ type: 'signout' });
+      }
+    };
+  }, []);
+
+  const { tryLocalSignin } = authContext;
+
+  useEffect(() => {
+    tryLocalSignin();
+  }, []);
+
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => (isMountedRef.current = false);
+  }, []);
+
+  // const currentStack = () => {
+  //   if (state.isLoading) {
+  //     return (<AppStack.Screen name="ResolveAuth" component={ResolveAuthScreen} />);
+  //   }
+  //   if (!state.token) {
+  //     return (<AppStack.Screen name="AuthStack" component={AuthStack} />);
+  //   }
+  //   return (<AppStack.Screen name="Account" component={AccountScreen} />);
+  // }
+
+  console.log(state);
+
+  return (
+    <AuthContext.Provider value={{ state, ...authContext }}>
       <RoseProvider>
-        {/* https://reactnavigation.org/docs/navigating-without-navigation-prop/ */}
-        <App ref={(navigator) => setNavigator(navigator)} />
+        <NavigationContainer ref={navigationRef}>
+          {/* https://reactnavigation.org/docs/navigating-without-navigation-prop/ */}
+          {/* <App ref={(navigator) => setNavigator(navigator)} /> */}
+          <AppStack.Navigator initialRouteName="ResolveAuth">
+            {/* <currentStack /> */}
+            {
+              state.isLoading
+                ? <AppStack.Screen name="ResolveAuth" component={ResolveAuthScreen} />
+                : (state.token === null)
+                  ? <AppStack.Screen name="AuthStack" component={AuthStackScreen} />
+                  : <AppStack.Screen name="Account" component={AccountScreen} />
+            }
+          </AppStack.Navigator>
+        </NavigationContainer>
       </RoseProvider>
-    </AuthProvider>
+    </AuthContext.Provider>
   )
 }
