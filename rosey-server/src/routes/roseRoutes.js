@@ -24,7 +24,7 @@ router.post('/roses', async (req, res) => {
         const userId = req.user._id;
         const newRose = new Rose({ ...roseData, userId });
         await newRose.save();
-        res.send(newRose);
+        res.send({ rose: newRose });
     } catch (err) {
         return res.status(422).send(e.message);
     }

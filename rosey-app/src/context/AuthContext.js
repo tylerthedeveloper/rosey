@@ -28,7 +28,6 @@ const signup = (dispatch) => async ({ email, password }) => {
         console.log(token);
         await AsyncStorage.setItem('token', token);
         dispatch({ type: 'sign_up', payload: token });
-        console.log('success');
         navigate('drawerFlow');
     } catch (err) {
         console.log(err.message);
@@ -42,7 +41,6 @@ const signin = (dispatch) => async ({ email, password }) => {
         const token = response.data.token;
         await AsyncStorage.setItem('token', token);
         dispatch({ type: 'signin', payload: token });
-        console.log('success');
         navigate('drawerFlow');
     } catch (err) {
         console.log(err.message);
@@ -54,7 +52,6 @@ const tryLocalSignin = (dispatch) => async () => {
     const token = await AsyncStorage.getItem('token');
     if (token) {
         dispatch({ type: 'signin', payload: token });
-        // console.log('success', token);
         navigate('fullAppFlow');
     } else {
         navigate('loginFlow');
@@ -67,7 +64,8 @@ const clearErrorMessage = (dispatch) => () => {
 
 const signout = (dispatch) => async () => {
     await AsyncStorage.removeItem('token');
-    // dispatch...
+    dispatch({ type: 'signout' });
+    navigate('loginFlow');
 };
 
 //Main

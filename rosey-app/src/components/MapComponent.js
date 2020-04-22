@@ -1,10 +1,21 @@
 import React from 'react';
 import MapView, { Marker } from 'react-native-maps';
 
-let _height;
-
 const MapComponent = ({ navigation, height, roses }) => {
-    _height = height;
+
+    const markerList = roses.map((rose) => {
+        const { coords, placeName } = rose.placeMetAt;
+        // console.log(coords, placeName);
+        return (
+            <Marker
+                coordinate={coords}
+                title={placeName}
+                image={require('../../assets/rose-marker.png')}
+                key={(coords.latitude + coords.longitude).toString()}
+            />
+        )
+    });
+
     return (
         <>
             <MapView
@@ -16,20 +27,7 @@ const MapComponent = ({ navigation, height, roses }) => {
                     longitude: -86.5348
                 }}
             >
-                {
-                    roses.map((rose) => {
-                        const { coords, placeName } = rose.placeMetAt;
-                        console.log(coords, placeName);
-                        return (
-                            <Marker
-                                coordinate={coords}
-                                title={placeName}
-                                image={require('../../assets/rose-marker.png')}
-                                key={(coords.latitude + coords.longitude).toString()}
-                            />
-                        )
-                    })
-                }
+                {markerList}
             </MapView>
         </>
     )

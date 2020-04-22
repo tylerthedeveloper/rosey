@@ -6,15 +6,21 @@ import { Context as RoseContext } from '../context/RoseContext';
 
 const MapScreen = () => {
 
-    const { state: { roses }, fetchAllRoses } = useContext(RoseContext);
+    const { state: { roses }, fetchAllRoses, addRose } = useContext(RoseContext);
 
     useEffect(() => {
         fetchAllRoses();
     }, []); //TODO: 
 
+    const _roses = roses.filter(rose =>
+        rose.placeMetAt.coords &&
+        rose.placeMetAt.coords.latitude !== -369 &&
+        rose.placeMetAt.coords.longitude !== -369
+    );
+
     return (
         <>
-            <MapComponent height={900} roses={roses} />
+            <MapComponent height={900} roses={_roses} />
         </>
     )
 }

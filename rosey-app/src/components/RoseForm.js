@@ -7,8 +7,25 @@ const RoseForm = ({ headerText, submitButtonText, onSubmit }) => {
 
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
+    // const [placeMetAt, setPlace] = useState({
+    //     timestamp: 0,
+    //     placeName: '',
+    //     coords: {
+    //         latitude: 0,
+    //         longitude: 0,
+    //     },
+    // });
+    const [placeName, setPlace] = useState('');
+    const [coords, setCoords] = useState({ latitude: -369, longitude: -369})
+    // const [dateMet, setDateMet] = useState(Date.now())
     const [picture, setPicture] = useState('');
 
+    const placeMetAt = {
+        placeName,
+        coords,
+    };
+
+    const dateMet = Date.now();
     return (
         <>
             <Spacer>
@@ -30,6 +47,19 @@ const RoseForm = ({ headerText, submitButtonText, onSubmit }) => {
                     />
                 </Spacer>
                 <Spacer>
+                    <Input label="Place Met At"
+                        value={placeName}
+                        onChangeText={setPlace}
+                    />
+                </Spacer>
+                {/* <Spacer>
+                     <Input label="Date Met"
+                        value={dateMet}
+                        // textContentType={""}
+                        onChangeText={setDateMet}
+                    />
+                </Spacer> */}
+                <Spacer>
                     <Input label="Picture"
                         value={picture}
                         onChangeText={setPicture}
@@ -39,7 +69,7 @@ const RoseForm = ({ headerText, submitButtonText, onSubmit }) => {
                 <Spacer>
                     <Button
                         title={submitButtonText}
-                        onPress={() => onSubmit({ name, email, picture })}
+                        onPress={() => onSubmit({ name, email, picture, placeMetAt, dateMet })}
                     />
                 </Spacer>
             </Spacer>

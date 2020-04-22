@@ -1,11 +1,14 @@
-import React from 'react';
-import { StyleSheet, Text, View, KeyboardAvoidingView } from 'react-native';
-import { Button } from 'react-native-elements';
 import { FontAwesome } from '@expo/vector-icons';
+import React, { useContext } from 'react';
+import { KeyboardAvoidingView, StyleSheet } from 'react-native';
+import { Button } from 'react-native-elements';
 import RoseForm from '../components/RoseForm';
 import Spacer from '../components/Spacer';
+import { Context as RoseContext } from '../context/RoseContext';
 
 const AddRoseScreen = ({ navigation }) => {
+
+    const { addRose } = useContext(RoseContext);
 
     return (
         <KeyboardAvoidingView
@@ -15,14 +18,13 @@ const AddRoseScreen = ({ navigation }) => {
             <RoseForm
                 headerText="Add Friend"
                 submitButtonText="Add Friend"
-                onSubmit={console.log}
+                onSubmit={addRose}
             />
             <Spacer />
             <Button
                 title="Cancel (X)"
                 onPress={() => navigation.goBack()}
             />
-
         </KeyboardAvoidingView>
     )
 }

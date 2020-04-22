@@ -12,8 +12,13 @@ const roseSchema = new mongoose.Schema({
     picture: {
         type: String
     },
+    email: {
+        type: String
+    },
+    dateMet: {
+        type: Number
+    },
     placeMetAt: {
-        timestamp: Number,
         placeName: String,
         coords: {
             latitude: Number,

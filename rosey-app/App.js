@@ -168,14 +168,18 @@ const mainTabFlow = createBottomTabNavigator({
       },
       tabStyle: {}
     }
-  });
+  }
+);
 
+
+// TODO: Remove
+import CustomDrawer from './src/components/CustomDrawer';
 
 
 // TODO: add signout here?
-const drawerFlow = createDrawerNavigator({
-  mainTabFlow,
+const _drawerFlow = createDrawerNavigator({
   Account: AccountScreen,
+  mainTabFlow,
   AddRose: AddRoseScreen,
   // FIXME: this is now how to handle logout!!!
   Logout: {
@@ -193,6 +197,12 @@ const drawerFlow = createDrawerNavigator({
   }
 },
   {
+    initialRouteName: 'AddRose',
+    // FIXME: contentComponent: CustomDrawer,
+    contentOptions: {
+      activeTintColor: '#000000',
+      activeBackgroundColor: '#e6e6e6',
+    },
     // FIXME: initialRouteName: mainTabFlow,
     navigationOptions: ({ navigation }) => ({
       headerLeft: () => {
@@ -202,14 +212,15 @@ const drawerFlow = createDrawerNavigator({
           </TouchableOpacity >
         )
       },
-      title: '',
+      // title: '',
     }),
   }
 );
 
+
 // TODO: test putting navigation options here
 const fullAppFlow = createStackNavigator({
-  drawerFlow
+  drawerFlow: _drawerFlow
 });
 
 const switchNavigator = createSwitchNavigator({
