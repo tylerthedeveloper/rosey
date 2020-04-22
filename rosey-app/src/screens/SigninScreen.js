@@ -13,7 +13,6 @@ const SigninScreen = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
-            {/* <NavigationEvents onWillFocus={() => clearErrorMessage()} /> */}
             <AuthForm
                 headerText="Sign in for Rosey"
                 submitButtonText="Sign In"
@@ -27,7 +26,7 @@ const SigninScreen = ({ navigation }) => {
             <Spacer />
             <Button
                 title="Mock sign in "
-                onPress={() => navigation.navigate('drawerFlow')}
+                onPress={() => navigation.navigate('mainFlow')}
             />
         </View>
     )

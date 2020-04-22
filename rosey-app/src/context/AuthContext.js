@@ -1,7 +1,6 @@
 // import createDataContext from './createDataContext';
 // import roseyApi from '../api/roseyApi';
 // import { AsyncStorage } from 'react-native';
-// // import { useNavigation } from '@react-navigation/native';
 // import * as RootNavigation from '../../RootNavigation';
 
 // // Reducer
@@ -82,4 +81,3 @@ import React from "react";
 
 export const AuthContext = React.createContext();
 // export const AuthContext = React.createContext({ isLoading: true, token: null, errorMessage: '' });
-

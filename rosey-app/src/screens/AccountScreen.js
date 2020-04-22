@@ -7,7 +7,7 @@ const AccountScreen = ({ navigation }) => {
 
     const { signout } = useContext(AuthContext);
 
-    console.log(signout);
+    // console.log(signout);
 
     return (
         <View style={styles.container}>
@@ -15,6 +15,10 @@ const AccountScreen = ({ navigation }) => {
             <Button
                 title="Signout"
                 onPress={signout}
+            />
+            <Button
+                title="Open Drawer"
+                onPress={() => navigation.toggleDrawer()}
             />
         </View>
     )

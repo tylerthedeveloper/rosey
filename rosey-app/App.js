@@ -1,7 +1,7 @@
 import React, { useEffect, useContext, useMemo, useReducer } from 'react';
 
 // React Nav
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, DrawerActions } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createDrawerNavigator } from '@react-navigation/drawer';
@@ -15,8 +15,6 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 //   from './src/screens';
 // SCREENS
 import ResolveAuthScreen from './src/screens/ResolveAuthScreen';
-import SigninScreen from './src/screens/SigninScreen';
-import SignupScreen from './src/screens/SignupScreen';
 import MapScreen from './src/screens/MapScreen';
 import RoseListScreen from './src/screens/RoseListScreen';
 import RoseDetailScreen from './src/screens/RoseDetailScreen';
@@ -35,20 +33,13 @@ import { Provider as RoseProvider } from './src/context/RoseContext';
 import roseyApi from './src/api/roseyApi';
 
 // import { setNavigator } from "./navigationRef";
-import { TouchableOpacity } from 'react-native-gesture-handler';
-import { Text, AsyncStorage } from 'react-native';
+import { Text, AsyncStorage, View, TouchableOpacity } from 'react-native';
 import { navigationRef, isMountedRef } from './RootNavigation';
 
-const AuthStack = createStackNavigator();
-const AuthStackScreen = () => {
-  return (
-    <AuthStack.Navigator headerMode="none">
-      <AuthStack.Screen name="Signup" component={SignupScreen} />
-      <AuthStack.Screen name="Signin" component={SigninScreen} />
-    </AuthStack.Navigator>
-  );
-}
 
+import { authStackScreen, App } from "./AppNavigation";
+
+// import { BlurView } from 'expo-blur';
 
 export default () => {
 
@@ -160,8 +151,28 @@ export default () => {
               state.isLoading
                 ? <AppStack.Screen name="ResolveAuth" component={ResolveAuthScreen} />
                 : (state.token === null)
-                  ? <AppStack.Screen name="AuthStack" component={AuthStackScreen} />
-                  : <AppStack.Screen name="Account" component={AccountScreen} />
+                  ? <AppStack.Screen name="authStack" component={authStackScreen} />
+                  : <AppStack.Screen name="mainFlow" component={App}
+                    options={({ navigation, route }) => ({
+                      headerTitle: null,
+                      // headerTransparent: true,
+                      // headerBackground: () => (
+                      //   <BlurView tint="light" intensity={100} style={StyleSheet.absoluteFill} />
+                      // ),
+                      headerLeft: () => {
+                        return <View style={{ flexDirection: 'row' }}>
+                          <TouchableOpacity
+                            onPress={() => {
+                              navigation.dispatch(DrawerActions.toggleDrawer());
+                            }}>
+                            <Text>Open</Text>
+                            {/* <Image source={require('./assets/images/icons/drawer.png')} /> */}
+                          </TouchableOpacity>
+                        </View>
+                      }
+                    })}
+                    headerMode="none"
+                  />
             }
           </AppStack.Navigator>
         </NavigationContainer>
