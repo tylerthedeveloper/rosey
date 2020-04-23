@@ -10,8 +10,12 @@ router.use(requireAuth);
 
 router.get('/roses', async (req, res) => {
     const id = req.user._id;
-    const roses = await Rose.find({ userId: id });
-    res.send({ roses });
+    try {
+        const roses = await Rose.find({ userId: id });
+        res.send({ roses });
+    } catch (err) {
+        return res.status(422).send(err.message);
+    }
 });
 
 router.post('/roses', async (req, res) => {
@@ -26,7 +30,7 @@ router.post('/roses', async (req, res) => {
         await newRose.save();
         res.send({ rose: newRose });
     } catch (err) {
-        return res.status(422).send(e.message);
+        return res.status(422).send(err.message);
     }
 });
 

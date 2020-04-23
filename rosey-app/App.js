@@ -114,19 +114,15 @@ export default () => {
           {/* <App ref={(navigator) => setNavigator(navigator)} /> */}
           <AppStack.Navigator initialRouteName="ResolveAuth">
             {
-              state.isLoading
-                ? <AppStack.Screen name="ResolveAuth" component={ResolveAuthScreen}
-                  options={{
-                    headerTransparent: true,
-                    headerTitle: null,
-                  }}
+              state.isLoading ?
+                <AppStack.Screen name="ResolveAuth" component={ResolveAuthScreen}
+                  options={{ headerTransparent: true, headerTitle: null }}
                 />
                 : (state.token === null)
                   ? <AppStack.Screen name="authStack" component={authStackScreen} />
                   : <AppStack.Screen name="mainFlow" component={App}
-                    options={({ navigation, route }) => ({
-                      headerTitle: null,
-                      headerLeft: () => {
+                    options={({ navigation, route }) => ({ headerTitle: null,
+headerLeft: () => {
                         return <View style={{ flexDirection: 'row' }}>
                           <TouchableOpacity
                             onPress={() => {

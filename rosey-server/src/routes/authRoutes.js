@@ -28,7 +28,6 @@ router.post('/signup', async (req, res) => {
     }
 });
 
-
 router.post('/signin', async (req, res) => {
     const { email, password } = req.body;
     if (!email || !password) {
@@ -41,11 +40,10 @@ router.post('/signin', async (req, res) => {
         }
         await user.comparePassword(password);
         const token = jwt.sign({ userId: user._id }, _key);
-        res.send({ token });
+        res.send({ user, token });
     } catch (e) {
         return res.status(422).send({ error: 'Invalid password or email' });
     }
 });
-
 
 module.exports = router;

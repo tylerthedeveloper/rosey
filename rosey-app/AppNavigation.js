@@ -58,7 +58,7 @@ const TabNavigator = () => {
                         <FontAwesome
                             name="map"
                             size={24}
-                            style={{ marginBottom: -5 }}
+                            style={{ marginBottom: -15 }}
                         />)
                 }}
             />

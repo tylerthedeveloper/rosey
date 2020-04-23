@@ -5,9 +5,7 @@ import { AuthContext } from '../context/AuthContext';
 
 const AccountScreen = ({ navigation }) => {
 
-    const { signout } = useContext(AuthContext);
-
-    // console.log(signout);
+    const { state, signout } = useContext(AuthContext);
 
     return (
         <View style={styles.container}>

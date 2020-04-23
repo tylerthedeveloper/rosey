@@ -5,16 +5,21 @@ const roseSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
     },
-    // TODO: Nickname...
     name: {
         type: String,
         required: true
+    },
+    nickName: {
+        type: String,
     },
     picture: {
         type: String
     },
     email: {
         type: String
+    },
+    phoneNumber: {
+        type: Number
     },
     dateMet: {
         type: Number
@@ -31,6 +36,9 @@ const roseSchema = new mongoose.Schema({
         },
     },
     tags: [String],
+    birthday: {
+        type: Number
+    }
 });
 
 mongoose.model('Rose', roseSchema);
