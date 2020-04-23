@@ -16,15 +16,12 @@ const AddRoseScreen = ({ navigation }) => {
             behavior="padding"
         >
             <RoseForm
-                headerText="Add Friend"
-                submitButtonText="Add Friend"
+                headerText="Add Rose"
+                submitButtonText="Add Rose"
                 onSubmit={addRose}
+                onCancel={navigation.goBack}
             />
             <Spacer />
-            <Button
-                title="Cancel (X)"
-                onPress={() => navigation.goBack()}
-            />
         </KeyboardAvoidingView>
     )
 }

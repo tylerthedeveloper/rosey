@@ -3,41 +3,18 @@ import React, { useEffect, useContext, useMemo, useReducer } from 'react';
 // React Nav
 import { NavigationContainer, DrawerActions } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createDrawerNavigator } from '@react-navigation/drawer';
-
-// import {
-//   MapScreen,
-//   ResolveAuthScreen,
-//   SigninScreen,
-//   SignupScreen
-// }
-//   from './src/screens';
-// SCREENS
+import { Text, AsyncStorage, View, TouchableOpacity } from 'react-native';
+import { navigationRef, isMountedRef } from './RootNavigation';
 import ResolveAuthScreen from './src/screens/ResolveAuthScreen';
-import MapScreen from './src/screens/MapScreen';
-import RoseListScreen from './src/screens/RoseListScreen';
-import RoseDetailScreen from './src/screens/RoseDetailScreen';
-import AddRoseScreen from './src/screens/AddRoseScreen';
-import AccountScreen from './src/screens/AccountScreen';
+import { authStackScreen, App } from "./AppNavigation";
 
 import { MultiBar, MultiBarToggle } from 'react-native-multibar';
-import { FontAwesome } from '@expo/vector-icons';
-import MainPlusButton from './src/components/MainPlusButton';
-import Icon from '@expo/vector-icons/FontAwesome';
+import { Feather } from '@expo/vector-icons';
 
 // Context and PROVIDERS
-// import { Provider as AuthProvider, Context as AuthContext } from './src/context/AuthContext';
 import { AuthContext } from './src/context/AuthContext';
 import { Provider as RoseProvider } from './src/context/RoseContext';
 import roseyApi from './src/api/roseyApi';
-
-// import { setNavigator } from "./navigationRef";
-import { Text, AsyncStorage, View, TouchableOpacity } from 'react-native';
-import { navigationRef, isMountedRef } from './RootNavigation';
-
-
-import { authStackScreen, App } from "./AppNavigation";
 
 // import { BlurView } from 'expo-blur';
 
@@ -127,16 +104,6 @@ export default () => {
     return () => (isMountedRef.current = false);
   }, []);
 
-  // const currentStack = () => {
-  //   if (state.isLoading) {
-  //     return (<AppStack.Screen name="ResolveAuth" component={ResolveAuthScreen} />);
-  //   }
-  //   if (!state.token) {
-  //     return (<AppStack.Screen name="AuthStack" component={AuthStack} />);
-  //   }
-  //   return (<AppStack.Screen name="Account" component={AccountScreen} />);
-  // }
-
   console.log(state);
 
   return (
@@ -146,32 +113,30 @@ export default () => {
           {/* https://reactnavigation.org/docs/navigating-without-navigation-prop/ */}
           {/* <App ref={(navigator) => setNavigator(navigator)} /> */}
           <AppStack.Navigator initialRouteName="ResolveAuth">
-            {/* <currentStack /> */}
             {
               state.isLoading
-                ? <AppStack.Screen name="ResolveAuth" component={ResolveAuthScreen} />
+                ? <AppStack.Screen name="ResolveAuth" component={ResolveAuthScreen}
+                  options={{
+                    headerTransparent: true,
+                    headerTitle: null,
+                  }}
+                />
                 : (state.token === null)
                   ? <AppStack.Screen name="authStack" component={authStackScreen} />
                   : <AppStack.Screen name="mainFlow" component={App}
                     options={({ navigation, route }) => ({
                       headerTitle: null,
-                      // headerTransparent: true,
-                      // headerBackground: () => (
-                      //   <BlurView tint="light" intensity={100} style={StyleSheet.absoluteFill} />
-                      // ),
                       headerLeft: () => {
                         return <View style={{ flexDirection: 'row' }}>
                           <TouchableOpacity
                             onPress={() => {
                               navigation.dispatch(DrawerActions.toggleDrawer());
                             }}>
-                            <Text>Open</Text>
-                            {/* <Image source={require('./assets/images/icons/drawer.png')} /> */}
+                            <Feather name="menu" size={24} style={{ padding: 5 }} />
                           </TouchableOpacity>
                         </View>
                       }
                     })}
-                    headerMode="none"
                   />
             }
           </AppStack.Navigator>

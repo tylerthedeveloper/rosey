@@ -1,13 +1,14 @@
 import React from 'react';
 import { StyleSheet, Text, View, TouchableOpacity, Image } from 'react-native';
 import { } from 'react-native-elements';
-// import { withNavigation } from '@react-navigation/compat';
+import { useNavigation } from "@react-navigation/native";
 
-const RoseListItem = ({ navigation, rose }) => {
+const RoseListItem = ({ rose }) => {
 
+    const navigation = useNavigation();
     const { name, tags, picture } = rose;
     return (
-        <TouchableOpacity style={styles.container} onPress={() => navigation.navigate('RoseDetail', { id: rose._id })}>
+        <TouchableOpacity style={styles.container} onPress={() => navigation.navigate('RoseDetail', { roseId: rose._id })}>
             <>
                 <Text style={styles.name}> {name} </Text>
                 <Text> Tags: [{tags.join(',')}]</Text>
@@ -30,5 +31,4 @@ const styles = StyleSheet.create({
     }
 });
 
-// export default withNavigation(RoseListItem);
 export default RoseListItem;

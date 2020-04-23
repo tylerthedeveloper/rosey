@@ -33,6 +33,10 @@ const addRose = (dispatch) => async (roseData) => {
         const newRose = response.data.rose;
         console.log(newRose)
         dispatch({ type: "add_rose", payload: newRose });
+        RootNavigation.navigate('RoseListStack', {
+            screen: 'RoseDetail',
+            params: { roseId: newRose._id }
+        });
     } catch (err) {
         console.log(err.message);
         dispatch({ type: "add_error_message", payload: err.message });

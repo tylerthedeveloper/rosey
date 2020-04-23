@@ -1,6 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import { FontAwesome } from '@expo/vector-icons';
-import { FlatList, StyleSheet } from 'react-native';
+import { FlatList, StyleSheet, Button, View } from 'react-native';
 import RoseListItem from '../components/RoseListItem';
 import { Context as RoseContext } from '../context/RoseContext';
 
@@ -14,32 +14,22 @@ const RoseListScreen = ({ navigation }) => {
     }, []); //TODO: 
 
     return (
-        <>
-            {/* <Button
+        <View style={styles.container}>
+            <Button
                 title="go to specific friend"
-                onPress={() => navigation.navigate('FriendDetail')}
-            /> */}
-            {/* <Button
-                title='logout'
-                onPress={async () => {
-                    await AsyncStorage.removeItem('token')
-                }} /> */}
+                onPress={() => navigation.navigate('RoseDetail')}
+            />
             <FlatList
-                contentContainerStyle={styles.container}
+                // contentContainerStyle={}
                 data={roses}
                 keyExtractor={(item) => item._id}
                 renderItem={({ item }) => {
                     return (<RoseListItem rose={item} />)
                 }}
             />
-        </>
+        </View>
     )
 }
-
-RoseListScreen.navigationOptions = {
-    tabBarIcon: <FontAwesome name="list" size={20} />,
-    header: () => null,
-};
 
 const styles = StyleSheet.create({
     container: {

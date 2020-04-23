@@ -3,7 +3,7 @@ import { StyleSheet } from 'react-native';
 import { Button, Input, Text } from 'react-native-elements';
 import Spacer from './Spacer';
 
-const RoseForm = ({ headerText, submitButtonText, onSubmit }) => {
+const RoseForm = ({ headerText, submitButtonText, onSubmit, onCancel }) => {
 
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
@@ -16,7 +16,7 @@ const RoseForm = ({ headerText, submitButtonText, onSubmit }) => {
     //     },
     // });
     const [placeName, setPlace] = useState('');
-    const [coords, setCoords] = useState({ latitude: -369, longitude: -369})
+    const [coords, setCoords] = useState({ latitude: -369, longitude: -369 })
     // const [dateMet, setDateMet] = useState(Date.now())
     const [picture, setPicture] = useState('');
 
@@ -70,6 +70,12 @@ const RoseForm = ({ headerText, submitButtonText, onSubmit }) => {
                     <Button
                         title={submitButtonText}
                         onPress={() => onSubmit({ name, email, picture, placeMetAt, dateMet })}
+                    />
+                </Spacer>
+                <Spacer>
+                    <Button
+                        title="Cancel"
+                        onPress={() => onCancel()}
                     />
                 </Spacer>
             </Spacer>
