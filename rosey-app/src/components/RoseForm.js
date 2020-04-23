@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
-import { StyleSheet, ScrollView } from 'react-native';
-import { Button, Input, Text } from 'react-native-elements';
+import { StyleSheet, ScrollView, View, KeyboardAvoidingView } from 'react-native';
+import { Button, Input, Text, } from 'react-native-elements';
 import Spacer from './Spacer';
 import DateTimePicker from '@react-native-community/datetimepicker';
-import { Form } from '@secullum/react-native-autofocus'
 
 const RoseForm = ({ headerText, submitButtonText, onSubmit, onCancel }) => {
 
     const [name, setName] = useState('');
+    const [nickName, setNickName] = useState('');
     const [email, setEmail] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
     const [placeName, setPlace] = useState('');
@@ -18,10 +18,18 @@ const RoseForm = ({ headerText, submitButtonText, onSubmit, onCancel }) => {
         coords,
     };
 
+    const inputList = [
+        { label: "Name", value: name, onChangeText: setName, autoCorrect: false, keyboardType: "default", returnKeyType: "next" },
+        { label: "Nickname", value: nickName, onChangeText: setNickName, autoCorrect: false, keyboardType: "default", returnKeyType: "next" },
+        { label: "Email", value: email, onChangeText: setEmail, autoCorrect: false, keyboardType: "email-address", returnKeyType: "next" },
+        { label: "Phone Number", value: phoneNumber, onChangeText: setPhoneNumber, autoCorrect: false, keyboardType: "phone-pad", returnKeyType: "done", textContentType: "telephoneNumber" },
+        { label: "Place Name", value: placeName, onChangeText: setPlace, autoCorrect: false, keyboardType: "default", returnKeyType: "next" },
+    ];
+
     /* -------------------------------------------------------------------------- */
     /*                                Date Section                                */
     /* -------------------------------------------------------------------------- */
-    const [dateMet, setDate] = useState(Date.now());
+    const [dateMet, setDate] = useState(new Date(Date.now()));
     const [mode, setMode] = useState('date');
 
     const onChange = (event, selectedDate) => {
@@ -29,79 +37,68 @@ const RoseForm = ({ headerText, submitButtonText, onSubmit, onCancel }) => {
         // setShow(Platform.OS === 'ios');
         setDate(currentDate);
     };
-    console.log(Date.parse(dateMet));
+    // console.log(dateMet.getTime());
     /* -------------------------------------------------------------------------- */
 
     return (
         <ScrollView>
-            <Form focusOn={[TextInput]}>
-            <Spacer>
+            <KeyboardAvoidingView>
                 <Spacer>
-                    <Text h3> {headerText} </Text>
+                    <Spacer>
+                        <Text h3 style={styles.headerText}> {headerText} </Text>
+                    </Spacer>
+                    {
+                        inputList.map(({ label, value, onChangeText, autoCorrect, keyboardType, returnKeyType, textContentType, key }, index) => {
+                            return (
+                                <View key={index.toString()} >
+                                    <Input label={label}
+                                        value={value}
+                                        onChangeText={onChangeText}
+                                        autoCorrect={autoCorrect}
+                                        keyboardType={keyboardType || "default"}
+                                        returnKeyType={returnKeyType}
+                                        style={styles.inputStyle}
+                                        textContentType={textContentType}
+                                    />
+                                    <Spacer />
+                                </View>
+                            )
+                        })
+                    }
+                    <Spacer>
+                        <DateTimePicker
+                            testID="dateTimePicker"
+                            timeZoneOffsetInMinutes={0}
+                            value={dateMet}
+                            mode={mode}
+                            is24Hour={true}
+                            display="default"
+                            onChange={onChange}
+                        />
+                    </Spacer>
+                    <Spacer>
+                        <Input label="Picture"
+                            value={picture}
+                            onChangeText={setPicture}
+                            autoCorrect={false}
+                        />
+                    </Spacer>
+                    <Spacer>
+                        <Button
+                            title={submitButtonText}
+                            onPress={() => onSubmit({ name, email, picture, placeMetAt, dateMet: dateMet.getTime(), phoneNumber })}
+                        />
+                    </Spacer>
+                    <Spacer>
+                        <Button
+                            title="Cancel"
+                            onPress={() => onCancel()}
+                        />
+                    </Spacer>
                 </Spacer>
-                <Spacer>
-                    <TextInput label="Name"
-                        value={name}
-                        onChangeText={setName}
-                        autoCorrect={false}
-                        returnKeyType={"next"}
-                    />
-                </Spacer>
-                <Spacer>
-                    <TextInput label="Email"
-                        value={email}
-                        onChangeText={setEmail}
-                        autoCorrect={false}
-                        keyboardType={"email-address"}
-                    />
-                </Spacer>
-                <Spacer>
-                    <TextInput label="Phone Number"
-                        value={phoneNumber}
-                        onChangeText={setPhoneNumber}
-                        keyboardType={"phone-pad"}
-                    />
-                </Spacer>
-                <Spacer>
-                    <Input label="Place Met At"
-                        value={placeName}
-                        onChangeText={setPlace}
-                        autoCorrect={false}                        
-                    />
-                </Spacer>
-                <Spacer>
-                    <DateTimePicker
-                        testID="dateTimePicker"
-                        timeZoneOffsetInMinutes={0}
-                        value={dateMet}
-                        mode={mode}
-                        is24Hour={true}
-                        display="default"
-                        onChange={onChange}
-                    />
-                </Spacer>
-                <Spacer>
-                    <Input label="Picture"
-                        value={picture}
-                        onChangeText={setPicture}
-                        autoCorrect={false}
-                    />
-                </Spacer>
-                <Spacer>
-                    <Button
-                        title={submitButtonText}
-                        onPress={() => onSubmit({ name, email, picture, placeMetAt, dateMet, phoneNumber })}
-                    />
-                </Spacer>
-                <Spacer>
-                    <Button
-                        title="Cancel"
-                        onPress={() => onCancel()}
-                    />
-                </Spacer>
-            </Spacer>
-            </Form>
-        </ScrollView>);
+            </KeyboardAvoidingView>
+        </ScrollView>
+    );
 }
 
 const styles = StyleSheet.create({
@@ -113,6 +110,12 @@ const styles = StyleSheet.create({
     errorMessage: {
         color: 'red',
         margin: 10
+    },
+    inputStyle: {
+        margin: 15,
+    },
+    headerText: {
+        alignSelf: 'center'
     }
 });
 

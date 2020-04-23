@@ -18,6 +18,8 @@ const MapScreen = () => {
         rose.placeMetAt.coords.longitude !== -369
     );
 
+    console.log(_roses)
+
     return (
         <>
             <MapComponent height={900} roses={_roses} />
