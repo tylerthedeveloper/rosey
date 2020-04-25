@@ -6,6 +6,7 @@ import { MultiBar, MultiBarToggle } from 'react-native-multibar';
 /*                                Auth Section                                */
 /* -------------------------------------------------------------------------- */
 import { createStackNavigator } from '@react-navigation/stack';
+import SplashScreen from './src/screens/SplashScreen';
 import SigninScreen from './src/screens/SigninScreen';
 import SignupScreen from './src/screens/SignupScreen';
 
@@ -13,6 +14,7 @@ const AuthStack = createStackNavigator();
 export const authStackScreen = () => {
     return (
         <AuthStack.Navigator headerMode="none">
+            <AuthStack.Screen name="Splash" component={SplashScreen} />
             <AuthStack.Screen name="Signup" component={SignupScreen} />
             <AuthStack.Screen name="Signin" component={SigninScreen} />
         </AuthStack.Navigator>

@@ -1,17 +1,14 @@
-import React, { useState } from 'react';
+import React, { useState, createRef } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Input, Text } from 'react-native-elements';
 import Spacer from './Spacer';
-import MyButton from '../paper-components/MyButton';
-import MyTextInput from '../paper-components/MyTextInput';
-import MyHeader from '../paper-components/MyHeader';
-import Logo from '../paper-components/Logo';
+import { Logo, MyHeader, MyTextInput, MyButton } from '../paper-components';
 
 const AuthForm = ({ headerText, errorMessage, onSubmit, submitButtonText, passwordError }) => {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    let secondTextInput;
+    // let secondTextInput = createRef();
 
     return (
         <>
@@ -28,7 +25,7 @@ const AuthForm = ({ headerText, errorMessage, onSubmit, submitButtonText, passwo
                 keyboardType="email-address"
                 onChangeText={setEmail}
                 autoCorrect={false}
-                onSubmitEditing={() => { secondTextInput.focus(); }}
+                // onSubmitEditing={() => { secondTextInput.focus(); }}
                 returnKeyType={"next"}
             />
             <MyTextInput label="Password"
@@ -36,7 +33,7 @@ const AuthForm = ({ headerText, errorMessage, onSubmit, submitButtonText, passwo
                 onChangeText={setPassword}
                 autoCorrect={false}
                 secureTextEntry
-                ref={(input) => { secondTextInput = input; }}
+                // ref={(input) => { secondTextInput = input; }}
             />
             {(errorMessage) ? <Text style={styles.errorMessage}> {errorMessage} </Text> : null}
             {(password.length < 6)

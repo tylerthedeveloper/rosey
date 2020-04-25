@@ -1,7 +1,6 @@
 import React, { useContext, useEffect } from 'react';
 import { StyleSheet, Text, View, Button, TouchableOpacity } from 'react-native';
-import AuthForm from '../components/AuthForm';
-import Spacer from '../components/Spacer';
+import {AuthForm, Spacer} from '../components';
 import { AuthContext } from '../context/AuthContext';
 import Background from '../paper-components/Background';
 import { theme } from '../core/theme';
@@ -30,10 +29,10 @@ const SigninScreen = ({ navigation }) => {
             </View>
             <Spacer />
             {/* TODO: Remove */}
-            <Button
+            {/* <Button
                 title="Mock sign in "
                 onPress={() => navigation.navigate('mainFlow')}
-            />
+            /> */}
         </Background>
     )
 }

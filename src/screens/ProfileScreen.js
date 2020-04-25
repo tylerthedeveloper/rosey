@@ -1,9 +1,8 @@
-import React, { useContext } from 'react';
-import { StyleSheet, View, Button, ImageBackground, Image } from 'react-native';
-import { Text, Icon } from 'react-native-elements';
-import { AuthContext } from '../context/AuthContext';
+import React, { useContext, useState } from 'react';
+import { ImageBackground, StyleSheet, View, ScrollView } from 'react-native';
+import { Avatar, Button, Card, IconButton, Paragraph, Title } from 'react-native-paper';
 import Spacer from '../components/Spacer';
-import { Avatar } from 'react-native-paper';
+import { AuthContext } from '../context/AuthContext';
 import { theme } from '../core/theme';
 
 // TODO: get better colored background
@@ -13,9 +12,10 @@ const noProPicPhoto = require('../../assets/avatar_placeholder.png');
 const ProfileScreen = ({ navigation }) => {
 
     const { state: { user }, signout, updateProfile } = useContext(AuthContext);
+
     const { email, tags, name, nickName, birthday, phoneNumber, picture,
         homeLocation, work
-    } = JSON.parse(user);
+    } = user;//JSON.parse(user);
     let city, state, country;
     if (homeLocation) {
         city = homeLocation.city;
@@ -27,117 +27,133 @@ const ProfileScreen = ({ navigation }) => {
         country = "country";
     };
 
+    const [updated_phoneNumber, setPhone] = useState(phoneNumber);
+    const [updated_email, setEmail] = useState(email);
+
+    const rows = [
+        {
+            title: phoneNumber || '(123456789)', subtitle: 'phone',
+            left: "phone",
+            rightIcon: "phone",
+            rightFunc: () => { setPhone('321') }
+        },
+        {
+            title: email || '(someone@...)', subtitle: 'email',
+            left: "email",
+            rightIcon: "email",
+            rightFunc: () => { setEmail('new email') }
+        },
+        {
+            title: tags.length > 0 ? tags : '(Add some Tags!)', subtitle: 'tag',
+            left: "tag",
+            rightIcon: "tag",
+            rightFunc: () => { }
+        },
+        {
+            title: birthday || '(Enter Birthday!)', subtitle: 'birthday',
+            left: "calendar",
+            rightIcon: "calendar-heart",
+            rightFunc: () => { }
+        },
+        {
+            title: work || '(Add Occupation!)', subtitle: 'occupation',
+            left: "briefcase-account",
+            rightIcon: "briefcase-plus",
+            rightFunc: () => { }
+        },
+    ];
+
+    user.email = updated_email;
+    user.phoneNumber = updated_phoneNumber;
+
+    console.log(user);
+
     const renderHeader = () => {
         return (
-            <View style={styles.headerContainer}>
+            <Card style={styles.card}>
                 <ImageBackground
-                    style={styles.headerBackgroundImage}
-                    blurRadius={10}
-                    source={{
-                        uri: avatarBackground,
-                    }}
-                >
-                    <View style={styles.headerColumn}>
-                        <Image
-                            style={styles.userImage}
-                            source={require('../../assets/avatar_placeholder.png')}
+                    source={{ uri: 'https://picsum.photos/700' }}
+                    style={styles.headerBackgroundImage}>
+                    <Card.Content style={{ alignSelf: 'center', alignItems: 'center' }}>
+                        <Avatar.Image
+                            style={styles.avatar}
+                            size={100}
+                            source={{
+                                uri:
+                                    'https://image.shutterstock.com/image-vector/people-icon-260nw-522300817.jpg',
+                            }}
                         />
-                        <Text style={styles.userNameText}>{name}</Text>
-                        <View style={styles.userAddressRow}>
-                            <View>
-                                <Icon
-                                    name="place"
-                                    underlayColor="transparent"
-                                    iconStyle={styles.placeIcon}
-                                // onPress={this.onPressPlace}
-                                />
-                            </View>
-                            <View style={styles.userCityRow}>
-                                <Text style={styles.userCityText}>
-                                    {city}, {country}
-                                </Text>
-                            </View>
-                        </View>
-                    </View>
+                        <Title style={styles.userNameText}>{name || 'No-name!'}</Title>
+                        <Paragraph style={styles.userCityText}>{city}, {state}, {country}</Paragraph>
+                    </Card.Content>
                 </ImageBackground>
-            </View>
+                <ScrollView>
+                    {
+                        rows.map(({ title, subtitle, left, rightIcon, rightFunc }) => (
+                            <Card.Actions style={styles.cardRow} key={title}>
+                                <Card.Title
+                                    title={title}
+                                    subtitle={subtitle}
+                                    left={(props) => <Avatar.Icon icon={left}  {...props} />}
+                                    right={(props) => <IconButton icon={rightIcon} {...props} onPress={rightFunc} />}
+                                />
+                            </Card.Actions>
+                        ))
+                    }
+                </ScrollView>
+            </Card>
         )
     }
 
     return (
         <View style={styles.container}>
             {renderHeader()}
-            <Text> Email: {email || ''}</Text>
-            <Text> Name: {name || ''}</Text>
-            <Text> MY Tags: {tags || ''}</Text>
             <Button
                 title="AddTags"
             />
-            <Spacer />
             <Button
-                title="Update Profile"
                 onPress={() => updateProfile({ name: "new Name2" })}
-            />
+            >
+                Update Profile
+            </Button>
             <Button
                 title="Signout"
                 onPress={signout}
-            />
+            >
+                Signout
+            </Button>
         </View>
     )
 }
 
 const styles = StyleSheet.create({
-    cardContainer: {
-        backgroundColor: '#FFF',
-        borderWidth: 0,
-        flex: 1,
-        margin: 0,
-        padding: 0,
-    },
     container: {
         flex: 1,
+        justifyContent: 'flex-start',
     },
-    emailContainer: {
-        backgroundColor: '#FFF',
-        flex: 1,
-        paddingTop: 30,
+    card: {
+        borderWidth: 0,
+        paddingBottom: 10,
     },
     headerBackgroundImage: {
-        paddingBottom: 20,
-        paddingTop: 35,
+        paddingBottom: 10,
+        paddingTop: 15,
     },
-    headerContainer: {},
-    headerColumn: {
-        backgroundColor: 'transparent',
-        ...Platform.select({
-            ios: {
-                alignItems: 'center',
-                elevation: 1,
-                marginTop: -1,
-            },
-            android: {
-                alignItems: 'center',
-            },
-        }),
+    // placeIcon: {
+    //     color: 'white',
+    //     fontSize: 26,
+    // },
+    avatar: {
+        borderColor: theme.primary || '#600EE6',
+        borderRadius: 85,
+        borderWidth: 3,
+        marginBottom: 3
     },
-    placeIcon: {
-        color: 'white',
-        fontSize: 26,
-    },
-    scroll: {
-        backgroundColor: '#FFF',
-    },
-    telContainer: {
-        backgroundColor: '#FFF',
-        flex: 1,
-        paddingTop: 30,
-    },
-    userAddressRow: {
-        alignItems: 'center',
-        flexDirection: 'row',
-    },
-    userCityRow: {
-        backgroundColor: 'transparent',
+    userNameText: {
+        color: '#FFF',
+        fontSize: 20,
+        fontWeight: 'bold',
+        textAlign: 'center',
     },
     userCityText: {
         color: '#A5A5A5',
@@ -145,21 +161,11 @@ const styles = StyleSheet.create({
         fontWeight: '600',
         textAlign: 'center',
     },
-    userImage: {
-        borderColor: theme.primary || '#600EE6',
-        borderRadius: 85,
-        borderWidth: 3,
-        height: 170,
-        marginBottom: 15,
-        width: 170,
-    },
-    userNameText: {
-        color: '#FFF',
-        fontSize: 22,
-        fontWeight: 'bold',
-        paddingBottom: 8,
-        textAlign: 'center',
-    },
+    cardRow: {
+        // padding: 10
+    }
+
+
 })
 
 export default ProfileScreen;
