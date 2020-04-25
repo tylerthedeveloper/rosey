@@ -30,10 +30,12 @@ export default () => {
       case 'signin':
         const { token, user } = action.payload;
         return { errorMessage: '', token, user, isLoading: false };
+      case 'update_profile':
+        return { ...state, user: action.payload };
       case 'clear_error_message':
         return { ...state, errorMessage: '' };
       case 'signout': // TODO: User null??? user: null
-        return { errorMessage: '', token: null, isLoading: false };
+        return { ...state, errorMessage: '', token: null, isLoading: false };
       case 'need_to_signin':
         return { ...state, isLoading: false };
       default:
@@ -43,6 +45,7 @@ export default () => {
     { isLoading: true, token: null, errorMessage: '', user: {} }
   );
 
+  // FIXME: work without API
   const authContext = useMemo(() => {
     return {
       signup: async ({ email, password }) => {
@@ -59,12 +62,26 @@ export default () => {
         }
       },
       signin: async ({ email, password }) => {
+        // FIXME: work without API
         try {
           const response = await roseyApi.post('/signin', { email, password });
           const { token, user } = response.data;
           console.log('signin:', token, user)
           await AsyncStorage.multiSet([['token', token], ['user', JSON.stringify(user)]]);
           dispatch({ type: 'signin', payload: { token, user } });
+        } catch (err) {
+          dispatch({ type: 'add_error', payload: 'Something went wrong with sign in' });
+        }
+      },
+      // FIXME: work without API
+      updateProfile: async ({ ...userData }) => {
+        console.log(userData);
+        try {
+          const response = await roseyApi.post('/profile', userData);
+          const updatedUserObj = response.data;
+          console.log('updatProfile:', updatedUserObj)
+          await AsyncStorage.setItem('user', JSON.stringify(updatedUserObj));
+          dispatch({ type: 'update_profile', payload: updatedUserObj });
         } catch (err) {
           dispatch({ type: 'add_error', payload: 'Something went wrong with sign in' });
         }
@@ -94,8 +111,8 @@ export default () => {
       signout: async () => {
         console.log('signout')
         try {
-          // await AsyncStorage.removeItem('token'); // TODO: And user?
-          await AsyncStorage.multiRemove(['token', 'user']);
+          await AsyncStorage.removeItem('token'); // TODO: And user?
+          // await AsyncStorage.multiRemove(['token', 'user']);
           dispatch({ type: 'signout' });
         } catch (e) {
           console.log(e.message);

@@ -4,15 +4,16 @@ import { Text } from 'react-native-elements';
 import { AuthContext } from '../context/AuthContext';
 import Spacer from '../components/Spacer';
 
-const AccountScreen = ({ navigation }) => {
+const ProfileScreen = ({ navigation }) => {
 
-    const { state: { user }, signout } = useContext(AuthContext);
-    const userObj = JSON.parse(user);
-    const { email, tags, name } = userObj;
+    const { state: { user }, signout, updateProfile } = useContext(AuthContext);
+    console.log(user);
+    // const userObj = JSON.parse(user);
+    const { email, tags, name } = user;
     console.log(user);
     return (
         <View style={styles.container}>
-            <Text h2> Account</Text>
+            <Text h2> Profile</Text>
             <Text> Email: {email}</Text>
             <Text> Name: {name}</Text>
             <Text> MY Tags: {tags}</Text>
@@ -21,9 +22,14 @@ const AccountScreen = ({ navigation }) => {
             />
             <Spacer />
             <Button
+                title="Update Profile"
+                onPress={() => updateProfile({ name: "new Name2" })}
+            />
+            <Button
                 title="Signout"
                 onPress={signout}
             />
+
         </View>
     )
 }
@@ -35,4 +41,4 @@ const styles = StyleSheet.create({
     }
 });
 
-export default AccountScreen;
+export default ProfileScreen;
