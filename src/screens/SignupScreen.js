@@ -1,8 +1,9 @@
 import React, { useContext, useEffect } from 'react';
-import { StyleSheet, View, Button, KeyboardAvoidingView } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import AuthForm from '../components/AuthForm';
-// import Spacer from '../components/Spacer';
 import { AuthContext } from '../context/AuthContext';
+import { theme } from '../core/theme';
+import Background from '../paper-components/Background';
 
 const SignupScreen = ({ navigation }) => {
 
@@ -10,19 +11,21 @@ const SignupScreen = ({ navigation }) => {
     useEffect(() => navigation.addListener('focus', clearErrorMessage), []);
 
     return (
-        <KeyboardAvoidingView style={styles.container}>
+        <Background>
             <AuthForm
-                headerText="Sign up for Rosey"
+                headerText="Register"
                 submitButtonText="Sign up"
                 errorMessage={errorMessage}
                 onSubmit={signup}
                 passwordError={"Password length must be greater than 6 characters"}
             />
-            <Button
-                title="Already registed, go to signin"
-                onPress={() => navigation.navigate('Signin')}
-            />
-        </KeyboardAvoidingView>
+            <View style={styles.row}>
+                <Text style={styles.label}>Already have an account? </Text>
+                <TouchableOpacity onPress={() => navigation.navigate('Signin')}>
+                    <Text style={styles.link}>Login</Text>
+                </TouchableOpacity>
+            </View>
+        </Background>
     )
 }
 
@@ -30,7 +33,15 @@ const styles = StyleSheet.create({
     container: {
         flex: 1,
         justifyContent: 'center'
-    }
+    },
+    bg: {
+        flex: 1,
+        width: '100%',
+    },
+    link: {
+        fontWeight: 'bold',
+        color: theme.colors.primary,
+    },
 });
 
 export default SignupScreen;

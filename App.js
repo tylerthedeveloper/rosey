@@ -1,4 +1,5 @@
 import React, { useEffect, useContext, useMemo, useReducer } from 'react';
+import { Provider as PaperProvider } from 'react-native-paper';
 
 // React Nav
 import { NavigationContainer, DrawerActions, useNavigation } from '@react-navigation/native';
@@ -15,8 +16,7 @@ import { Feather } from '@expo/vector-icons';
 import { AuthContext } from './src/context/AuthContext';
 import { Provider as RoseProvider } from './src/context/RoseContext';
 import roseyApi from './src/api/roseyApi';
-
-// import { BlurView } from 'expo-blur';
+import theme from './src/core/theme';
 
 export default () => {
 
@@ -79,7 +79,7 @@ export default () => {
         try {
           const response = await roseyApi.post('/profile', userData);
           const updatedUserObj = response.data;
-          console.log('updatProfile:', updatedUserObj)
+          // console.log('updatProfile:', updatedUserObj)
           await AsyncStorage.setItem('user', JSON.stringify(updatedUserObj));
           dispatch({ type: 'update_profile', payload: updatedUserObj });
         } catch (err) {
@@ -133,42 +133,44 @@ export default () => {
   }, []);
 
   return (
-    <AuthContext.Provider value={{ state, ...authContext }}>
+    <AuthContext.Provider value={{ state, ...authContext }
+    }>
       <RoseProvider>
-        <NavigationContainer ref={navigationRef}>
-          {/* https://reactnavigation.org/docs/navigating-without-navigation-prop/ */}
-          {/* <App ref={(navigator) => setNavigator(navigator)} /> */}
-          <AppStack.Navigator initialRouteName="ResolveAuth">
-            {
-              state.isLoading ?
-                <AppStack.Screen name="ResolveAuth" component={ResolveAuthScreen}
-                  options={{ headerTransparent: true, headerTitle: null }}
-                />
-                : (state.token === null)
-                  ? <AppStack.Screen name="authStack" component={authStackScreen}
-                    options={{
-                      headerTitle: "Authentication"
-                    }}
+        <PaperProvider theme={theme}>
+          <NavigationContainer ref={navigationRef}>
+            {/* https://reactnavigation.org/docs/navigating-without-navigation-prop/ */}
+            {/* <App ref={(navigator) => setNavigator(navigator)} /> */}
+            <AppStack.Navigator initialRouteName="ResolveAuth">
+              {
+                state.isLoading ?
+                  <AppStack.Screen name="ResolveAuth" component={ResolveAuthScreen}
+                    options={{ headerTransparent: true, headerTitle: null }}
                   />
-                  : <AppStack.Screen name="mainFlow" component={App}
-                    options={({ navigation, route }) => ({
-                      headerTitle: null,
-                      headerLeft: () => {
-                        return <View style={{ flexDirection: 'row' }}>
-                          <TouchableOpacity
-                            onPress={() => {
-                              navigation.dispatch(DrawerActions.toggleDrawer());
-                            }}>
-                            <Feather name="menu" size={24} style={{ padding: 5 }} />
-                          </TouchableOpacity>
-                        </View>
-                      }
-                    })}
-                  />
-            }
-          </AppStack.Navigator>
-        </NavigationContainer>
+                  : (state.token === null)
+                    ? <AppStack.Screen name="authStack" component={authStackScreen}
+                      headerMode="none"
+                      options={{ headerTransparent: true, headerTitle: null }}
+                    />
+                    : <AppStack.Screen name="mainFlow" component={App}
+                      options={({ navigation, route }) => ({
+                        headerTitle: null,
+                        headerLeft: () => {
+                          return <View style={{ flexDirection: 'row' }}>
+                            <TouchableOpacity
+                              onPress={() => {
+                                navigation.dispatch(DrawerActions.toggleDrawer());
+                              }}>
+                              <Feather name="menu" size={24} style={{ padding: 5 }} />
+                            </TouchableOpacity>
+                          </View>
+                        }
+                      })}
+                    />
+              }
+            </AppStack.Navigator>
+          </NavigationContainer>
+        </PaperProvider>
       </RoseProvider>
-    </AuthContext.Provider>
+    </AuthContext.Provider >
   )
 }

@@ -1,10 +1,10 @@
 import React, { useContext, useEffect } from 'react';
-import { StyleSheet, Text, View, Button } from 'react-native';
+import { StyleSheet, Text, View, Button, TouchableOpacity } from 'react-native';
 import AuthForm from '../components/AuthForm';
 import Spacer from '../components/Spacer';
 import { AuthContext } from '../context/AuthContext';
-
-// import { NavigationActions } from '@react-navigation/compat';
+import Background from '../paper-components/Background';
+import { theme } from '../core/theme';
 
 const SigninScreen = ({ navigation }) => {
 
@@ -12,40 +12,41 @@ const SigninScreen = ({ navigation }) => {
     useEffect(() => navigation.addListener('focus', () => {
         clearErrorMessage();
     }), []);
+
     return (
-        <View style={styles.container}>
+        <Background>
             <AuthForm
-                headerText="Sign in for Rosey"
+                headerText="Sign in"
                 submitButtonText="Sign In"
                 errorMessage={errorMessage}
                 onSubmit={signin}
                 passwordError={"Password length must be greater than 6 characters"}
             />
-            <Button
-                title="Not yet registed, go to signup"
-                onPress={() => navigation.navigate('Signup')}
-            />
+            <View style={styles.row}>
+                <Text style={styles.label}>Don’t have an account? </Text>
+                <TouchableOpacity onPress={() => navigation.navigate('Signup')}>
+                    <Text style={styles.link}>Sign up</Text>
+                </TouchableOpacity>
+            </View>
             <Spacer />
             {/* TODO: Remove */}
             <Button
                 title="Mock sign in "
                 onPress={() => navigation.navigate('mainFlow')}
             />
-        </View>
+        </Background>
     )
 }
 
-SigninScreen.navigationOptions = () => {
-    return {
-        headerShown: false
-    }
-}
-
 const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center'
-    }
+    // container: {
+    //     flex: 1,
+    //     justifyContent: 'center'
+    // },
+    link: {
+        fontWeight: 'bold',
+        color: theme.colors.primary,
+    },
 });
 
 export default SigninScreen;
