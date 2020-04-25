@@ -188,14 +188,14 @@ const TabNavigator = () => {
 /*                               Drawer Section                               */
 /* -------------------------------------------------------------------------- */
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import AccountScreen from './src/screens/AccountScreen';
+import ProfileScreen from './src/screens/ProfileScreen';
 import AddRoseScreen from './src/screens/AddRoseScreen';
 
 const Drawer = createDrawerNavigator();
 export const App = () => {
     return (
         <Drawer.Navigator initialRouteName="Main">
-            <Drawer.Screen name="Account" component={AccountScreen} />
+            <Drawer.Screen name="Profile" component={ProfileScreen} />
             <Drawer.Screen name="AddRose" component={AddRoseScreen}
                 options={{
                     title: "Add new Rose"

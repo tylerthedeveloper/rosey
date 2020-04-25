@@ -8,9 +8,10 @@ import { AuthContext } from '../context/AuthContext';
 
 const SigninScreen = ({ navigation }) => {
 
-    const { errorMessage , signin, clearErrorMessage } = useContext(AuthContext);
-    // useEffect(() => navigation.addListener('focus', clearErrorMessage), []);
-
+    const { state: { errorMessage }, signin, clearErrorMessage } = useContext(AuthContext);
+    useEffect(() => navigation.addListener('focus', () => {
+        clearErrorMessage();
+    }), []);
     return (
         <View style={styles.container}>
             <AuthForm
@@ -18,12 +19,14 @@ const SigninScreen = ({ navigation }) => {
                 submitButtonText="Sign In"
                 errorMessage={errorMessage}
                 onSubmit={signin}
+                passwordError={"Password length must be greater than 6 characters"}
             />
             <Button
                 title="Not yet registed, go to signup"
                 onPress={() => navigation.navigate('Signup')}
             />
             <Spacer />
+            {/* TODO: Remove */}
             <Button
                 title="Mock sign in "
                 onPress={() => navigation.navigate('mainFlow')}

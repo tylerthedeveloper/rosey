@@ -3,10 +3,12 @@ import { StyleSheet } from 'react-native';
 import { Button, Input, Text } from 'react-native-elements';
 import Spacer from './Spacer';
 
-const AuthForm = ({ headerText, errorMessage, onSubmit, submitButtonText }) => {
+const AuthForm = ({ headerText, errorMessage, onSubmit, submitButtonText, passwordError }) => {
 
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    // console.log('errorMessage', errorMessage)
+    let secondTextInput;
 
     return (
         <>
@@ -19,6 +21,8 @@ const AuthForm = ({ headerText, errorMessage, onSubmit, submitButtonText }) => {
                         value={email}
                         onChangeText={setEmail}
                         autoCorrect={false}
+                        onSubmitEditing={() => { secondTextInput.focus(); }}
+                        returnKeyType = { "next" }
                     />
                 </Spacer>
                 <Spacer>
@@ -27,13 +31,19 @@ const AuthForm = ({ headerText, errorMessage, onSubmit, submitButtonText }) => {
                         onChangeText={setPassword}
                         autoCorrect={false}
                         secureTextEntry
+                        ref={(input) => { secondTextInput = input; }}
                     />
                 </Spacer>
                 {(errorMessage) ? <Text style={styles.errorMessage}> {errorMessage} </Text> : null}
+                {(password.length < 6)
+                    ? <Text style={styles.errorMessage}> {passwordError} </Text>
+                    : null
+                }
                 <Spacer>
                     <Button
                         title={submitButtonText}
                         onPress={() => onSubmit({ email, password })}
+                        disabled={password.length < 6}
                     />
                 </Spacer>
             </Spacer>

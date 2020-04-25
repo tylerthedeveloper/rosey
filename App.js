@@ -1,7 +1,7 @@
 import React, { useEffect, useContext, useMemo, useReducer } from 'react';
 
 // React Nav
-import { NavigationContainer, DrawerActions } from '@react-navigation/native';
+import { NavigationContainer, DrawerActions, useNavigation } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { Text, AsyncStorage, View, TouchableOpacity } from 'react-native';
 import { navigationRef, isMountedRef } from './RootNavigation';
@@ -28,10 +28,11 @@ export default () => {
         return { ...state, errorMessage: action.payload };
       case 'signup':
       case 'signin':
-        return { errorMessage: '', token: action.payload, isLoading: false };
+        const { token, user } = action.payload;
+        return { errorMessage: '', token, user, isLoading: false };
       case 'clear_error_message':
         return { ...state, errorMessage: '' };
-      case 'signout':
+      case 'signout': // TODO: User null??? user: null
         return { errorMessage: '', token: null, isLoading: false };
       case 'need_to_signin':
         return { ...state, isLoading: false };
@@ -39,7 +40,7 @@ export default () => {
         return state;
     }
   },
-    { isLoading: true, token: null, errorMessage: '' }
+    { isLoading: true, token: null, errorMessage: '', user: {} }
   );
 
   const authContext = useMemo(() => {
@@ -47,39 +48,44 @@ export default () => {
       signup: async ({ email, password }) => {
         try {
           const response = await roseyApi.post('/signup', { email, password });
-          const token = response.data.token;
-          console.log(token);
-          await AsyncStorage.setItem('token', token);
-          dispatch({ type: 'sign_up', payload: token });
-          RootNavigation.navigate('Account');
+          const { token, user } = response.data;
+          console.log('singup', token, user)
+          await AsyncStorage.multiSet([['token', token], ['user', JSON.stringify(user)]]);
+          dispatch({ type: 'signup', payload: { token, user } });
         } catch (err) {
-          console.log(err.message);
-          dispatch({ type: 'add_error', payload: 'Something went wrong with sign up' });
+          // console.log('RESPONSE', err.response.data.message);
+          const { message } = err.response.data;
+          dispatch({ type: 'add_error', payload: message || 'Something went wrong with sign up' });
         }
       },
       signin: async ({ email, password }) => {
         try {
           const response = await roseyApi.post('/signin', { email, password });
-          const token = response.data.token;
-          await AsyncStorage.setItem('token', token);
-          dispatch({ type: 'signin', payload: token });
-          RootNavigation.navigate('Account');
-          // navigate('drawerFlow');
+          const { token, user } = response.data;
+          console.log('signin:', token, user)
+          await AsyncStorage.multiSet([['token', token], ['user', JSON.stringify(user)]]);
+          dispatch({ type: 'signin', payload: { token, user } });
         } catch (err) {
-          console.log(err.message);
-          dispatch({ type: 'add_error', payload: 'Something went wrong with sign up' });
+          dispatch({ type: 'add_error', payload: 'Something went wrong with sign in' });
         }
       },
+      // TODO: what about if token exists and user doesnt?
       tryLocalSignin: async () => {
         console.log('tryLocalSignin');
-        const token = await AsyncStorage.getItem('token');
-        if (token) {
-          console.log(token);
-          dispatch({ type: 'signin', payload: token });
-          // RootNavigation.navigate('Account');
-        } else {
-          // RootNavigation.navigate('AuthStack');
-          dispatch({ type: 'need_to_signin' });
+        try {
+          const storageArr = await AsyncStorage.multiGet(['token', 'user']);
+          if (storageArr) {
+            const token = storageArr[0][1];
+            const user = storageArr[1][1];
+            console.log('tryLocalSignin', token, user)
+            if (token) {
+              dispatch({ type: 'signin', payload: { token, user } });
+            } else {
+              dispatch({ type: 'need_to_signin' });
+            }
+          }
+        } catch (e) {
+          console.log(e.message);
         }
       },
       clearErrorMessage: () => {
@@ -87,8 +93,13 @@ export default () => {
       },
       signout: async () => {
         console.log('signout')
-        await AsyncStorage.removeItem('token');
-        dispatch({ type: 'signout' });
+        try {
+          // await AsyncStorage.removeItem('token'); // TODO: And user?
+          await AsyncStorage.multiRemove(['token', 'user']);
+          dispatch({ type: 'signout' });
+        } catch (e) {
+          console.log(e.message);
+        }
       }
     };
   }, []);
@@ -104,8 +115,6 @@ export default () => {
     return () => (isMountedRef.current = false);
   }, []);
 
-  console.log(state);
-
   return (
     <AuthContext.Provider value={{ state, ...authContext }}>
       <RoseProvider>
@@ -119,10 +128,15 @@ export default () => {
                   options={{ headerTransparent: true, headerTitle: null }}
                 />
                 : (state.token === null)
-                  ? <AppStack.Screen name="authStack" component={authStackScreen} />
+                  ? <AppStack.Screen name="authStack" component={authStackScreen}
+                    options={{
+                      headerTitle: "Authentication"
+                    }}
+                  />
                   : <AppStack.Screen name="mainFlow" component={App}
-                    options={({ navigation, route }) => ({ headerTitle: null,
-headerLeft: () => {
+                    options={({ navigation, route }) => ({
+                      headerTitle: null,
+                      headerLeft: () => {
                         return <View style={{ flexDirection: 'row' }}>
                           <TouchableOpacity
                             onPress={() => {

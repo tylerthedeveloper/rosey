@@ -22,7 +22,7 @@ const RoseForm = ({ headerText, submitButtonText, onSubmit, onCancel }) => {
         { label: "Name", value: name, onChangeText: setName, autoCorrect: false, keyboardType: "default", returnKeyType: "next" },
         { label: "Nickname", value: nickName, onChangeText: setNickName, autoCorrect: false, keyboardType: "default", returnKeyType: "next" },
         { label: "Email", value: email, onChangeText: setEmail, autoCorrect: false, keyboardType: "email-address", returnKeyType: "next" },
-        { label: "Phone Number", value: phoneNumber, onChangeText: setPhoneNumber, autoCorrect: false, keyboardType: "phone-pad", returnKeyType: "done", textContentType: "telephoneNumber" },
+        { label: "Phone Number", value: phoneNumber, onChangeText: setPhoneNumber, autoCorrect: false, keyboardType: "phone-pad", returnKeyType: "done", dataDetectorTypes: "phoneNumber" },
         { label: "Place Name", value: placeName, onChangeText: setPlace, autoCorrect: false, keyboardType: "default", returnKeyType: "next" },
     ];
 

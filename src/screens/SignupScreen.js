@@ -1,37 +1,29 @@
-import React, { useContext } from 'react';
-import { StyleSheet, View, Button } from 'react-native';
+import React, { useContext, useEffect } from 'react';
+import { StyleSheet, View, Button, KeyboardAvoidingView } from 'react-native';
 import AuthForm from '../components/AuthForm';
 // import Spacer from '../components/Spacer';
 import { AuthContext } from '../context/AuthContext';
 
 const SignupScreen = ({ navigation }) => {
 
-    // useEffect(() => navigation.addListener('focus', clearErrorMessage), []);
-    // const contObj = useContext(AuthContext);
-    const { state, signout } = useContext(AuthContext);
-    console.log(state);
+    const { state: { errorMessage }, signup, clearErrorMessage } = useContext(AuthContext);
+    useEffect(() => navigation.addListener('focus', clearErrorMessage), []);
 
     return (
-        <View style={styles.container}>
-            {/* <NavigationEvents onWillFocus={() => clearErrorMessage()} /> */}
-            {/* <AuthForm
+        <KeyboardAvoidingView style={styles.container}>
+            <AuthForm
                 headerText="Sign up for Rosey"
-                submitButtonText="Sign Up"
+                submitButtonText="Sign up"
                 errorMessage={errorMessage}
                 onSubmit={signup}
-            /> */}
+                passwordError={"Password length must be greater than 6 characters"}
+            />
             <Button
                 title="Already registed, go to signin"
                 onPress={() => navigation.navigate('Signin')}
             />
-        </View>
+        </KeyboardAvoidingView>
     )
-}
-
-SignupScreen.navigationOptions = () => {
-    return {
-        headerShown: false
-    }
 }
 
 const styles = StyleSheet.create({
