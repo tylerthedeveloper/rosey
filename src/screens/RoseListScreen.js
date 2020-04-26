@@ -1,8 +1,7 @@
 import React, { useContext, useEffect } from 'react';
-import { FontAwesome } from '@expo/vector-icons';
-import { FlatList, StyleSheet, Button, View } from 'react-native';
-import RoseListItem from '../components/RoseListItem';
+import { FlatList, StyleSheet, View } from 'react-native';
 import { Context as RoseContext } from '../context/RoseContext';
+import RoseListItem from '../paper-components/RoseListItem';
 
 // TODO: I can pass navigation?
 const RoseListScreen = ({ navigation }) => {
@@ -15,12 +14,8 @@ const RoseListScreen = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
-            <Button
-                title="go to specific friend"
-                onPress={() => navigation.navigate('RoseDetail')}
-            />
+            {/* TODO: buttons... */}
             <FlatList
-                // contentContainerStyle={}
                 data={roses}
                 keyExtractor={(item) => item._id}
                 renderItem={({ item }) => {

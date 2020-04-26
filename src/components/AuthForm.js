@@ -6,6 +6,7 @@ import { Logo, MyHeader, MyTextInput, MyButton } from '../paper-components';
 
 const AuthForm = ({ headerText, errorMessage, onSubmit, submitButtonText, passwordError }) => {
 
+    const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     // let secondTextInput = createRef();
@@ -17,6 +18,19 @@ const AuthForm = ({ headerText, errorMessage, onSubmit, submitButtonText, passwo
             <MyHeader >
                 {headerText}
             </MyHeader>
+            {
+                (headerText === 'Register')
+                    ? <MyTextInput label="Name"
+                        value={name}
+                        autoCapitalize="none"
+                        autoCompleteType="email"
+                        onChangeText={setName}
+                        autoCorrect={false}
+                        // onSubmitEditing={() => { secondTextInput.focus(); }}
+                        returnKeyType={"next"}
+                    /> : null
+            }
+
             <MyTextInput label="Email"
                 value={email}
                 autoCapitalize="none"
@@ -33,7 +47,7 @@ const AuthForm = ({ headerText, errorMessage, onSubmit, submitButtonText, passwo
                 onChangeText={setPassword}
                 autoCorrect={false}
                 secureTextEntry
-                // ref={(input) => { secondTextInput = input; }}
+            // ref={(input) => { secondTextInput = input; }}
             />
             {(errorMessage) ? <Text style={styles.errorMessage}> {errorMessage} </Text> : null}
             {(password.length < 6)
@@ -42,12 +56,11 @@ const AuthForm = ({ headerText, errorMessage, onSubmit, submitButtonText, passwo
             }
             <MyButton
                 mode="contained"
-                onPress={() => onSubmit({ email, password })}
+                onPress={() => onSubmit({ name, email, password })}
                 disabled={password.length < 6}
             >
                 {submitButtonText}
             </MyButton>
-            <Spacer />
         </>);
 }
 

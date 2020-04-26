@@ -196,7 +196,7 @@ import AddRoseScreen from './src/screens/AddRoseScreen';
 const Drawer = createDrawerNavigator();
 export const App = () => {
     return (
-        <Drawer.Navigator initialRouteName="Main">
+        <Drawer.Navigator initialRouteName="Profile">
             <Drawer.Screen name="Profile" component={ProfileScreen} />
             <Drawer.Screen name="AddRose" component={AddRoseScreen}
                 options={{

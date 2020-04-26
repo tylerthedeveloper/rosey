@@ -1,35 +1,35 @@
-import { FontAwesome } from '@expo/vector-icons';
 import React, { useContext } from 'react';
-import { KeyboardAvoidingView, StyleSheet } from 'react-native';
-import { Button } from 'react-native-elements';
-import RoseForm from '../components/RoseForm';
-import Spacer from '../components/Spacer';
+import { StyleSheet, Text } from 'react-native';
 import { Context as RoseContext } from '../context/RoseContext';
+import RoseForm from '../paper-components/RoseForm';
 
 const AddRoseScreen = ({ navigation }) => {
 
     const { addRose } = useContext(RoseContext);
 
     return (
-        <KeyboardAvoidingView
-            style={styles.container}
-            behavior="padding"
-        >
+        <>
+            <Text> Add Rose </Text>
+            {/* <KeyboardAvoidingView behavior={'padding'}
+                keyboardVerticalOffset={100}
+                style={{marginBottom: 20}}
+            > */}
+            {/* <ScrollView> */}
             <RoseForm
-                headerText="Add Rose"
+                // headerText="Add Rose"
                 submitButtonText="Add Rose"
-                onSubmit={addRose}
-                onCancel={navigation.goBack}
+                // onSubmit={addRose}
+                // onCancel={navigation.goBack}
+                updateFunction={() => console.log('added>')}
+                updateFunctionText="Add new rose"
+                secondFunction={navigation.goBack}
+                secondFunctionText="Cancel"
             />
-            <Spacer />
-        </KeyboardAvoidingView>
+            {/* </ScrollView> */}
+            {/* </KeyboardAvoidingView> */}
+        </>
     )
 }
-
-AddRoseScreen.navigationOptions = {
-    title: 'Add Friend',
-    tabBarIcon: <FontAwesome name="plus" size={30} />
-};
 
 const styles = StyleSheet.create({
     container: {
