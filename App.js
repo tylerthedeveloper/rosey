@@ -28,8 +28,11 @@ export default () => {
         return { ...state, errorMessage: action.payload };
       case 'signup':
       case 'signin':
+        /* -------------------------------------------------------------------------- */
+
         // const { token, user } = action.payload;
         // return { errorMessage: '', token, user, isLoading: false };
+        /* -------------------------------------------------------------------------- */
         return { errorMessage: '', user: action.payload, isLoading: false };
       case 'update_profile':
         return { ...state, user: action.payload };
@@ -71,7 +74,8 @@ export default () => {
               }
             },
             picture: '',
-            tags: [], work: ''
+            tags: '',
+            work: ''
           };
           await AsyncStorage.setItem('user', JSON.stringify(user));
           dispatch({ type: 'signup', payload: user });
@@ -101,7 +105,7 @@ export default () => {
         }
       },
       // FIXME: work without API
-      updateProfile: async (updatedUserObj) => {
+      updateProfile: async ({updatedUserObj, callback}) => {
         // console.log(userData);
         try {
           /* -------------------------------------------------------------------------- */
@@ -109,9 +113,12 @@ export default () => {
           // const updatedUserObj = response.data;
           // console.log('updatProfile:', updatedUserObj)
           /* -------------------------------------------------------------------------- */
-          console.log('updatedUserObj', updatedUserObj);
+          // console.log('updatedUserObj', callback, updatedUserObj);
           await AsyncStorage.setItem('user', JSON.stringify(updatedUserObj));
           dispatch({ type: 'update_profile', payload: updatedUserObj });
+          if (callback) {
+            callback();
+          }
         } catch (err) {
           dispatch({ type: 'add_error', payload: 'Something went wrong with sign in' });
         }
