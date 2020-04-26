@@ -3,7 +3,7 @@ import { KeyboardAvoidingView, ScrollView, StyleSheet, View } from 'react-native
 import { Avatar, Button, Card, TextInput } from 'react-native-paper';
 import RoseCardField from '../paper-components/RoseCardField';
 import RoseHeader from '../paper-components/RoseHeader';
-import RoseForm from '../paper-components/RoseForm';
+// import RoseForm from '../paper-components/RoseForm';
 
 // TODO: get better colored background
 const RoseView = ({
@@ -105,7 +105,7 @@ const RoseView = ({
 
     const [editing, setEditing] = useState(false);
     // console.log('user before', user)
-    console.log('updatedUser', updatedUser)
+    // console.log('updatedUser', updatedUser)
 
     return (
         <>
@@ -137,7 +137,7 @@ const RoseView = ({
                                     <TextInput mode="outlined"
                                         label={row.subtitle}
                                         // placeholder={value}
-                                        style={styles.tI}
+                                        style={styles.textInput}
                                         autoCapitalize="none"
                                         autoComplete={false}
                                         defaultValue={row.value}
@@ -153,12 +153,12 @@ const RoseView = ({
                         (!editing)
                             ? <Button onPress={() => setEditing(true)}> {updateFunctionText} </Button>
                             : <Button onPress={() => {
-                                console.log("going to update profile");
+                                // console.log("going to update profile");
                                 // updateProfile({ name: "new Name2" })
-                                // { updateFunction() }
-                                // setTimeout(() => setEditing(false), 3000);
+                                updateFunction(updatedUser);
                                 setEditing(false);
-                                console.log("updated profile");
+                                // setTimeout(() => setEditing(false), 3000);
+                                // console.log("updated profile");
                             }}>
                                 Save
                             </Button>
@@ -179,21 +179,25 @@ const styles = StyleSheet.create({
     card: {
         // borderWidth: 1,
         // paddingBottom: 10,
+        // flex: 1
     },
     cardContent: {
-        flex: 1,
-        flexDirection: 'row',
-        alignSelf: 'stretch',
-        alignItems: 'center',
-        justifyContent: 'flex-start',
+        // alignItems: 'stretch',
+        // flex: 1,
+        // flexDirection: 'row',
+        // alignSelf: 'stretch',
+        // alignItems: 'center',
+        // justifyContent: 'flex-start',
         paddingLeft: 22,
         paddingRight: 20,
         marginTop: 3,
         marginLeft: 2,
+        // width: '100%',
         marginBottom: 5
     },
     textInput: {
-        width: '70%'
+        width: '70%',
+        alignSelf: 'flex-end'
     }
 })
 

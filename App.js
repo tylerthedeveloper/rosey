@@ -101,12 +101,15 @@ export default () => {
         }
       },
       // FIXME: work without API
-      updateProfile: async ({ ...userData }) => {
+      updateProfile: async (updatedUserObj) => {
         // console.log(userData);
         try {
+          /* -------------------------------------------------------------------------- */
           // const response = await roseyApi.post('/profile', userData);
           // const updatedUserObj = response.data;
           // console.log('updatProfile:', updatedUserObj)
+          /* -------------------------------------------------------------------------- */
+          console.log('updatedUserObj', updatedUserObj);
           await AsyncStorage.setItem('user', JSON.stringify(updatedUserObj));
           dispatch({ type: 'update_profile', payload: updatedUserObj });
         } catch (err) {
