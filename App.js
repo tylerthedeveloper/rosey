@@ -95,7 +95,8 @@ export default () => {
             const token = storageArr[0][1];
             const user = storageArr[1][1];
             // console.log('tryLocalSignin', JSON.parse(user).user)
-            if (token) {
+            // FIXME: will this fail if user never flushed to data cache?
+            if (token && user) {
               dispatch({ type: 'signin', payload: { token, user: JSON.parse(user).user } });
             } else {
               dispatch({ type: 'need_to_signin' });

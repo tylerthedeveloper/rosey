@@ -3,6 +3,7 @@ import { KeyboardAvoidingView, ScrollView, StyleSheet, View } from 'react-native
 import { Avatar, Button, Card, TextInput } from 'react-native-paper';
 import RoseCardField from '../paper-components/RoseCardField';
 import RoseHeader from '../paper-components/RoseHeader';
+// import RoseForm from '../paper-components/RoseForm';
 
 // TODO: get better colored background
 const RoseView = ({
@@ -10,10 +11,10 @@ const RoseView = ({
     secondFunction, secondFunctionText
 }) => {
 
-    const { email, tags, name, nickName, birthday, phoneNumber, picture,
-        homeLocation, work
+    const { birthday, email, homeLocation, name, nickName, phoneNumber, placeMetAt, picture, tags, work
     } = user;
-    // console.log('roseview: ', user)
+    
+    const [updated_email, setEmail] = useState(email);
 
     let city, state, country;
     if (homeLocation) {
@@ -26,57 +27,54 @@ const RoseView = ({
         country = "country";
     };
 
-    const [updated_phoneNumber, setPhone] = useState(phoneNumber);
-    const [updated_email, setEmail] = useState(email);
-
-    // TODO:
-    const updatedUser = {
-        phoneNumber: updated_phoneNumber,
-        email: updated_email
-    };
-
     const rows = [
         {
-            title: name || '(No-Name?)', subtitle: 'name',
+            value: name || '(No-Name?)', subtitle: 'name',
             left: "account",
             rightIcon: "account-plus",
-            rightFunc: () => { }
+            // rightFunc: () => setName(updated_name)
         },
         {
-            title: phoneNumber || '(123456789)', subtitle: 'phone',
+            value: nickName || '(No-nickName?)', subtitle: 'nickname',
+            left: "account",
+            rightIcon: "account-plus",
+            // rightFunc: () => setName(updated_nickName)
+        },
+        {
+            value: phoneNumber || '(123456789)', subtitle: 'phone',
             left: "phone",
             rightIcon: "phone",
-            rightFunc: () => { setPhone('321') }
+            // rightFunc: () => { setPhone(updated_phoneNumber) }
         },
         {
-            title: email || '(someone@...)', subtitle: 'email',
+            value: updated_email || '(someone@...)', subtitle: 'email',
             left: "email",
             rightIcon: "email",
-            rightFunc: () => { setEmail('new email') }
+            // rightFunc: () => { setEmail(updated_placeMetAt) }
         },
         {
-            title: (tags && tags.length > 0) ? tags : '(Add some Tags!)', subtitle: 'tag',
-            left: "tag",
-            rightIcon: "tag",
-            rightFunc: () => { }
-        },
-        {
-            title: birthday || '(Enter Birthday!)', subtitle: 'birthday',
-            left: "calendar",
-            rightIcon: "calendar-heart",
-            rightFunc: () => { }
-        },
-        {
-            title: work || '(Add Occupation!)', subtitle: 'occupation',
+            value: work || '(Add Occupation!)', subtitle: 'occupation',
             left: "briefcase-account",
             rightIcon: "briefcase-plus",
-            rightFunc: () => { }
+            // rightFunc: () => { setWork(updated_work) }
+        },
+        {
+            value: (tags && tags.length > 0) ? tags : '(Add some Tags!)', subtitle: 'tag',
+            left: "tag",
+            rightIcon: "tag",
+            // rightFunc: () => { }
+        },
+        {
+            value: birthday || '(Enter Birthday!)', subtitle: 'birthday',
+            left: "calendar",
+            rightIcon: "calendar-heart",
+            // rightFunc: () => { }
         },
     ];
 
     const [editing, setEditing] = useState(false);
     console.log('user before', user)
-    console.log('updatedUser', updatedUser)
+    // console.log('updatedUser', updatedUser)
 
     return (
         <>
@@ -84,37 +82,39 @@ const RoseView = ({
                 <RoseHeader {...{ name, picture, city, state, country }} />
             </Card >
             {/* <KeyboardAvoidingView behavior={'padding'} style={{ marginBottom: 20}}> */}
-            <View style={{ flex: 1   }}>
-                <ScrollView 
-                    // style={{ position: 'absolute' }}
-                    // contentContainerStyle={{ flex: 0 }}
+            <View style={{ flex: 1 }}>
+                <ScrollView
+                // style={{ position: 'absolute' }}
+                // contentContainerStyle={{ flex: 0 }}
                 >
                     {
                         (!editing)
-                            ? rows.map(({ title, subtitle, left, rightIcon, rightFunc }) => (
+                            ? rows.map(({ value, subtitle, left, rightIcon, rightFunc }) => (
                                 <RoseCardField
-                                    key={title}
-                                    title={title}
+                                    key={value}
+                                    title={value}
                                     subtitle={subtitle}
                                     left={left}
                                     rightIcon={rightIcon}
-                                    rightFunc={rightFunc}
+                                // rightFunc={rightFunc}
                                 />
                             ))
-                            // TODO: need to figure out form....
-                            : rows.map(({ title, subtitle, left, rightFunc }) => (
-                                <Card.Actions style={styles.cardContent} key={title}>
+                            // : <RoseForm {...{ rows, user }} 
+                            // />
+                            : rows.map(({ value, subtitle, left, rightIcon, rightFunc }) => (
+                                <Card.Actions style={styles.cardContent} key={value}>
                                     <Avatar.Icon {...props} icon={left} size={40}
                                         style={{ marginRight: 20 }}
                                     />
                                     <TextInput mode="outlined"
                                         label={subtitle}
-                                        value={title}
+                                        value={value}
                                         style={styles.tI}
                                         autoCapitalize="none"
                                         autoComplete={false}
                                         autoCorrect={false}
                                         autoCompleteType={"off"}
+                                        onChangeText={text => console.log(text)}
                                     />
                                 </Card.Actions>
                             ))
@@ -127,7 +127,7 @@ const RoseView = ({
                             : <Button onPress={() => {
                                 console.log("going to update profile");
                                 // updateProfile({ name: "new Name2" })
-                                { updateFunction() }
+                                // { updateFunction() }
                                 // setTimeout(() => setEditing(false), 3000);
                                 setEditing(false);
                                 console.log("updated profile");
