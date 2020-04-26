@@ -1,14 +1,15 @@
-import React, { useState } from 'react';
-import { StyleSheet, ScrollView, View, KeyboardAvoidingView } from 'react-native';
-import { Button, Input, Text, } from 'react-native-elements';
+import React, { useState, createRef } from 'react';
+import { StyleSheet, View } from 'react-native';
+import { Input, Text } from 'react-native-elements';
 import Spacer from './Spacer';
-import DateTimePicker from '@react-native-community/datetimepicker';
+import { Logo, MyHeader, MyTextInput, MyButton } from '../paper-components';
 
-const RoseForm = ({ headerText, submitButtonText, onSubmit, onCancel }) => {
+const RoseForm = ({ headerText, errorMessage, onSubmit, submitButtonText, rowConfigList }) => {
 
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const [name, setName] = useState('');
     const [nickName, setNickName] = useState('');
-    const [email, setEmail] = useState('');
     const [phoneNumber, setPhoneNumber] = useState('');
     const [placeName, setPlace] = useState('');
     const [coords, setCoords] = useState({ latitude: -369, longitude: -369 })
@@ -26,6 +27,7 @@ const RoseForm = ({ headerText, submitButtonText, onSubmit, onCancel }) => {
         { label: "Place Name", value: placeName, onChangeText: setPlace, autoCorrect: false, keyboardType: "default", returnKeyType: "next" },
     ];
 
+
     /* -------------------------------------------------------------------------- */
     /*                                Date Section                                */
     /* -------------------------------------------------------------------------- */
@@ -37,85 +39,64 @@ const RoseForm = ({ headerText, submitButtonText, onSubmit, onCancel }) => {
         // setShow(Platform.OS === 'ios');
         setDate(currentDate);
     };
-    // console.log(dateMet.getTime());
     /* -------------------------------------------------------------------------- */
 
     return (
-        <ScrollView>
-            <KeyboardAvoidingView>
-                <Spacer>
-                    <Spacer>
-                        <Text h3 style={styles.headerText}> {headerText} </Text>
-                    </Spacer>
-                    {
-                        inputList.map(({ label, value, onChangeText, autoCorrect, keyboardType, returnKeyType, textContentType, key }, index) => {
-                            return (
-                                <View key={index.toString()} >
-                                    <Input label={label}
-                                        value={value}
-                                        onChangeText={onChangeText}
-                                        autoCorrect={autoCorrect}
-                                        keyboardType={keyboardType || "default"}
-                                        returnKeyType={returnKeyType}
-                                        style={styles.inputStyle}
-                                        textContentType={textContentType}
-                                    />
-                                    <Spacer />
-                                </View>
-                            )
-                        })
-                    }
-                    <Spacer>
-                        <DateTimePicker
-                            testID="dateTimePicker"
-                            timeZoneOffsetInMinutes={0}
-                            value={dateMet}
-                            mode={mode}
-                            is24Hour={true}
-                            display="default"
-                            onChange={onChange}
+        <>
+            {/* <ScrollView>
+            {
+                rows.map(({ title, subtitle, left, rightIcon, rightFunc }) => (
+                    <Card.Actions style={styles.cardRow} key={title}>
+                        <Card.Title
+                            title={title}
+                            subtitle={subtitle}
+                            left={(props) => <Avatar.Icon icon={left}  {...props} />}
+                            right={(props) => <IconButton icon={rightIcon} {...props} onPress={rightFunc} />}
                         />
-                    </Spacer>
-                    <Spacer>
-                        <Input label="Picture"
-                            value={picture}
-                            onChangeText={setPicture}
-                            autoCorrect={false}
-                        />
-                    </Spacer>
-                    <Spacer>
-                        <Button
-                            title={submitButtonText}
-                            onPress={() => onSubmit({ name, email, picture, placeMetAt, dateMet: dateMet.getTime(), phoneNumber })}
-                        />
-                    </Spacer>
-                    <Spacer>
-                        <Button
-                            title="Cancel"
-                            onPress={() => onCancel()}
-                        />
-                    </Spacer>
-                </Spacer>
-            </KeyboardAvoidingView>
-        </ScrollView>
-    );
+                    </Card.Actions>
+                ))
+            }
+        </ScrollView> */}
+
+            <MyTextInput label="Email"
+                value={email}
+                autoCapitalize="none"
+                autoCompleteType="email"
+                textContentType="emailAddress"
+                keyboardType="email-address"
+                onChangeText={setEmail}
+                autoCorrect={false}
+                // onSubmitEditing={() => { secondTextInput.focus(); }}
+                returnKeyType={"next"}
+            />
+            <MyTextInput label="Password"
+                value={password}
+                onChangeText={setPassword}
+                autoCorrect={false}
+                secureTextEntry
+            />
+            <MyButton
+                mode="contained"
+                onPress={() => console.log("Submitting somethhing")}
+            >
+                {submitButtonText}
+            </MyButton>
+            <Spacer />
+        </>);
 }
 
 const styles = StyleSheet.create({
     container: {
-        // flex: 1,
+        // padding: 15,
+        // width: '100%',
+        // maxWidth: 340,
+        // alignSelf: 'center',
+        // alignItems: 'center',
         // justifyContent: 'center',
-        // marginBottom: 200
     },
     errorMessage: {
         color: 'red',
         margin: 10
-    },
-    inputStyle: {
-        margin: 15,
-    },
-    headerText: {
-        alignSelf: 'center'
     }
 });
 

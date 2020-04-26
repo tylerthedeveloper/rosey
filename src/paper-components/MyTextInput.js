@@ -4,7 +4,6 @@ import { TextInput as Input } from 'react-native-paper';
 import { theme } from '../core/theme';
 
 const MyTextInput = ({ errorText, ...props }) => {
-
     return (
         <View style={styles.container}>
             <Input
@@ -12,6 +11,7 @@ const MyTextInput = ({ errorText, ...props }) => {
                 selectionColor={theme.colors.primary}
                 underlineColor="transparent"
                 mode="outlined"
+                autoCorrect={false}
                 {...props}
             />
             {errorText ? <Text style={styles.error}>{errorText}</Text> : null}

@@ -94,9 +94,9 @@ export default () => {
           if (storageArr) {
             const token = storageArr[0][1];
             const user = storageArr[1][1];
-            console.log('tryLocalSignin', token, user)
+            // console.log('tryLocalSignin', JSON.parse(user).user)
             if (token) {
-              dispatch({ type: 'signin', payload: { token, user } });
+              dispatch({ type: 'signin', payload: { token, user: JSON.parse(user).user } });
             } else {
               dispatch({ type: 'need_to_signin' });
             }
@@ -160,7 +160,7 @@ export default () => {
                               onPress={() => {
                                 navigation.dispatch(DrawerActions.toggleDrawer());
                               }}>
-                              <Feather name="menu" size={24} style={{ padding: 5 }} />
+                              <Feather name="menu" size={24} style={{ marginLeft: 10 }} />
                             </TouchableOpacity>
                           </View>
                         }
