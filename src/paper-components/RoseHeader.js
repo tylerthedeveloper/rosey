@@ -17,7 +17,7 @@ const RoseHeader = ({ name, picture, city, state, country }) => (
                 }}
             />
             <Title style={styles.userNameText}>{name || 'No-name!'}</Title>
-            <Paragraph style={styles.userCityText}>{city}, {state}, {country}</Paragraph>
+            <Paragraph style={styles.userCityText}>{city || '(city)'}, {state || '(state)'}, {country || '(country)'}</Paragraph>
         </Card.Content>
     </ImageBackground>
 );

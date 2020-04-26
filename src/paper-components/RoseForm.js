@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
 import { StyleSheet } from 'react-native';
-import { Avatar, Card, TextInput } from 'react-native-paper';
+import { Avatar, Card, TextInput, Button } from 'react-native-paper';
 import Spacer from '../components/Spacer';
 
-const RoseForm = ({ user, rows, errorMessage, onSubmit, submitButtonText }) => {
+const RoseForm = ({ user, rows, props, errorMessage, onSubmit, submitButtonText, updateFunction,
+    updateFunctionText, secondFunction, secondFunctionText }
+) => {
 
     const { birthday, email, homeLocation, name, nickName, phoneNumber, placeMetAt, picture, tags, work
     } = user;
@@ -20,14 +22,14 @@ const RoseForm = ({ user, rows, errorMessage, onSubmit, submitButtonText }) => {
     };
 
 
-    // const [updated_birthday, setBirthday] = useState(email);
+    const [updated_birthday, setBirthday] = useState(email);
     const [updated_email, setEmail] = useState(email);
-    // const [updated_homeLocation, setHomeLocation] = useState(homeLocation);
+    const [updated_homeLocation, setHomeLocation] = useState(homeLocation);
     const [updated_name, setName] = useState(name);
     const [updated_nickName, setNickName] = useState(nickName);
     const [updated_phoneNumber, setPhone] = useState(phoneNumber);
-    // const [updated_placeMetAt, setPlaceMetAt] = useState(placeMetAt);
-    // const [updated_picture, setPicture] = useState(picture);
+    const [updated_placeMetAt, setPlaceMetAt] = useState(placeMetAt);
+    const [updated_picture, setPicture] = useState(picture);
     const [updated_tags, setTags] = useState(tags);
     const [updated_work, setWork] = useState(work);
 
@@ -65,36 +67,52 @@ const RoseForm = ({ user, rows, errorMessage, onSubmit, submitButtonText }) => {
     };
     /* -------------------------------------------------------------------------- */
 
+
+    console.log(updated_email)
     return (
         <>
-
-            {/* <MyTextInput label="Email"
-                value={email}
-                autoCapitalize="none"
-                autoCompleteType="email"
-                textContentType="emailAddress"
-                keyboardType="email-address"
-                onChangeText={setEmail}
-                autoCorrect={false}
-                returnKeyType={"next"}
-            /> */}
-
-            <Card.Actions style={styles.cardContent} key={title}>
-                <Avatar.Icon {...props} icon={left} size={40}
-                    style={{ marginRight: 20 }}
-                />
-                <TextInput mode="outlined"
-                    label={subtitle}
-                    value={title}
-                    style={styles.textInput}
-                    autoCapitalize="none"
-                    autoComplete={false}
-                    autoCorrect={false}
-                    autoCompleteType={"off"}
-                    onChangeText={text => console.log(text)}
-                />
-            </Card.Actions>
-            <Spacer />
+            {
+                rows.map((row) => (
+                    <Card.Actions style={styles.cardContent} key={row.subtitle}>
+                        <Avatar.Icon {...props} icon={row.left} size={40} style={{ marginRight: 20 }} />
+                        <TextInput mode="outlined"
+                            label={row.subtitle}
+                            // placeholder={value}
+                            style={styles.textInput}
+                            autoCapitalize="none"
+                            autoComplete={false}
+                            defaultValue={updated_email}
+                            autoCorrect={false}
+                            autoCompleteType={"off"}
+                            onChangeText={(text) => {
+                                // let temp = { ...email }
+                                // temp = text;
+                                row.value = text;
+                                setEmail(text);
+                            }}
+                        // onChangeText={row.editFunc}
+                        // onChangeText={text => console.log(text)}
+                        // onSubmitEditing={text => console.log('DONE:', text)}
+                        />
+                    </Card.Actions>
+                ))
+            }
+            <Button onPress={() => {
+                console.log("going to update profile");
+                // updateProfile({ name: "new Name2" })
+                // { updateFunction() }
+                // setTimeout(() => setEditing(false), 3000);
+                setEditing(false);
+                console.log("updated profile");
+            }}>
+                Save
+            </Button>
+            <Button
+                title={secondFunctionText}
+                onPress={secondFunction}
+            >
+                {secondFunctionText}
+            </Button>
         </>);
 }
 
@@ -112,7 +130,8 @@ const styles = StyleSheet.create({
     //     margin: 10
     // },
     textInput: {
-        width: '70%'
+        width: '70%',
+        minWidth: '70%'
     }
 });
 

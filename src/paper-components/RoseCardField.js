@@ -1,10 +1,10 @@
 import React from 'react';
 import { Avatar, Card, IconButton } from 'react-native-paper';
 
-const RoseCardField = ({ title, subtitle, left, rightIcon, rightFunc }) => (
-    <Card.Actions key={title}>
+const RoseCardField = ({ value, subtitle, left, rightIcon, rightFunc }) => (
+    <Card.Actions key={value}>
         <Card.Title
-            title={title}
+            title={value}
             subtitle={subtitle}
             left={(props) => <Avatar.Icon icon={left}  {...props} />}
             right={(props) => <IconButton icon={rightIcon} {...props} onPress={rightFunc} />}

@@ -28,8 +28,9 @@ export default () => {
         return { ...state, errorMessage: action.payload };
       case 'signup':
       case 'signin':
-        const { token, user } = action.payload;
-        return { errorMessage: '', token, user, isLoading: false };
+        // const { token, user } = action.payload;
+        // return { errorMessage: '', token, user, isLoading: false };
+        return { errorMessage: '', user: action.payload, isLoading: false };
       case 'update_profile':
         return { ...state, user: action.payload };
       case 'clear_error_message':
@@ -48,37 +49,63 @@ export default () => {
   // FIXME: work without API
   const authContext = useMemo(() => {
     return {
-      signup: async ({ email, password }) => {
+      signup: async ({ name, email, password }) => {
         try {
-          const response = await roseyApi.post('/signup', { email, password });
-          const { token, user } = response.data;
-          console.log('singup', token, user)
-          await AsyncStorage.multiSet([['token', token], ['user', JSON.stringify(user)]]);
-          dispatch({ type: 'signup', payload: { token, user } });
+          /* -------------------------------------------------------------------------- */
+          // const response = await roseyApi.post('/signup', { email, password });
+          // const { token, user } = response.data;
+          // await AsyncStorage.multiSet([['token', token], ['user', JSON.stringify(user)]]);
+          // dispatch({ type: 'signup', payload: { token, user } });
+          /* -------------------------------------------------------------------------- */
+          console.log('singup', name, email, password)
+          const user = {
+            name, email,
+            // Defaults:
+            birthday: '', homeLocation: { city: '', state: '', country: '' },
+            nickName: '', phoneNumber: '',
+            placeMetAt: {
+              placeName: '',
+              coords: {
+                latitude: -369,
+                longitude: -369
+              }
+            },
+            picture: '',
+            tags: [], work: ''
+          };
+          await AsyncStorage.setItem('user', JSON.stringify(user));
+          dispatch({ type: 'signup', payload: user });
+          // const newUser = await AsyncStorage.getItem('user');
+          // console.log('newUser', newUser);
+          // console.log('newUser', JSON.parse(newUser));
         } catch (err) {
           // console.log('RESPONSE', err.response.data.message);
-          const { message } = err.response.data;
-          dispatch({ type: 'add_error', payload: message || 'Something went wrong with sign up' });
+          // const { message } = err.response.data;
+          dispatch({ type: 'add_error', payload: err.message || 'Something went wrong with sign up' });
         }
       },
       signin: async ({ email, password }) => {
         // FIXME: work without API
         try {
-          const response = await roseyApi.post('/signin', { email, password });
-          const { token, user } = response.data;
-          console.log('signin:', token, user)
-          await AsyncStorage.multiSet([['token', token], ['user', JSON.stringify(user)]]);
-          dispatch({ type: 'signin', payload: { token, user } });
+          /* -------------------------------------------------------------------------- */
+          // const response = await roseyApi.post('/signin', { email, password });
+          // const { token, user } = response.data;
+          // console.log('signin:', token, user)
+          // await AsyncStorage.multiSet([['token', token], ['user', JSON.stringify(user)]]);
+          // dispatch({ type: 'signin', payload: { token, user } });
+          /* -------------------------------------------------------------------------- */
+          const user = await AsyncStorage.getItem('user');
+          dispatch({ type: 'signin', payload: JSON.parse(user) });
         } catch (err) {
           dispatch({ type: 'add_error', payload: 'Something went wrong with sign in' });
         }
       },
       // FIXME: work without API
       updateProfile: async ({ ...userData }) => {
-        console.log(userData);
+        // console.log(userData);
         try {
-          const response = await roseyApi.post('/profile', userData);
-          const updatedUserObj = response.data;
+          // const response = await roseyApi.post('/profile', userData);
+          // const updatedUserObj = response.data;
           // console.log('updatProfile:', updatedUserObj)
           await AsyncStorage.setItem('user', JSON.stringify(updatedUserObj));
           dispatch({ type: 'update_profile', payload: updatedUserObj });
@@ -90,20 +117,26 @@ export default () => {
       tryLocalSignin: async () => {
         console.log('tryLocalSignin');
         try {
-          const storageArr = await AsyncStorage.multiGet(['token', 'user']);
-          if (storageArr) {
-            const token = storageArr[0][1];
-            const user = storageArr[1][1];
-            // console.log('tryLocalSignin', JSON.parse(user).user)
-            // FIXME: will this fail if user never flushed to data cache?
-            if (token && user) {
-              dispatch({ type: 'signin', payload: { token, user: JSON.parse(user).user } });
-            } else {
-              dispatch({ type: 'need_to_signin' });
-            }
+          /* -------------------------------------------------------------------------- */
+          // const storageArr = await AsyncStorage.multiGet(['token', 'user']);
+          // if (storageArr) {
+          //   const token = storageArr[0][1];
+          //   const user = storageArr[1][1];
+          //   // console.log('tryLocalSignin', JSON.parse(user).user)
+          //   // FIXME: will this fail if user never flushed to data cache?
+          //   if (token && user) {
+          //     dispatch({ type: 'signin', payload: { token, user: JSON.parse(user).user } });
+          //   } else {
+          //     dispatch({ type: 'need_to_signin' });
+          //   }
+          // }
+          /* -------------------------------------------------------------------------- */
+          const user = await AsyncStorage.getItem('user');
+          if (user) {
+            dispatch({ type: 'signin', payload: JSON.parse(user) });
           }
-        } catch (e) {
-          console.log(e.message);
+        } catch (err) {
+          dispatch({ type: 'add_error', payload: 'Something went wrong with sign in' });
         }
       },
       clearErrorMessage: () => {
@@ -112,8 +145,10 @@ export default () => {
       signout: async () => {
         console.log('signout')
         try {
-          await AsyncStorage.removeItem('token'); // TODO: And user?
+          /* -------------------------------------------------------------------------- */
+          // await AsyncStorage.removeItem('token'); // TODO: And user?
           // await AsyncStorage.multiRemove(['token', 'user']);
+          /* -------------------------------------------------------------------------- */
           dispatch({ type: 'signout' });
         } catch (e) {
           console.log(e.message);
