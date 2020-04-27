@@ -8,9 +8,9 @@ const MapScreen = () => {
 
     const { state: { roses }, fetchAllRoses, addRose } = useContext(RoseContext);
 
-    useEffect(() => {
-        fetchAllRoses();
-    }, []); //TODO: 
+    // useEffect(() => {
+    //     fetchAllRoses();
+    // }, []); //TODO: 
 
     const _roses = roses.filter(rose =>
         rose.placeMetAt.coords &&

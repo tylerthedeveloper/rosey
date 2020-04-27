@@ -8,7 +8,7 @@ const RoseListItem = ({ rose }) => {
     const { name, tags, picture } = rose;
     console.log(picture)
     return (
-        <TouchableOpacity style={styles.container} onPress={() => navigation.navigate('RoseDetail', { rose })}>
+        <TouchableOpacity style={styles.container} onPress={() => navigation.push('RoseDetail', { rose })}>
             <Card style={{ padding: 5 }}>
                 <Card.Title
                     style={{ paddingTop: 5 }}

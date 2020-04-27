@@ -6,13 +6,12 @@ import Spacer from '../components/Spacer';
 const RoseForm = ({ user, props,
     form_updateFunction, form_updateFunctionText,
     form_secondFunction, form_secondFunctionText,
-    callback }
+    form_updateFunction_callback
+}
 ) => {
 
-    const { birthday, email, homeLocation, name, nickName, phoneNumber, placeMetAt, picture, tags, work
+    const { birthday, email, homeLocation, name, nickName, phoneNumber, placeMetAt, picture, tags, work, roseId
     } = user || {};
-
-    // console.log('rosform', user);
 
     let city, state, country;
     if (homeLocation) {
@@ -36,35 +35,36 @@ const RoseForm = ({ user, props,
     const [updated_tags, setTags] = useState(tags);
     const [updated_work, setWork] = useState(work);
 
-    // TODO:
     const updatedUser = {
-        birthday: updated_birthday,
-        email: updated_email,
-        homeLocation: updated_homeLocation,
-        name: updated_name,
-        nickName: updated_nickName,
-        phoneNumber: updated_phoneNumber,
-        placeMetAt: updated_placeMetAt,
-        picture: updated_picture,
-        tags: updated_tags,
-        work: updated_work,
+        birthday: updated_birthday || '',
+        email: updated_email || '',
+        homeLocation: updated_homeLocation || '',
+        name: updated_name || '',
+        nickName: updated_nickName || '',
+        phoneNumber: updated_phoneNumber || '',
+        placeMetAt: updated_placeMetAt || '',
+        picture: updated_picture || '',
+        tags: updated_tags || '',
+        work: updated_work || '',
+        roseId
     };
 
+    // TODO: CLEAR AFTER LEAVE?
     const formRows = [
         {
-            value: updated_name || '(No-Name?)', subtitle: 'name',
+            value: updated_name, subtitle: 'name',
             left: "account",
             rightIcon: "account-plus",
             editFunc: setName
         },
         {
-            value: updated_nickName || '(No-nickName?)', subtitle: 'nickname',
+            value: updated_nickName, subtitle: 'nickname',
             left: "account",
             rightIcon: "account-plus",
             editFunc: setNickName
         },
         {
-            value: updated_phoneNumber || '(123456789)', subtitle: 'phone',
+            value: updated_phoneNumber, subtitle: 'phone',
             left: "phone",
             rightIcon: "phone",
             editFunc: setPhone
@@ -76,7 +76,7 @@ const RoseForm = ({ user, props,
             editFunc: setEmail
         },
         {
-            value: updated_work || '(Add Occupation!)', subtitle: 'occupation',
+            value: updated_work, subtitle: 'occupation',
             left: "briefcase-account",
             rightIcon: "briefcase-plus",
             editFunc: setWork
@@ -84,13 +84,13 @@ const RoseForm = ({ user, props,
         {
             // TODO: WHEN array
             // value: (updated_tags && updated_tags.length > 0) ? updated_tags.join(',') : '(Add some Tags!)', subtitle: 'tag',
-            value: updated_tags || '(Add some Tags!)', subtitle: 'tag',
+            value: updated_tags, subtitle: 'Add tags (by commas) ',
             left: "tag",
             rightIcon: "tag",
             editFunc: setTags
         },
         {
-            value: updated_birthday || '(Enter Birthday!)', subtitle: 'birthday',
+            value: updated_birthday, subtitle: 'birthday',
             left: "calendar",
             rightIcon: "calendar-heart",
             editFunc: setBirthday
@@ -124,24 +124,30 @@ const RoseForm = ({ user, props,
         >
             <ScrollView >
                 {
-                    formRows.map((row) => (
-                        <Card.Actions style={styles.cardContent} key={row.subtitle}>
-                            <Avatar.Icon {...props} icon={row.left} size={40} style={{ marginRight: 20 }} />
+                    formRows.map(({ left, subtitle, value, editFunc }) => (
+                        <Card.Actions style={styles.cardContent} key={subtitle}>
+                            <Avatar.Icon {...props} icon={left} size={40} style={{ marginRight: 20 }} />
                             <TextInput mode="outlined"
-                                label={row.subtitle}
-                                // placeholder={value}
+                                label={subtitle}
                                 style={styles.textInput}
-                                value={row.value}
+                                // placeholder={value}
+                                value={value}
                                 autoCapitalize="none"
                                 autoComplete={false}
                                 autoCorrect={false}
                                 autoCompleteType={"off"}
-                                onChangeText={row.editFunc}
+                                onChangeText={editFunc}
                             />
                         </Card.Actions>
                     ))
                 }
+<<<<<<< HEAD
                 <Button onPress={() => form_updateFunction({ updatedUserObj: updatedUser, callback })}>
+=======
+                <Button onPress={() => {
+                    form_updateFunction({ roseObj: updatedUser, callback: () => form_updateFunction_callback(updatedUser) })
+                }}>
+>>>>>>> dev_main_servicing_1
                     {form_updateFunctionText || 'Save'}
                 </Button>
                 <Button onPress={form_secondFunction} >
@@ -154,25 +160,7 @@ const RoseForm = ({ user, props,
 }
 
 const styles = StyleSheet.create({
-    container: {
-        // padding: 15,
-        // width: '100%',
-        // maxWidth: 340,
-        // alignSelf: 'center',
-        // alignItems: 'center',
-        // justifyContent: 'center',
-    },
-    // errorMessage: {
-    //     color: 'red',
-    //     margin: 10
-    // },
     cardContent: {
-        // alignItems: 'stretch',
-        // flex: 1,
-        // flexDirection: 'row',
-        // alignSelf: 'stretch',
-        // alignItems: 'center',
-        // justifyContent: 'flex-start',
         paddingLeft: 22,
         paddingRight: 20,
         marginTop: 3,

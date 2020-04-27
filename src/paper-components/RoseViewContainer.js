@@ -14,7 +14,9 @@ const RoseViewContainer = ({
     form_updateFunction_callback
 }) => {
 
-    const { birthday, email, homeLocation, name, nickName, phoneNumber, placeMetAt, picture, tags, work } = user;
+    const {
+        birthday, email, homeLocation, name, nickName, phoneNumber, placeMetAt, picture, tags, work
+    } = user;
 
     let city, state, country;
     if (homeLocation) {
@@ -51,7 +53,14 @@ const RoseViewContainer = ({
                         form_updateFunctionText={form_updateFunctionText}
                         form_secondFunction={() => setEditing(false)}
                         form_secondFunctionText={form_secondFunctionText}
-                        callback={() => setEditing(false)}
+                        // form_updateFunction_callback
+                        form_updateFunction_callback={(obj) => {
+                            if (!form_updateFunction_callback) {
+                                setEditing(false)
+                            } else {
+                                form_updateFunction_callback(obj);
+                            }
+                        }}
                     />
             }
         </>
