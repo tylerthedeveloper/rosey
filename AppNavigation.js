@@ -31,11 +31,14 @@ import RoseListScreen from './src/screens/RoseListScreen';
 import RoseDetailScreen from './src/screens/RoseDetailScreen';
 
 const ListStack = createStackNavigator();
-export const listStack = () => {
+export const listStack = ({ navigation }) => {
     return (
         <ListStack.Navigator headerMode="none">
             <ListStack.Screen name="RoseList" component={RoseListScreen} />
-            <ListStack.Screen name="RoseDetail" component={RoseDetailScreen} />
+            <ListStack.Screen name="RoseDetail" component={RoseDetailScreen}
+                options={({ navigation }) =>
+                    ({ tabBarVisible: false })}
+            />
         </ListStack.Navigator>
     );
 }
@@ -52,7 +55,7 @@ import { FontAwesome } from '@expo/vector-icons';
 const Tabs = createBottomTabNavigator();
 const TabNavigator = () => {
     return (
-        <Tabs.Navigator>
+        <Tabs.Navigator backBehavior="order">
             <Tabs.Screen name="Map" component={MapScreen}
                 options={{
                     tabBarLabel: 'Map',
@@ -178,9 +181,6 @@ const TabNavigator = () => {
 //         </Tabs.Navigator>
 //     );
 // };
-
-
-
 
 /* -------------------------------------------------------------------------- */
 

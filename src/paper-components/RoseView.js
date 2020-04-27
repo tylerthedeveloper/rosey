@@ -65,7 +65,7 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
             {
                 viewRows.map(({ value, subtitle, left, rightIcon, rightFunc }) => (
                     <RoseCardField
-                        key={value}
+                        key={subtitle}
                         value={value}
                         subtitle={subtitle}
                         left={left}

@@ -1,21 +1,23 @@
-import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import React, { useContext } from 'react';
+import { StyleSheet } from 'react-native';
 import RoseViewContainer from '../paper-components/RoseViewContainer';
-
-const RoseDetailScreen = ({ route }) => {
-    // TODO: get API and do look up for Rose??
+import { Context as RoseContext } from '../context/RoseContext';
 
 
-    // TODO:
-    const editRose = () => { }
+const RoseDetailScreen = ({ navigation, route }) => {
+
+    const { editRose } = useContext(RoseContext);
     const deleteRose = () => { }
 
     const { rose } = route.params;
-    // console.log(rose)
+    // console.log('detail', rose);
     return (
         <RoseViewContainer {...{
-            user: rose, updateFunction: editRose, updateFunctionText: "Edit Rose",
-            secondFunction: deleteRose, secondFunctionText: "Delete Rose"
+            user: rose,
+            view_updateFunctionText: "Edit Rose",
+            view_secondFunction: deleteRose, view_secondFunctionText: "Delete Rose",
+            form_updateFunction: editRose, form_updateFunctionText: "Save Rose",
+            form_secondFunctionText: "Cancel"
         }} />)
 }
 

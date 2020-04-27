@@ -1,40 +1,47 @@
 import React, { useContext } from 'react';
-import { StyleSheet, Text } from 'react-native';
+import { StyleSheet, Text, View } from 'react-native';
 import { Context as RoseContext } from '../context/RoseContext';
+import MyHeader from '../paper-components/MyHeader';
 import RoseForm from '../paper-components/RoseForm';
 
 const AddRoseScreen = ({ navigation }) => {
 
     const { addRose } = useContext(RoseContext);
-
     return (
-        <>
-            <Text> Add Rose </Text>
-            {/* <KeyboardAvoidingView behavior={'padding'}
-                keyboardVerticalOffset={100}
-                style={{marginBottom: 20}}
-            > */}
-            {/* <ScrollView> */}
+        <View style={styles.container}>
+            <MyHeader style={styles.title}> Add Rose </MyHeader>
             <RoseForm
                 // headerText="Add Rose"
                 submitButtonText="Add Rose"
-                // onSubmit={addRose}
-                // onCancel={navigation.goBack}
-                updateFunction={() => console.log('added>')}
-                updateFunctionText="Add new rose"
-                secondFunction={navigation.goBack}
-                secondFunctionText="Cancel"
+                form_updateFunction={addRose}
+                form_updateFunctionText="Add new Rose"
+                form_secondFunction={navigation.goBack}
+                form_secondFunctionText="Cancel"
+                form_updateFunction_callback={(obj) => navigation.navigate('Main', {
+                    screen: 'RoseListStack',
+                    params: {
+                        screen: 'RoseDetail',
+                        params: { rose: obj }
+                    }
+                })}
+                // form_updateFunction_callback={(obj) => navigation.navigate('RoseDetail', {
+                //     params: { rose: obj }
+                // })}
             />
-            {/* </ScrollView> */}
-            {/* </KeyboardAvoidingView> */}
-        </>
+        </View>
     )
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center'
+        // justifyContent: 'flex-start',
+    },
+    title: {
+        // alignSelf: 'center',
+        // alignContent: 'center',
+        marginLeft: 50,
+        paddingLeft: 20
     }
 });
 

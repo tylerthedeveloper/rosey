@@ -1,22 +1,17 @@
-import React, { useEffect, useContext, useMemo, useReducer } from 'react';
-import { Provider as PaperProvider } from 'react-native-paper';
-
-// React Nav
-import { NavigationContainer, DrawerActions, useNavigation } from '@react-navigation/native';
-import { createStackNavigator } from '@react-navigation/stack';
-import { Text, AsyncStorage, View, TouchableOpacity } from 'react-native';
-import { navigationRef, isMountedRef } from './RootNavigation';
-import ResolveAuthScreen from './src/screens/ResolveAuthScreen';
-import { authStackScreen, App } from "./AppNavigation";
-
-import { MultiBar, MultiBarToggle } from 'react-native-multibar';
 import { Feather } from '@expo/vector-icons';
-
+// React Nav
+import { DrawerActions, NavigationContainer } from '@react-navigation/native';
+import { createStackNavigator } from '@react-navigation/stack';
+import React, { useEffect, useMemo, useReducer } from 'react';
+import { AsyncStorage, TouchableOpacity, View } from 'react-native';
+import { Provider as PaperProvider } from 'react-native-paper';
+import { App, authStackScreen } from "./AppNavigation";
+import { isMountedRef, navigationRef } from './RootNavigation';
 // Context and PROVIDERS
 import { AuthContext } from './src/context/AuthContext';
 import { Provider as RoseProvider } from './src/context/RoseContext';
-import roseyApi from './src/api/roseyApi';
 import theme from './src/core/theme';
+import ResolveAuthScreen from './src/screens/ResolveAuthScreen';
 
 export default () => {
 
@@ -29,7 +24,6 @@ export default () => {
       case 'signup':
       case 'signin':
         /* -------------------------------------------------------------------------- */
-
         // const { token, user } = action.payload;
         // return { errorMessage: '', token, user, isLoading: false };
         /* -------------------------------------------------------------------------- */
@@ -49,7 +43,6 @@ export default () => {
     { isLoading: true, token: null, errorMessage: '', user: {} }
   );
 
-  // FIXME: work without API
   const authContext = useMemo(() => {
     return {
       signup: async ({ name, email, password }) => {
@@ -105,17 +98,17 @@ export default () => {
         }
       },
       // FIXME: work without API
-      updateProfile: async ({updatedUserObj, callback}) => {
+      updateProfile: async ({ roseObj, callback }) => {
         // console.log(userData);
         try {
           /* -------------------------------------------------------------------------- */
           // const response = await roseyApi.post('/profile', userData);
           // const updatedUserObj = response.data;
-          // console.log('updatProfile:', updatedUserObj)
+          // console.log('updatProfile:', roseObj)
           /* -------------------------------------------------------------------------- */
-          // console.log('updatedUserObj', callback, updatedUserObj);
-          await AsyncStorage.setItem('user', JSON.stringify(updatedUserObj));
-          dispatch({ type: 'update_profile', payload: updatedUserObj });
+          console.log('roseObj', callback, roseObj);
+          await AsyncStorage.setItem('user', JSON.stringify(roseObj));
+          dispatch({ type: 'update_profile', payload: roseObj });
           if (callback) {
             callback();
           }
@@ -169,6 +162,7 @@ export default () => {
 
   const { tryLocalSignin } = authContext;
 
+  // FIXME:
   useEffect(() => {
     tryLocalSignin();
   }, []);
@@ -198,8 +192,8 @@ export default () => {
                       options={{ headerTransparent: true, headerTitle: null }}
                     />
                     : <AppStack.Screen name="mainFlow" component={App}
-                      options={({ navigation, route }) => ({
-                        headerTitle: null,
+                      options={({ navigation }) => ({
+                        headerTitle: 'Rosey',
                         headerLeft: () => {
                           return <View style={{ flexDirection: 'row' }}>
                             <TouchableOpacity
