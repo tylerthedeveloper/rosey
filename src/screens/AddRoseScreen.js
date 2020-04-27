@@ -21,7 +21,7 @@ const AddRoseScreen = ({ navigation }) => {
                     screen: 'RoseListStack',
                     params: {
                         screen: 'RoseDetail',
-                        params: { rose: obj }
+                        params: { roseId: obj.roseId }
                     }
                 })}
                 // form_updateFunction_callback={(obj) => navigation.navigate('RoseDetail', {

@@ -6,11 +6,12 @@ import { Context as RoseContext } from '../context/RoseContext';
 
 const RoseDetailScreen = ({ navigation, route }) => {
 
-    const { editRose } = useContext(RoseContext);
+    const { roseId } = route.params;
+    const { state: { roses }, editRose } = useContext(RoseContext);
+    const rose = roses.find(rose => rose.roseId === roseId);
     const deleteRose = () => { }
 
-    const { rose } = route.params;
-    // console.log('detail', rose);
+
     return (
         <RoseViewContainer {...{
             user: rose,
