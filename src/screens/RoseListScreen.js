@@ -2,8 +2,10 @@ import React, { useContext, useEffect, useState, useCallback } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 import { Context as RoseContext } from '../context/RoseContext';
 import RoseListItem from '../paper-components/RoseListItem';
-import { Searchbar } from 'react-native-paper';
+import { Searchbar, IconButton } from 'react-native-paper';
 import { AsyncStorage } from 'react-native';
+import { Chip } from 'react-native-paper';
+import { theme } from '../core/theme';
 
 const check = async () => await AsyncStorage.getItem('roses')
     .then(roseStringArray => console.log(roseStringArray));
@@ -21,7 +23,8 @@ const RoseListScreen = ({ }) => {
     // console.log('filteredRoses', filteredRoses.length)
     const [searchQuery, setSearchQuery] = useState('');
 
-    // TODO:
+    // TODO: FILTERS
+    const [filterToggle, setFilterToggle] = useState(false);
     const [filterType, setFilterType] = useState('');
 
     // check();
@@ -57,12 +60,28 @@ const RoseListScreen = ({ }) => {
 
     return (
         <View style={styles.container}>
-            <Searchbar
-                placeholder="Search"
-                value={searchQuery}
-                onChangeText={setSearchQuery}
-            />
-            {/* TODO: buttons... */}
+            <View style={styles.firstRow}>
+                <Searchbar
+                    placeholder="Search"
+                    value={searchQuery}
+                    onChangeText={setSearchQuery}
+                    style={styles.searchBar}
+                />
+                <IconButton
+                    icon="image-filter-vintage"
+                    onPress={() => setFilterToggle(!filterToggle)}
+                    style={styles.filterIcon}
+                    size={35}
+                />
+            </View>
+            {
+                (filterToggle) &&
+                <View style={styles.filterChips}>
+                    <Chip onPress={() => console.log('Pressed')}>Name</Chip>
+                    <Chip onPress={() => console.log('Pressed')}>Date</Chip>
+                    <Chip onPress={() => console.log('Pressed')}>Nickname</Chip>
+                </View>
+            }
             {
                 (filteredRoses && filteredRoses.length > 0) && <FlatList
                     data={filteredRoses}
@@ -81,6 +100,23 @@ const styles = StyleSheet.create({
         flex: 1,
         justifyContent: 'flex-start',
         marginBottom: 20
+    },
+    firstRow: {
+        flexDirection: 'row',
+        marginTop: 20,
+        // justifyContent: 'space-around',
+    },
+    searchBar: {
+        marginLeft: 20,
+        width: '75%'
+    },
+    filterIcon: {
+        // color: theme.primary,
+    },
+    filterChips: {
+        flexDirection: 'row',
+        marginTop: 10,
+        justifyContent: 'space-evenly'
     }
 });
 

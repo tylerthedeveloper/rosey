@@ -18,11 +18,12 @@ const RoseForm = ({ user, props,
         city = homeLocation.city;
         state = homeLocation.state;
         country = homeLocation.country;
-    } else {
-        city = "city";
-        state = "state";
-        country = "country";
-    };
+    }
+    // else {
+    //     city = "city";
+    //     state = "state";
+    //     country = "country";
+    // };
 
     const [updated_birthday, setBirthday] = useState(birthday);
     const [updated_email, setEmail] = useState(email);
@@ -46,7 +47,7 @@ const RoseForm = ({ user, props,
         picture: updated_picture || '',
         tags: updated_tags || '',
         work: updated_work || '',
-        roseId
+        roseId: roseId || ''
     };
 
     // TODO: CLEAR AFTER LEAVE?
@@ -115,7 +116,8 @@ const RoseForm = ({ user, props,
     // };
     /* -------------------------------------------------------------------------- */
 
-    // console.log(updatedUser)
+    console.log(JSON.stringify(user) === JSON.stringify(updatedUser));
+    const _clearFormData = () => formRows.map(row => row.editFunc(''));
 
     return (
         <KeyboardAvoidingView behavior={'padding'}
@@ -141,17 +143,25 @@ const RoseForm = ({ user, props,
                         </Card.Actions>
                     ))
                 }
-                <Button onPress={() => {
-                    form_updateFunction({ roseObj: updatedUser, callback: () => form_updateFunction_callback(updatedUser) })
-                }}>
+                <Button disabled={JSON.stringify(user) === JSON.stringify(updatedUser)}
+                    onPress={() => {
+                        form_updateFunction({ roseObj: updatedUser, callback: () => form_updateFunction_callback(updatedUser) })
+                        _clearFormData();
+                    }}>
                     {form_updateFunctionText || 'Save'}
                 </Button>
-                <Button onPress={form_secondFunction} >
+                <Button
+                    onPress={() => {
+                        _clearFormData();
+                        form_secondFunction();
+                    }}
+                    style={{ marginBottom: 10 }}
+                >
                     {form_secondFunctionText}
                 </Button>
             </ScrollView>
             <Spacer />
-        </KeyboardAvoidingView>
+        </KeyboardAvoidingView >
     );
 }
 
