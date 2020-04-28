@@ -80,8 +80,6 @@ const editRose = (dispatch) => async ({ roseObj, callback }) => {
     }
 }
 
-const updateRose = (dispatch) => () => async ({ roseId, roseData }) => { }
-
 const fetchAllRoses = (dispatch) => async () => {
     try {
         /* -------------------------------------------------------------------------- */
@@ -90,11 +88,15 @@ const fetchAllRoses = (dispatch) => async () => {
         // dispatch({ type: "fetch_roses", payload: roses });
         /* -------------------------------------------------------------------------- */
         // TODO: retireve from local?
-        // const roseStringArray = await AsyncStorage.getItem('roses');
-        const roses = await AsyncStorage.getItem('roses')
-            .then(res => JSON.parse(res));
-        console.log('fetchAllRoses', roses.length);
-        dispatch({ type: "fetch_roses", payload: [...(roses || [])] });
+        const roseStringArray = await AsyncStorage.getItem('roses');
+        if (roseStringArray) {
+            const roses = JSON.parse(roseStringArray);
+            // console.log('fetchAllRoses', roses.length);
+            dispatch({ type: "fetch_roses", payload: [...(roses || [])] });
+        } else {
+            // console.log('fetchAllRoses: none yet');
+            dispatch({ type: "fetch_roses", payload: [] });
+        }
     } catch (err) {
         console.log(err.message);
         dispatch({ type: "add_error_message", payload: err.message });

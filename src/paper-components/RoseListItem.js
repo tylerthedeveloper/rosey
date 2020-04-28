@@ -6,9 +6,8 @@ import { Avatar, Card, Paragraph } from 'react-native-paper';
 const RoseListItem = ({ rose }) => {
     const navigation = useNavigation();
     const { name, tags, picture } = rose;
-    console.log(picture)
     return (
-        <TouchableOpacity style={styles.container} onPress={() => navigation.push('RoseDetail', { rose })}>
+        <TouchableOpacity style={styles.container} onPress={() => navigation.push('RoseDetail', { roseId: rose.roseId })}>
             <Card style={{ padding: 5 }}>
                 <Card.Title
                     style={{ paddingTop: 5 }}

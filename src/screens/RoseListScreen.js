@@ -3,14 +3,15 @@ import { FlatList, StyleSheet, View } from 'react-native';
 import { Context as RoseContext } from '../context/RoseContext';
 import RoseListItem from '../paper-components/RoseListItem';
 import { Searchbar } from 'react-native-paper';
+import { AsyncStorage } from 'react-native';
+
+const check = async () => await AsyncStorage.getItem('roses')
+    .then(roseStringArray => console.log(roseStringArray));
 
 const RoseListScreen = ({ }) => {
 
     const { state: { roses }, fetchAllRoses } = useContext(RoseContext);
 
-    // console.log('roses list', roses.length);
-
-    // TODO: is this efficient?
     const [filteredRoses, setFilteredRoses] = useState([...(roses || [])]);
 
     // const tags = React.useMemo(() => {
@@ -23,14 +24,14 @@ const RoseListScreen = ({ }) => {
     // TODO:
     const [filterType, setFilterType] = useState('');
 
-    useEffect(() => {
-        fetchAllRoses()
-        setFilteredRoses([...roses]);
-    }, []);
+    // check();
+    // console.log('roses list', roses.length);
+    // console.log('filteredRoses list', filteredRoses.length);
 
-    const _onChangeSearch = (_searchQuery) => {
-        setSearchQuery(_searchQuery);
-    };
+    // FIXME: This is just to fill cache!
+    useEffect(() => {
+        fetchAllRoses();
+    }, []);
 
     useEffect(() => {
         // fetchAllRoses();
@@ -47,11 +48,11 @@ const RoseListScreen = ({ }) => {
             setFilteredRoses([...(matchingRoses || [])])
             // setFilteredRoses(prevRoses => [...prevRoses, ...matchingRoses])
         } else {
-            console.log('not query', roses);
+            console.log('not query', roses.length);
             setFilteredRoses([...roses]);
             // setFilteredRoses(prevRoses => [...prevRoses, ...roses]);
         }
-    }, [searchQuery]); //TODO: 
+    }, [roses, searchQuery]);
 
 
     return (
@@ -59,7 +60,7 @@ const RoseListScreen = ({ }) => {
             <Searchbar
                 placeholder="Search"
                 value={searchQuery}
-                onChangeText={_onChangeSearch}
+                onChangeText={setSearchQuery}
             />
             {/* TODO: buttons... */}
             {

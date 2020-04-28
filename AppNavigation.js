@@ -55,7 +55,7 @@ import { FontAwesome } from '@expo/vector-icons';
 const Tabs = createBottomTabNavigator();
 const TabNavigator = () => {
     return (
-        <Tabs.Navigator backBehavior="order">
+        <Tabs.Navigator backBehavior="order" initialRouteName="RoseListStack">
             <Tabs.Screen name="Map" component={MapScreen}
                 options={{
                     tabBarLabel: 'Map',
@@ -196,7 +196,7 @@ import AddRoseScreen from './src/screens/AddRoseScreen';
 const Drawer = createDrawerNavigator();
 export const App = () => {
     return (
-        <Drawer.Navigator initialRouteName="Profile">
+        <Drawer.Navigator initialRouteName="Main">
             <Drawer.Screen name="Profile" component={ProfileScreen} />
             <Drawer.Screen name="AddRose" component={AddRoseScreen}
                 options={{
