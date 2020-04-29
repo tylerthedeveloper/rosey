@@ -5,8 +5,8 @@ import { createStackNavigator } from '@react-navigation/stack';
 import React, { useEffect, useMemo, useReducer } from 'react';
 import { AsyncStorage, TouchableOpacity, View } from 'react-native';
 import { Provider as PaperProvider } from 'react-native-paper';
-import { App, authStackScreen } from "./AppNavigation";
-import { isMountedRef, navigationRef } from './RootNavigation';
+import { App, authStackScreen } from "./src/navigation/AppNavigation";
+import { isMountedRef, navigationRef } from './RootNavigation'; // TODO: Move into navigation
 // Context and PROVIDERS
 import { AuthContext } from './src/context/AuthContext';
 import { Provider as RoseProvider } from './src/context/RoseContext';
@@ -188,7 +188,7 @@ export default () => {
             <NavigationContainer ref={navigationRef}>
               {/* https://reactnavigation.org/docs/navigating-without-navigation-prop/ */}
               {/* <App ref={(navigator) => setNavigator(navigator)} /> */}
-              <AppStack.Navigator initialRouteName="ResolveAuth">
+              <AppStack.Navigator initialRouteName="ResolveAuth" headerMode='none'>
                 {
                   state.isLoading ?
                     <AppStack.Screen name="ResolveAuth" component={ResolveAuthScreen}
@@ -199,21 +199,7 @@ export default () => {
                         headerMode="none"
                         options={{ headerTransparent: true, headerTitle: null }}
                       />
-                      : <AppStack.Screen name="mainFlow" component={App}
-                        options={({ navigation }) => ({
-                          headerTitle: 'Rosey',
-                          headerLeft: () => {
-                            return <View style={{ flexDirection: 'row' }}>
-                              <TouchableOpacity
-                                onPress={() => {
-                                  navigation.dispatch(DrawerActions.toggleDrawer());
-                                }}>
-                                <Feather name="menu" size={24} style={{ marginLeft: 10 }} />
-                              </TouchableOpacity>
-                            </View>
-                          }
-                        })}
-                      />
+                      : <AppStack.Screen name="mainFlow" component={App} />
                 }
               </AppStack.Navigator>
             </NavigationContainer>

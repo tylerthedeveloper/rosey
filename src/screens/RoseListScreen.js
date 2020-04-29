@@ -6,7 +6,7 @@ import { theme } from '../core/theme';
 import useListFilters from '../hooks/useListFilters';
 import RoseListItem from '../paper-components/RoseListItem';
 
-const RoseListScreen = ({ }) => {
+const RoseListScreen = ({ navigation }) => {
 
     const { state: { roses }, fetchAllRoses } = useContext(RoseContext);
 
