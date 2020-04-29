@@ -7,7 +7,9 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
     view_secondFunction, view_secondFunctionText }
 ) => {
 
-    const { birthday, email, homeLocation, name, nickName, phoneNumber, placeMetAt, picture, tags, work } = user;
+
+    console.log(user.birthday);
+    const { birthday, email, homeLocation, name, nickName, phoneNumber, placeMetAt, picture, tags, work } = user || {};
 
     const viewRows = [
         {
@@ -74,7 +76,10 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
                     />
                 ))}
             <Button onPress={view_updateFunction}> {view_updateFunctionText} </Button>
-            <Button onPress={view_secondFunction} > {view_secondFunctionText} </Button>
+            <Button
+                style={{ marginBottom: 10 }}
+                onPress={view_secondFunction} > {view_secondFunctionText}
+            </Button>
         </ScrollView>
     );
 };

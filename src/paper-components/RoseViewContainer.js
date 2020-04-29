@@ -16,7 +16,7 @@ const RoseViewContainer = ({
 
     const {
         birthday, email, homeLocation, name, nickName, phoneNumber, placeMetAt, picture, tags, work
-    } = user;
+    } = user || {} //;
 
     let city, state, country;
     if (homeLocation) {

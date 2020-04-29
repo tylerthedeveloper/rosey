@@ -12,6 +12,7 @@ import { AuthContext } from './src/context/AuthContext';
 import { Provider as RoseProvider } from './src/context/RoseContext';
 import theme from './src/core/theme';
 import ResolveAuthScreen from './src/screens/ResolveAuthScreen';
+import ErrorBoundary from 'react-native-error-boundary'
 
 export default () => {
 
@@ -172,45 +173,53 @@ export default () => {
     return () => (isMountedRef.current = false);
   }, []);
 
+  const errorHandler = (error, stackTrace) => {
+    /* Log the error to an error reporting service */
+    console.log(error);
+    // console.error(error);
+    // console.error(stackTrace);
+  }
+
   return (
-    <AuthContext.Provider value={{ state, ...authContext }
-    }>
-      <RoseProvider>
-        <PaperProvider theme={theme}>
-          <NavigationContainer ref={navigationRef}>
-            {/* https://reactnavigation.org/docs/navigating-without-navigation-prop/ */}
-            {/* <App ref={(navigator) => setNavigator(navigator)} /> */}
-            <AppStack.Navigator initialRouteName="ResolveAuth">
-              {
-                state.isLoading ?
-                  <AppStack.Screen name="ResolveAuth" component={ResolveAuthScreen}
-                    options={{ headerTransparent: true, headerTitle: null }}
-                  />
-                  : (state.token === null)
-                    ? <AppStack.Screen name="authStack" component={authStackScreen}
-                      headerMode="none"
+    <ErrorBoundary onError={errorHandler}>
+      <AuthContext.Provider value={{ state, ...authContext }}>
+        <RoseProvider>
+          <PaperProvider theme={theme}>
+            <NavigationContainer ref={navigationRef}>
+              {/* https://reactnavigation.org/docs/navigating-without-navigation-prop/ */}
+              {/* <App ref={(navigator) => setNavigator(navigator)} /> */}
+              <AppStack.Navigator initialRouteName="ResolveAuth">
+                {
+                  state.isLoading ?
+                    <AppStack.Screen name="ResolveAuth" component={ResolveAuthScreen}
                       options={{ headerTransparent: true, headerTitle: null }}
                     />
-                    : <AppStack.Screen name="mainFlow" component={App}
-                      options={({ navigation }) => ({
-                        headerTitle: 'Rosey',
-                        headerLeft: () => {
-                          return <View style={{ flexDirection: 'row' }}>
-                            <TouchableOpacity
-                              onPress={() => {
-                                navigation.dispatch(DrawerActions.toggleDrawer());
-                              }}>
-                              <Feather name="menu" size={24} style={{ marginLeft: 10 }} />
-                            </TouchableOpacity>
-                          </View>
-                        }
-                      })}
-                    />
-              }
-            </AppStack.Navigator>
-          </NavigationContainer>
-        </PaperProvider>
-      </RoseProvider>
-    </AuthContext.Provider >
+                    : (state.token === null)
+                      ? <AppStack.Screen name="authStack" component={authStackScreen}
+                        headerMode="none"
+                        options={{ headerTransparent: true, headerTitle: null }}
+                      />
+                      : <AppStack.Screen name="mainFlow" component={App}
+                        options={({ navigation }) => ({
+                          headerTitle: 'Rosey',
+                          headerLeft: () => {
+                            return <View style={{ flexDirection: 'row' }}>
+                              <TouchableOpacity
+                                onPress={() => {
+                                  navigation.dispatch(DrawerActions.toggleDrawer());
+                                }}>
+                                <Feather name="menu" size={24} style={{ marginLeft: 10 }} />
+                              </TouchableOpacity>
+                            </View>
+                          }
+                        })}
+                      />
+                }
+              </AppStack.Navigator>
+            </NavigationContainer>
+          </PaperProvider>
+        </RoseProvider>
+      </AuthContext.Provider>
+    </ErrorBoundary>
   )
 }

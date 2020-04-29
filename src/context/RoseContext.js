@@ -40,9 +40,9 @@ const addRose = (dispatch) => async ({ roseObj, callback }) => {
         // FIXME: PULL FROM CURRENT STATE???
         const roses = await AsyncStorage.getItem('roses')
             .then(req => JSON.parse(req));
-        // console.log('roses', roses);
+        console.log('roses from added', roses);
         const updatedRoseList = [...(roses || []), roseObj];
-        // console.log('roses', updatedRoseList);
+        console.log(' updatedRoseList', updatedRoseList);
         await AsyncStorage.setItem('roses', JSON.stringify(updatedRoseList));
         dispatch({ type: "add_rose", payload: roseObj });
         callback(roseObj);
@@ -80,8 +80,6 @@ const editRose = (dispatch) => async ({ roseObj, callback }) => {
     }
 }
 
-const updateRose = (dispatch) => () => async ({ roseId, roseData }) => { }
-
 const fetchAllRoses = (dispatch) => async () => {
     try {
         /* -------------------------------------------------------------------------- */
@@ -90,10 +88,15 @@ const fetchAllRoses = (dispatch) => async () => {
         // dispatch({ type: "fetch_roses", payload: roses });
         /* -------------------------------------------------------------------------- */
         // TODO: retireve from local?
-        const roses = await AsyncStorage.getItem('roses')
-            .then(req => JSON.parse(req))
-        // console.log(roses);
-        dispatch({ type: "fetch_roses", payload: roses });
+        const roseStringArray = await AsyncStorage.getItem('roses');
+        if (roseStringArray) {
+            const roses = JSON.parse(roseStringArray);
+            // console.log('fetchAllRoses', roses.length);
+            dispatch({ type: "fetch_roses", payload: [...(roses || [])] });
+        } else {
+            // console.log('fetchAllRoses: none yet');
+            dispatch({ type: "fetch_roses", payload: [] });
+        }
     } catch (err) {
         console.log(err.message);
         dispatch({ type: "add_error_message", payload: err.message });

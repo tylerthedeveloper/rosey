@@ -8,9 +8,10 @@ const MapScreen = () => {
 
     const { state: { roses }, fetchAllRoses, addRose } = useContext(RoseContext);
 
+    // FIXME: Is this needed?
     // useEffect(() => {
     //     fetchAllRoses();
-    // }, []); //TODO: 
+    // }, []); 
 
     const _roses = roses.filter(rose =>
         rose.placeMetAt.coords &&
@@ -18,7 +19,7 @@ const MapScreen = () => {
         rose.placeMetAt.coords.longitude !== -369
     );
 
-    console.log(_roses)
+    console.log(roses.length, _roses.length)
 
     return (
         <>
