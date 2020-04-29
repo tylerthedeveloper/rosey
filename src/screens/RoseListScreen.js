@@ -16,6 +16,12 @@ const RoseListScreen = ({ }) => {
 
     const [filteredRoses, setFilteredRoses] = useState([...(roses || [])]);
 
+    // FIXME: This is just to fill cache!
+    useEffect(() => {
+        console.log('jsef effec,t fetch roses');
+        fetchAllRoses();
+    }, []);
+
     // const tags = React.useMemo(() => {
     //     return         fetchAllRoses();
     // }, [roses]);
@@ -25,27 +31,36 @@ const RoseListScreen = ({ }) => {
 
     // TODO: FILTERS
     const [filterToggle, setFilterToggle] = useState(false);
-    const [filterType, setFilterType] = useState('');
+    // const [filterValue, setFilterValue] = useState(false);
+
+    const filterItems = (filterValue) => {
+        // TODO: title CASE?
+        setFilterToggle(false);
+        const sortedRoses = roses.sort((a, b) => {
+            console.log(a[filterValue], b[filterValue], a[filterValue] > b[filterValue])
+            // return a[filterValue] > b[filterValue];
+            // return a[filterValue] === b[filterValue] ? 0 : a[filterValue] < b[filterValue] ? -1 : 1;
+            return a[filterValue].localeCompare(b[filterValue]);
+        })
+        setFilteredRoses(sortedRoses);
+    };
 
     // check();
     // console.log('roses list', roses.length);
     // console.log('filteredRoses list', filteredRoses.length);
-
-    // FIXME: This is just to fill cache!
-    useEffect(() => {
-        fetchAllRoses();
-    }, []);
 
     useEffect(() => {
         // fetchAllRoses();
         // setFilteredRoses(res => [...roses]);
         console.log('useeffect')
         if (searchQuery) {
-            const lower = searchQuery.toLowerCase();
             console.log('if query', roses.length);
+            const lower = searchQuery.toLowerCase();
             const matchingRoses = roses.filter(rose => {
-                console.log(rose.name, lower, rose.name === lower);
-                return rose.name.toLowerCase().includes(lower);
+                // console.log(rose.name, lower, rose.name === lower);
+                return rose.name.toLowerCase().includes(lower) ||
+                    rose.email.toLowerCase().includes(lower) ||
+                    rose.nickName.toLowerCase().includes(lower);
             });
             console.log('matchingRoses', matchingRoses);
             setFilteredRoses([...(matchingRoses || [])])
@@ -57,11 +72,19 @@ const RoseListScreen = ({ }) => {
         }
     }, [roses, searchQuery]);
 
+    // useEffect(() => {
+    //     console.log('filter toggle');
+    //     filterItems();
+    // }, [filterToggle]);
+
+    // console.log('my state has changed', filterValue);
 
     return (
         <View style={styles.container}>
             <View style={styles.firstRow}>
                 <Searchbar
+                    autoCapitalize={"none"}
+                    autoCorrect={false}
                     placeholder="Search"
                     value={searchQuery}
                     onChangeText={setSearchQuery}
@@ -77,15 +100,21 @@ const RoseListScreen = ({ }) => {
             {
                 (filterToggle) &&
                 <View style={styles.filterChips}>
-                    <Chip onPress={() => console.log('Pressed')}>Name</Chip>
-                    <Chip onPress={() => console.log('Pressed')}>Date</Chip>
-                    <Chip onPress={() => console.log('Pressed')}>Nickname</Chip>
+                    <Chip onPress={() => filterItems('name')}>Name</Chip>
+                    <Chip onPress={() => filterItems('email')}>Email</Chip>
+                    <Chip onPress={() => filterItems('nickName')}>Nickname</Chip>
+                    {/* <Chip onPress={() => setFilterValue('name')}>Name</Chip>
+                    <Chip onPress={() => setFilterValue('nickName')}>Nickname</Chip>
+                    <Chip onPress={() => setFilterValue('email')}>Email</Chip> */}
+                    {/* // TODO: */}
+                    {/* <Chip onPress={() => setFilterToggle('Date')}>Date Met</Chip> */}
+
                 </View>
             }
             {
                 (filteredRoses && filteredRoses.length > 0) && <FlatList
                     data={filteredRoses}
-                    keyExtractor={(item) => (item.roseId + item.name)}
+                    keyExtractor={(item) => (item.roseId)}
                     renderItem={({ item }) => {
                         return (<RoseListItem rose={item} />)
                     }}
