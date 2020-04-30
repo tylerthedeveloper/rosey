@@ -1,11 +1,10 @@
-import { Feather } from '@expo/vector-icons';
-// React Nav
-import { DrawerActions, NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import React, { useEffect, useMemo, useReducer } from 'react';
-import { AsyncStorage, TouchableOpacity, View } from 'react-native';
+import { AsyncStorage } from 'react-native';
 import { Provider as PaperProvider } from 'react-native-paper';
-import { App, authStackScreen } from "./src/navigation/AppNavigation";
+import { Auth } from "./src/navigation/Auth";
+import { App } from "./src/navigation/AppDrawer";
 import { isMountedRef, navigationRef } from './RootNavigation'; // TODO: Move into navigation
 // Context and PROVIDERS
 import { AuthContext } from './src/context/AuthContext';
@@ -195,7 +194,7 @@ export default () => {
                       options={{ headerTransparent: true, headerTitle: null }}
                     />
                     : (state.token === null)
-                      ? <AppStack.Screen name="authStack" component={authStackScreen}
+                      ? <AppStack.Screen name="authStack" component={Auth}
                         headerMode="none"
                         options={{ headerTransparent: true, headerTitle: null }}
                       />
