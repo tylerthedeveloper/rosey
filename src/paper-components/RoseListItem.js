@@ -31,9 +31,8 @@ const RoseListItem = ({ rose }) => {
                     )}
                 />
                 <Card.Actions>
+                    <Paragraph> Tags: </Paragraph>
                     <Paragraph> {tags} </Paragraph>
-                    <Paragraph> Tags? </Paragraph>
-                    <Paragraph> Tags? </Paragraph>
                 </Card.Actions>
             </Card>
         </TouchableOpacity >
