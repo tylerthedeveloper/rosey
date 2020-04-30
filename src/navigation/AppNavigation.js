@@ -51,49 +51,80 @@ export const listStack = ({ navigation }) => {
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import MapScreen from '../screens/MapScreen';
 import { FontAwesome } from '@expo/vector-icons';
+import { Portal, FAB } from 'react-native-paper';
+import { useIsFocused } from '@react-navigation/native';
 
 const BottomTabs = createBottomTabNavigator();
-const BottomTabNavigator = () => {
+const BottomTabNavigator = (props) => {
+    const isFocused = useIsFocused();
+
+    const routeName = props.route.state
+        ? props.route.state.routes[props.route.state.index].name
+        : 'Feed';
+
+    switch (routeName) {
+        case 'Map':
+            fabIcon = 'crosshairs-gps';
+            break;
+        default:
+            fabIcon = 'account-plus';
+            break;
+    }
+
+    // https://stackoverflow.com/questions/60486399/adding-a-custom-add-button-to-creatematerialbottomtabnavigator-in-react-naviga
+    // <>
+    // <Button
+    //     navigation={navigation}
+    //     style={{
+    //         position: 'absolute',
+    //         zIndex: 99,
+    //         bottom: 5,
+    //         alignSelf: 'center',
+    //         backgroundColor: 'blue',
+    //         shadowColor: 'black',
+    //         shadowOpacity: 0.15,
+    //         shadowOffset: { width: 0, height: 2 },
+    //         shadowRadius: 8,
+    //         elevation: 3 //Because shadow only work on iOS, elevation is same thing but for android.
+    //     }}
+    // ></Button>
     return (
-        // https://stackoverflow.com/questions/60486399/adding-a-custom-add-button-to-creatematerialbottomtabnavigator-in-react-naviga
-        // <>
-        //     <Button
-        //         navigation={navigation}
-        //         style={{
-        //             position: 'absolute',
-        //             zIndex: 99,
-        //             bottom: 5,
-        //             alignSelf: 'center',
-        //             backgroundColor: 'blue',
-        //             shadowColor: 'black',
-        //             shadowOpacity: 0.15,
-        //             shadowOffset: { width: 0, height: 2 },
-        //             shadowRadius: 8,
-        //             elevation: 3 //Because shadow only work on iOS, elevation is same thing but for android.
-        //         }}
-        //     ></Button>
-        <BottomTabs.Navigator backBehavior="order" initialRouteName="RoseListStack">
-            <BottomTabs.Screen name="Map" component={MapScreen}
-                options={{
-                    tabBarLabel: 'Map',
-                    tabBarIcon: ({ color }) => (
-                        <FontAwesome
-                            name="map"
-                            size={24}
-                            style={{ marginBottom: -15 }}
-                        />)
-                }}
-            />
-            <BottomTabs.Screen name="RoseListStack" component={listStack}
-                options={{
-                    tabBarLabel: 'Roses',
-                    tabBarIcon: ({ color }) => (
-                        <FontAwesome
-                            name="list"
-                            size={24}
-                        />)
-                }} />
-        </BottomTabs.Navigator>
+        <React.Fragment>
+            <BottomTabs.Navigator backBehavior="order" initialRouteName="RoseListStack">
+                <BottomTabs.Screen name="Map" component={MapScreen}
+                    options={{
+                        tabBarLabel: 'Map',
+                        tabBarIcon: ({ color }) => (
+                            <FontAwesome
+                                name="map"
+                                size={24}
+                                style={{ marginBottom: -15 }}
+                            />)
+                    }}
+                />
+                <BottomTabs.Screen name="RoseListStack" component={listStack}
+                    options={{
+                        tabBarLabel: 'Roses',
+                        tabBarIcon: ({ color }) => (
+                            <FontAwesome
+                                name="list"
+                                size={24}
+                            />)
+                    }} />
+            </BottomTabs.Navigator>
+            <Portal>
+                <FAB
+                    visible={isFocused}
+                    icon={fabIcon}
+                    style={{
+                        position: 'absolute',
+                        bottom: 100,
+                        right: 16,
+                    }}
+                    onPress={() => props.navigation.navigate('AddRose')}
+                />
+            </Portal>
+        </React.Fragment>
     )
 };
 /* -------------------------------------------------------------------------- */
@@ -105,6 +136,7 @@ const BottomTabNavigator = () => {
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Appbar, Avatar } from 'react-native-paper';
 import { theme } from '../core/theme'
+import ProfileScreen from '../screens/ProfileScreen';
 
 const RootStack = createStackNavigator();
 const RootStackNavigator = () => {
@@ -126,7 +158,7 @@ const RootStackNavigator = () => {
                         <Appbar.Header theme={{ colors: { primary: theme.colors.secondary } }}>
                             {previous ? (
                                 <Appbar.BackAction
-                                    onPress={navigation.pop}
+                                    onPress={navigation.goBack}
                                     color={theme.colors.primary}
                                 />
                             ) : (
@@ -157,11 +189,11 @@ const RootStackNavigator = () => {
             <RootStack.Screen
                 name="Main"
                 component={BottomTabNavigator}
-                options={({ route }) => {
-                    console.log('!@# options', { route });
+                options={({ navigation, route }) => {
+                    // console.log('!@# options', { route });
                     const routeName = route.state
                         ? route.state.routes[route.state.index].name
-                        : 'Main';
+                        : 'Home';
                     return { headerTitle: routeName };
                 }}
             />
@@ -176,6 +208,11 @@ const RootStackNavigator = () => {
                 component={RoseDetailScreen}
                 options={{ headerTitle: 'Details' }}
             />
+            <RootStack.Screen
+                name="Profile"
+                component={ProfileScreen}
+                options={{ headerTitle: 'Profile' }}
+            />
         </RootStack.Navigator>
     )
 };
@@ -188,55 +225,17 @@ const RootStackNavigator = () => {
 /*                               Drawer Section                               */
 /* -------------------------------------------------------------------------- */
 import { createDrawerNavigator } from '@react-navigation/drawer';
-import ProfileScreen from '../screens/ProfileScreen';
+// TODO:
 import AddRoseScreen from '../screens/AddRoseScreen';
 
 const Drawer = createDrawerNavigator();
-{/* <Drawer.Screen name="Profile" component={ProfileScreen} />
-    <Drawer.Screen name="AddRose" component={AddRoseScreen}
-        options={{
-            title: "Add new Rose"
-        }}
-    />
-    <Drawer.Screen name="Main" component={TabNavigator} /> */}
 export const App = () => {
     return (
-        <Drawer.Navigator initialRouteName="Main">
+        <Drawer.Navigator initialRouteName="Main" drawerType="slide" >
             <Drawer.Screen name="RootStack" component={RootStackNavigator} />
         </Drawer.Navigator >
     );
 }
-
-// const DrawerStack = createStackNavigator();
-// export const App = () => {
-//     return (
-//         <DrawerStack.Navigator
-//         >
-//             <DrawerStack.Screen
-//                 component={DrawerNavigator}
-//                 name="App"
-//                 options={({ navigation, route }) => ({
-//                     headerTitle: null,
-//                     // headerTransparent: true,
-//                     // headerBackground: () => (
-//                     //   <BlurView tint="light" intensity={100} style={StyleSheet.absoluteFill} />
-//                     // ),
-//                     headerLeft: () => {
-//                         return <View style={{ flexDirection: 'row' }}>
-//                             <TouchableOpacity
-//                                 onPress={() => {
-//                                     navigation.dispatch(DrawerActions.toggleDrawer());
-//                                 }}>
-//                                 <Text>Open</Text>
-                                // {/* <Image source={require('./assets/images/icons/drawer.png')} /> */}
-//                             </TouchableOpacity>
-//                         </View>
-//                     }
-//                 })}
-//             />
-//         </DrawerStack.Navigator>
-//     );
-// }
 /* -------------------------------------------------------------------------- */
 
 
