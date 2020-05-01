@@ -16,6 +16,8 @@ const RoseListScreen = ({ navigation }) => {
         filteredRoses, filterToggle, setFilterToggle, filterItems, searchQuery, setSearchQuery
     ] = useListFilters(roses, fetchAllRoses);
 
+    console.log('roses', roses)
+
     return (
         <View style={styles.container}>
             <View style={styles.firstRow}>

@@ -10,6 +10,7 @@ import RoseForm from './RoseForm';
 const RoseViewContainer = ({
     navigation, props, user,
     view_updateFunction, view_updateFunctionText, view_secondFunction, view_secondFunctionText,
+    view_updateFunction_callback,
     form_updateFunction, form_updateFunctionText, form_secondFunction, form_secondFunctionText,
     form_updateFunction_callback
 }) => {
@@ -44,7 +45,7 @@ const RoseViewContainer = ({
                         {...{
                             // view_updateFunction, seconf... TODO:
                             user, view_updateFunction: () => setEditing(true), view_updateFunctionText,
-                            view_secondFunction, view_secondFunctionText
+                            view_secondFunction, view_secondFunctionText, view_updateFunction_callback
                         }}
                     />
                     : <RoseForm

@@ -57,7 +57,7 @@ export default () => {
           const user = {
             name, email,
             // Defaults:
-            birthday: '', homeLocation: { city: '', state: '', country: '' },
+            birthday: '', homeLocation: { homeCity: '', homeState: '', homeCountry: '' },
             nickName: '', phoneNumber: '',
             placeMetAt: {
               placeName: '',

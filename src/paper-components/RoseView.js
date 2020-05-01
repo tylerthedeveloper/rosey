@@ -4,7 +4,9 @@ import { Button } from 'react-native-paper';
 import RoseCardField from './RoseCardField';
 
 const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
-    view_secondFunction, view_secondFunctionText }
+    view_secondFunction, view_secondFunctionText,
+    view_updateFunction_callback
+}
 ) => {
 
 
@@ -78,7 +80,11 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
             <Button onPress={view_updateFunction}> {view_updateFunctionText} </Button>
             <Button
                 style={{ marginBottom: 10 }}
-                onPress={view_secondFunction} > {view_secondFunctionText}
+                onPress={() => {
+                    const roseId = user.roseId;
+                    view_secondFunction({ roseId, callback: () => view_updateFunction_callback() })
+                }}
+            > {view_secondFunctionText}
             </Button>
         </ScrollView>
     );

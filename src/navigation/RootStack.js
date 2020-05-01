@@ -1,8 +1,8 @@
 import React from 'react';
-import { TouchableOpacity } from 'react-native';
 /* -------------------------------------------------------------------------- */
 /*                               Main Root Stack                              */
 /* -------------------------------------------------------------------------- */
+import { TouchableOpacity } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Appbar, Avatar } from 'react-native-paper';
 import { theme } from '../core/theme'
