@@ -10,7 +10,10 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
 ) => {
 
 
-    console.log(user.birthday);
+    // console.log(user.birthday);
+    
+    // TODO: ADD homeLocation
+
     const { birthday, email, homeLocation, name, nickName, phoneNumber, placeMetAt, picture, tags, work } = user || {};
 
     const viewRows = [
@@ -19,49 +22,42 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
             left: "account",
             rightIcon: "account-plus",
             rightFunc: () => { },
-            // editFunc: setName
         },
         {
             value: nickName || '(No-nickName?)', subtitle: 'nickname',
             left: "account",
             rightIcon: "account-plus",
             rightFunc: () => { },
-            // editFunc: setNickName
         },
         {
             value: phoneNumber || '(123456789)', subtitle: 'phone',
             left: "phone",
             rightIcon: "phone",
             rightFunc: () => { },
-            // editFunc: setPhone
         },
         {
             value: email, subtitle: 'email',
             left: "email",
             rightIcon: "email",
             rightFunc: () => { },
-            // editFunc: setEmail
         },
         {
             value: work || '(Add Occupation!)', subtitle: 'occupation',
             left: "briefcase-account",
             rightIcon: "briefcase-plus",
             rightFunc: () => { },
-            // editFunc: setWork
         },
         {
             value: (tags && tags.length > 0) ? tags : '(Add some Tags!)', subtitle: 'tag',
             left: "tag",
             rightIcon: "tag",
             rightFunc: () => { },
-            // editFunc: setTags/
         },
         {
             value: birthday || '(Enter Birthday!)', subtitle: 'birthday',
             left: "calendar",
             rightIcon: "calendar-heart",
             rightFunc: () => { },
-            // editFunc: setBirthday
         },
     ];
     return (

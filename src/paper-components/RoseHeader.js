@@ -5,7 +5,9 @@ import { theme } from '../core/theme';
 
 const RoseHeader = ({ name, picture, city, state, country }) => (
     <ImageBackground
-        source={{ uri: 'https://picsum.photos/700' }}
+        // source={{ uri: 'https://picsum.photos/700' }}
+        source={require('../../assets/background_dot_2x.png')}
+        resizeMode="repeat"
         style={styles.headerBackgroundImage}>
         <Card.Content style={{ alignSelf: 'center', alignItems: 'center' }}>
             <Avatar.Image

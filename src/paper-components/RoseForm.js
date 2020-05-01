@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { KeyboardAvoidingView, ScrollView, StyleSheet } from 'react-native';
-import { Avatar, Button, Card, TextInput } from 'react-native-paper';
+import { Avatar, Button, Card, TextInput, Divider, Paragraph } from 'react-native-paper';
 import Spacer from '../components/Spacer';
 
 const RoseForm = ({ user, props,
@@ -29,6 +29,7 @@ const RoseForm = ({ user, props,
     const [updated_email, setEmail] = useState(email);
     /* -------------------------------------------------------------------------- */
     // const [updated_homeLocation, setHomeLocation] = useState(homeLocation);
+    // Home Location //
     const [updated_homeCity, setHomeCity] = useState();
     const [updated_homeState, setHomeState] = useState();
     const [updated_homeCountry, setHomeCountry] = useState();
@@ -96,14 +97,14 @@ const RoseForm = ({ user, props,
         },
         {
             value: updated_homeState, subtitle: 'state',
-            left: "place",
-            rightIcon: "place",
+            left: "drag-variant",
+            rightIcon: "drag-variant",
             editFunc: setHomeState
         },
         {
             value: updated_homeCountry, subtitle: 'country',
-            left: "location-on",
-            rightIcon: "location-on",
+            left: "crosshairs-gps",
+            rightIcon: "crosshairs-gps",
             editFunc: setHomeCountry
         },
         {
@@ -173,6 +174,7 @@ const RoseForm = ({ user, props,
                         </Card.Actions>
                     ))
                 }
+                {/* <Divider /> */}
                 <Button disabled={JSON.stringify(user) === JSON.stringify(updatedUser)}
                     onPress={() => {
                         form_updateFunction({ roseObj: updatedUser, callback: () => form_updateFunction_callback(updatedUser) })

@@ -16,19 +16,8 @@ const RoseViewContainer = ({
 }) => {
 
     const {
-        birthday, email, homeLocation, name, nickName, phoneNumber, placeMetAt, picture, tags, work
+        homeLocation: { city, state, country }, name, picture, tags
     } = user || {} //;
-
-    let city, state, country;
-    if (homeLocation) {
-        city = homeLocation.city;
-        state = homeLocation.state;
-        country = homeLocation.country;
-    } else {
-        city = "city";
-        state = "state";
-        country = "country";
-    };
 
     const [editing, setEditing] = useState(false);
     // console.log('user before', user)
