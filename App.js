@@ -137,6 +137,8 @@ export default () => {
           const user = await AsyncStorage.getItem('user');
           if (user) {
             dispatch({ type: 'signin', payload: JSON.parse(user) });
+          } else {
+            dispatch({ type: 'need_to_signin' });
           }
         } catch (err) {
           dispatch({ type: 'add_error', payload: 'Something went wrong with sign in' });
@@ -152,6 +154,7 @@ export default () => {
           // await AsyncStorage.removeItem('token'); // TODO: And user?
           // await AsyncStorage.multiRemove(['token', 'user']);
           /* -------------------------------------------------------------------------- */
+          // await AsyncStorage.removeItem('user'); 
           dispatch({ type: 'signout' });
         } catch (e) {
           console.log(e.message);

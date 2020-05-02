@@ -2,16 +2,16 @@
   "expo": {
     "name": "rosey-app",
     "slug": "rosey-app",
+    "sdkVersion": "37.0.0",
     "platforms": [
       "ios",
       "android",
-      "web"
     ],
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/5.png",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/3.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -22,7 +22,9 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.rosey-app.rosey",
+      "buildNumber": "1.0.0"
     }
   }
 }
