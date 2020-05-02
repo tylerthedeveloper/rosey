@@ -1,25 +1,9 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
-import {
-    DrawerContentComponentProps,
-    DrawerContentOptions,
-    DrawerContentScrollView,
-    DrawerItem,
-} from '@react-navigation/drawer';
+import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 import React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import {
-    Avatar,
-    Caption,
-    Drawer,
-    Paragraph,
-    Switch,
-    Text,
-    Title,
-    TouchableRipple,
-    useTheme,
-} from 'react-native-paper';
+import { Avatar, Caption, Drawer, Paragraph, Title, useTheme } from 'react-native-paper';
 import Animated from 'react-native-reanimated';
-
 // import { PreferencesContext } from './context/preferencesContext';
 
 const DrawerContent = (props) => {
@@ -29,8 +13,6 @@ const DrawerContent = (props) => {
     //     PreferencesContext
     // );
     const toggleTheme = () => { };
-
-
 
     const translateX = Animated.interpolate(props.progress, {
         inputRange: [0, 0.5, 0.7, 0.8, 1],
@@ -58,14 +40,13 @@ const DrawerContent = (props) => {
                     >
                         <Avatar.Image
                             source={
-                                // 'https://pbs.twimg.com/profile_images/952545910990495744/b59hSXUd_400x400.jpg',
                                 require('../../assets/5.png')
                             }
                             size={50}
                         />
                     </TouchableOpacity>
-                    <Title style={styles.title}>Dawid Urbaniak</Title>
-                    <Caption style={styles.caption}>@trensik</Caption>
+                    <Title style={styles.title}>Rosey</Title>
+                    {/* <Caption style={styles.caption}>@</Caption>
                     <View style={styles.row}>
                         <View style={styles.section}>
                             <Paragraph style={[styles.paragraph, styles.caption]}>
@@ -79,7 +60,7 @@ const DrawerContent = (props) => {
                             </Paragraph>
                             <Caption style={styles.caption}>Obserwujący</Caption>
                         </View>
-                    </View>
+                    </View> */}
                 </View>
                 <Drawer.Section style={styles.drawerSection}>
                     <DrawerItem
@@ -93,7 +74,7 @@ const DrawerContent = (props) => {
                         label="Profile"
                         onPress={() => navigation.navigate('Profile')}
                     />
-                    <DrawerItem
+                    {/* <DrawerItem
                         icon={({ color, size }) => (
                             <MaterialCommunityIcons name="tune" color={color} size={size} />
                         )}
@@ -110,7 +91,7 @@ const DrawerContent = (props) => {
                         )}
                         label="Bookmarks"
                         onPress={() => { }}
-                    />
+                    /> */}
                 </Drawer.Section>
                 {/* <Drawer.Section title="Preferences">
                     <TouchableRipple onPress={toggleTheme}>

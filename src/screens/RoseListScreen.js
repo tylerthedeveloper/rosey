@@ -79,7 +79,12 @@ const styles = StyleSheet.create({
     },
     searchBar: {
         marginLeft: 20,
-        width: '75%'
+        width: '75%',
+        shadowOffset: {
+            width: 0,
+            height: 0
+        },
+        shadowColor: '#ffffff'
     },
     // filterIcon: {
     //     color: theme.primary,

@@ -8,9 +8,12 @@ import { FontAwesome } from '@expo/vector-icons';
 import { Portal, FAB } from 'react-native-paper';
 import { useIsFocused } from '@react-navigation/native';
 import { roseListStack } from './RoseListStack';
+import { theme } from '../core/theme';
 
 const BottomTabs = createBottomTabNavigator();
+
 export const BottomTabNavigator = (props) => {
+
     const isFocused = useIsFocused();
 
     const routeName = props.route.state
@@ -26,11 +29,20 @@ export const BottomTabNavigator = (props) => {
             break;
     }
 
+    const tabBarColor = theme.colors.primary;
+
     // https://stackoverflow.com/questions/60486399/adding-a-custom-add-button-to-creatematerialbottomtabnavigator-in-react-naviga
     return (
         <React.Fragment>
-            <BottomTabs.Navigator backBehavior="order" initialRouteName="RoseListStack">
-                <BottomTabs.Screen name="Map" component={MapScreen}
+            <BottomTabs.Navigator backBehavior="order" initialRouteName="RoseListStack"
+            tabBarOptions={{
+                
+            }}
+                screenOptions={{
+                    tabBarColor
+                }}
+            >
+                {/* <BottomTabs.Screen name="Map" component={MapScreen}
                     options={{
                         tabBarLabel: 'Map',
                         tabBarIcon: ({ color }) => (
@@ -40,9 +52,10 @@ export const BottomTabNavigator = (props) => {
                                 style={{ marginBottom: -15 }}
                             />)
                     }}
-                />
+                /> */}
                 <BottomTabs.Screen name="RoseListStack" component={roseListStack}
                     options={{
+                        tabBarColor,
                         tabBarLabel: 'Roses',
                         tabBarIcon: ({ color }) => (
                             <FontAwesome

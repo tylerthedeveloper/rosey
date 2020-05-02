@@ -8,7 +8,7 @@ import { Appbar, Avatar } from 'react-native-paper';
 import { theme } from '../core/theme'
 import { createStackNavigator } from '@react-navigation/stack';
 import { BottomTabNavigator } from './Tabs';
-import {AddRoseScreen, ProfileScreen, RoseDetailScreen} from '../screens'
+import { AddRoseScreen, ProfileScreen, RoseDetailScreen } from '../screens'
 
 const RootStack = createStackNavigator();
 export const RootStackNavigator = () => {
@@ -41,10 +41,7 @@ export const RootStackNavigator = () => {
                                     >
                                         <Avatar.Image
                                             size={40}
-                                            source={{
-                                                uri:
-                                                    'https://pbs.twimg.com/profile_images/952545910990495744/b59hSXUd_400x400.jpg',
-                                            }}
+                                            source={require('../../assets/5.png')}
                                         />
                                     </TouchableOpacity>
                                 )}
