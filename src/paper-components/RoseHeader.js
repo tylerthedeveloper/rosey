@@ -3,7 +3,7 @@ import { ImageBackground, StyleSheet } from 'react-native';
 import { Avatar, Card, Paragraph, Title } from 'react-native-paper';
 import { theme } from '../core/theme';
 
-const RoseHeader = ({ name, picture, city, state, country }) => (
+const RoseHeader = ({ name, picture, homeCity, homeState, homeCountry }) => (
     <ImageBackground
         // source={{ uri: 'https://picsum.photos/700' }}
         source={require('../../assets/background_dot_2x.png')}
@@ -19,7 +19,7 @@ const RoseHeader = ({ name, picture, city, state, country }) => (
                 }}
             />
             <Title style={styles.userNameText}>{name || 'No-name!'}</Title>
-            <Paragraph style={styles.userCityText}>{city || '(city)'}, {state || '(state)'}, {country || '(country)'}</Paragraph>
+            <Paragraph style={styles.userCityText}>{homeCity || '(city)'}, {homeState || '(state)'}, {homeCountry || '(country)'}</Paragraph>
         </Card.Content>
     </ImageBackground>
 );

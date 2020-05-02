@@ -43,6 +43,25 @@ export default () => {
     { isLoading: true, token: null, errorMessage: '', user: {} }
   );
 
+  const generateUser = ({ name, email }) => {
+    return {
+      name: name || '',
+      email: email || '',
+      // Defaults:
+      birthday: '', homeLocation: { homeCity: '', homeState: '', homeCountry: '' },
+      nickName: '', phoneNumber: '',
+      placeMetAt: {
+        placeName: '',
+        coords: {
+          latitude: -369,
+          longitude: -369
+        }
+      },
+      picture: '',
+      tags: '',
+      work: ''
+    };
+  }
   const authContext = useMemo(() => {
     return {
       signup: async ({ name, email, password }) => {
@@ -53,23 +72,25 @@ export default () => {
           // await AsyncStorage.multiSet([['token', token], ['user', JSON.stringify(user)]]);
           // dispatch({ type: 'signup', payload: { token, user } });
           /* -------------------------------------------------------------------------- */
-          console.log('singup', name, email, password)
-          const user = {
-            name, email,
-            // Defaults:
-            birthday: '', homeLocation: { homeCity: '', homeState: '', homeCountry: '' },
-            nickName: '', phoneNumber: '',
-            placeMetAt: {
-              placeName: '',
-              coords: {
-                latitude: -369,
-                longitude: -369
-              }
-            },
-            picture: '',
-            tags: '',
-            work: ''
-          };
+          // console.log('singup', name, email)
+          // const user = {
+          //   name, email,
+          //   // Defaults:
+          //   birthday: '', homeLocation: { homeCity: '', homeState: '', homeCountry: '' },
+          //   nickName: '', phoneNumber: '',
+          //   placeMetAt: {
+          //     placeName: '',
+          //     coords: {
+          //       latitude: -369,
+          //       longitude: -369
+          //     }
+          //   },
+          //   picture: '',
+          //   tags: '',
+          //   work: ''
+          // };
+          const user = generateUser({ name, email });
+          console.log('sign up user', user);
           await AsyncStorage.setItem('user', JSON.stringify(user));
           dispatch({ type: 'signup', payload: user });
           // const newUser = await AsyncStorage.getItem('user');
@@ -92,12 +113,17 @@ export default () => {
           // dispatch({ type: 'signin', payload: { token, user } });
           /* -------------------------------------------------------------------------- */
           const user = await AsyncStorage.getItem('user');
-          dispatch({ type: 'signin', payload: JSON.parse(user) });
+          if (!user) {
+            const _user = generateUser({ email });
+            console.log('sign in user', _user);
+            dispatch({ type: 'signin', payload: _user });
+          } else {
+            dispatch({ type: 'signin', payload: JSON.parse(user) });
+          }
         } catch (err) {
           dispatch({ type: 'add_error', payload: 'Something went wrong with sign in' });
         }
       },
-      // FIXME: work without API
       updateProfile: async ({ roseObj, callback }) => {
         // console.log(userData);
         try {
@@ -154,7 +180,7 @@ export default () => {
           // await AsyncStorage.removeItem('token'); // TODO: And user?
           // await AsyncStorage.multiRemove(['token', 'user']);
           /* -------------------------------------------------------------------------- */
-          // await AsyncStorage.removeItem('user'); 
+          await AsyncStorage.removeItem('user');
           dispatch({ type: 'signout' });
         } catch (e) {
           console.log(e.message);
@@ -196,6 +222,7 @@ export default () => {
                     <AppStack.Screen name="ResolveAuth" component={ResolveAuthScreen}
                       options={{ headerTransparent: true, headerTitle: null }}
                     />
+                    // FIXME: work without TOKEN!
                     : (state.token === null)
                       ? <AppStack.Screen name="authStack" component={Auth}
                         headerMode="none"

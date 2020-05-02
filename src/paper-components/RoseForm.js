@@ -10,35 +10,26 @@ const RoseForm = ({ user, props,
 }
 ) => {
 
-    const { birthday, email, homeLocation, name, nickName, phoneNumber, placeMetAt, picture, tags, work, roseId
+    const { birthday, email, homeLocation: { homeCity, homeState, homeCountry }, name, nickName, phoneNumber, placeMetAt, picture, tags, work, roseId
     } = user || {};
-
-    let city, state, country;
-    if (homeLocation) {
-        city = homeLocation.city;
-        state = homeLocation.state;
-        country = homeLocation.country;
-    }
-    // else {
-    //     city = "city";
-    //     state = "state";
-    //     country = "country";
-    // };
 
     const [updated_birthday, setBirthday] = useState(birthday);
     const [updated_email, setEmail] = useState(email);
     /* -------------------------------------------------------------------------- */
     // const [updated_homeLocation, setHomeLocation] = useState(homeLocation);
     // Home Location //
-    const [updated_homeCity, setHomeCity] = useState();
-    const [updated_homeState, setHomeState] = useState();
-    const [updated_homeCountry, setHomeCountry] = useState();
+    const [updated_homeCity, setHomeCity] = useState(homeCity);
+    const [updated_homeState, setHomeState] = useState(homeState);
+    const [updated_homeCountry, setHomeCountry] = useState(homeCountry);
     /* -------------------------------------------------------------------------- */
     const [updated_name, setName] = useState(name);
     const [updated_nickName, setNickName] = useState(nickName);
     const [updated_phoneNumber, setPhone] = useState(phoneNumber);
+    // ────────────────────────────────────────────────────────────────────────────────
+    // NOT YET USED //
     const [updated_placeMetAt, setPlaceMetAt] = useState(placeMetAt);
     const [updated_picture, setPicture] = useState(picture);
+    // ────────────────────────────────────────────────────────────────────────────────
     const [updated_tags, setTags] = useState(tags);
     const [updated_work, setWork] = useState(work);
 

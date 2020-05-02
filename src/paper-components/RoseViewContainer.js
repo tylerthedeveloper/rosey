@@ -16,7 +16,7 @@ const RoseViewContainer = ({
 }) => {
 
     const {
-        homeLocation: { city, state, country }, name, picture, tags
+        homeLocation: { homeCity, homeState, homeCountry }, name, picture, tags
     } = user || {} //;
 
     const [editing, setEditing] = useState(false);
@@ -26,7 +26,7 @@ const RoseViewContainer = ({
     return (
         <>
             <Card style={styles.card}>
-                <RoseHeader {...{ name, picture, city, state, country }} />
+                <RoseHeader {...{ name, picture, homeCity, homeState, homeCountry }} />
             </Card >
             {
                 (!editing)

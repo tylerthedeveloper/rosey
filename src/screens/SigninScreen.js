@@ -28,20 +28,11 @@ const SigninScreen = ({ navigation }) => {
                 </TouchableOpacity>
             </View>
             <Spacer />
-            {/* TODO: Remove */}
-            {/* <Button
-                title="Mock sign in "
-                onPress={() => navigation.navigate('mainFlow')}
-            /> */}
         </Background>
     )
 }
 
 const styles = StyleSheet.create({
-    // container: {
-    //     flex: 1,
-    //     justifyContent: 'center'
-    // },
     link: {
         fontWeight: 'bold',
         color: theme.colors.primary,

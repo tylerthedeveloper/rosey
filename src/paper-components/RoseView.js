@@ -14,7 +14,7 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
     
     // TODO: ADD homeLocation
 
-    const { birthday, email, homeLocation, name, nickName, phoneNumber, placeMetAt, picture, tags, work } = user || {};
+    const { birthday, email, homeLocation: { homeCity, homeState, homeCountry }, name, nickName, phoneNumber, placeMetAt, picture, tags, work } = user || {};
 
     const viewRows = [
         {

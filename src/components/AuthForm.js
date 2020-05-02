@@ -9,7 +9,7 @@ const AuthForm = ({ headerText, errorMessage, onSubmit, submitButtonText, passwo
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    // let secondTextInput = createRef();
+    // const [shouldBeDisabled, setShouldBeDisabled] = useState(email.length === 0 || name.length === 0);
 
     return (
         <>
@@ -53,13 +53,26 @@ const AuthForm = ({ headerText, errorMessage, onSubmit, submitButtonText, passwo
                 ? <Text style={styles.errorMessage}> {passwordError} </Text>
                 : null
             } */}
-            <MyButton
-                mode="contained"
-                onPress={() => onSubmit({ name, email, password })}
-                // disabled={password.length < 6}
-            >
-                {submitButtonText}
-            </MyButton>
+            {
+                // TODO: PWD?
+                (headerText === 'Register')
+                    ? <MyButton
+                        mode="contained"
+                        onPress={() => onSubmit({ name, email })}
+                        // disabled={password.length < 6}
+                        disabled={name.length === 0 || email.length === 0}
+                    >
+                        {submitButtonText}
+                    </MyButton>
+                    : <MyButton
+                        mode="contained"
+                        onPress={() => onSubmit({ email })}
+                        // disabled={password.length < 6}
+                        disabled={email.length === 0}
+                    >
+                        {submitButtonText}
+                    </MyButton>
+            }
         </>);
 }
 

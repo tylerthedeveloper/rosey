@@ -13,15 +13,15 @@ const SplashScreen = ({ navigation }) => {
             <Text style={styles.text}> Never forget a connection, no matter when, no matter where</Text>
             <MyButton
                 mode="contained"
-                onPress={() => navigation.navigate('Signin')}
-            >
-                Login
-            </MyButton>
-            <MyButton
-                mode="outlined"
                 onPress={() => navigation.navigate('Signup')}
             >
                 Register
+            </MyButton>
+            <MyButton
+                mode="outlined"
+                onPress={() => navigation.navigate('Signin')}
+            >
+                Login
             </MyButton>
         </Background>
     )
