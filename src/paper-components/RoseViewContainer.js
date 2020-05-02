@@ -10,24 +10,14 @@ import RoseForm from './RoseForm';
 const RoseViewContainer = ({
     navigation, props, user,
     view_updateFunction, view_updateFunctionText, view_secondFunction, view_secondFunctionText,
+    view_updateFunction_callback,
     form_updateFunction, form_updateFunctionText, form_secondFunction, form_secondFunctionText,
     form_updateFunction_callback
 }) => {
 
     const {
-        birthday, email, homeLocation, name, nickName, phoneNumber, placeMetAt, picture, tags, work
+        homeLocation: { city, state, country }, name, picture, tags
     } = user || {} //;
-
-    let city, state, country;
-    if (homeLocation) {
-        city = homeLocation.city;
-        state = homeLocation.state;
-        country = homeLocation.country;
-    } else {
-        city = "city";
-        state = "state";
-        country = "country";
-    };
 
     const [editing, setEditing] = useState(false);
     // console.log('user before', user)
@@ -44,7 +34,7 @@ const RoseViewContainer = ({
                         {...{
                             // view_updateFunction, seconf... TODO:
                             user, view_updateFunction: () => setEditing(true), view_updateFunctionText,
-                            view_secondFunction, view_secondFunctionText
+                            view_secondFunction, view_secondFunctionText, view_updateFunction_callback
                         }}
                     />
                     : <RoseForm

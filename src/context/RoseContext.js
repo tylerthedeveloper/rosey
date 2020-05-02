@@ -13,10 +13,12 @@ const roseReducer = (state, action) => {
         //     return state;
         case 'fetch_roses':
             return { ...state, roses: action.payload };
-        case 'clear_error_message':
-            return { ...state, errorMessage: '' };
+        case 'delete_rose':
+            return { ...state, roses: action.payload };
         case 'add_error_message':
             return { ...state, errorMessage: action.payload };
+        case 'clear_error_message':
+            return { ...state, errorMessage: '' };
         default:
             return state;
     }
@@ -103,12 +105,33 @@ const fetchAllRoses = (dispatch) => async () => {
     }
 }
 
+const deleteRose = (dispatch) => async ({ roseId, callback }) => {
+    try {
+        /* -------------------------------------------------------------------------- */
+        // const response = await roseyApi.delete('/roses', roseId);
+        /* -------------------------------------------------------------------------- */
+        // FIXME: PULL FROM CURRENT STATE???
+        const roses = await AsyncStorage.getItem('roses')
+            .then(req => JSON.parse(req));
+        console.log(roseId, callback);
+        // const roseId = roseObj.roseId;
+        const updatedRoseList = roses.filter(rose => rose.roseId !== roseId);
+        // console.log(' updatedRoseList', updatedRoseList);
+        await AsyncStorage.setItem('roses', JSON.stringify(updatedRoseList));
+        dispatch({ type: "delete_rose", payload: updatedRoseList });
+        callback();
+    } catch (err) {
+        console.log(err.message);
+        dispatch({ type: "add_error_message", payload: err.message });
+    }
+}
+
 const clearErrorMessage = (dispatch) => () => {
     dispatch({ type: 'clear_error_message' });
 };
 
 export const { Context, Provider } = createDataContext(
     roseReducer, // reducer
-    { fetchAllRoses, clearErrorMessage, addRose, editRose }, //list of action functions
+    { fetchAllRoses, clearErrorMessage, addRose, editRose, deleteRose }, //list of action functions
     { roses: [], errorMessage: '' } //default state values
 );

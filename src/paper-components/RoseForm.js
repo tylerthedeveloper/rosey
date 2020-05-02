@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { KeyboardAvoidingView, ScrollView, StyleSheet } from 'react-native';
-import { Avatar, Button, Card, TextInput } from 'react-native-paper';
+import { Avatar, Button, Card, TextInput, Divider, Paragraph } from 'react-native-paper';
 import Spacer from '../components/Spacer';
 
 const RoseForm = ({ user, props,
@@ -27,7 +27,13 @@ const RoseForm = ({ user, props,
 
     const [updated_birthday, setBirthday] = useState(birthday);
     const [updated_email, setEmail] = useState(email);
-    const [updated_homeLocation, setHomeLocation] = useState(homeLocation);
+    /* -------------------------------------------------------------------------- */
+    // const [updated_homeLocation, setHomeLocation] = useState(homeLocation);
+    // Home Location //
+    const [updated_homeCity, setHomeCity] = useState();
+    const [updated_homeState, setHomeState] = useState();
+    const [updated_homeCountry, setHomeCountry] = useState();
+    /* -------------------------------------------------------------------------- */
     const [updated_name, setName] = useState(name);
     const [updated_nickName, setNickName] = useState(nickName);
     const [updated_phoneNumber, setPhone] = useState(phoneNumber);
@@ -39,7 +45,14 @@ const RoseForm = ({ user, props,
     const updatedUser = {
         birthday: updated_birthday || '',
         email: updated_email || '',
-        homeLocation: updated_homeLocation || '',
+        // homeLocation: updated_homeLocation || '',
+        /* -------------------------------------------------------------------------- */
+        homeLocation: {
+            homeCity: updated_homeCity || '',
+            homeState: updated_homeState || '',
+            homeCountry: updated_homeCountry || '',
+        },
+        /* -------------------------------------------------------------------------- */
         name: updated_name || '',
         nickName: updated_nickName || '',
         phoneNumber: updated_phoneNumber || '',
@@ -75,6 +88,24 @@ const RoseForm = ({ user, props,
             left: "email",
             rightIcon: "email",
             editFunc: setEmail
+        },
+        {
+            value: updated_homeCity, subtitle: 'city',
+            left: "city",
+            rightIcon: "city",
+            editFunc: setHomeCity
+        },
+        {
+            value: updated_homeState, subtitle: 'state',
+            left: "drag-variant",
+            rightIcon: "drag-variant",
+            editFunc: setHomeState
+        },
+        {
+            value: updated_homeCountry, subtitle: 'country',
+            left: "crosshairs-gps",
+            rightIcon: "crosshairs-gps",
+            editFunc: setHomeCountry
         },
         {
             value: updated_work, subtitle: 'occupation',
@@ -121,7 +152,7 @@ const RoseForm = ({ user, props,
 
     return (
         <KeyboardAvoidingView behavior={'padding'}
-            keyboardVerticalOffset={50}
+            keyboardVerticalOffset={10}
             style={{ flex: 1 }}
         >
             <ScrollView >
@@ -143,6 +174,7 @@ const RoseForm = ({ user, props,
                         </Card.Actions>
                     ))
                 }
+                {/* <Divider /> */}
                 <Button disabled={JSON.stringify(user) === JSON.stringify(updatedUser)}
                     onPress={() => {
                         form_updateFunction({ roseObj: updatedUser, callback: () => form_updateFunction_callback(updatedUser) })
@@ -155,7 +187,7 @@ const RoseForm = ({ user, props,
                         _clearFormData();
                         form_secondFunction();
                     }}
-                    style={{ marginBottom: 10 }}
+                    style={{}}
                 >
                     {form_secondFunctionText}
                 </Button>
