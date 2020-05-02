@@ -10,8 +10,10 @@ const RoseForm = ({ user, props,
 }
 ) => {
 
-    const { birthday, email, homeLocation: { homeCity, homeState, homeCountry }, name, nickName, phoneNumber, placeMetAt, picture, tags, work, roseId
+    const { birthday, email, homeLocation, name, nickName, phoneNumber, placeMetAt, picture, tags, work, roseId
     } = user || {};
+
+    const { homeCity, homeState, homeCountry } = homeLocation || {};
 
     const [updated_birthday, setBirthday] = useState(birthday);
     const [updated_email, setEmail] = useState(email);

@@ -180,7 +180,7 @@ export default () => {
           // await AsyncStorage.removeItem('token'); // TODO: And user?
           // await AsyncStorage.multiRemove(['token', 'user']);
           /* -------------------------------------------------------------------------- */
-          await AsyncStorage.removeItem('user');
+          // await AsyncStorage.removeItem('user');
           dispatch({ type: 'signout' });
         } catch (e) {
           console.log(e.message);

@@ -7,7 +7,7 @@
       "ios",
       "android"
     ],
-    "version": "1.0.2",
+    "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/5.png",
     "splash": {
@@ -24,7 +24,10 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.rosey-app.rosey",
-      "buildNumber": "1.0.1"
+      "buildNumber": "1.0.2",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": "no"
+      }    
     }
   }
 }
