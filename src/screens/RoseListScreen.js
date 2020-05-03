@@ -17,7 +17,7 @@ const RoseListScreen = ({ navigation }) => {
         filteredRoses, filterToggle, setFilterToggle, filterItems, searchQuery, setSearchQuery
     ] = useListFilters(roses, fetchAllRoses);
 
-    console.log('roses', roses)
+    // console.log('roses', roses)
 
     return (
         <View style={styles.container}>
@@ -25,9 +25,9 @@ const RoseListScreen = ({ navigation }) => {
                 <Searchbar
                     autoCapitalize={"none"}
                     autoCorrect={false}
-                    placeholderTextColor={error}
+                    //placeholderTextColor={secondary}
                     placeholder="Search"
-                    iconColor={error}
+                    //iconColor={secondary}
                     value={searchQuery}
                     onChangeText={setSearchQuery}
                     style={styles.searchBar}
@@ -35,9 +35,8 @@ const RoseListScreen = ({ navigation }) => {
                 <IconButton
                     icon="image-filter-vintage"
                     onPress={() => setFilterToggle(!filterToggle)}
-                    style={styles.filterIcon}
                     size={35}
-                    color={error}
+                    //color={secondary}
                 />
             </View>
             {
@@ -75,7 +74,6 @@ const styles = StyleSheet.create({
     firstRow: {
         flexDirection: 'row',
         marginTop: 20,
-        // justifyContent: 'space-around',
     },
     searchBar: {
         marginLeft: 20,
@@ -86,9 +84,6 @@ const styles = StyleSheet.create({
         },
         shadowColor: '#ffffff'
     },
-    // filterIcon: {
-    //     color: theme.primary,
-    // },
     filterChips: {
         flexDirection: 'row',
         marginTop: 10,

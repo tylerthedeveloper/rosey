@@ -55,6 +55,7 @@ export const BottomTabNavigator = (props) => {
                 /> */}
                 <BottomTabs.Screen name="RoseListStack" component={roseListStack}
                     options={{
+                        title:'Rozy',
                         tabBarColor,
                         tabBarLabel: 'Roses',
                         tabBarIcon: ({ color }) => (
@@ -70,9 +71,11 @@ export const BottomTabNavigator = (props) => {
                     icon={fabIcon}
                     style={{
                         position: 'absolute',
-                        bottom: 100,
+                        bottom: 80,
                         right: 16,
+                        backgroundColor: theme.colors.secondary,
                     }}
+                    color="white"
                     onPress={() => props.navigation.navigate('AddRose')}
                 />
             </Portal>

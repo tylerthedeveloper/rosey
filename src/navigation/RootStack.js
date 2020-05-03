@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useContext } from 'react';
 /* -------------------------------------------------------------------------- */
 /*                               Main Root Stack                              */
 /* -------------------------------------------------------------------------- */
@@ -9,10 +9,19 @@ import { theme } from '../core/theme'
 import { createStackNavigator } from '@react-navigation/stack';
 import { BottomTabNavigator } from './Tabs';
 import { AddRoseScreen, ProfileScreen, RoseDetailScreen } from '../screens'
+import { AuthContext } from '../context/AuthContext';
 
 const RootStack = createStackNavigator();
+
 export const RootStackNavigator = () => {
+
     // const theme = useTheme(); // TODO:
+
+    const { state: { user } } = useContext(AuthContext);
+
+    // TODO: Try to get second inital
+    const firstInitial = (user.name) ? user.name.substring(0, 1).toUpperCase() : '';
+
     return (
         <RootStack.Navigator
             initialRouteName="Main"
@@ -27,11 +36,11 @@ export const RootStackNavigator = () => {
                                 ? options.title
                                 : scene.route.name;
                     return (
-                        <Appbar.Header theme={{ colors: { primary: theme.colors.secondary } }}>
+                        <Appbar.Header theme={{ colors: { primary: theme.colors.primary } }}>
                             {previous ? (
                                 <Appbar.BackAction
                                     onPress={navigation.goBack}
-                                    color={theme.colors.primary}
+                                    color={theme.colors.secondary}
                                 />
                             ) : (
                                     <TouchableOpacity
@@ -39,15 +48,24 @@ export const RootStackNavigator = () => {
                                             navigation.openDrawer();
                                         }}
                                     >
-                                        <Avatar.Image
-                                            size={40}
-                                            source={require('../../assets/5.png')}
-                                        />
+                                        {
+                                            (firstInitial)
+                                                ? <Avatar.Text size={40} label={firstInitial}
+                                                    style={{ borderColor: 'white', borderWidth: 1}}
+                                                />
+                                                : <Avatar.Image
+                                                    source={
+                                                        require('../../assets/5.png')
+                                                    }
+                                                    size={50}
+                                                />
+                                        }
                                     </TouchableOpacity>
                                 )}
+                            {/* previous ? title : <MaterialCommunityIcons name="flower-poppy" size={40} /> */}
                             <Appbar.Content
                                 title={
-                                    previous ? title : <MaterialCommunityIcons name="flower-poppy" size={40} />
+                                    previous ? title : 'Rozy'
                                 }
                             />
                         </Appbar.Header>

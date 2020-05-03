@@ -7,8 +7,8 @@ const RoseCardField = ({ value, subtitle, left, rightIcon, rightFunc }) => (
             title={value}
             subtitle={subtitle}
             left={(props) => <Avatar.Icon icon={left}  {...props} />}
-            right={(props) => <IconButton icon={rightIcon} {...props} onPress={rightFunc} />}
         />
+            {/* right={(props) => <IconButton icon={rightIcon} {...props} onPress={rightFunc} />} */}
     </Card.Actions>
 );
 
