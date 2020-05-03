@@ -1,7 +1,5 @@
-import React, { useContext, useEffect } from 'react';
-import { StyleSheet, Text, View, ActivityIndicator } from 'react-native';
-import { } from 'react-native-elements';
-// import { Context as AuthContext } from '../context/AuthContext';
+import React from 'react';
+import { ActivityIndicator, StyleSheet, View } from 'react-native';
 
 const ResolveAuthScreen = () => {
 

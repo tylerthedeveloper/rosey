@@ -145,7 +145,7 @@ const RoseForm = ({ user, props,
 
     return (
         <KeyboardAvoidingView behavior={'padding'}
-            keyboardVerticalOffset={10}
+            keyboardVerticalOffset={80}
             style={{ flex: 1 }}
         >
             <ScrollView >
@@ -171,7 +171,7 @@ const RoseForm = ({ user, props,
                 <Button disabled={JSON.stringify(user) === JSON.stringify(updatedUser)}
                     onPress={() => {
                         form_updateFunction({ roseObj: updatedUser, callback: () => form_updateFunction_callback(updatedUser) })
-                        _clearFormData();
+                        {/* _clearFormData(); */}
                     }}>
                     {form_updateFunctionText || 'Save'}
                 </Button>

@@ -2,17 +2,17 @@ import React, { memo } from 'react';
 import { Image, StyleSheet } from 'react-native';
 
 const Logo = () => (
-  <Image source={require('../../assets/5.png')} style={styles.image} />
+  <Image source={require('../../assets/app-icon.png')} style={styles.image} />
 );
 
 const styles = StyleSheet.create({
   image: {
-    width: 200,
+    width: 170,
     height: 170,
     marginBottom: 12,
-    opacity: .8,
+    // opacity: .8,
     borderRadius: 170 / 2,
-    borderWidth: 1,
+    // borderWidth: 1,
     overflow: 'hidden'
   },
 });

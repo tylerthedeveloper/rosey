@@ -5,7 +5,8 @@ import { Avatar, Card, Paragraph } from 'react-native-paper';
 
 const RoseListItem = ({ rose }) => {
     const navigation = useNavigation();
-    const { name, tags, picture } = rose;
+    const { name, tags, picture, homeLocation } = rose;
+    const { homeCity, homeState, homeCountry } = homeLocation || {};
     return (
         <TouchableOpacity style={styles.container} onPress={() => navigation.push('RoseDetail', { roseId: rose.roseId })}>
             <Card style={{ padding: 5 }}>
@@ -20,7 +21,7 @@ const RoseListItem = ({ rose }) => {
                         />
                     )}
                     title={name}
-                    subtitle="Some location???"
+                    subtitle={homeCity || homeState || homeCountry || "Some location???"}
                     right={props => (
                         <Avatar.Icon
                             {...props}

@@ -6,7 +6,7 @@ export default (roses, fetchAllRoses) => {
 
     // FIXME: This is just to fill cache!
     useEffect(() => {
-        console.log('jsef effec,t fetch roses');
+        // console.log('jsef effec,t fetch roses');
         fetchAllRoses();
     }, []);
 

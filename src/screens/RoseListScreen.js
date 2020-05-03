@@ -10,9 +10,7 @@ import MyHeader from '../paper-components/MyHeader';
 const RoseListScreen = ({ navigation }) => {
 
     const { state: { roses }, fetchAllRoses } = useContext(RoseContext);
-
-    const { primary, secondary, error } = theme.colors;
-
+    // const { primary, secondary, error } = theme.colors;
     const [
         filteredRoses, filterToggle, setFilterToggle, filterItems, searchQuery, setSearchQuery
     ] = useListFilters(roses, fetchAllRoses);

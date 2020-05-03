@@ -2,7 +2,6 @@ import { AsyncStorage } from 'react-native';
 import shortid from 'shortid';
 import createDataContext from './createDataContext';
 
-// TODO: Write to local 
 const roseReducer = (state, action) => {
     switch (action.type) {
         case 'add_rose':

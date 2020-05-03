@@ -91,7 +91,7 @@ export default () => {
           //   work: ''
           // };
           const user = _generateUser({ name, email });
-          console.log('sign up user', user);
+          // console.log('sign up user', user);
           await AsyncStorage.setItem('user', JSON.stringify(user));
           dispatch({ type: 'signup', payload: user });
           // const newUser = await AsyncStorage.getItem('user');
@@ -116,7 +116,7 @@ export default () => {
           const user = await AsyncStorage.getItem('user');
           if (!user) {
             const _user = _generateUser({ email });
-            console.log('sign in user', _user);
+            // console.log('sign in user', _user);
             dispatch({ type: 'signin', payload: _user });
           } else {
             console.log('sign in user', user);
@@ -146,7 +146,7 @@ export default () => {
       },
       // TODO: what about if token exists and user doesnt?
       tryLocalSignin: async () => {
-        console.log('tryLocalSignin');
+        // console.log('tryLocalSignin');
         try {
           /* -------------------------------------------------------------------------- */
           // const storageArr = await AsyncStorage.multiGet(['token', 'user']);
@@ -176,7 +176,7 @@ export default () => {
         dispatch({ type: 'clear_error_message' });
       },
       signout: async () => {
-        console.log('signout')
+        // console.log('signout')
         try {
           /* -------------------------------------------------------------------------- */
           // await AsyncStorage.removeItem('token'); // TODO: And user?

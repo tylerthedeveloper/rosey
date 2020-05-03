@@ -9,12 +9,9 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
 }
 ) => {
 
-
-    // console.log(user.birthday);
-    
     // TODO: ADD homeLocation
-
-    const { birthday, email, homeLocation: { homeCity, homeState, homeCountry }, name, nickName, phoneNumber, placeMetAt, picture, tags, work } = user || {};
+    const { birthday, email, homeLocation, name, nickName, phoneNumber, placeMetAt, picture, tags, work } = user || {};
+    const { homeCity, homeState, homeCountry } = homeLocation || {};
 
     const viewRows = [
         {
@@ -78,7 +75,7 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
                 style={{ marginBottom: 10 }}
                 onPress={() => {
                     const roseId = user.roseId;
-                    view_secondFunction({ roseId, callback: () => view_updateFunction_callback() })
+                    view_secondFunction({ roseId, callback: view_updateFunction_callback })
                 }}
             > {view_secondFunctionText}
             </Button>

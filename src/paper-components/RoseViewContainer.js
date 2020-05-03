@@ -16,8 +16,10 @@ const RoseViewContainer = ({
 }) => {
 
     const {
-        homeLocation: { homeCity, homeState, homeCountry }, name, picture, tags
+        homeLocation, name, picture, tags
     } = user || {} //;
+
+    const { homeCity, homeState, homeCountry } = homeLocation || {};
 
     const [editing, setEditing] = useState(false);
     // console.log('user before', user)
@@ -46,7 +48,7 @@ const RoseViewContainer = ({
                         // form_updateFunction_callback
                         form_updateFunction_callback={(obj) => {
                             if (!form_updateFunction_callback) {
-                                setEditing(false)
+                                setEditing(false);
                             } else {
                                 form_updateFunction_callback(obj);
                             }

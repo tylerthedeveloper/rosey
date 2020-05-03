@@ -2,7 +2,7 @@ import React, { useContext } from 'react';
 /* -------------------------------------------------------------------------- */
 /*                               Main Root Stack                              */
 /* -------------------------------------------------------------------------- */
-import { TouchableOpacity } from 'react-native';
+import { TouchableOpacity, Image } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Appbar, Avatar } from 'react-native-paper';
 import { theme } from '../core/theme'
@@ -65,7 +65,7 @@ export const RootStackNavigator = () => {
                             {/* previous ? title : <MaterialCommunityIcons name="flower-poppy" size={40} /> */}
                             <Appbar.Content
                                 title={
-                                    previous ? title : 'Rozy'
+                                    previous ? title : <Image source={require('../../assets/rozy-logo.png')} style={{ height: 45, width: 75 }}/>
                                 }
                             />
                         </Appbar.Header>

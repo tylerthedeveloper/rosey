@@ -19,7 +19,7 @@ const MapScreen = () => {
         rose.placeMetAt.coords.longitude !== -369
     );
 
-    console.log(roses.length, _roses.length)
+    // console.log(roses.length, _roses.length)
 
     return (
         <>
@@ -27,11 +27,6 @@ const MapScreen = () => {
         </>
     )
 }
-
-MapScreen.navigationOptions = {
-    title: '',
-    tabBarIcon: <FontAwesome name="map" size={20} />
-};
 
 const styles = StyleSheet.create({
     container: {
