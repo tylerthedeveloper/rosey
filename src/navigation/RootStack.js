@@ -40,7 +40,7 @@ export const RootStackNavigator = () => {
                             {previous ? (
                                 <Appbar.BackAction
                                     onPress={navigation.goBack}
-                                    color={theme.colors.secondary}
+                                    color={'white'}
                                 />
                             ) : (
                                     <TouchableOpacity

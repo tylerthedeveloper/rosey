@@ -9,12 +9,15 @@ import { Portal, FAB } from 'react-native-paper';
 import { useIsFocused } from '@react-navigation/native';
 import { roseListStack } from './RoseListStack';
 import { theme } from '../core/theme';
+import { Dimensions } from 'react-native';
 
 const BottomTabs = createBottomTabNavigator();
 
 export const BottomTabNavigator = (props) => {
 
     const isFocused = useIsFocused();
+
+    const screenHeight = Dimensions.get('screen').height;
 
     const routeName = props.route.state
         ? props.route.state.routes[props.route.state.index].name
@@ -71,7 +74,7 @@ export const BottomTabNavigator = (props) => {
                     icon={fabIcon}
                     style={{
                         position: 'absolute',
-                        bottom: 80,
+                        top: screenHeight - (screenHeight * 0.18),
                         right: 16,
                         backgroundColor: theme.colors.secondary,
                     }}

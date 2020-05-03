@@ -43,7 +43,7 @@ export default () => {
     { isLoading: true, token: null, errorMessage: '', user: {} }
   );
 
-  const generateUser = ({ name, email }) => {
+  const _generateUser = ({ name, email }) => {
     return {
       name: name || '',
       email: email || '',
@@ -62,6 +62,7 @@ export default () => {
       work: ''
     };
   }
+
   const authContext = useMemo(() => {
     return {
       signup: async ({ name, email, password }) => {
@@ -89,7 +90,7 @@ export default () => {
           //   tags: '',
           //   work: ''
           // };
-          const user = generateUser({ name, email });
+          const user = _generateUser({ name, email });
           console.log('sign up user', user);
           await AsyncStorage.setItem('user', JSON.stringify(user));
           dispatch({ type: 'signup', payload: user });
@@ -114,10 +115,11 @@ export default () => {
           /* -------------------------------------------------------------------------- */
           const user = await AsyncStorage.getItem('user');
           if (!user) {
-            const _user = generateUser({ email });
+            const _user = _generateUser({ email });
             console.log('sign in user', _user);
             dispatch({ type: 'signin', payload: _user });
           } else {
+            console.log('sign in user', user);
             dispatch({ type: 'signin', payload: JSON.parse(user) });
           }
         } catch (err) {
