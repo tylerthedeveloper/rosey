@@ -1,12 +1,12 @@
 import React from 'react';
 import { ImageBackground, StyleSheet } from 'react-native';
 import { Avatar, Card, Paragraph, Title } from 'react-native-paper';
-import { theme } from '../core/theme';
+import { theme } from '../../core/theme';
 
 const RoseHeader = ({ name, picture, homeCity, homeState, homeCountry }) => (
     <ImageBackground
         // source={{ uri: 'https://picsum.photos/700' }}
-        source={require('../../assets/background_dot_2x.png')}
+        source={require('../../../assets/background_dot_2x.png')}
         resizeMode="repeat"
         style={styles.headerBackgroundImage}>
         <Card.Content style={{ alignSelf: 'center', alignItems: 'center' }}>

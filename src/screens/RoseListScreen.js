@@ -4,8 +4,7 @@ import { Chip, IconButton, Searchbar, Headline } from 'react-native-paper';
 import { Context as RoseContext } from '../context/RoseContext';
 import { theme } from '../core/theme';
 import useListFilters from '../hooks/useListFilters';
-import RoseListItem from '../paper-components/RoseListItem';
-import MyHeader from '../paper-components/MyHeader';
+import { RoseListItem } from '../paper-components/partial';
 
 const RoseListScreen = ({ navigation }) => {
 
@@ -15,7 +14,6 @@ const RoseListScreen = ({ navigation }) => {
         filteredRoses, filterToggle, setFilterToggle, filterItems, searchQuery, setSearchQuery
     ] = useListFilters(roses, fetchAllRoses);
 
-    // console.log('roses', roses)
 
     return (
         <View style={styles.container}>
@@ -31,10 +29,11 @@ const RoseListScreen = ({ navigation }) => {
                     style={styles.searchBar}
                 />
                 <IconButton
-                    icon="image-filter-vintage"
+                    icon="filter-variant"
                     onPress={() => setFilterToggle(!filterToggle)}
                     size={35}
-                    //color={secondary}
+                    style={styles.filterIcon}
+                //color={secondary}
                 />
             </View>
             {
@@ -50,14 +49,14 @@ const RoseListScreen = ({ navigation }) => {
             }
             {
                 (filteredRoses && filteredRoses.length > 0)
-                ? <FlatList
-                    data={filteredRoses}
-                    keyExtractor={(item) => (item.roseId)}
-                    renderItem={({ item }) => {
-                        return (<RoseListItem rose={item} />)
-                    }}
-                />
-                : <Headline style={styles.noRosesHeader}> No Roses yet? Add your first one!</Headline>
+                    ? <FlatList
+                        data={filteredRoses}
+                        keyExtractor={(item) => (item.roseId)}
+                        renderItem={({ item }) => {
+                            return (<RoseListItem rose={item} />)
+                        }}
+                    />
+                    : <Headline style={styles.noRosesHeader}> No Roses yet? Add your first one!</Headline>
             }
         </View>
     )
@@ -72,15 +71,20 @@ const styles = StyleSheet.create({
     firstRow: {
         flexDirection: 'row',
         marginTop: 20,
+        marginLeft: 20,
     },
     searchBar: {
-        marginLeft: 20,
-        width: '75%',
+        minWidth: '75%',
+        maxWidth: '85%',
+        flex: 1,
         shadowOffset: {
             width: 0,
             height: 0
         },
         shadowColor: '#ffffff'
+    },
+    filterIcon: {
+        flex: 2
     },
     filterChips: {
         flexDirection: 'row',

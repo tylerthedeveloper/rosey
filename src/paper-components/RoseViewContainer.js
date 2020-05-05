@@ -1,29 +1,26 @@
-import React, { useState, Fragment } from 'react';
-import { KeyboardAvoidingView, ScrollView, StyleSheet, View } from 'react-native';
-import { Avatar, Button, Card, TextInput } from 'react-native-paper';
-// import RoseCardField from './RoseCardField';
-import RoseHeader from './RoseHeader';
-import RoseView from './RoseView';
-import RoseForm from './RoseForm';
+import React, { useState } from 'react';
+import { StyleSheet } from 'react-native';
+import { Card } from 'react-native-paper';
+import { RoseHeader } from './partial';
+import { RoseForm, RoseView } from './view';
 
-// TODO: get better colored background
+// TODO: Clean props!
+// navigation, props, view_updateFunction, form_secondFunction
 const RoseViewContainer = ({
-    navigation, props, user,
-    view_updateFunction, view_updateFunctionText, view_secondFunction, view_secondFunctionText,
+    user,
+    view_updateFunctionText, view_secondFunction, view_secondFunctionText,
     view_updateFunction_callback,
-    form_updateFunction, form_updateFunctionText, form_secondFunction, form_secondFunctionText,
+    form_updateFunction, form_updateFunctionText, form_secondFunctionText,
     form_updateFunction_callback
 }) => {
 
     const {
         homeLocation, name, picture, tags
-    } = user || {} //;
+    } = user || {};
 
     const { homeCity, homeState, homeCountry } = homeLocation || {};
 
     const [editing, setEditing] = useState(false);
-    // console.log('user before', user)
-    // console.log('updatedUser', updatedUser)
 
     return (
         <>
@@ -68,24 +65,6 @@ const styles = StyleSheet.create({
         // borderWidth: 1,
         // paddingBottom: 10,
         // flex: 1
-    },
-    cardContent: {
-        // alignItems: 'stretch',
-        // flex: 1,
-        // flexDirection: 'row',
-        // alignSelf: 'stretch',
-        // alignItems: 'center',
-        // justifyContent: 'flex-start',
-        paddingLeft: 22,
-        paddingRight: 20,
-        marginTop: 3,
-        marginLeft: 2,
-        // width: '100%',
-        marginBottom: 5
-    },
-    textInput: {
-        width: '70%',
-        alignSelf: 'flex-end'
     }
 })
 

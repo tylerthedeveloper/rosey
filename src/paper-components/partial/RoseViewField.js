@@ -1,7 +1,7 @@
 import React from 'react';
 import { Avatar, Card, IconButton } from 'react-native-paper';
 
-const RoseCardField = ({ value, subtitle, left, rightIcon, rightFunc }) => (
+const RoseViewField = ({ value, subtitle, left, rightIcon, rightFunc }) => (
     <Card.Actions key={value}>
         <Card.Title
             title={value}
@@ -12,4 +12,4 @@ const RoseCardField = ({ value, subtitle, left, rightIcon, rightFunc }) => (
     </Card.Actions>
 );
 
-export default RoseCardField;
+export default RoseViewField;

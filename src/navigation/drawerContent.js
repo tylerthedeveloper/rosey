@@ -50,7 +50,7 @@ const DrawerContent = (props) => {
                                 ? <Avatar.Text size={40} label={firstInitial} />
                                 : <Avatar.Image
                                     source={
-                                        require('../../assets/5.png')
+                                        require('../../assets/app-icon.png')
                                     }
                                     size={50}
                                 />

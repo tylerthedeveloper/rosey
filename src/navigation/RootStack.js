@@ -13,14 +13,26 @@ import { AuthContext } from '../context/AuthContext';
 
 const RootStack = createStackNavigator();
 
+const _generateInitials = (nameString) => {
+    let initials;
+    const names = (nameString) ? nameString.split(' ') : null;
+    if (names) {
+        initials = (names[0]).substring(0, 1).toUpperCase();
+        if (names[1]) {
+            initials += (names[1]).substring(0, 1).toUpperCase();
+        }
+    }
+    return initials;
+}
+
 export const RootStackNavigator = () => {
 
     // const theme = useTheme(); // TODO:
 
     const { state: { user } } = useContext(AuthContext);
 
-    // TODO: Try to get second inital
-    const firstInitial = (user.name) ? user.name.substring(0, 1).toUpperCase() : '';
+    // TODO: Do i care about middle names??
+    let initials = _generateInitials(user.name);
 
     return (
         <RootStack.Navigator
@@ -49,23 +61,22 @@ export const RootStackNavigator = () => {
                                         }}
                                     >
                                         {
-                                            (firstInitial)
-                                                ? <Avatar.Text size={40} label={firstInitial}
-                                                    style={{ borderColor: 'white', borderWidth: 1}}
+                                            (initials)
+                                                ? <Avatar.Text size={40} label={initials}
+                                                    style={{ borderColor: 'white', borderWidth: 1 }}
                                                 />
                                                 : <Avatar.Image
                                                     source={
-                                                        require('../../assets/5.png')
+                                                        require('../../assets/app-icon.png')
                                                     }
                                                     size={50}
                                                 />
                                         }
                                     </TouchableOpacity>
                                 )}
-                            {/* previous ? title : <MaterialCommunityIcons name="flower-poppy" size={40} /> */}
                             <Appbar.Content
                                 title={
-                                    previous ? title : <Image source={require('../../assets/rozy-logo.png')} style={{ height: 45, width: 75 }}/>
+                                    previous ? title : <Image source={require('../../assets/rozy-logo.png')} style={{ height: 45, width: 75 }} />
                                 }
                             />
                         </Appbar.Header>

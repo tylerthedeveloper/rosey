@@ -1,7 +1,7 @@
 import React from 'react';
-import { View, ScrollView } from 'react-native';
+import { ScrollView } from 'react-native';
 import { Button } from 'react-native-paper';
-import RoseCardField from './RoseCardField';
+import RoseViewField from '../partial/RoseViewField';
 
 const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
     view_secondFunction, view_secondFunctionText,
@@ -61,7 +61,7 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
         <ScrollView>
             {
                 viewRows.map(({ value, subtitle, left, rightIcon, rightFunc }) => (
-                    <RoseCardField
+                    <RoseViewField
                         key={subtitle}
                         value={value}
                         subtitle={subtitle}

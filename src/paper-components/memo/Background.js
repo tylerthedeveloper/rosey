@@ -4,14 +4,14 @@ import { ImageBackground, KeyboardAvoidingView, StyleSheet } from 'react-native'
 const Background = ({ children }) => {
     return (
         <ImageBackground
-            source={require('../../assets/background_dot_2x.png')}
+            source={require('../../../assets/background_dot_2x.png')}
             resizeMode="repeat"
             style={styles.background}
         >
             <KeyboardAvoidingView style={styles.container} behavior="padding">
                 {children}
             </KeyboardAvoidingView>
-        </ImageBackground >
+        </ImageBackground>
     )
 }
 
@@ -24,7 +24,8 @@ const styles = StyleSheet.create({
         flex: 1,
         padding: 15,
         width: '100%',
-        maxWidth: 340,
+        // TODO:
+        //maxWidth: 340,
         alignSelf: 'center',
         alignItems: 'center',
         justifyContent: 'center',
