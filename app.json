@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "rosey-app",
-    "slug": "rosey-app",
+    "name": "Rozy",
+    "slug": "rozy",
     "sdkVersion": "37.0.0",
     "platforms": [
       "ios",
@@ -24,7 +24,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.rosey-app.rosey",
-      "buildNumber": "1.0.4",
+      "buildNumber": "1.0.6",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": "no"
       }    
