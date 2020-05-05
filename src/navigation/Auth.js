@@ -1,6 +1,6 @@
 import { createStackNavigator } from '@react-navigation/stack';
 import React from 'react';
-import {SigninScreen, SignupScreen, SplashScreen} from '../screens';
+import {SigninScreen, SignupScreen, SplashScreen} from '../screens/Auth';
 
 /* -------------------------------------------------------------------------- */
 /*                                Auth Section                                */

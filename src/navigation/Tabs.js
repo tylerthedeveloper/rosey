@@ -74,7 +74,8 @@ export const BottomTabNavigator = (props) => {
                     icon={fabIcon}
                     style={{
                         position: 'absolute',
-                        top: screenHeight - (screenHeight * 0.18),
+                        //top: screenHeight - (screenHeight * 0.18),
+                        bottom: (screenHeight * 0.105),
                         right: 16,
                         backgroundColor: theme.colors.secondary,
                     }}

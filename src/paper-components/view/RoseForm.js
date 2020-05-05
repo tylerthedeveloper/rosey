@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { KeyboardAvoidingView, ScrollView, StyleSheet } from 'react-native';
-import { Avatar, Button, Card, TextInput, Divider, Paragraph } from 'react-native-paper';
-import Spacer from '../components/Spacer';
+import { Avatar, Button, Card, TextInput } from 'react-native-paper';
+import Spacer from '../../components/Spacer';
 
 const RoseForm = ({ user, props,
     form_updateFunction, form_updateFunctionText,
@@ -56,7 +56,6 @@ const RoseForm = ({ user, props,
         roseId: roseId || ''
     };
 
-    // TODO: CLEAR AFTER LEAVE?
     const formRows = [
         {
             value: updated_name, subtitle: 'name',
@@ -140,7 +139,7 @@ const RoseForm = ({ user, props,
     // };
     /* -------------------------------------------------------------------------- */
 
-    console.log(JSON.stringify(user) === JSON.stringify(updatedUser));
+    // console.log(JSON.stringify(user) === JSON.stringify(updatedUser));
     const _clearFormData = () => formRows.map(row => row.editFunc(''));
 
     return (
@@ -171,7 +170,6 @@ const RoseForm = ({ user, props,
                 <Button disabled={JSON.stringify(user) === JSON.stringify(updatedUser)}
                     onPress={() => {
                         form_updateFunction({ roseObj: updatedUser, callback: () => form_updateFunction_callback(updatedUser) })
-                        {/* _clearFormData(); */}
                     }}>
                     {form_updateFunctionText || 'Save'}
                 </Button>
@@ -196,12 +194,14 @@ const styles = StyleSheet.create({
         paddingRight: 20,
         marginTop: 3,
         marginLeft: 2,
-        // width: '100%',
+        width: '100%',
         marginBottom: 5
     },
+    // TODO:
     textInput: {
-        width: '70%',
-        minWidth: '70%'
+        //width: '70%',
+        minWidth: '70%',
+        maxWidth: '90%'
     }
 });
 

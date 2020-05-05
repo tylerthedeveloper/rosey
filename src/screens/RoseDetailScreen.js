@@ -7,8 +7,8 @@ const RoseDetailScreen = ({ navigation, route }) => {
     const { roseId } = route.params;
     const { state: { roses }, editRose, deleteRose } = useContext(RoseContext);
     const rose = roses.find(rose => rose.roseId === roseId);
-    console.log(roseId, rose);
-    console.log(route);
+    // console.log(roseId, rose);
+    // console.log(route);
 
     return (
         <RoseViewContainer {...{

@@ -21,7 +21,7 @@ const RoseListItem = ({ rose }) => {
                         />
                     )}
                     title={name}
-                    subtitle={homeCity || homeState || homeCountry || "Some location???"}
+                    subtitle={homeCity || homeState || homeCountry || "(Somewhere!)"}
                     right={props => (
                         <Avatar.Icon
                             {...props}
@@ -33,7 +33,7 @@ const RoseListItem = ({ rose }) => {
                 />
                 <Card.Actions>
                     <Paragraph> Tags: </Paragraph>
-                    <Paragraph> {tags} </Paragraph>
+                    <Paragraph> {tags || 'Add some tags!'} </Paragraph>
                 </Card.Actions>
             </Card>
         </TouchableOpacity >

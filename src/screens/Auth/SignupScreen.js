@@ -1,9 +1,9 @@
 import React, { useContext, useEffect } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { AuthForm } from '../components';
-import { AuthContext } from '../context/AuthContext';
-import { theme } from '../core/theme';
-import Background from '../paper-components/Background';
+import { AuthContext } from '../../context/AuthContext';
+import { theme } from '../../core/theme';
+import { AuthForm } from '../../paper-components/view';
+import { Background } from '../../paper-components/memo';
 
 const SignupScreen = ({ navigation }) => {
 

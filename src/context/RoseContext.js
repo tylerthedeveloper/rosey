@@ -37,13 +37,13 @@ const addRose = (dispatch) => async ({ roseObj, callback }) => {
         // FIXME: BETTER GUID/UID 
         const roseId = (roseObj.name) ? shortid.generate(roseObj.name) : shortid.generate();
         roseObj.roseId = roseId;
-        console.log('added rose', roseObj)
+        // console.log('added rose', roseObj)
         // FIXME: PULL FROM CURRENT STATE???
         const roses = await AsyncStorage.getItem('roses')
             .then(req => JSON.parse(req));
-        console.log('roses from added', roses);
+        // console.log('roses from added', roses);
         const updatedRoseList = [...(roses || []), roseObj];
-        console.log(' updatedRoseList', updatedRoseList);
+        // console.log(' updatedRoseList', updatedRoseList);
         await AsyncStorage.setItem('roses', JSON.stringify(updatedRoseList));
         dispatch({ type: "add_rose", payload: roseObj });
         callback(roseObj);
@@ -60,18 +60,18 @@ const editRose = (dispatch) => async ({ roseObj, callback }) => {
         // const newRose = response.data.rose;
         /* -------------------------------------------------------------------------- */
         // FIXME: BETTER GUID/UID 
-        console.log('current rose', roseObj);
+        // console.log('current rose', roseObj);
         const roses = await AsyncStorage.getItem('roses')
             .then(req => JSON.parse(req));
-        console.log('roses', roses);
+        // console.log('roses', roses);
         const updatedRoseList = roses.map(rose => {
-            console.log(rose.name, roseObj.roseId, rose.roseId)
+            // console.log(rose.name, roseObj.roseId, rose.roseId)
             if (rose.roseId && roseObj.roseId === rose.roseId) {
                 return roseObj
             }
             return rose;
         });
-        console.log('updatedRoseList', updatedRoseList);
+        // console.log('updatedRoseList', updatedRoseList);
         await AsyncStorage.setItem('roses', JSON.stringify(updatedRoseList));
         dispatch({ type: "edit_rose", payload: updatedRoseList });
         callback(roseObj);
@@ -118,7 +118,7 @@ const deleteRose = (dispatch) => async ({ roseId, callback }) => {
         // FIXME: PULL FROM CURRENT STATE???
         const roses = await AsyncStorage.getItem('roses')
             .then(req => JSON.parse(req));
-        console.log(roseId, callback);
+        // console.log(roseId, callback);
         // const roseId = roseObj.roseId;
         const updatedRoseList = roses.filter(rose => rose.roseId !== roseId);
         // console.log(' updatedRoseList', updatedRoseList);

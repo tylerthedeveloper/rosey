@@ -74,22 +74,6 @@ export default () => {
           // dispatch({ type: 'signup', payload: { token, user } });
           /* -------------------------------------------------------------------------- */
           // console.log('singup', name, email)
-          // const user = {
-          //   name, email,
-          //   // Defaults:
-          //   birthday: '', homeLocation: { homeCity: '', homeState: '', homeCountry: '' },
-          //   nickName: '', phoneNumber: '',
-          //   placeMetAt: {
-          //     placeName: '',
-          //     coords: {
-          //       latitude: -369,
-          //       longitude: -369
-          //     }
-          //   },
-          //   picture: '',
-          //   tags: '',
-          //   work: ''
-          // };
           const user = _generateUser({ name, email });
           // console.log('sign up user', user);
           await AsyncStorage.setItem('user', JSON.stringify(user));
@@ -119,7 +103,7 @@ export default () => {
             // console.log('sign in user', _user);
             dispatch({ type: 'signin', payload: _user });
           } else {
-            console.log('sign in user', user);
+            // console.log('sign in user', user);
             dispatch({ type: 'signin', payload: JSON.parse(user) });
           }
         } catch (err) {
@@ -146,7 +130,7 @@ export default () => {
       },
       // TODO: what about if token exists and user doesnt?
       tryLocalSignin: async () => {
-        // console.log('tryLocalSignin');
+        console.log('tryLocalSignin');
         try {
           /* -------------------------------------------------------------------------- */
           // const storageArr = await AsyncStorage.multiGet(['token', 'user']);
@@ -206,7 +190,6 @@ export default () => {
   const errorHandler = (error, stackTrace) => {
     /* Log the error to an error reporting service */
     console.log(error);
-    // console.error(error);
     // console.error(stackTrace);
   }
 
@@ -215,9 +198,9 @@ export default () => {
       <AuthContext.Provider value={{ state, ...authContext }}>
         <RoseProvider>
           <PaperProvider theme={theme}>
+            {/* https://reactnavigation.org/docs/navigating-without-navigation-prop/ */}
+            {/* <App ref={(navigator) => setNavigator(navigator)} /> */}
             <NavigationContainer ref={navigationRef}>
-              {/* https://reactnavigation.org/docs/navigating-without-navigation-prop/ */}
-              {/* <App ref={(navigator) => setNavigator(navigator)} /> */}
               <AppStack.Navigator initialRouteName="ResolveAuth" headerMode='none'>
                 {
                   state.isLoading ?

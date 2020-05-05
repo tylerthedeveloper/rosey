@@ -1,13 +1,10 @@
 import React from 'react';
 import { Linking, StyleSheet, Text, TouchableOpacity } from 'react-native';
-import { Paragraph } from 'react-native-paper';
-import { theme } from '../core/theme';
-import { Logo, MyButton, MyHeader } from '../paper-components';
-import Background from '../paper-components/Background';
-import { privacyUrl } from '../api/landingApi';
+import { privacyUrl } from '../../api/landingApi';
+import { theme } from '../../core/theme';
+import { Background, Logo, MyButton, MyHeader } from '../../paper-components/memo';
 
 const SplashScreen = ({ navigation }) => {
-
     return (
         <Background style={styles.container}>
             <Logo />

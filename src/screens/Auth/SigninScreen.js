@@ -1,9 +1,10 @@
 import React, { useContext, useEffect } from 'react';
-import { StyleSheet, Text, View, Button, TouchableOpacity } from 'react-native';
-import {AuthForm, Spacer} from '../components';
-import { AuthContext } from '../context/AuthContext';
-import Background from '../paper-components/Background';
-import { theme } from '../core/theme';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { Spacer } from '../../components';
+import { AuthContext } from '../../context/AuthContext';
+import { theme } from '../../core/theme';
+import { Background } from '../../paper-components/memo';
+import { AuthForm } from '../../paper-components/view';
 
 const SigninScreen = ({ navigation }) => {
 

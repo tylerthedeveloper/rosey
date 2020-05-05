@@ -1,8 +1,7 @@
-import React, { useState, createRef } from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Input, Text } from 'react-native-elements';
-import Spacer from './Spacer';
-import { Logo, MyHeader, MyTextInput, MyButton } from '../paper-components';
+import { Text } from 'react-native-elements';
+import { Logo, MyButton, MyHeader, MyTextInput } from '../../paper-components/memo';
 
 const AuthForm = ({ headerText, errorMessage, onSubmit, submitButtonText, passwordError }) => {
 
@@ -14,7 +13,6 @@ const AuthForm = ({ headerText, errorMessage, onSubmit, submitButtonText, passwo
     return (
         <>
             <Logo />
-
             <MyHeader >
                 {headerText}
             </MyHeader>
@@ -53,6 +51,7 @@ const AuthForm = ({ headerText, errorMessage, onSubmit, submitButtonText, passwo
                 ? <Text style={styles.errorMessage}> {passwordError} </Text>
                 : null
             } */}
+            <View style={styles.buttons}>
             {
                 // TODO: PWD?
                 (headerText === 'Register')
@@ -73,14 +72,15 @@ const AuthForm = ({ headerText, errorMessage, onSubmit, submitButtonText, passwo
                         {submitButtonText}
                     </MyButton>
             }
+            </View>
         </>);
 }
 
 const styles = StyleSheet.create({
-    container: {
+    buttons: {
         // padding: 15,
-        // width: '100%',
-        // maxWidth: 340,
+        // minWidth: '70%',
+        // maxWidth: '85%',
         // alignSelf: 'center',
         // alignItems: 'center',
         // justifyContent: 'center',
