@@ -1,14 +1,14 @@
 import React, { useContext } from 'react';
-import { StyleSheet } from 'react-native';
-import RoseViewContainer from '../paper-components/RoseViewContainer';
 import { Context as RoseContext } from '../context/RoseContext';
-
+import RoseViewContainer from '../paper-components/RoseViewContainer';
 
 const RoseDetailScreen = ({ navigation, route }) => {
 
     const { roseId } = route.params;
     const { state: { roses }, editRose, deleteRose } = useContext(RoseContext);
     const rose = roses.find(rose => rose.roseId === roseId);
+    console.log(roseId, rose);
+    console.log(route);
 
     return (
         <RoseViewContainer {...{
@@ -23,19 +23,5 @@ const RoseDetailScreen = ({ navigation, route }) => {
         }}
         />)
 }
-
-const styles = StyleSheet.create({
-    container: {
-        flex: 1,
-        justifyContent: 'center'
-    },
-    name: {
-        fontWeight: 'bold',
-        fontSize: 30
-    },
-    image: {
-        height: 250
-    }
-});
 
 export default RoseDetailScreen;

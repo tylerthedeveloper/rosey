@@ -17,13 +17,16 @@ const AddRoseScreen = ({ navigation }) => {
                 form_updateFunctionText="Add new Rose"
                 form_secondFunction={navigation.goBack}
                 form_secondFunctionText="Cancel"
-                form_updateFunction_callback={(obj) => navigation.navigate('Main', {
-                    screen: 'RoseListStack',
-                    params: {
-                        screen: 'RoseDetail',
-                        params: { roseId: obj.roseId }
-                    }
-                })}
+                form_updateFunction_callback={(obj) => navigation.replace('RoseDetail', 
+                        { roseId: obj.roseId }
+                )}
+                // {/* form_updateFunction_callback={(obj) => navigation.navigate('Main', {
+                //    screen: 'RoseListStack',
+                //    params: {
+                //        screen: 'RoseDetail',
+                //        params: { roseId: obj.roseId }
+                //    }
+                //})} */}
                 // form_updateFunction_callback={(obj) => navigation.navigate('RoseDetail', {
                 //     params: { rose: obj }
                 // })}

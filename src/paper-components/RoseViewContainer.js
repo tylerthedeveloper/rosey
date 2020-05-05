@@ -16,8 +16,10 @@ const RoseViewContainer = ({
 }) => {
 
     const {
-        homeLocation: { city, state, country }, name, picture, tags
+        homeLocation, name, picture, tags
     } = user || {} //;
+
+    const { homeCity, homeState, homeCountry } = homeLocation || {};
 
     const [editing, setEditing] = useState(false);
     // console.log('user before', user)
@@ -26,7 +28,7 @@ const RoseViewContainer = ({
     return (
         <>
             <Card style={styles.card}>
-                <RoseHeader {...{ name, picture, city, state, country }} />
+                <RoseHeader {...{ name, picture, homeCity, homeState, homeCountry }} />
             </Card >
             {
                 (!editing)
@@ -46,7 +48,7 @@ const RoseViewContainer = ({
                         // form_updateFunction_callback
                         form_updateFunction_callback={(obj) => {
                             if (!form_updateFunction_callback) {
-                                setEditing(false)
+                                setEditing(false);
                             } else {
                                 form_updateFunction_callback(obj);
                             }

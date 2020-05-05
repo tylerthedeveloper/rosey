@@ -13,32 +13,25 @@ const RoseForm = ({ user, props,
     const { birthday, email, homeLocation, name, nickName, phoneNumber, placeMetAt, picture, tags, work, roseId
     } = user || {};
 
-    let city, state, country;
-    if (homeLocation) {
-        city = homeLocation.city;
-        state = homeLocation.state;
-        country = homeLocation.country;
-    }
-    // else {
-    //     city = "city";
-    //     state = "state";
-    //     country = "country";
-    // };
+    const { homeCity, homeState, homeCountry } = homeLocation || {};
 
     const [updated_birthday, setBirthday] = useState(birthday);
     const [updated_email, setEmail] = useState(email);
     /* -------------------------------------------------------------------------- */
     // const [updated_homeLocation, setHomeLocation] = useState(homeLocation);
     // Home Location //
-    const [updated_homeCity, setHomeCity] = useState();
-    const [updated_homeState, setHomeState] = useState();
-    const [updated_homeCountry, setHomeCountry] = useState();
+    const [updated_homeCity, setHomeCity] = useState(homeCity);
+    const [updated_homeState, setHomeState] = useState(homeState);
+    const [updated_homeCountry, setHomeCountry] = useState(homeCountry);
     /* -------------------------------------------------------------------------- */
     const [updated_name, setName] = useState(name);
     const [updated_nickName, setNickName] = useState(nickName);
     const [updated_phoneNumber, setPhone] = useState(phoneNumber);
+    // ────────────────────────────────────────────────────────────────────────────────
+    // NOT YET USED //
     const [updated_placeMetAt, setPlaceMetAt] = useState(placeMetAt);
     const [updated_picture, setPicture] = useState(picture);
+    // ────────────────────────────────────────────────────────────────────────────────
     const [updated_tags, setTags] = useState(tags);
     const [updated_work, setWork] = useState(work);
 
@@ -152,7 +145,7 @@ const RoseForm = ({ user, props,
 
     return (
         <KeyboardAvoidingView behavior={'padding'}
-            keyboardVerticalOffset={10}
+            keyboardVerticalOffset={80}
             style={{ flex: 1 }}
         >
             <ScrollView >
@@ -178,7 +171,7 @@ const RoseForm = ({ user, props,
                 <Button disabled={JSON.stringify(user) === JSON.stringify(updatedUser)}
                     onPress={() => {
                         form_updateFunction({ roseObj: updatedUser, callback: () => form_updateFunction_callback(updatedUser) })
-                        _clearFormData();
+                        {/* _clearFormData(); */}
                     }}>
                     {form_updateFunctionText || 'Save'}
                 </Button>

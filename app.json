@@ -1,17 +1,22 @@
 {
   "expo": {
+<<<<<<< HEAD
     "name": "Rosey",
     "slug": "rosey app",
+=======
+    "name": "rosey-app",
+    "slug": "rosey-app",
+    "sdkVersion": "37.0.0",
+>>>>>>> baff84b024f4e6c86a4c634e54f56f7a8f0b4d23
     "platforms": [
       "ios",
-      "android",
-      "web"
+      "android"
     ],
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/5.png",
+    "icon": "./assets/app-icon.png",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./assets/app-icon.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -24,11 +29,10 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.rosey-app.rosey",
-      "buildNumber": "1.0.0"
-    },
-    "android": {
-      "package": "com.rosey-app.rosey",
-      "versionCode": 1
+      "buildNumber": "1.0.4",
+      "infoPlist": {
+        "ITSAppUsesNonExemptEncryption": "no"
+      }    
     }
   }
 }

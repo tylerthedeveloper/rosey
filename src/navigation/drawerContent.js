@@ -1,14 +1,21 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
-import React from 'react';
+import React, { useContext } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Avatar, Caption, Drawer, Paragraph, Title, useTheme } from 'react-native-paper';
 import Animated from 'react-native-reanimated';
+import { AuthContext } from '../context/AuthContext';
 // import { PreferencesContext } from './context/preferencesContext';
 
 const DrawerContent = (props) => {
     const paperTheme = useTheme();
     const { navigation } = props;
+
+    const { state: { user: { name } } } = useContext(AuthContext);
+
+    // TODO: Try to get second inital
+    const firstInitial = (name) ? name.substring(0, 1).toUpperCase() : '';
+
     // const { rtl, theme, toggleRTL, toggleTheme } = React.useContext(
     //     PreferencesContext
     // );
@@ -38,14 +45,18 @@ const DrawerContent = (props) => {
                             navigation.toggleDrawer();
                         }}
                     >
-                        <Avatar.Image
-                            source={
-                                require('../../assets/5.png')
-                            }
-                            size={50}
-                        />
+                        {
+                            (firstInitial)
+                                ? <Avatar.Text size={40} label={firstInitial} />
+                                : <Avatar.Image
+                                    source={
+                                        require('../../assets/5.png')
+                                    }
+                                    size={50}
+                                />
+                        }
                     </TouchableOpacity>
-                    <Title style={styles.title}>Rosey</Title>
+                    <Title style={styles.title}>{name || 'Rozy'}</Title>
                     {/* <Caption style={styles.caption}>@</Caption>
                     <View style={styles.row}>
                         <View style={styles.section}>

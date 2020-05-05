@@ -2,7 +2,6 @@ import { AsyncStorage } from 'react-native';
 import shortid from 'shortid';
 import createDataContext from './createDataContext';
 
-// TODO: Write to local 
 const roseReducer = (state, action) => {
     switch (action.type) {
         case 'add_rose':
@@ -92,6 +91,12 @@ const fetchAllRoses = (dispatch) => async () => {
         // TODO: retireve from local?
         const roseStringArray = await AsyncStorage.getItem('roses');
         if (roseStringArray) {
+            //
+            // ───  ────────────────────────────────────────────────────────────
+            //
+                // This experimental when needed to reset cache
+                // await AsyncStorage.removeItem('roses');
+            // ────────────────────────────────────────────────────────────────────────────────
             const roses = JSON.parse(roseStringArray);
             // console.log('fetchAllRoses', roses.length);
             dispatch({ type: "fetch_roses", payload: [...(roses || [])] });
