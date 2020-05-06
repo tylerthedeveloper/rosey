@@ -30,7 +30,7 @@
       }
     },
     "android": {
-      "package": "com.rozy-app.rozy",
+      "package": "com.rozy_app.rozy",
       "versionCode": 1
     }
   }
