@@ -143,7 +143,8 @@ const RoseForm = ({ user, props,
     const _clearFormData = () => formRows.map(row => row.editFunc(''));
 
     return (
-        <KeyboardAvoidingView behavior={'padding'}
+        <KeyboardAvoidingView
+            behavior={Platform.OS === "ios" ? "padding" : null}
             keyboardVerticalOffset={80}
             style={{ flex: 1 }}
         >
