@@ -1,14 +1,19 @@
 import React, { useState } from 'react';
 import { KeyboardAvoidingView, ScrollView, StyleSheet } from 'react-native';
-import { Avatar, Button, Card, TextInput } from 'react-native-paper';
+import { Avatar, Button, Card, TextInput, Divider, Paragraph } from 'react-native-paper';
 import Spacer from '../../components/Spacer';
+import { GOOGLE_API_KEY } from "react-native-dotenv";
+
+import PlacesInput from 'react-native-places-input';
+
 
 const RoseForm = ({ user, props,
     form_updateFunction, form_updateFunctionText,
     form_secondFunction, form_secondFunctionText,
     form_updateFunction_callback
-}
-) => {
+}) => {
+
+    // console.log(GOOGLE_API_KEY);
 
     const { birthday, email, homeLocation, name, nickName, phoneNumber, placeMetAt, picture, tags, work, roseId
     } = user || {};
@@ -17,33 +22,50 @@ const RoseForm = ({ user, props,
 
     const [updated_birthday, setBirthday] = useState(birthday);
     const [updated_email, setEmail] = useState(email);
+    const [updated_tags, setTags] = useState(tags);
+    const [updated_work, setWork] = useState(work);
+    const [updated_name, setName] = useState(name);
+    const [updated_nickName, setNickName] = useState(nickName);
+    const [updated_phoneNumber, setPhone] = useState(phoneNumber);
+
     /* -------------------------------------------------------------------------- */
-    // const [updated_homeLocation, setHomeLocation] = useState(homeLocation);
     // Home Location //
+    // const [updated_homeLocation, setHomeLocation] = useState(homeLocation);
     const [updated_homeCity, setHomeCity] = useState(homeCity);
     const [updated_homeState, setHomeState] = useState(homeState);
     const [updated_homeCountry, setHomeCountry] = useState(homeCountry);
     /* -------------------------------------------------------------------------- */
-    const [updated_name, setName] = useState(name);
-    const [updated_nickName, setNickName] = useState(nickName);
-    const [updated_phoneNumber, setPhone] = useState(phoneNumber);
+
     // ────────────────────────────────────────────────────────────────────────────────
     // NOT YET USED //
     const [updated_placeMetAt, setPlaceMetAt] = useState(placeMetAt);
     const [updated_picture, setPicture] = useState(picture);
     // ────────────────────────────────────────────────────────────────────────────────
-    const [updated_tags, setTags] = useState(tags);
-    const [updated_work, setWork] = useState(work);
+
+    // ────────────────────────────────────────────────────────────────────────────────
+    // This is to test location API
+    const [updated_homeLocation_TEST, setUpdated_homeLocation_TEST] = useState({});
+    console.log(updated_homeLocation_TEST);
+    // ────────────────────────────────────────────────────────────────────────────────
+
+    const _makeLocationObject = (locationObject, locationSetter) => {
+        // console.log(locationObject);
+        const { geometry: { location }, formatted_address, name } = locationObject;
+        console.log(location);
+        console.log(formatted_address);
+        console.log(name);
+        locationSetter({ location, formatted_address, name });
+    }
 
     const updatedUser = {
         birthday: updated_birthday || '',
         email: updated_email || '',
-        // homeLocation: updated_homeLocation || '',
         /* -------------------------------------------------------------------------- */
-        homeLocation: {
-            homeCity: updated_homeCity || '',
-            homeState: updated_homeState || '',
-            homeCountry: updated_homeCountry || '',
+        // homeLocation: updated_homeLocation || '',
+        homeLocation: updated_homeLocation_TEST || {
+            location: { latitude: -369, longitude: -369 }, 
+            formatted_address: '',
+            name: ''
         },
         /* -------------------------------------------------------------------------- */
         name: updated_name || '',
@@ -55,6 +77,8 @@ const RoseForm = ({ user, props,
         work: updated_work || '',
         roseId: roseId || ''
     };
+
+    console.log(updatedUser);
 
     const formRows = [
         {
@@ -148,7 +172,7 @@ const RoseForm = ({ user, props,
             keyboardVerticalOffset={80}
             style={{ flex: 1 }}
         >
-            <ScrollView >
+            <ScrollView keyboardShouldPersistTaps="always">
                 {
                     formRows.map(({ left, subtitle, value, editFunc }) => (
                         <Card.Actions style={styles.cardContent} key={subtitle}>
@@ -167,7 +191,28 @@ const RoseForm = ({ user, props,
                         </Card.Actions>
                     ))
                 }
-                {/* <Divider /> */}
+                <Divider />
+                <Paragraph> Location Stuff (please select below)</Paragraph>
+                {/* <Paragraph style={{ fontSize: 10 }}> Home Location </Paragraph> */}
+                <Card.Actions style={styles.cardContent}>
+                    <Avatar.Icon {...props} icon={'crosshairs-gps'} size={40} style={{ marginRight: 10 }} />
+                    <PlacesInput
+                        googleApiKey={GOOGLE_API_KEY}
+                        onSelect={place => _makeLocationObject(place.result, setUpdated_homeLocation_TEST)}
+                        placeHolder={"Home location"}
+                        language={"en-US"}
+                        stylesContainer={{
+                            position: 'relative',
+                            alignSelf: 'center',
+                            margin: 0,
+                            width: '80%',
+                            shadowOpacity: 0,
+                            borderColor: '#dedede',
+                            borderWidth: 1,
+                            marginBottom: 10
+                        }}
+                    />
+                </Card.Actions>
                 <Button disabled={JSON.stringify(user) === JSON.stringify(updatedUser)}
                     onPress={() => {
                         form_updateFunction({ roseObj: updatedUser, callback: () => form_updateFunction_callback(updatedUser) })
@@ -185,7 +230,7 @@ const RoseForm = ({ user, props,
                 </Button>
             </ScrollView>
             <Spacer />
-        </KeyboardAvoidingView >
+        </KeyboardAvoidingView>
     );
 }
 

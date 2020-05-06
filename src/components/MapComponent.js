@@ -1,7 +1,7 @@
 import React from 'react';
 import MapView, { Marker } from 'react-native-maps';
 
-const MapComponent = ({ navigation, height, roses }) => {
+const MapComponent = ({ navigation, coords, height, roses }) => {
 
     const markerList = roses.map((rose) => {
         const { coords, placeName } = rose.placeMetAt;
@@ -16,18 +16,21 @@ const MapComponent = ({ navigation, height, roses }) => {
         )
     });
 
+    console.log('coords', coords)
+
     return (
         <>
             <MapView
                 style={{ height: height || 300 }}
-                initialRegion={{
-                    latitudeDelta: .01,
-                    longitudeDelta: .01,
-                    latitude: 39.1666,
-                    longitude: -86.5348
-                }}
+                region={(coords)
+                    ? {
+                        latitudeDelta: .01,
+                        longitudeDelta: .01,
+                        ...coords
+                    }
+                    : null}
             >
-                {markerList}
+                {/* {markerList} */}
             </MapView>
         </>
     )

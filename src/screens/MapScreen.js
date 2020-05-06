@@ -1,12 +1,13 @@
 import { FontAwesome } from '@expo/vector-icons';
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { StyleSheet } from 'react-native';
 import MapComponent from '../components/MapComponent';
 import { Context as RoseContext } from '../context/RoseContext';
+import * as Location from 'expo-location';
 
 const MapScreen = () => {
 
-    const { state: { roses }, fetchAllRoses, addRose } = useContext(RoseContext);
+    const { state: { roses }, fetchAllRoses } = useContext(RoseContext);
 
     // FIXME: Is this needed?
     // useEffect(() => {
@@ -19,11 +20,28 @@ const MapScreen = () => {
         rose.placeMetAt.coords.longitude !== -369
     );
 
+
     // console.log(roses.length, _roses.length)
+
+    const [currentLocation, setCurrentLocation] = useState({});
+
+    useEffect(() => {
+        (async () => {
+            let { status } = await Location.requestPermissionsAsync();
+            if (status !== 'granted') {
+                console.log('Permission to access location was denied');
+            }
+
+            let location = await Location.getCurrentPositionAsync({});
+            setCurrentLocation(location.coords);
+        })();
+    }, []);
+
+    // console.log(currentLocation)
 
     return (
         <>
-            <MapComponent height={900} roses={_roses} />
+            <MapComponent height={900} roses={_roses} coords={currentLocation} />
         </>
     )
 }

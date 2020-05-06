@@ -45,7 +45,7 @@ export const BottomTabNavigator = (props) => {
                     tabBarColor
                 }}
             >
-                {/* <BottomTabs.Screen name="Map" component={MapScreen}
+                <BottomTabs.Screen name="Map" component={MapScreen}
                     options={{
                         tabBarLabel: 'Map',
                         tabBarIcon: ({ color }) => (
@@ -55,7 +55,7 @@ export const BottomTabNavigator = (props) => {
                                 style={{ marginBottom: -15 }}
                             />)
                     }}
-                /> */}
+                />
                 <BottomTabs.Screen name="RoseListStack" component={roseListStack}
                     options={{
                         title:'Rozy',

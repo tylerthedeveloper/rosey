@@ -13,6 +13,8 @@ import theme from './src/core/theme';
 import ResolveAuthScreen from './src/screens/ResolveAuthScreen';
 import ErrorBoundary from 'react-native-error-boundary'
 
+import * as Location from 'expo-location';
+
 export default () => {
 
   const AppStack = createStackNavigator();
@@ -48,7 +50,12 @@ export default () => {
       name: name || '',
       email: email || '',
       // Defaults:
-      birthday: '', homeLocation: { homeCity: '', homeState: '', homeCountry: '' },
+      birthday: '',
+      homeLocation: {
+        location: { latitude: -369, longitude: -369 },
+        formatted_address: '',
+        name: ''
+      },
       nickName: '', phoneNumber: '',
       placeMetAt: {
         placeName: '',
@@ -186,6 +193,27 @@ export default () => {
     isMountedRef.current = true;
     return () => (isMountedRef.current = false);
   }, []);
+
+  useEffect(() => {
+    (async () => {
+      let { status } = await Location.requestPermissionsAsync();
+      if (status !== 'granted') {
+        console.log('Permission to access location was denied');
+      }
+
+      // let location = await Location.getCurrentPositionAsync({});
+      // setLocation(location);
+      // console.log(location)
+    })();
+  }, []);
+
+  // let text = 'Waiting..';
+  // if (errorMsg) {
+  //   text = errorMsg;
+  // } else if (location) {
+  //   text = JSON.stringify(location);
+  // }
+
 
   const errorHandler = (error, stackTrace) => {
     /* Log the error to an error reporting service */
