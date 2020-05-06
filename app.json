@@ -27,11 +27,11 @@
       "buildNumber": "1.0.6",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": "no"
-      },
-      "android": {
-        "package": "com.rozy-app.rozy",
-        "versionCode": 1
       }
+    },
+    "android": {
+      "package": "com.rozy-app.rozy",
+      "versionCode": 1
     }
   }
 }
