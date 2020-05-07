@@ -49,21 +49,18 @@ export default () => {
     return {
       name: name || '',
       email: email || '',
-      // Defaults:
       birthday: '',
       homeLocation: {
-        location: { latitude: -369, longitude: -369 },
-        formatted_address: '',
-        name: ''
+        homeLocationCoords: { latitude: -369, longitude: -369 },
+        homeFormatted_address: '',
+        homeLocationName: ''
       },
       nickName: '', phoneNumber: '',
-      placeMetAt: {
-        placeName: '',
-        coords: {
-          latitude: -369,
-          longitude: -369
-        }
-      },
+      // placeMetAt: {
+      //   placeMetAtLocationCoords: { latitude: -369, longitude: -369 },
+      //   placeMetAtFormatted_address: '',
+      //   placeMetAtName: ''
+      // },
       picture: '',
       tags: '',
       work: ''
@@ -205,15 +202,7 @@ export default () => {
       // setLocation(location);
       // console.log(location)
     })();
-  }, []);
-
-  // let text = 'Waiting..';
-  // if (errorMsg) {
-  //   text = errorMsg;
-  // } else if (location) {
-  //   text = JSON.stringify(location);
-  // }
-
+  });
 
   const errorHandler = (error, stackTrace) => {
     /* Log the error to an error reporting service */

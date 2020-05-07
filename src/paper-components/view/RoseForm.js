@@ -15,10 +15,9 @@ const RoseForm = ({ user, props,
 
     // console.log(GOOGLE_API_KEY);
 
+    // TODO: Need to use preset location
     const { birthday, email, homeLocation, name, nickName, phoneNumber, placeMetAt, picture, tags, work, roseId
     } = user || {};
-
-    const { homeCity, homeState, homeCountry } = homeLocation || {};
 
     const [updated_birthday, setBirthday] = useState(birthday);
     const [updated_email, setEmail] = useState(email);
@@ -27,58 +26,39 @@ const RoseForm = ({ user, props,
     const [updated_name, setName] = useState(name);
     const [updated_nickName, setNickName] = useState(nickName);
     const [updated_phoneNumber, setPhone] = useState(phoneNumber);
-
-    /* -------------------------------------------------------------------------- */
-    // Home Location //
-    // const [updated_homeLocation, setHomeLocation] = useState(homeLocation);
-    const [updated_homeCity, setHomeCity] = useState(homeCity);
-    const [updated_homeState, setHomeState] = useState(homeState);
-    const [updated_homeCountry, setHomeCountry] = useState(homeCountry);
-    /* -------------------------------------------------------------------------- */
+    const [updated_homeLocation, setUpdated_homeLocation] = useState({});
+    const [updated_placeMetAt, setUpdated_placeMetAt] = useState({});
 
     // ────────────────────────────────────────────────────────────────────────────────
-    // NOT YET USED //
-    const [updated_placeMetAt, setPlaceMetAt] = useState(placeMetAt);
+    // TODO: NOT YET USED //
     const [updated_picture, setPicture] = useState(picture);
     // ────────────────────────────────────────────────────────────────────────────────
-
-    // ────────────────────────────────────────────────────────────────────────────────
-    // This is to test location API
-    const [updated_homeLocation_TEST, setUpdated_homeLocation_TEST] = useState({});
-    console.log(updated_homeLocation_TEST);
-    // ────────────────────────────────────────────────────────────────────────────────
-
-    const _makeLocationObject = (locationObject, locationSetter) => {
-        // console.log(locationObject);
-        const { geometry: { location }, formatted_address, name } = locationObject;
-        console.log(location);
-        console.log(formatted_address);
-        console.log(name);
-        locationSetter({ location, formatted_address, name });
-    }
 
     const updatedUser = {
         birthday: updated_birthday || '',
         email: updated_email || '',
         /* -------------------------------------------------------------------------- */
-        // homeLocation: updated_homeLocation || '',
-        homeLocation: updated_homeLocation_TEST || {
-            location: { latitude: -369, longitude: -369 }, 
-            formatted_address: '',
-            name: ''
+        homeLocation: updated_homeLocation || {
+            homeLocationCoords: { latitude: -369, longitude: -369 },
+            homeFormatted_address: '',
+            homeLocationName: ''
+        },
+        placeMetAt: updated_placeMetAt || {
+            placeMetAtLocationCoords: { latitude: -369, longitude: -369 },
+            placeMetAtFormatted_address: '',
+            placeMetAtName: ''
         },
         /* -------------------------------------------------------------------------- */
         name: updated_name || '',
         nickName: updated_nickName || '',
         phoneNumber: updated_phoneNumber || '',
-        placeMetAt: updated_placeMetAt || '',
         picture: updated_picture || '',
         tags: updated_tags || '',
         work: updated_work || '',
         roseId: roseId || ''
     };
 
-    console.log(updatedUser);
+    console.log('updatedUser', updatedUser);
 
     const formRows = [
         {
@@ -106,24 +86,6 @@ const RoseForm = ({ user, props,
             editFunc: setEmail
         },
         {
-            value: updated_homeCity, subtitle: 'city',
-            left: "city",
-            rightIcon: "city",
-            editFunc: setHomeCity
-        },
-        {
-            value: updated_homeState, subtitle: 'state',
-            left: "drag-variant",
-            rightIcon: "drag-variant",
-            editFunc: setHomeState
-        },
-        {
-            value: updated_homeCountry, subtitle: 'country',
-            left: "crosshairs-gps",
-            rightIcon: "crosshairs-gps",
-            editFunc: setHomeCountry
-        },
-        {
             value: updated_work, subtitle: 'occupation',
             left: "briefcase-account",
             rightIcon: "briefcase-plus",
@@ -145,11 +107,6 @@ const RoseForm = ({ user, props,
         },
     ];
 
-    // const placeMetAt = {
-    //     placeName,
-    //     coords,
-    // };
-
     /* -------------------------------------------------------------------------- */
     /*                                Date Section                                */
     /* -------------------------------------------------------------------------- */
@@ -163,8 +120,34 @@ const RoseForm = ({ user, props,
     // };
     /* -------------------------------------------------------------------------- */
 
-    // console.log(JSON.stringify(user) === JSON.stringify(updatedUser));
+
+    /* -------------------------------------------------------------------------- */
+    /*                                Functions                                   */
+    /* -------------------------------------------------------------------------- */
+
+    // TODO: MOVE OUT?
     const _clearFormData = () => formRows.map(row => row.editFunc(''));
+
+    const _makeLocationObject = (locationObject, locationType, locationSetter) => {
+        const { geometry: { location: { lat, lng} }, formatted_address, name } = locationObject;
+        if (locationType === 'home') {
+            locationSetter({
+                homeLocationCoords: { latitude: lat, longitude: lng },
+                homeFormatted_address: formatted_address,
+                homeLocationName: name
+            });
+        } else if (locationType === 'place_met') {
+            locationSetter({
+                placeMetAtLocationCoords: { latitude: lat, longitude: lng },
+                placeMetAtFormatted_address: formatted_address,
+                placeMetAtName: name
+            });
+        }
+    }
+    /* -------------------------------------------------------------------------- */
+
+    const [contentHeight, setContentHeight] = useState();
+    const scrollRef = React.createRef();
 
     return (
         <KeyboardAvoidingView
@@ -172,7 +155,12 @@ const RoseForm = ({ user, props,
             keyboardVerticalOffset={80}
             style={{ flex: 1 }}
         >
-            <ScrollView keyboardShouldPersistTaps="always">
+            <ScrollView keyboardShouldPersistTaps="always"
+                ref={scrollRef}
+                onContentSizeChange={(contentHeight) => {
+                    setContentHeight(contentHeight);
+                }}
+            >
                 {
                     formRows.map(({ left, subtitle, value, editFunc }) => (
                         <Card.Actions style={styles.cardContent} key={subtitle}>
@@ -192,15 +180,20 @@ const RoseForm = ({ user, props,
                     ))
                 }
                 <Divider />
+                {/* TODO: preset location.... */}
                 <Paragraph> Location Stuff (please select below)</Paragraph>
                 {/* <Paragraph style={{ fontSize: 10 }}> Home Location </Paragraph> */}
                 <Card.Actions style={styles.cardContent}>
                     <Avatar.Icon {...props} icon={'crosshairs-gps'} size={40} style={{ marginRight: 10 }} />
                     <PlacesInput
                         googleApiKey={GOOGLE_API_KEY}
-                        onSelect={place => _makeLocationObject(place.result, setUpdated_homeLocation_TEST)}
+                        onSelect={place => _makeLocationObject(place.result, 'home', setUpdated_homeLocation)}
                         placeHolder={"Home location"}
                         language={"en-US"}
+                        //onChangeText={() => scrollRef.current?.scrollToEnd()}
+                        textInputProps={{
+                            autoCorrect: false
+                        }}
                         stylesContainer={{
                             position: 'relative',
                             alignSelf: 'center',
@@ -211,8 +204,37 @@ const RoseForm = ({ user, props,
                             borderWidth: 1,
                             marginBottom: 10
                         }}
+                        onChangeText={() => scrollRef.current?.scrollTo({ y: 2 * contentHeight, animated: true })}
                     />
                 </Card.Actions>
+                {
+                    (form_updateFunctionText !== 'Save profile')
+                        ? <Card.Actions style={styles.cardContent}>
+                            <Avatar.Icon {...props} icon={'crosshairs-gps'} size={40} style={{ marginRight: 10 }} />
+                            <PlacesInput
+                                googleApiKey={GOOGLE_API_KEY}
+                                onSelect={place => _makeLocationObject(place.result, 'place_met', setUpdated_placeMetAt)}
+                                placeHolder={"Place you met!"}
+                                language={"en-US"}
+                                //onChangeText={() => scrollRef.current?.scrollToEnd()}
+                                onChangeText={() => scrollRef.current?.scrollTo({ y: 2 * contentHeight, animated: true })}
+                                textInputProps={{
+                                    autoCorrect: false
+                                }}
+                                stylesContainer={{
+                                    position: 'relative',
+                                    alignSelf: 'center',
+                                    margin: 0,
+                                    width: '80%',
+                                    shadowOpacity: 0,
+                                    borderColor: '#dedede',
+                                    borderWidth: 1,
+                                    marginBottom: 10
+                                }}
+                            />
+                        </Card.Actions>
+                        : null
+                }
                 <Button disabled={JSON.stringify(user) === JSON.stringify(updatedUser)}
                     onPress={() => {
                         form_updateFunction({ roseObj: updatedUser, callback: () => form_updateFunction_callback(updatedUser) })

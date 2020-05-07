@@ -6,13 +6,12 @@ import RoseViewField from '../partial/RoseViewField';
 const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
     view_secondFunction, view_secondFunctionText,
     view_updateFunction_callback
-}
-) => {
+}) => {
 
-    // TODO: ADD homeLocation
     const { birthday, email, homeLocation, name, nickName, phoneNumber, placeMetAt, picture, tags, work } = user || {};
-    const { homeCity, homeState, homeCountry } = homeLocation || {};
-
+    const { homeLocationCoords, homeFormatted_address, homeLocationName } = homeLocation || {};
+    const { placeMetAtLocationCoords, placeMetAtFormatted_address, placeMetAtName } = placeMetAt || {};
+    
     const viewRows = [
         {
             value: name || '(No-Name?)', subtitle: 'name',
@@ -56,7 +55,20 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
             rightIcon: "calendar-heart",
             rightFunc: () => { },
         },
+        {
+            value: homeFormatted_address || '(Add location!)', subtitle: 'home location',
+            left: "crosshairs-gps",
+            rightIcon: "crosshairs-gps",
+            rightFunc: () => { },
+        },
+        {
+            value: placeMetAtFormatted_address || '(Add location!)', subtitle: 'place met',
+            left: "crosshairs-gps",
+            rightIcon: "crosshairs-gps",
+            rightFunc: () => { },
+        },
     ];
+
     return (
         <ScrollView>
             {

@@ -7,7 +7,7 @@ import * as Location from 'expo-location';
 
 const MapScreen = () => {
 
-    const { state: { roses }, fetchAllRoses } = useContext(RoseContext);
+    const { state: { roses } } = useContext(RoseContext);
 
     // FIXME: Is this needed?
     // useEffect(() => {
@@ -15,26 +15,30 @@ const MapScreen = () => {
     // }, []); 
 
     const _roses = roses.filter(rose =>
-        rose.placeMetAt.coords &&
-        rose.placeMetAt.coords.latitude !== -369 &&
-        rose.placeMetAt.coords.longitude !== -369
+        rose.placeMetAt.placeMetAtLocationCoords &&
+        rose.placeMetAt.placeMetAtLocationCoords.latitude !== -369 &&
+        rose.placeMetAt.placeMetAtLocationCoords.longitude !== -369
     );
 
-
-    // console.log(roses.length, _roses.length)
+    console.log('roses', roses.length, _roses.length)
+    console.log(_roses)
 
     const [currentLocation, setCurrentLocation] = useState({});
 
-    useEffect(() => {
-        (async () => {
-            let { status } = await Location.requestPermissionsAsync();
-            if (status !== 'granted') {
-                console.log('Permission to access location was denied');
-            }
-
-            let location = await Location.getCurrentPositionAsync({});
+    const checkForLocation = async () => {
+        const { status } = await Location.requestPermissionsAsync();
+        if (status !== 'granted') {
+            console.log('Permission to access location was denied');
+        } else {
+            console.log('granted')
+            const location = await Location.getCurrentPositionAsync({});
+            // console.log('coords', location.coords)
             setCurrentLocation(location.coords);
-        })();
+        }
+    };
+
+    useEffect(() => {
+        checkForLocation();
     }, []);
 
     // console.log(currentLocation)

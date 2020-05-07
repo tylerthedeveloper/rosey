@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 /* -------------------------------------------------------------------------- */
 /*                                 Tab Section                                */
 /* -------------------------------------------------------------------------- */
@@ -23,12 +23,30 @@ export const BottomTabNavigator = (props) => {
         ? props.route.state.routes[props.route.state.index].name
         : 'Feed';
 
+    const [fabOpen, setFabOpen] = useState(false);
+    let fabIcon = 'account-plus';
+    let fabActions = [];
+
     switch (routeName) {
+        case 'RoseListStack':
+            fabIcon = 'account-plus';
+            fabActions = [];
+            onFabPress = () => props.navigation.navigate('AddRose')
+            break;
         case 'Map':
             fabIcon = 'crosshairs-gps';
+            fabActions = [
+                { icon: 'plus', onPress: () => console.log('Pressed add') },
+                { icon: 'star', label: 'Star', onPress: () => console.log('Pressed star') },
+                { icon: 'email', label: 'Email', onPress: () => console.log('Pressed email') },
+                { icon: 'bell', label: 'Remind', onPress: () => console.log('Pressed notifications') },
+            ];
+            onFabPress = () => console.log('fab')
             break;
         default:
             fabIcon = 'account-plus';
+            fabActions = [];
+            onFabPress = () => props.navigation.navigate('AddRose')
             break;
     }
 
@@ -38,9 +56,9 @@ export const BottomTabNavigator = (props) => {
     return (
         <React.Fragment>
             <BottomTabs.Navigator backBehavior="order" initialRouteName="RoseListStack"
-            tabBarOptions={{
-                
-            }}
+                tabBarOptions={{
+
+                }}
                 screenOptions={{
                     tabBarColor
                 }}
@@ -58,7 +76,7 @@ export const BottomTabNavigator = (props) => {
                 />
                 <BottomTabs.Screen name="RoseListStack" component={roseListStack}
                     options={{
-                        title:'Rozy',
+                        title: 'Rozy',
                         tabBarColor,
                         tabBarLabel: 'Roses',
                         tabBarIcon: ({ color }) => (
@@ -69,19 +87,36 @@ export const BottomTabNavigator = (props) => {
                     }} />
             </BottomTabs.Navigator>
             <Portal>
-                <FAB
-                    visible={isFocused}
-                    icon={fabIcon}
-                    style={{
-                        position: 'absolute',
-                        //top: screenHeight - (screenHeight * 0.18),
-                        bottom: (screenHeight * 0.105),
-                        right: 16,
-                        backgroundColor: theme.colors.secondary,
-                    }}
-                    color="white"
-                    onPress={() => props.navigation.navigate('AddRose')}
-                />
+                {
+                    (routeName === 'Feed')
+                        ? <FAB
+                            visible={isFocused}
+                            icon={fabIcon}
+                            style={{
+                                position: 'absolute',
+                                //top: screenHeight - (screenHeight * 0.18),
+                                bottom: (screenHeight * 0.105),
+                                right: 16,
+                            }}
+                            color="white"
+                            onPress={onFabPress}
+                        />
+                        : <FAB.Group
+                            open={fabOpen}
+                            visible={isFocused}
+                            icon={fabIcon}
+                            style={{
+                                position: 'absolute',
+                                //top: screenHeight - (screenHeight * 0.18),
+                                bottom: (screenHeight * 0.105),
+                                right: 16,
+                            }}
+                            color="white"
+                            onPress={onFabPress}
+                            actions={fabActions}
+                            onStateChange={({ open }) => setFabOpen(open)}
+                        />
+                }
             </Portal>
         </React.Fragment>
     )
