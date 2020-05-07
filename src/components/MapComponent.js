@@ -18,22 +18,28 @@ const MapComponent = ({ navigation, coords, height, roses, filterType }) => {
         )
     });
 
-    console.log('coords', coords)
+  -  console.log('coords', coords)
 
     return (
         <>
-            <MapView
-                style={{ height: height || 300 }}
-                region={(coords)
-                    ? {
-                        latitudeDelta: .01,
-                        longitudeDelta: .01,
-                        ...coords
-                    }
-                    : null}
-            >
-                {markerList}
-            </MapView>
+            {
+                (coords && coords !== {})
+                    ? <MapView
+                        style={{ height: height || 300 }}
+                        region={{
+                            latitudeDelta: .01,
+                            longitudeDelta: .01,
+                            ...coords
+                        }}
+                    >
+                        {markerList}
+                    </MapView>
+                    : <MapView
+                        style={{ height: height || 300 }}
+                    >
+                        {markerList}
+                    </MapView>
+            }
         </>
     )
 }

@@ -10,23 +10,23 @@ import { useIsFocused } from '@react-navigation/native';
 import { roseListStack } from './RoseListStack';
 import { theme } from '../core/theme';
 import { Dimensions } from 'react-native';
+import { useSafeArea } from 'react-native-safe-area-context';
 
 const BottomTabs = createBottomTabNavigator();
 
 export const BottomTabNavigator = (props) => {
 
     const isFocused = useIsFocused();
-
     const screenHeight = Dimensions.get('screen').height;
-
+    const safeArea = useSafeArea();
     const routeName = props.route.state
         ? props.route.state.routes[props.route.state.index].name
-        : 'Feed';
+        : 'RoseListStack';
 
     const [fabOpen, setFabOpen] = useState(false);
+    const [filterType, setFilterType] = useState(1)
     let fabIcon = 'account-plus';
     let fabActions = [];
-
     switch (routeName) {
         case 'RoseListStack':
             fabIcon = 'account-plus';
@@ -41,18 +41,22 @@ export const BottomTabNavigator = (props) => {
                 { icon: 'email', label: 'Email', onPress: () => console.log('Pressed email') },
                 { icon: 'bell', label: 'Remind', onPress: () => console.log('Pressed notifications') },
             ];
-            onFabPress = () => console.log('fab')
+            // TODO:
+            // 1. this can be used to set current location for geo
+            // 2. this can be used to change to filter type
+            onFabPress = () => setFilterType(filterType + 1);
             break;
         default:
-            fabIcon = 'account-plus';
+            fabIcon = '';
             fabActions = [];
-            onFabPress = () => props.navigation.navigate('AddRose')
+            onFabPress = () => console.log('mail')
             break;
     }
 
     const tabBarColor = theme.colors.primary;
-
     // https://stackoverflow.com/questions/60486399/adding-a-custom-add-button-to-creatematerialbottomtabnavigator-in-react-naviga
+
+    // TODO: Safe area https://github.com/Trancever/twitterClone/blob/master/src/bottomTabs.tsx
     return (
         <React.Fragment>
             <BottomTabs.Navigator backBehavior="order" initialRouteName="RoseListStack"
@@ -63,7 +67,8 @@ export const BottomTabNavigator = (props) => {
                     tabBarColor
                 }}
             >
-                <BottomTabs.Screen name="Map" component={MapScreen}
+                <BottomTabs.Screen name="Map"
+                    // TODO:
                     options={{
                         tabBarLabel: 'Map',
                         tabBarIcon: ({ color }) => (
@@ -73,7 +78,12 @@ export const BottomTabNavigator = (props) => {
                                 style={{ marginBottom: -15 }}
                             />)
                     }}
-                />
+                >
+                    {(props) => <MapScreen //currentLocation={currentLocation}
+                        filterType={filterType}
+                        {...props}
+                    />}
+                </BottomTabs.Screen>
                 <BottomTabs.Screen name="RoseListStack" component={roseListStack}
                     options={{
                         title: 'Rozy',
@@ -88,35 +98,46 @@ export const BottomTabNavigator = (props) => {
             </BottomTabs.Navigator>
             <Portal>
                 {
-                    (routeName === 'Feed')
+                    (routeName === 'RoseListStack')
                         ? <FAB
                             visible={isFocused}
                             icon={fabIcon}
                             style={{
                                 position: 'absolute',
-                                //top: screenHeight - (screenHeight * 0.18),
-                                bottom: (screenHeight * 0.105),
-                                right: 16,
+                                //bottom: (screenHeight * 0.105),
+                                bottom: safeArea.bottom + 70,
+                                right: 25,
                             }}
                             color="white"
                             onPress={onFabPress}
                         />
-                        : <FAB.Group
+                        : <FAB
+                            visible={isFocused}
+                            icon={fabIcon}
+                            style={{
+                                position: 'absolute',
+                                //bottom: (screenHeight * 0.105),
+                                bottom: safeArea.bottom + 70,
+                                right: 25,
+                            }}
+                            color="white"
+                            onPress={onFabPress}
+                        />
+                }
+                {/* : <FAB.Group
                             open={fabOpen}
                             visible={isFocused}
                             icon={fabIcon}
                             style={{
                                 position: 'absolute',
-                                //top: screenHeight - (screenHeight * 0.18),
-                                bottom: (screenHeight * 0.105),
+                                bottom: safeArea.bottom + 55,
                                 right: 16,
                             }}
                             color="white"
                             onPress={onFabPress}
                             actions={fabActions}
                             onStateChange={({ open }) => setFabOpen(open)}
-                        />
-                }
+                        /> */}
             </Portal>
         </React.Fragment>
     )
