@@ -75,7 +75,6 @@ export const BottomTabNavigator = (props) => {
                             <FontAwesome
                                 name="map"
                                 size={24}
-                                style={{ marginBottom: -15 }}
                             />)
                     }}
                 >

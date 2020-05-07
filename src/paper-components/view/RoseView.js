@@ -8,7 +8,7 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
     view_updateFunction_callback
 }) => {
 
-    const { birthday, email, homeLocation, name, nickName, phoneNumber, placeMetAt, picture, tags, work } = user || {};
+    const { birthday, dateMet, email, homeLocation, name, nickName, notes, phoneNumber, placeMetAt, picture, tags, work } = user || {};
     const { homeLocationCoords, homeFormatted_address, homeLocationName } = homeLocation || {};
     const { placeMetAtLocationCoords, placeMetAtFormatted_address, placeMetAtName } = placeMetAt || {};
     
@@ -44,13 +44,25 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
             rightFunc: () => { },
         },
         {
-            value: (tags && tags.length > 0) ? tags : '(Add some Tags!)', subtitle: 'tag',
+            value: (tags && tags.length > 0) ? tags : '(Add some Tags!)', subtitle: 'tags',
             left: "tag",
             rightIcon: "tag",
             rightFunc: () => { },
         },
         {
-            value: birthday || '(Enter Birthday!)', subtitle: 'birthday',
+            value: notes || '(Add some notes!)', subtitle: 'notes',
+            left: "note",
+            rightIcon: "note",
+            rightFunc: () => { },
+        },
+        {
+            value: birthday.toString() || '(Enter Birthday!)', subtitle: 'birthday',
+            left: "calendar",
+            rightIcon: "calendar-heart",
+            rightFunc: () => { },
+        },
+        {
+            value: dateMet.toString() || '(Enter Date met!)', subtitle: 'date met',
             left: "calendar",
             rightIcon: "calendar-heart",
             rightFunc: () => { },
@@ -80,6 +92,7 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
                         left={left}
                         rightIcon={rightIcon}
                         rightFunc={rightFunc}
+                        dataDetectorType={'phoneNumber'}
                     />
                 ))}
             <Button onPress={view_updateFunction}> {view_updateFunctionText} </Button>

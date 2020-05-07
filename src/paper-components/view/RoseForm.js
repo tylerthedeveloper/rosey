@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { KeyboardAvoidingView, ScrollView, StyleSheet } from 'react-native';
-import { Avatar, Button, Card, TextInput, Divider, Paragraph } from 'react-native-paper';
+import { KeyboardAvoidingView, ScrollView, StyleSheet, View } from 'react-native';
+import { Avatar, Button, Card, TextInput, Divider, Paragraph, Title } from 'react-native-paper';
 import Spacer from '../../components/Spacer';
+
 import { GOOGLE_API_KEY } from "react-native-dotenv";
-
 import PlacesInput from 'react-native-places-input';
-
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 const RoseForm = ({ user, props,
     form_updateFunction, form_updateFunctionText,
@@ -16,18 +16,22 @@ const RoseForm = ({ user, props,
     // console.log(GOOGLE_API_KEY);
 
     // TODO: Need to use preset location
-    const { birthday, email, homeLocation, name, nickName, phoneNumber, placeMetAt, picture, tags, work, roseId
+    const { birthday, dateMet, email, homeLocation, name, nickName, notes, phoneNumber, placeMetAt, picture, tags, work, roseId
     } = user || {};
 
-    const [updated_birthday, setBirthday] = useState(birthday);
+    const [updated_birthday, setBirthday] = useState(birthday || new Date(Date.now()));
+    const [updated_dateMet, setDateMet] = useState(dateMet || new Date(Date.now()));
     const [updated_email, setEmail] = useState(email);
     const [updated_tags, setTags] = useState(tags);
     const [updated_work, setWork] = useState(work);
     const [updated_name, setName] = useState(name);
+    const [updated_notes, setNotes] = useState(notes);
     const [updated_nickName, setNickName] = useState(nickName);
     const [updated_phoneNumber, setPhone] = useState(phoneNumber);
-    const [updated_homeLocation, setUpdated_homeLocation] = useState({});
-    const [updated_placeMetAt, setUpdated_placeMetAt] = useState({});
+    const [updated_homeLocation, setUpdated_homeLocation] = useState(homeLocation);
+    const [updated_placeMetAt, setUpdated_placeMetAt] = useState(placeMetAt);
+
+    console.log('date', dateMet, updated_dateMet);
 
     // ────────────────────────────────────────────────────────────────────────────────
     // TODO: NOT YET USED //
@@ -36,6 +40,7 @@ const RoseForm = ({ user, props,
 
     const updatedUser = {
         birthday: updated_birthday || '',
+        dateMet: updated_dateMet || '',
         email: updated_email || '',
         /* -------------------------------------------------------------------------- */
         homeLocation: updated_homeLocation || {
@@ -50,6 +55,7 @@ const RoseForm = ({ user, props,
         },
         /* -------------------------------------------------------------------------- */
         name: updated_name || '',
+        notes: updated_notes || '',
         nickName: updated_nickName || '',
         phoneNumber: updated_phoneNumber || '',
         picture: updated_picture || '',
@@ -77,6 +83,7 @@ const RoseForm = ({ user, props,
             value: updated_phoneNumber, subtitle: 'phone',
             left: "phone",
             rightIcon: "phone",
+            keyboardType: 'phone-pad',
             editFunc: setPhone
         },
         {
@@ -100,11 +107,12 @@ const RoseForm = ({ user, props,
             editFunc: setTags
         },
         {
-            value: updated_birthday, subtitle: 'birthday',
-            left: "calendar",
-            rightIcon: "calendar-heart",
-            editFunc: setBirthday
-        },
+            value: updated_notes, subtitle: 'notes',
+            left: "note",
+            rightIcon: "note",
+            editFunc: setNotes,
+            multiline: true
+        }
     ];
 
     /* -------------------------------------------------------------------------- */
@@ -128,8 +136,14 @@ const RoseForm = ({ user, props,
     // TODO: MOVE OUT?
     const _clearFormData = () => formRows.map(row => row.editFunc(''));
 
+    const _onChangeDate = (event, field, selectedDate) => {
+        const currentDate = selectedDate || date;
+        // setShow(Platform.OS === 'ios');
+        field(currentDate);
+    };
+
     const _makeLocationObject = (locationObject, locationType, locationSetter) => {
-        const { geometry: { location: { lat, lng} }, formatted_address, name } = locationObject;
+        const { geometry: { location: { lat, lng } }, formatted_address, name } = locationObject;
         if (locationType === 'home') {
             locationSetter({
                 homeLocationCoords: { latitude: lat, longitude: lng },
@@ -149,6 +163,9 @@ const RoseForm = ({ user, props,
     const [contentHeight, setContentHeight] = useState();
     const scrollRef = React.createRef();
 
+    const profileRowsToIgnore = ['notes', 'placeMet']
+    const isUserProfile = (form_updateFunctionText === 'Save profile');
+
     return (
         <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : null}
@@ -157,32 +174,54 @@ const RoseForm = ({ user, props,
         >
             <ScrollView keyboardShouldPersistTaps="always"
                 ref={scrollRef}
-                onContentSizeChange={(contentHeight) => {
-                    setContentHeight(contentHeight);
-                }}
+                onContentSizeChange={(contentHeight) => setContentHeight(contentHeight)}
             >
                 {
-                    formRows.map(({ left, subtitle, value, editFunc }) => (
-                        <Card.Actions style={styles.cardContent} key={subtitle}>
-                            <Avatar.Icon {...props} icon={left} size={40} style={{ marginRight: 20 }} />
-                            <TextInput mode="outlined"
-                                label={subtitle}
-                                style={styles.textInput}
-                                // placeholder={value}
-                                value={value}
-                                autoCapitalize="none"
-                                autoComplete={false}
-                                autoCorrect={false}
-                                autoCompleteType={"off"}
-                                onChangeText={editFunc}
-                            />
-                        </Card.Actions>
+                    formRows.map(({ left, subtitle, value, editFunc, keyboardType, multiline }) => (
+                        ((isUserProfile && !profileRowsToIgnore.includes(subtitle) || !isUserProfile))
+                            ? <Card.Actions style={styles.cardContent} key={subtitle} >
+                                <Avatar.Icon {...props} icon={left} size={40} style={{ marginRight: 20 }} />
+                                <TextInput mode="outlined"
+                                    label={subtitle}
+                                    style={styles.textInput}
+                                    // placeholder={value}
+                                    value={value}
+                                    autoCapitalize="none"
+                                    autoComplete={false}
+                                    autoCorrect={false}
+                                    autoCompleteType={"off"}
+                                    onChangeText={editFunc}
+                                    multiline={multiline}
+                                    keyboardType={keyboardType}
+                                />
+                            </Card.Actions>
+                            : null
                     ))
                 }
-                <Divider />
+                <Paragraph> Date Info </Paragraph>
+                {
+                    (!isUserProfile)
+                        ?
+                        <>
+                            <Title style={{ alignSelf: 'center' }}> Date Met</Title>
+                            <DateTimePicker
+                                value={updated_dateMet}
+                                display="default"
+                                style={{ width: '70%', alignSelf: 'center' }}
+                                onChange={(e, date) => _onChangeDate(e, setDateMet, date)}
+                            />
+                        </>
+                        : null
+                }
+                <Title style={{ alignSelf: 'center' }}>Birthday</Title>
+                <DateTimePicker
+                    value={updated_birthday}
+                    display="default"
+                    style={{ width: '70%', alignSelf: 'center' }}
+                    onChange={(e, date) => _onChangeDate(e, setBirthday, date)}
+                />
                 {/* TODO: preset location.... */}
                 <Paragraph> Location Stuff (please select below)</Paragraph>
-                {/* <Paragraph style={{ fontSize: 10 }}> Home Location </Paragraph> */}
                 <Card.Actions style={styles.cardContent}>
                     <Avatar.Icon {...props} icon={'crosshairs-gps'} size={40} style={{ marginRight: 10 }} />
                     <PlacesInput
@@ -208,7 +247,7 @@ const RoseForm = ({ user, props,
                     />
                 </Card.Actions>
                 {
-                    (form_updateFunctionText !== 'Save profile')
+                    (!isUserProfile)
                         ? <Card.Actions style={styles.cardContent}>
                             <Avatar.Icon {...props} icon={'crosshairs-gps'} size={40} style={{ marginRight: 10 }} />
                             <PlacesInput
@@ -252,7 +291,7 @@ const RoseForm = ({ user, props,
                 </Button>
             </ScrollView>
             <Spacer />
-        </KeyboardAvoidingView>
+        </KeyboardAvoidingView >
     );
 }
 
