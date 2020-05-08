@@ -13,9 +13,6 @@ const RoseForm = ({ user, props,
     form_updateFunction_callback
 }) => {
 
-    // console.log(GOOGLE_API_KEY);
-
-    // TODO: Need to use preset location
     const { birthday, dateMet, email, homeLocation, name, nickName, notes, phoneNumber, placeMetAt, picture, tags, work, roseId
     } = user || {};
 
@@ -31,16 +28,14 @@ const RoseForm = ({ user, props,
     const [updated_homeLocation, setUpdated_homeLocation] = useState(homeLocation);
     const [updated_placeMetAt, setUpdated_placeMetAt] = useState(placeMetAt);
 
-    console.log('date', dateMet, updated_dateMet);
-
     // ────────────────────────────────────────────────────────────────────────────────
     // TODO: NOT YET USED //
     const [updated_picture, setPicture] = useState(picture);
     // ────────────────────────────────────────────────────────────────────────────────
 
     const updatedUser = {
-        birthday: updated_birthday || '',
-        dateMet: updated_dateMet || '',
+        birthday: updated_birthday || new Date(Date.now()),
+        dateMet: updated_dateMet || Date.now(),
         email: updated_email || '',
         /* -------------------------------------------------------------------------- */
         homeLocation: updated_homeLocation || {
@@ -64,7 +59,7 @@ const RoseForm = ({ user, props,
         roseId: roseId || ''
     };
 
-    console.log('updatedUser', updatedUser);
+    // console.log('updatedUser', updatedUser.homeLocation, updatedUser.placeMetAt);
 
     const formRows = [
         {
@@ -116,20 +111,6 @@ const RoseForm = ({ user, props,
     ];
 
     /* -------------------------------------------------------------------------- */
-    /*                                Date Section                                */
-    /* -------------------------------------------------------------------------- */
-    // const [dateMet, setDate] = useState(new Date(Date.now()));
-    // const [mode, setMode] = useState('date');
-
-    // const onChange = (event, selectedDate) => {
-    //     const currentDate = selectedDate || dateMet;
-    //     // setShow(Platform.OS === 'ios');
-    //     setDate(currentDate);
-    // };
-    /* -------------------------------------------------------------------------- */
-
-
-    /* -------------------------------------------------------------------------- */
     /*                                Functions                                   */
     /* -------------------------------------------------------------------------- */
 
@@ -138,7 +119,6 @@ const RoseForm = ({ user, props,
 
     const _onChangeDate = (event, field, selectedDate) => {
         const currentDate = selectedDate || date;
-        // setShow(Platform.OS === 'ios');
         field(currentDate);
     };
 
@@ -201,8 +181,7 @@ const RoseForm = ({ user, props,
                 <Paragraph> Date Info </Paragraph>
                 {
                     (!isUserProfile)
-                        ?
-                        <>
+                        ? <>
                             <Title style={{ alignSelf: 'center' }}> Date Met</Title>
                             <DateTimePicker
                                 value={updated_dateMet}
@@ -227,7 +206,7 @@ const RoseForm = ({ user, props,
                     <PlacesInput
                         googleApiKey={GOOGLE_API_KEY}
                         onSelect={place => _makeLocationObject(place.result, 'home', setUpdated_homeLocation)}
-                        placeHolder={"Home location"}
+                        placeHolder={(homeLocation && homeLocation.homeFormatted_address) ? homeLocation.homeFormatted_address : "Home location"}
                         language={"en-US"}
                         textInputProps={{
                             autoCorrect: false
@@ -250,8 +229,9 @@ const RoseForm = ({ user, props,
                             <PlacesInput
                                 googleApiKey={GOOGLE_API_KEY}
                                 onSelect={place => _makeLocationObject(place.result, 'place_met', setUpdated_placeMetAt)}
-                                placeHolder={"Place you met!"}
+                                placeHolder={(placeMetAt && placeMetAt.placeMetAtFormatted_address) ? placeMetAt.placeMetAtFormatted_address : "Place you met!"}
                                 language={"en-US"}
+                                value={placeMetAt}
                                 onChangeText={() => scrollRef.current?.scrollToEnd()}
                                 textInputProps={{
                                     autoCorrect: false

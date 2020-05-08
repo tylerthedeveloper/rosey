@@ -28,22 +28,21 @@ export const BottomTabNavigator = (props) => {
     const [filterType, setFilterType] = useState('place_met');
     let fabIcon = 'account-plus';
     let fabActions = [];
+    let onStateChange = () => null;
     switch (routeName) {
         case 'RoseListStack':
             fabIcon = 'account-plus';
             fabActions = [];
             onFabPress = () => props.navigation.navigate('AddRose')
+            onStateChange = () => null;
             break;
         case 'Map':
             fabIcon = 'crosshairs-gps';
             fabActions = [
-                { icon: 'plus', label: 'Place Met', onPress: () => setFilterType('place_met') },
-                { icon: 'house', label: 'Home', onPress: () => setFilterType('home') },
+                { icon: 'account-multiple', label: 'Place Met', onPress: () => setFilterType('place_met') },
+                { icon: 'home', label: 'Home Location', onPress: () => setFilterType('home') },
             ];
-            // TODO:
-            // 1. this can be used to set current location for geo
-            // 2. this can be used to change to filter type
-            // onFabPress = () => setFilterType(filterType + 1);
+            onStateChange = ({ open }) => setFabOpen(open);
             break;
         default:
             fabIcon = '';
@@ -103,13 +102,12 @@ export const BottomTabNavigator = (props) => {
                             style={{
                                 position: 'absolute',
                                 //bottom: (screenHeight * 0.105),
-                                bottom: safeArea.bottom + 60,
-                                right: (screenWidth * 0.01)
+                                bottom: safeArea.bottom + 50,
                             }}
                             color="white"
-                            actions={[]}
+                            actions={fabActions}
                             onPress={onFabPress}
-                            onStateChange={({ open }) => null}
+                            onStateChange={onStateChange}
                         />
                         : <FAB.Group
                             open={fabOpen}
@@ -117,9 +115,8 @@ export const BottomTabNavigator = (props) => {
                             icon={fabIcon}
                             style={{
                                 position: 'absolute',
-                                bottom: safeArea.bottom + 60,
+                                bottom: safeArea.bottom + 50,
                                 //bottom: (screenHeight * 0.105),
-                                right: (screenWidth * 0.01),
                             }}
                             color="white"
                             actions={fabActions}

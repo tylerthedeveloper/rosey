@@ -7,12 +7,10 @@ const MapComponent = ({ navigation, coords, height, roses, filterType }) => {
         const { homeLocation, placeMetAt } = rose;
         const { homeLocationCoords, homeFormatted_address, homeLocationName } = homeLocation || {};
         const { placeMetAtLocationCoords, placeMetAtFormatted_address, placeMetAtName } = placeMetAt || {};
-        console.log(filterType)
         if (filterType === 'place_met' &&
             placeMetAtLocationCoords &&
             placeMetAtLocationCoords.latitude !== -369 &&
             placeMetAtLocationCoords.longitude !== -369) {
-            // console.log(placeMetAtName, placeMetAtLocationCoords, placeMetAtLocationCoords.latitude);
             return (
                 <Marker
                     coordinate={placeMetAtLocationCoords}
@@ -25,7 +23,6 @@ const MapComponent = ({ navigation, coords, height, roses, filterType }) => {
             homeLocationCoords &&
             homeLocationCoords.latitude !== -369 &&
             homeLocationCoords.longitude !== -369) {
-            // console.log(homeLocationName, homeLocationCoords, homeLocationCoords.latitude);
             return (
                 <Marker
                     coordinate={homeLocationCoords}

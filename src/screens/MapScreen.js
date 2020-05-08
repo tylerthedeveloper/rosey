@@ -5,7 +5,7 @@ import { Context as RoseContext } from '../context/RoseContext';
 import useCurrentLocation from '../hooks/useCurrentLocation';
 
 const MapScreen = ({ filterType }) => {
-    console.log(filterType)
+
     const { state: { roses } } = useContext(RoseContext);
 
     // FIXME: Is this needed?

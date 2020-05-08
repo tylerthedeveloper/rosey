@@ -2,6 +2,7 @@ import React from 'react';
 import { ScrollView } from 'react-native';
 import { Button } from 'react-native-paper';
 import RoseViewField from '../partial/RoseViewField';
+import moment from 'moment';
 
 const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
     view_secondFunction, view_secondFunctionText,
@@ -12,6 +13,7 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
     const { homeLocationCoords, homeFormatted_address, homeLocationName } = homeLocation || {};
     const { placeMetAtLocationCoords, placeMetAtFormatted_address, placeMetAtName } = placeMetAt || {};
     
+    console.log(birthday, dateMet)
     const viewRows = [
         {
             value: name || '(No-Name?)', subtitle: 'name',
@@ -56,13 +58,13 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
             rightFunc: () => { },
         },
         {
-            value: birthday || '(Enter Birthday!)', subtitle: 'birthday',
+            value: dateMet ? (moment(dateMet).format('MMM DD, YYYY')) :'(Enter Date met!)', subtitle: 'date met',
             left: "calendar",
             rightIcon: "calendar-heart",
             rightFunc: () => { },
         },
         {
-            value: dateMet || '(Enter Date met!)', subtitle: 'date met',
+            value: birthday ? (moment(birthday).format('MMM DD, YYYY')) : '(Enter Birthday!)', subtitle: 'birthday',
             left: "calendar",
             rightIcon: "calendar-heart",
             rightFunc: () => { },
