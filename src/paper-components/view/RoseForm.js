@@ -229,7 +229,6 @@ const RoseForm = ({ user, props,
                         onSelect={place => _makeLocationObject(place.result, 'home', setUpdated_homeLocation)}
                         placeHolder={"Home location"}
                         language={"en-US"}
-                        //onChangeText={() => scrollRef.current?.scrollToEnd()}
                         textInputProps={{
                             autoCorrect: false
                         }}
@@ -238,12 +237,10 @@ const RoseForm = ({ user, props,
                             alignSelf: 'center',
                             margin: 0,
                             width: '80%',
-                            shadowOpacity: 0,
-                            borderColor: '#dedede',
-                            borderWidth: 1,
                             marginBottom: 10
                         }}
-                        onChangeText={() => scrollRef.current?.scrollTo({ y: 2 * contentHeight, animated: true })}
+                        //onChangeText={() => scrollRef.current?.scrollTo({ y: 2 * contentHeight, animated: true })}
+                        onChangeText={() => scrollRef.current?.scrollToEnd()}
                     />
                 </Card.Actions>
                 {
@@ -255,8 +252,7 @@ const RoseForm = ({ user, props,
                                 onSelect={place => _makeLocationObject(place.result, 'place_met', setUpdated_placeMetAt)}
                                 placeHolder={"Place you met!"}
                                 language={"en-US"}
-                                //onChangeText={() => scrollRef.current?.scrollToEnd()}
-                                onChangeText={() => scrollRef.current?.scrollTo({ y: 2 * contentHeight, animated: true })}
+                                onChangeText={() => scrollRef.current?.scrollToEnd()}
                                 textInputProps={{
                                     autoCorrect: false
                                 }}
@@ -265,9 +261,6 @@ const RoseForm = ({ user, props,
                                     alignSelf: 'center',
                                     margin: 0,
                                     width: '80%',
-                                    shadowOpacity: 0,
-                                    borderColor: '#dedede',
-                                    borderWidth: 1,
                                     marginBottom: 10
                                 }}
                             />
@@ -291,7 +284,7 @@ const RoseForm = ({ user, props,
                 </Button>
             </ScrollView>
             <Spacer />
-        </KeyboardAvoidingView >
+        </KeyboardAvoidingView>
     );
 }
 

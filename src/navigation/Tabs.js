@@ -18,13 +18,14 @@ export const BottomTabNavigator = (props) => {
 
     const isFocused = useIsFocused();
     const screenHeight = Dimensions.get('screen').height;
+    const screenWidth = Dimensions.get('screen').width;
     const safeArea = useSafeArea();
     const routeName = props.route.state
         ? props.route.state.routes[props.route.state.index].name
         : 'RoseListStack';
 
     const [fabOpen, setFabOpen] = useState(false);
-    const [filterType, setFilterType] = useState(1)
+    const [filterType, setFilterType] = useState('place_met');
     let fabIcon = 'account-plus';
     let fabActions = [];
     switch (routeName) {
@@ -36,15 +37,13 @@ export const BottomTabNavigator = (props) => {
         case 'Map':
             fabIcon = 'crosshairs-gps';
             fabActions = [
-                { icon: 'plus', onPress: () => console.log('Pressed add') },
-                { icon: 'star', label: 'Star', onPress: () => console.log('Pressed star') },
-                { icon: 'email', label: 'Email', onPress: () => console.log('Pressed email') },
-                { icon: 'bell', label: 'Remind', onPress: () => console.log('Pressed notifications') },
+                { icon: 'plus', label: 'Place Met', onPress: () => setFilterType('place_met') },
+                { icon: 'house', label: 'Home', onPress: () => setFilterType('home') },
             ];
             // TODO:
             // 1. this can be used to set current location for geo
             // 2. this can be used to change to filter type
-            onFabPress = () => setFilterType(filterType + 1);
+            // onFabPress = () => setFilterType(filterType + 1);
             break;
         default:
             fabIcon = '';
@@ -98,45 +97,35 @@ export const BottomTabNavigator = (props) => {
             <Portal>
                 {
                     (routeName === 'RoseListStack')
-                        ? <FAB
+                        ? <FAB.Group
                             visible={isFocused}
                             icon={fabIcon}
                             style={{
                                 position: 'absolute',
                                 //bottom: (screenHeight * 0.105),
-                                bottom: safeArea.bottom + 70,
-                                right: 25,
+                                bottom: safeArea.bottom + 60,
+                                right: (screenWidth * 0.01)
                             }}
                             color="white"
+                            actions={[]}
                             onPress={onFabPress}
+                            onStateChange={({ open }) => null}
                         />
-                        : <FAB
-                            visible={isFocused}
-                            icon={fabIcon}
-                            style={{
-                                position: 'absolute',
-                                //bottom: (screenHeight * 0.105),
-                                bottom: safeArea.bottom + 70,
-                                right: 25,
-                            }}
-                            color="white"
-                            onPress={onFabPress}
-                        />
-                }
-                {/* : <FAB.Group
+                        : <FAB.Group
                             open={fabOpen}
                             visible={isFocused}
                             icon={fabIcon}
                             style={{
                                 position: 'absolute',
-                                bottom: safeArea.bottom + 55,
-                                right: 16,
+                                bottom: safeArea.bottom + 60,
+                                //bottom: (screenHeight * 0.105),
+                                right: (screenWidth * 0.01),
                             }}
                             color="white"
-                            onPress={onFabPress}
                             actions={fabActions}
                             onStateChange={({ open }) => setFabOpen(open)}
-                        /> */}
+                        />
+                }
             </Portal>
         </React.Fragment>
     )
