@@ -12,8 +12,7 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
     const { birthday, dateMet, email, homeLocation, name, nickName, notes, phoneNumber, placeMetAt, picture, tags, work } = user || {};
     const { homeLocationCoords, homeFormatted_address, homeLocationName } = homeLocation || {};
     const { placeMetAtLocationCoords, placeMetAtFormatted_address, placeMetAtName } = placeMetAt || {};
-    
-    console.log(birthday, dateMet)
+
     const viewRows = [
         {
             value: name || '(No-Name?)', subtitle: 'name',
@@ -58,7 +57,7 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
             rightFunc: () => { },
         },
         {
-            value: dateMet ? (moment(dateMet).format('MMM DD, YYYY')) :'(Enter Date met!)', subtitle: 'date met',
+            value: dateMet ? (moment(dateMet).format('MMM DD, YYYY')) : '(Enter Date met!)', subtitle: 'date met',
             left: "calendar",
             rightIcon: "calendar-heart",
             rightFunc: () => { },
@@ -83,19 +82,24 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
         },
     ];
 
+    const isUserProfile = (view_updateFunctionText === 'Update your profile');
+    const profileRowsToIgnore = ['notes', 'date met', 'place met', 'tags']
+
     return (
         <ScrollView>
             {
                 viewRows.map(({ value, subtitle, left, rightIcon, rightFunc }) => (
-                    <RoseViewField
-                        key={subtitle}
-                        value={value}
-                        subtitle={subtitle}
-                        left={left}
-                        rightIcon={rightIcon}
-                        rightFunc={rightFunc}
-                        dataDetectorType={'phoneNumber'}
-                    />
+                    ((isUserProfile && !profileRowsToIgnore.includes(subtitle) || !isUserProfile))
+                        ? <RoseViewField
+                            key={subtitle}
+                            value={value}
+                            subtitle={subtitle}
+                            left={left}
+                            rightIcon={rightIcon}
+                            rightFunc={rightFunc}
+                            dataDetectorType={'phoneNumber'}
+                        />
+                        : null
                 ))}
             <Button onPress={view_updateFunction}> {view_updateFunctionText} </Button>
             <Button
