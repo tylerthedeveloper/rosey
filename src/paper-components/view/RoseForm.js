@@ -123,16 +123,16 @@ const RoseForm = ({ user, props,
     // TODO: MOVE OUT?
     const _clearFormData = () => formRows.map(row => row.editFunc(''));
 
-    const _onChangeDate = (event, field, selectedDate) => {
-        const currentDate = selectedDate || date;
-        field(currentDate);
+    const _onChangeDate = (event, field, selectedDate, showSetter) => {
+        // const currentDate = selectedDate || new Date(Date.now());
+        if (Platform.OS !== "iOS") {
+            showSetter(false);
+        }
+        field(selectedDate || new Date(Date.now()));
     };
+
     const [birth_datePicker, setBirth_datePicker] = useState(false);
     const [datemet_Picker, setDatemet_Picker] = useState(false);
-
-    const _openDate = (ref, open) => {
-
-    }
 
     const _makeLocationObject = (locationObject, locationType, locationSetter) => {
         const { geometry: { location: { lat, lng } }, formatted_address, name } = locationObject;
@@ -203,24 +203,34 @@ const RoseForm = ({ user, props,
                                 <TouchableOpacity onPress={() => setDatemet_Picker(!datemet_Picker)}>
                                     <Avatar.Icon {...props} icon={'calendar'} size={40} style={{ marginRight: 20 }} />
                                 </TouchableOpacity>
-                                <TextInput
-                                    style={styles.textInput}
-                                    disabled={true}
-                                    onTouchStart={() => setDatemet_Picker(!datemet_Picker)}
-                                    value={moment(new Date(updated_dateMet)).format('MMM DD, YYYY')}
-                                />
+                                <TouchableOpacity onPress={() => setDatemet_Picker(!datemet_Picker)}>
+                                    <TextInput
+                                        style={styles.textInput}
+                                        disabled={true}
+                                        onTouchStart={() => setDatemet_Picker(!datemet_Picker)}
+                                        value={moment(new Date(updated_dateMet)).format('MMM DD, YYYY')}
+                                    />
+                                </TouchableOpacity>
                             </Card.Actions>
                             {
                                 (datemet_Picker)
-                                    ? <>
-                                        <Paragraph> Date Met </Paragraph>
-                                        <DateTimePicker
+                                    ?
+                                    (Platform.OS === "iOS")
+                                        ? <>
+                                            <Paragraph> Date Met </Paragraph>
+                                            <DateTimePicker
+                                                value={updated_dateMet}
+                                                display="default"
+                                                style={{ width: '70%', alignSelf: 'center' }}
+                                                onChange={(e, date) => _onChangeDate(e, setDateMet, date, setBirth_datePicker)}
+                                            />
+                                        </>
+                                        : <DateTimePicker
                                             value={updated_dateMet}
                                             display="default"
                                             style={{ width: '70%', alignSelf: 'center' }}
-                                            onChange={(e, date) => _onChangeDate(e, setDateMet, date)}
+                                            onChange={(e, date) => _onChangeDate(e, setDateMet, date, setBirth_datePicker)}
                                         />
-                                    </>
                                     : null
                             }
                         </View>
@@ -231,24 +241,32 @@ const RoseForm = ({ user, props,
                         <TouchableOpacity onPress={() => setBirth_datePicker(!birth_datePicker)}>
                             <Avatar.Icon {...props} icon={'calendar'} size={40} style={{ marginRight: 20 }} />
                         </TouchableOpacity>
-                        <TextInput
-                            style={styles.textInput}
-                            disabled={true}
-                            onTouchStart={() => setBirth_datePicker(!birth_datePicker)}
-                            value={moment(new Date(updated_birthday)).format('MMM DD, YYYY')}
-                        />
+                        <TouchableOpacity onPress={() => setBirth_datePicker(!birth_datePicker)}
+                            style={styles.textInput}>
+                            <TextInput
+                                disabled={true}
+                                value={moment(new Date(updated_birthday)).format('MMM DD, YYYY')}
+                            />
+                        </TouchableOpacity>
                     </Card.Actions>
                     {
                         (birth_datePicker)
-                            ? <>
-                                <Paragraph> Birthday </Paragraph>
-                                <DateTimePicker
+                            ? (Platform.OS === "iOS")
+                                ? <>
+                                    <Paragraph> Birthday </Paragraph>
+                                    <DateTimePicker
+                                        value={updated_birthday}
+                                        display="default"
+                                        style={{ width: '66%', alignSelf: 'center' }}
+                                        onChange={(e, date) => _onChangeDate(e, setBirthday, date, setBirth_datePicker)}
+                                    />
+                                </>
+                                : < DateTimePicker
                                     value={updated_birthday}
                                     display="default"
                                     style={{ width: '66%', alignSelf: 'center' }}
-                                    onChange={(e, date) => _onChangeDate(e, setBirthday, date)}
+                                    onChange={(e, date) => _onChangeDate(e, setBirthday, date, setBirth_datePicker)}
                                 />
-                            </>
                             : null
                     }
                 </View>
@@ -315,9 +333,9 @@ const RoseForm = ({ user, props,
                 >
                     {form_secondFunctionText}
                 </Button>
-            </ScrollView>
+            </ScrollView >
             <Spacer />
-        </KeyboardAvoidingView>
+        </KeyboardAvoidingView >
     );
 }
 

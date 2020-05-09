@@ -2,7 +2,7 @@
   "main": "node_modules/expo/AppEntry.js",
   "scripts": {
     "start": "expo start --tunnel",
-    "android": "expo start --android",
+    "android": "expo start --android --localhost",
     "ios": "expo start --ios",
     "web": "expo start --web",
     "eject": "expo eject",
@@ -13,7 +13,6 @@
     "@react-native-community/masked-view": "0.1.6",
     "@react-navigation/bottom-tabs": "^5.2.7",
     "@react-navigation/drawer": "^5.5.0",
-    "@react-navigation/material-top-tabs": "^5.2.1",
     "@react-navigation/native": "^5.1.6",
     "@react-navigation/stack": "^5.2.12",
     "axios": "^0.19.2",
