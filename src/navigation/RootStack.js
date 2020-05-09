@@ -8,7 +8,7 @@ import { Appbar, Avatar } from 'react-native-paper';
 import { theme } from '../core/theme'
 import { createStackNavigator } from '@react-navigation/stack';
 import { BottomTabNavigator } from './Tabs';
-import { AddRoseScreen, ProfileScreen, RoseDetailScreen } from '../screens'
+import { AddRoseScreen, ContactCardScreen, RoseDetailScreen } from '../screens'
 import { AuthContext } from '../context/AuthContext';
 
 const RootStack = createStackNavigator();
@@ -110,9 +110,9 @@ export const RootStackNavigator = () => {
                 options={{ headerTitle: 'Details' }}
             />
             <RootStack.Screen
-                name="Profile"
-                component={ProfileScreen}
-                options={{ headerTitle: 'Profile' }}
+                name="ContactCard"
+                component={ContactCardScreen}
+                options={{ headerTitle: 'ContactCard' }}
             />
         </RootStack.Navigator>
     )

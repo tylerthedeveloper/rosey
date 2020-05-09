@@ -30,7 +30,7 @@ export default () => {
         // return { errorMessage: '', token, user, isLoading: false };
         /* -------------------------------------------------------------------------- */
         return { errorMessage: '', user: action.payload, isLoading: false };
-      case 'update_profile':
+      case 'update_contact_card':
         return { ...state, user: action.payload };
       case 'clear_error_message':
         return { ...state, errorMessage: '' };
@@ -49,7 +49,7 @@ export default () => {
     return {
       name: name || '',
       email: email || '',
-      birthday: '',
+      birthday: new Date(Date.now()),
       homeLocation: {
         homeLocationCoords: { latitude: -369, longitude: -369 },
         homeFormatted_address: '',
@@ -114,17 +114,17 @@ export default () => {
           dispatch({ type: 'add_error', payload: 'Something went wrong with sign in' });
         }
       },
-      updateProfile: async ({ roseObj, callback }) => {
+      updateContactCard: async ({ roseObj, callback }) => {
         // console.log(userData);
         try {
           /* -------------------------------------------------------------------------- */
-          // const response = await roseyApi.post('/profile', userData);
+          // const response = await roseyApi.post('/contact_card', userData);
           // const updatedUserObj = response.data;
-          // console.log('updatProfile:', roseObj)
+          // console.log('updateContactCard:', roseObj)
           /* -------------------------------------------------------------------------- */
           console.log('roseObj', callback, roseObj);
           await AsyncStorage.setItem('user', JSON.stringify(roseObj));
-          dispatch({ type: 'update_profile', payload: roseObj });
+          dispatch({ type: 'update_contact_card', payload: roseObj });
           if (callback) {
             callback();
           }

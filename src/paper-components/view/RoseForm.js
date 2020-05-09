@@ -34,8 +34,8 @@ const RoseForm = ({ user, props,
     // ────────────────────────────────────────────────────────────────────────────────
 
     const updatedUser = {
-        birthday: updated_birthday || new Date(Date.now()),
-        dateMet: updated_dateMet || Date.now(),
+        birthday: updated_birthday || Date.now(),
+        dateMet: updated_dateMet || new Date(Date.now()),
         email: updated_email || '',
         /* -------------------------------------------------------------------------- */
         homeLocation: updated_homeLocation || {
@@ -148,8 +148,13 @@ const RoseForm = ({ user, props,
     const [contentHeight, setContentHeight] = useState();
     const scrollRef = React.createRef();
 
-    const profileRowsToIgnore = ['notes', 'placeMet']
-    const isUserProfile = (form_updateFunctionText === 'Save profile');
+    const contactCardRowsToIgnore = ['notes', 'date met']
+    const isUserContactCard = (form_updateFunctionText === 'Save contact card');
+
+    if (isUserContactCard) {
+        updatedUser.dateMet = undefined;
+        console.log(updatedUser.dateMet)
+    }
 
     return (
         <KeyboardAvoidingView
@@ -163,7 +168,7 @@ const RoseForm = ({ user, props,
             >
                 {
                     formRows.map(({ left, subtitle, value, editFunc, keyboardType, autoCapitalize, multiline }) => (
-                        ((isUserProfile && !profileRowsToIgnore.includes(subtitle) || !isUserProfile))
+                        ((isUserContactCard && !contactCardRowsToIgnore.includes(subtitle) || !isUserContactCard))
                             ? <Card.Actions style={styles.cardContent} key={subtitle} >
                                 <Avatar.Icon {...props} icon={left} size={40} style={{ marginRight: 20 }} />
                                 <TextInput mode="outlined"
@@ -185,7 +190,7 @@ const RoseForm = ({ user, props,
                 }
                 <Paragraph> Date Info </Paragraph>
                 {
-                    (!isUserProfile)
+                    (!isUserContactCard)
                         ? <>
                             <Title style={{ alignSelf: 'center' }}> Date Met</Title>
                             <DateTimePicker
@@ -228,7 +233,7 @@ const RoseForm = ({ user, props,
                     />
                 </Card.Actions>
                 {
-                    (!isUserProfile)
+                    (!isUserContactCard)
                         ? <Card.Actions style={styles.cardContent}>
                             <Avatar.Icon {...props} icon={'crosshairs-gps'} size={40} style={{ marginRight: 10 }} />
                             <PlacesInput

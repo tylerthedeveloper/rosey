@@ -23,7 +23,7 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
         {
             value: nickName || '(No-nickName?)', subtitle: 'nickname',
             left: "account",
-            rightIcon: "account-plus",
+            // rightIcon: "account-plus",
             rightFunc: () => { },
         },
         {
@@ -50,13 +50,13 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
         {
             value: (tags && tags.length > 0) ? tags : '(Add some Tags!)', subtitle: 'tags',
             left: "tag",
-            rightIcon: "tag",
+            // rightIcon: "tag",
             rightFunc: () => { },
         },
         {
             value: notes || '(Add some notes!)', subtitle: 'notes',
             left: "note",
-            rightIcon: "note",
+            // rightIcon: "note",
             rightFunc: () => { },
         },
         {
@@ -85,25 +85,31 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
         },
     ];
 
-    const isUserProfile = (view_updateFunctionText === 'Update your profile');
-    const profileRowsToIgnore = ['notes', 'date met', 'place met', 'tags']
+    const isUserContactCard = (view_updateFunctionText === 'Update your contact card');
+    const contactCardRowsToIgnore = ['notes', 'date met', 'place met', 'tags']
 
     return (
         <ScrollView>
             {
                 viewRows.map(({ value, subtitle, left, rightIcon, secondRightIcon, rightFunc, secondRightFunc }) => (
-                    ((isUserProfile && !profileRowsToIgnore.includes(subtitle) || !isUserProfile))
-                        ? <RoseViewField
-                            key={subtitle}
-                            value={value}
-                            subtitle={subtitle}
-                            left={left}
-                            rightIcon={rightIcon}
-                            rightFunc={rightFunc}
-                            secondRightIcon={secondRightIcon}
-                            secondRightFunc={secondRightFunc}
-                            dataDetectorType={'phoneNumber'}
-                        />
+                    ((isUserContactCard && !contactCardRowsToIgnore.includes(subtitle) || !isUserContactCard))
+                        ? (isUserContactCard)
+                            ? <RoseViewField
+                                key={subtitle}
+                                value={value}
+                                subtitle={subtitle}
+                                left={left}
+                            />
+                            : <RoseViewField
+                                key={subtitle}
+                                value={value}
+                                subtitle={subtitle}
+                                left={left}
+                                rightIcon={rightIcon}
+                                rightFunc={rightFunc}
+                                secondRightIcon={secondRightIcon}
+                                secondRightFunc={secondRightFunc}
+                            />
                         : null
                 ))}
             <Button onPress={view_updateFunction}> {view_updateFunctionText} </Button>

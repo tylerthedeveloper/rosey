@@ -82,8 +82,8 @@ const DrawerContent = (props) => {
                                 size={size}
                             />
                         )}
-                        label="Profile"
-                        onPress={() => navigation.navigate('Profile')}
+                        label="Contact Card"
+                        onPress={() => navigation.navigate('ContactCard')}
                     />
                     {/* <DrawerItem
                         icon={({ color, size }) => (
