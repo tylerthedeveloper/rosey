@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { KeyboardAvoidingView, ScrollView, StyleSheet, View } from 'react-native';
-import { Avatar, Button, Card, TextInput, Divider, Paragraph, Title } from 'react-native-paper';
+import { KeyboardAvoidingView, ScrollView, StyleSheet, View, TouchableOpacity } from 'react-native';
+import { Avatar, Button, Card, TextInput, Divider, Chip, Paragraph, Title } from 'react-native-paper';
 import Spacer from '../../components/Spacer';
 
 import { GOOGLE_API_KEY } from "react-native-dotenv";
 import PlacesInput from 'react-native-places-input';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import moment from 'moment';
 
 const RoseForm = ({ user, props,
     form_updateFunction, form_updateFunctionText,
@@ -126,6 +127,12 @@ const RoseForm = ({ user, props,
         const currentDate = selectedDate || date;
         field(currentDate);
     };
+    const [birth_datePicker, setBirth_datePicker] = useState(false);
+    const [datemet_Picker, setDatemet_Picker] = useState(false);
+
+    const _openDate = (ref, open) => {
+
+    }
 
     const _makeLocationObject = (locationObject, locationType, locationSetter) => {
         const { geometry: { location: { lat, lng } }, formatted_address, name } = locationObject;
@@ -191,24 +198,60 @@ const RoseForm = ({ user, props,
                 <Paragraph> Date Info </Paragraph>
                 {
                     (!isUserContactCard)
-                        ? <>
-                            <Title style={{ alignSelf: 'center' }}> Date Met</Title>
-                            <DateTimePicker
-                                value={updated_dateMet}
-                                display="default"
-                                style={{ width: '70%', alignSelf: 'center' }}
-                                onChange={(e, date) => _onChangeDate(e, setDateMet, date)}
-                            />
-                        </>
+                        ? <View style={{ alignItems: 'center' }}>
+                            <Card.Actions style={styles.cardContent}>
+                                <TouchableOpacity onPress={() => setDatemet_Picker(!datemet_Picker)}>
+                                    <Avatar.Icon {...props} icon={'calendar'} size={40} style={{ marginRight: 20 }} />
+                                </TouchableOpacity>
+                                <TextInput
+                                    style={styles.textInput}
+                                    disabled={true}
+                                    onTouchStart={() => setDatemet_Picker(!datemet_Picker)}
+                                    value={moment(new Date(updated_dateMet)).format('MMM DD, YYYY')}
+                                />
+                            </Card.Actions>
+                            {
+                                (datemet_Picker)
+                                    ? <>
+                                        <Paragraph> Date Met </Paragraph>
+                                        <DateTimePicker
+                                            value={updated_dateMet}
+                                            display="default"
+                                            style={{ width: '70%', alignSelf: 'center' }}
+                                            onChange={(e, date) => _onChangeDate(e, setDateMet, date)}
+                                        />
+                                    </>
+                                    : null
+                            }
+                        </View>
                         : null
                 }
-                <Title style={{ alignSelf: 'center' }}>Birthday</Title>
-                <DateTimePicker
-                    value={updated_birthday}
-                    display="default"
-                    style={{ width: '70%', alignSelf: 'center' }}
-                    onChange={(e, date) => _onChangeDate(e, setBirthday, date)}
-                />
+                <View style={{ alignItems: 'center' }}>
+                    <Card.Actions style={styles.cardContent}>
+                        <TouchableOpacity onPress={() => setBirth_datePicker(!birth_datePicker)}>
+                            <Avatar.Icon {...props} icon={'calendar'} size={40} style={{ marginRight: 20 }} />
+                        </TouchableOpacity>
+                        <TextInput
+                            style={styles.textInput}
+                            disabled={true}
+                            onTouchStart={() => setBirth_datePicker(!birth_datePicker)}
+                            value={moment(new Date(updated_birthday)).format('MMM DD, YYYY')}
+                        />
+                    </Card.Actions>
+                    {
+                        (birth_datePicker)
+                            ? <>
+                                <Paragraph> Birthday </Paragraph>
+                                <DateTimePicker
+                                    value={updated_birthday}
+                                    display="default"
+                                    style={{ width: '66%', alignSelf: 'center' }}
+                                    onChange={(e, date) => _onChangeDate(e, setBirthday, date)}
+                                />
+                            </>
+                            : null
+                    }
+                </View>
                 {/* TODO: preset location.... */}
                 <Paragraph> Location Stuff (please select below)</Paragraph>
                 <Card.Actions style={styles.cardContent}>
@@ -294,6 +337,10 @@ const styles = StyleSheet.create({
         maxWidth: '90%'
     }
 });
-
+{/* //dateContainer: {
+        maxWidth: '80%',
+        alignSelf: 'center',
+        flexDirection: 'row'
+    }, */}
 export default RoseForm;
 
