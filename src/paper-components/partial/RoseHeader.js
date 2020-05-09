@@ -19,7 +19,7 @@ const RoseHeader = ({ name, picture, homeCity, homeState, homeCountry }) => (
                 }}
             />
             <Title style={styles.userNameText}>{name || 'No-name!'}</Title>
-            <Paragraph style={styles.userCityText}>{homeCity || '(city)'}, {homeState || '(state)'}, {homeCountry || '(country)'}</Paragraph>
+            {/* <Paragraph style={styles.userCityText}>{homeCity || '(city)'}, {homeState || '(state)'}, {homeCountry || '(country)'}</Paragraph> */}
         </Card.Content>
     </ImageBackground>
 );
@@ -40,7 +40,6 @@ const styles = StyleSheet.create({
         marginBottom: 3
     },
     userNameText: {
-        color: '#FFF',
         fontSize: 20,
         fontWeight: 'bold',
         textAlign: 'center',

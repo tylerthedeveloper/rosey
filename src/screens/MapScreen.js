@@ -1,29 +1,24 @@
-import { FontAwesome } from '@expo/vector-icons';
-import React, { useContext, useEffect } from 'react';
+import React, { useContext } from 'react';
 import { StyleSheet } from 'react-native';
 import MapComponent from '../components/MapComponent';
 import { Context as RoseContext } from '../context/RoseContext';
+import useCurrentLocation from '../hooks/useCurrentLocation';
 
-const MapScreen = () => {
+const MapScreen = ({ filterType }) => {
 
-    const { state: { roses }, fetchAllRoses, addRose } = useContext(RoseContext);
+    const { state: { roses } } = useContext(RoseContext);
 
     // FIXME: Is this needed?
     // useEffect(() => {
     //     fetchAllRoses();
     // }, []); 
 
-    const _roses = roses.filter(rose =>
-        rose.placeMetAt.coords &&
-        rose.placeMetAt.coords.latitude !== -369 &&
-        rose.placeMetAt.coords.longitude !== -369
-    );
-
-    // console.log(roses.length, _roses.length)
+    // TODO: filter type
+    const [currentLocation] = useCurrentLocation();
 
     return (
         <>
-            <MapComponent height={900} roses={_roses} />
+            <MapComponent height={900} roses={roses} coords={currentLocation} filterType={filterType} />
         </>
     )
 }

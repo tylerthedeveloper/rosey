@@ -2,16 +2,16 @@ import React from 'react';
 import { ScrollView } from 'react-native';
 import { Button } from 'react-native-paper';
 import RoseViewField from '../partial/RoseViewField';
+import moment from 'moment';
 
 const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
     view_secondFunction, view_secondFunctionText,
     view_updateFunction_callback
-}
-) => {
+}) => {
 
-    // TODO: ADD homeLocation
-    const { birthday, email, homeLocation, name, nickName, phoneNumber, placeMetAt, picture, tags, work } = user || {};
-    const { homeCity, homeState, homeCountry } = homeLocation || {};
+    const { birthday, dateMet, email, homeLocation, name, nickName, notes, phoneNumber, placeMetAt, picture, tags, work } = user || {};
+    const { homeLocationCoords, homeFormatted_address, homeLocationName } = homeLocation || {};
+    const { placeMetAtLocationCoords, placeMetAtFormatted_address, placeMetAtName } = placeMetAt || {};
 
     const viewRows = [
         {
@@ -45,30 +45,61 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
             rightFunc: () => { },
         },
         {
-            value: (tags && tags.length > 0) ? tags : '(Add some Tags!)', subtitle: 'tag',
+            value: (tags && tags.length > 0) ? tags : '(Add some Tags!)', subtitle: 'tags',
             left: "tag",
             rightIcon: "tag",
             rightFunc: () => { },
         },
         {
-            value: birthday || '(Enter Birthday!)', subtitle: 'birthday',
+            value: notes || '(Add some notes!)', subtitle: 'notes',
+            left: "note",
+            rightIcon: "note",
+            rightFunc: () => { },
+        },
+        {
+            value: dateMet ? (moment(dateMet).format('MMM DD, YYYY')) : '(Enter Date met!)', subtitle: 'date met',
             left: "calendar",
             rightIcon: "calendar-heart",
             rightFunc: () => { },
         },
+        {
+            value: birthday ? (moment(birthday).format('MMM DD, YYYY')) : '(Enter Birthday!)', subtitle: 'birthday',
+            left: "calendar",
+            rightIcon: "calendar-heart",
+            rightFunc: () => { },
+        },
+        {
+            value: homeFormatted_address || '(Add location!)', subtitle: 'home location',
+            left: "crosshairs-gps",
+            rightIcon: "crosshairs-gps",
+            rightFunc: () => { },
+        },
+        {
+            value: placeMetAtFormatted_address || '(Add location!)', subtitle: 'place met',
+            left: "crosshairs-gps",
+            rightIcon: "crosshairs-gps",
+            rightFunc: () => { },
+        },
     ];
+
+    const isUserProfile = (view_updateFunctionText === 'Update your profile');
+    const profileRowsToIgnore = ['notes', 'date met', 'place met', 'tags']
+
     return (
         <ScrollView>
             {
                 viewRows.map(({ value, subtitle, left, rightIcon, rightFunc }) => (
-                    <RoseViewField
-                        key={subtitle}
-                        value={value}
-                        subtitle={subtitle}
-                        left={left}
-                        rightIcon={rightIcon}
-                        rightFunc={rightFunc}
-                    />
+                    ((isUserProfile && !profileRowsToIgnore.includes(subtitle) || !isUserProfile))
+                        ? <RoseViewField
+                            key={subtitle}
+                            value={value}
+                            subtitle={subtitle}
+                            left={left}
+                            rightIcon={rightIcon}
+                            rightFunc={rightFunc}
+                            dataDetectorType={'phoneNumber'}
+                        />
+                        : null
                 ))}
             <Button onPress={view_updateFunction}> {view_updateFunctionText} </Button>
             <Button

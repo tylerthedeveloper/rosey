@@ -1,60 +1,65 @@
 import React, { useState } from 'react';
-import { KeyboardAvoidingView, ScrollView, StyleSheet } from 'react-native';
-import { Avatar, Button, Card, TextInput } from 'react-native-paper';
+import { KeyboardAvoidingView, ScrollView, StyleSheet, View } from 'react-native';
+import { Avatar, Button, Card, TextInput, Divider, Paragraph, Title } from 'react-native-paper';
 import Spacer from '../../components/Spacer';
+
+import { GOOGLE_API_KEY } from "react-native-dotenv";
+import PlacesInput from 'react-native-places-input';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 const RoseForm = ({ user, props,
     form_updateFunction, form_updateFunctionText,
     form_secondFunction, form_secondFunctionText,
     form_updateFunction_callback
-}
-) => {
+}) => {
 
-    const { birthday, email, homeLocation, name, nickName, phoneNumber, placeMetAt, picture, tags, work, roseId
+    const { birthday, dateMet, email, homeLocation, name, nickName, notes, phoneNumber, placeMetAt, picture, tags, work, roseId
     } = user || {};
 
-    const { homeCity, homeState, homeCountry } = homeLocation || {};
-
-    const [updated_birthday, setBirthday] = useState(birthday);
+    const [updated_birthday, setBirthday] = useState(birthday || new Date(Date.now()));
+    const [updated_dateMet, setDateMet] = useState(dateMet || new Date(Date.now()));
     const [updated_email, setEmail] = useState(email);
-    /* -------------------------------------------------------------------------- */
-    // const [updated_homeLocation, setHomeLocation] = useState(homeLocation);
-    // Home Location //
-    const [updated_homeCity, setHomeCity] = useState(homeCity);
-    const [updated_homeState, setHomeState] = useState(homeState);
-    const [updated_homeCountry, setHomeCountry] = useState(homeCountry);
-    /* -------------------------------------------------------------------------- */
-    const [updated_name, setName] = useState(name);
-    const [updated_nickName, setNickName] = useState(nickName);
-    const [updated_phoneNumber, setPhone] = useState(phoneNumber);
-    // ────────────────────────────────────────────────────────────────────────────────
-    // NOT YET USED //
-    const [updated_placeMetAt, setPlaceMetAt] = useState(placeMetAt);
-    const [updated_picture, setPicture] = useState(picture);
-    // ────────────────────────────────────────────────────────────────────────────────
     const [updated_tags, setTags] = useState(tags);
     const [updated_work, setWork] = useState(work);
+    const [updated_name, setName] = useState(name);
+    const [updated_notes, setNotes] = useState(notes);
+    const [updated_nickName, setNickName] = useState(nickName);
+    const [updated_phoneNumber, setPhone] = useState(phoneNumber);
+    const [updated_homeLocation, setUpdated_homeLocation] = useState(homeLocation);
+    const [updated_placeMetAt, setUpdated_placeMetAt] = useState(placeMetAt);
+
+    // ────────────────────────────────────────────────────────────────────────────────
+    // TODO: NOT YET USED //
+    const [updated_picture, setPicture] = useState(picture);
+    // ────────────────────────────────────────────────────────────────────────────────
 
     const updatedUser = {
-        birthday: updated_birthday || '',
+        birthday: updated_birthday || new Date(Date.now()),
+        dateMet: updated_dateMet || Date.now(),
         email: updated_email || '',
-        // homeLocation: updated_homeLocation || '',
         /* -------------------------------------------------------------------------- */
-        homeLocation: {
-            homeCity: updated_homeCity || '',
-            homeState: updated_homeState || '',
-            homeCountry: updated_homeCountry || '',
+        homeLocation: updated_homeLocation || {
+            homeLocationCoords: { latitude: -369, longitude: -369 },
+            homeFormatted_address: '',
+            homeLocationName: ''
+        },
+        placeMetAt: updated_placeMetAt || {
+            placeMetAtLocationCoords: { latitude: -369, longitude: -369 },
+            placeMetAtFormatted_address: '',
+            placeMetAtName: ''
         },
         /* -------------------------------------------------------------------------- */
         name: updated_name || '',
+        notes: updated_notes || '',
         nickName: updated_nickName || '',
         phoneNumber: updated_phoneNumber || '',
-        placeMetAt: updated_placeMetAt || '',
         picture: updated_picture || '',
         tags: updated_tags || '',
         work: updated_work || '',
         roseId: roseId || ''
     };
+
+    // console.log('updatedUser', updatedUser.homeLocation, updatedUser.placeMetAt);
 
     const formRows = [
         {
@@ -73,6 +78,7 @@ const RoseForm = ({ user, props,
             value: updated_phoneNumber, subtitle: 'phone',
             left: "phone",
             rightIcon: "phone",
+            keyboardType: 'phone-pad',
             editFunc: setPhone
         },
         {
@@ -80,24 +86,6 @@ const RoseForm = ({ user, props,
             left: "email",
             rightIcon: "email",
             editFunc: setEmail
-        },
-        {
-            value: updated_homeCity, subtitle: 'city',
-            left: "city",
-            rightIcon: "city",
-            editFunc: setHomeCity
-        },
-        {
-            value: updated_homeState, subtitle: 'state',
-            left: "drag-variant",
-            rightIcon: "drag-variant",
-            editFunc: setHomeState
-        },
-        {
-            value: updated_homeCountry, subtitle: 'country',
-            left: "crosshairs-gps",
-            rightIcon: "crosshairs-gps",
-            editFunc: setHomeCountry
         },
         {
             value: updated_work, subtitle: 'occupation',
@@ -114,33 +102,49 @@ const RoseForm = ({ user, props,
             editFunc: setTags
         },
         {
-            value: updated_birthday, subtitle: 'birthday',
-            left: "calendar",
-            rightIcon: "calendar-heart",
-            editFunc: setBirthday
-        },
+            value: updated_notes, subtitle: 'notes',
+            left: "note",
+            rightIcon: "note",
+            editFunc: setNotes,
+            multiline: true
+        }
     ];
 
-    // const placeMetAt = {
-    //     placeName,
-    //     coords,
-    // };
-
     /* -------------------------------------------------------------------------- */
-    /*                                Date Section                                */
-    /* -------------------------------------------------------------------------- */
-    // const [dateMet, setDate] = useState(new Date(Date.now()));
-    // const [mode, setMode] = useState('date');
-
-    // const onChange = (event, selectedDate) => {
-    //     const currentDate = selectedDate || dateMet;
-    //     // setShow(Platform.OS === 'ios');
-    //     setDate(currentDate);
-    // };
+    /*                                Functions                                   */
     /* -------------------------------------------------------------------------- */
 
-    // console.log(JSON.stringify(user) === JSON.stringify(updatedUser));
+    // TODO: MOVE OUT?
     const _clearFormData = () => formRows.map(row => row.editFunc(''));
+
+    const _onChangeDate = (event, field, selectedDate) => {
+        const currentDate = selectedDate || date;
+        field(currentDate);
+    };
+
+    const _makeLocationObject = (locationObject, locationType, locationSetter) => {
+        const { geometry: { location: { lat, lng } }, formatted_address, name } = locationObject;
+        if (locationType === 'home') {
+            locationSetter({
+                homeLocationCoords: { latitude: lat, longitude: lng },
+                homeFormatted_address: formatted_address,
+                homeLocationName: name
+            });
+        } else if (locationType === 'place_met') {
+            locationSetter({
+                placeMetAtLocationCoords: { latitude: lat, longitude: lng },
+                placeMetAtFormatted_address: formatted_address,
+                placeMetAtName: name
+            });
+        }
+    }
+    /* -------------------------------------------------------------------------- */
+
+    const [contentHeight, setContentHeight] = useState();
+    const scrollRef = React.createRef();
+
+    const profileRowsToIgnore = ['notes', 'placeMet']
+    const isUserProfile = (form_updateFunctionText === 'Save profile');
 
     return (
         <KeyboardAvoidingView
@@ -148,26 +152,101 @@ const RoseForm = ({ user, props,
             keyboardVerticalOffset={80}
             style={{ flex: 1 }}
         >
-            <ScrollView >
+            <ScrollView keyboardShouldPersistTaps="always"
+                ref={scrollRef}
+                onContentSizeChange={(contentHeight) => setContentHeight(contentHeight)}
+            >
                 {
-                    formRows.map(({ left, subtitle, value, editFunc }) => (
-                        <Card.Actions style={styles.cardContent} key={subtitle}>
-                            <Avatar.Icon {...props} icon={left} size={40} style={{ marginRight: 20 }} />
-                            <TextInput mode="outlined"
-                                label={subtitle}
-                                style={styles.textInput}
-                                // placeholder={value}
-                                value={value}
-                                autoCapitalize="none"
-                                autoComplete={false}
-                                autoCorrect={false}
-                                autoCompleteType={"off"}
-                                onChangeText={editFunc}
-                            />
-                        </Card.Actions>
+                    formRows.map(({ left, subtitle, value, editFunc, keyboardType, multiline }) => (
+                        ((isUserProfile && !profileRowsToIgnore.includes(subtitle) || !isUserProfile))
+                            ? <Card.Actions style={styles.cardContent} key={subtitle} >
+                                <Avatar.Icon {...props} icon={left} size={40} style={{ marginRight: 20 }} />
+                                <TextInput mode="outlined"
+                                    label={subtitle}
+                                    style={styles.textInput}
+                                    // placeholder={value}
+                                    value={value}
+                                    autoCapitalize="none"
+                                    autoComplete={false}
+                                    autoCorrect={false}
+                                    autoCompleteType={"off"}
+                                    onChangeText={editFunc}
+                                    multiline={multiline}
+                                    keyboardType={keyboardType}
+                                />
+                            </Card.Actions>
+                            : null
                     ))
                 }
-                {/* <Divider /> */}
+                <Paragraph> Date Info </Paragraph>
+                {
+                    (!isUserProfile)
+                        ? <>
+                            <Title style={{ alignSelf: 'center' }}> Date Met</Title>
+                            <DateTimePicker
+                                value={updated_dateMet}
+                                display="default"
+                                style={{ width: '70%', alignSelf: 'center' }}
+                                onChange={(e, date) => _onChangeDate(e, setDateMet, date)}
+                            />
+                        </>
+                        : null
+                }
+                <Title style={{ alignSelf: 'center' }}>Birthday</Title>
+                <DateTimePicker
+                    value={updated_birthday}
+                    display="default"
+                    style={{ width: '70%', alignSelf: 'center' }}
+                    onChange={(e, date) => _onChangeDate(e, setBirthday, date)}
+                />
+                {/* TODO: preset location.... */}
+                <Paragraph> Location Stuff (please select below)</Paragraph>
+                <Card.Actions style={styles.cardContent}>
+                    <Avatar.Icon {...props} icon={'crosshairs-gps'} size={40} style={{ marginRight: 10 }} />
+                    <PlacesInput
+                        googleApiKey={GOOGLE_API_KEY}
+                        onSelect={place => _makeLocationObject(place.result, 'home', setUpdated_homeLocation)}
+                        placeHolder={(homeLocation && homeLocation.homeFormatted_address) ? homeLocation.homeFormatted_address : "Home location"}
+                        language={"en-US"}
+                        textInputProps={{
+                            autoCorrect: false
+                        }}
+                        stylesContainer={{
+                            position: 'relative',
+                            alignSelf: 'center',
+                            margin: 0,
+                            width: '80%',
+                            marginBottom: 10
+                        }}
+                        //onChangeText={() => scrollRef.current?.scrollTo({ y: 2 * contentHeight, animated: true })}
+                        onChangeText={() => scrollRef.current?.scrollToEnd()}
+                    />
+                </Card.Actions>
+                {
+                    (!isUserProfile)
+                        ? <Card.Actions style={styles.cardContent}>
+                            <Avatar.Icon {...props} icon={'crosshairs-gps'} size={40} style={{ marginRight: 10 }} />
+                            <PlacesInput
+                                googleApiKey={GOOGLE_API_KEY}
+                                onSelect={place => _makeLocationObject(place.result, 'place_met', setUpdated_placeMetAt)}
+                                placeHolder={(placeMetAt && placeMetAt.placeMetAtFormatted_address) ? placeMetAt.placeMetAtFormatted_address : "Place you met!"}
+                                language={"en-US"}
+                                value={placeMetAt}
+                                onChangeText={() => scrollRef.current?.scrollToEnd()}
+                                textInputProps={{
+                                    autoCorrect: false
+                                }}
+                                stylesContainer={{
+                                    position: 'relative',
+                                    alignSelf: 'center',
+                                    margin: 0,
+                                    width: '80%',
+                                    marginBottom: 10
+                                }}
+                            />
+                        </Card.Actions>
+                        : null
+                }
                 <Button disabled={JSON.stringify(user) === JSON.stringify(updatedUser)}
                     onPress={() => {
                         form_updateFunction({ roseObj: updatedUser, callback: () => form_updateFunction_callback(updatedUser) })
@@ -185,7 +264,7 @@ const RoseForm = ({ user, props,
                 </Button>
             </ScrollView>
             <Spacer />
-        </KeyboardAvoidingView >
+        </KeyboardAvoidingView>
     );
 }
 

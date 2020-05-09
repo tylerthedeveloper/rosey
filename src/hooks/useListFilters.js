@@ -25,6 +25,8 @@ export default (roses, fetchAllRoses) => {
             const lower = searchQuery.toLowerCase();
             const matchingRoses = roses.filter(rose => {
                 return rose.name.toLowerCase().includes(lower) ||
+                    rose.notes.toLowerCase().includes(lower) ||
+                    rose.tags.toLowerCase().includes(lower) ||
                     rose.email.toLowerCase().includes(lower) ||
                     rose.nickName.toLowerCase().includes(lower);
             });

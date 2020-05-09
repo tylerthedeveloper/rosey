@@ -118,10 +118,7 @@ const deleteRose = (dispatch) => async ({ roseId, callback }) => {
         // FIXME: PULL FROM CURRENT STATE???
         const roses = await AsyncStorage.getItem('roses')
             .then(req => JSON.parse(req));
-        // console.log(roseId, callback);
-        // const roseId = roseObj.roseId;
         const updatedRoseList = roses.filter(rose => rose.roseId !== roseId);
-        // console.log(' updatedRoseList', updatedRoseList);
         await AsyncStorage.setItem('roses', JSON.stringify(updatedRoseList));
         dispatch({ type: "delete_rose", payload: updatedRoseList });
         callback();
