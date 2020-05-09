@@ -1,6 +1,7 @@
 import { AsyncStorage } from 'react-native';
 import shortid from 'shortid';
 import createDataContext from './createDataContext';
+import Constants from '../constants';
 
 const roseReducer = (state, action) => {
     switch (action.type) {
@@ -27,7 +28,7 @@ const fetchOneRose = (dispatch) => async () => { }
 
 const addRose = (dispatch) => async ({ roseObj, callback }) => {
     // if (!roseObj) {
-    //     // TODO:?
+    // TODO:?
     // }
     try {
         /* -------------------------------------------------------------------------- */
@@ -93,16 +94,14 @@ const fetchAllRoses = (dispatch) => async () => {
         if (roseStringArray) {
             //
             // ───  ────────────────────────────────────────────────────────────
-            //
-                // This experimental when needed to reset cache
-                // await AsyncStorage.removeItem('roses');
+            // FIXME: This experimental when needed to reset cache
+            // await AsyncStorage.removeItem('roses');
             // ────────────────────────────────────────────────────────────────────────────────
             const roses = JSON.parse(roseStringArray);
-            // console.log('fetchAllRoses', roses.length);
             dispatch({ type: "fetch_roses", payload: [...(roses || [])] });
         } else {
-            // console.log('fetchAllRoses: none yet');
-            dispatch({ type: "fetch_roses", payload: [] });
+            await AsyncStorage.setItem('roses', JSON.stringify([Constants.my_personal_card]));
+            dispatch({ type: "fetch_roses", payload: [Constants.my_personal_card] });
         }
     } catch (err) {
         console.log(err.message);
@@ -135,5 +134,7 @@ const clearErrorMessage = (dispatch) => () => {
 export const { Context, Provider } = createDataContext(
     roseReducer, // reducer
     { fetchAllRoses, clearErrorMessage, addRose, editRose, deleteRose }, //list of action functions
-    { roses: [], errorMessage: '' } //default state values
+    {
+        roses: [], errorMessage: ''
+    } //default state values
 );

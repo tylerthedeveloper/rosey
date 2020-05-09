@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import { FlatList, StyleSheet, View } from 'react-native';
+import { FlatList, StyleSheet, View, TouchableOpacity } from 'react-native';
 import { Chip, IconButton, Searchbar, Headline } from 'react-native-paper';
 import { Context as RoseContext } from '../context/RoseContext';
 import { theme } from '../core/theme';
@@ -9,11 +9,13 @@ import { RoseListItem } from '../paper-components/partial';
 const RoseListScreen = ({ navigation }) => {
 
     const { state: { roses }, fetchAllRoses } = useContext(RoseContext);
+
     // const { primary, secondary, error } = theme.colors;
     const [
         filteredRoses, filterToggle, setFilterToggle, filterItems, searchQuery, setSearchQuery
     ] = useListFilters(roses, fetchAllRoses);
 
+    // console.log('roses', roses);
 
     return (
         <View style={styles.container}>
@@ -33,7 +35,6 @@ const RoseListScreen = ({ navigation }) => {
                     onPress={() => setFilterToggle(!filterToggle)}
                     size={35}
                     style={styles.filterIcon}
-                //color={secondary}
                 />
             </View>
             {
@@ -47,17 +48,21 @@ const RoseListScreen = ({ navigation }) => {
 
                 </View>
             }
-            {
-                (filteredRoses && filteredRoses.length > 0)
-                    ? <FlatList
-                        data={filteredRoses}
-                        keyExtractor={(item) => (item.roseId)}
-                        renderItem={({ item }) => {
-                            return (<RoseListItem rose={item} />)
-                        }}
-                    />
-                    : <Headline style={styles.noRosesHeader}> No Roses yet? Add your first one!</Headline>
-            }
+            <View style={styles.content}>
+                {
+                    (filteredRoses && filteredRoses.length > 0)
+                        ? <FlatList
+                            data={filteredRoses}
+                            keyExtractor={(item) => (item.roseId)}
+                            renderItem={({ item }) => {
+                                return (<RoseListItem rose={item} />)
+                            }}
+                        />
+                        : <TouchableOpacity onPress={() => navigation.navigate('AddRose')}>
+                            <Headline style={styles.noRosesHeader}> No Roses yet? {"\n"} Add your first one!</Headline>
+                        </TouchableOpacity>
+                }
+            </View>
         </View>
     )
 }
@@ -91,12 +96,14 @@ const styles = StyleSheet.create({
         marginTop: 10,
         justifyContent: 'space-evenly'
     },
+    content: {
+        flex: 1,
+        justifyContent: 'center',
+    },
     noRosesHeader: {
         color: theme.colors.error,
-        marginTop: 20,
-        marginLeft: 20,
-        // flex: 1, 
-        // alignSelf: 'center'
+        alignSelf: 'center',
+        textAlign: 'center'
     }
 });
 

@@ -66,13 +66,15 @@ const RoseForm = ({ user, props,
             value: updated_name, subtitle: 'name',
             left: "account",
             rightIcon: "account-plus",
-            editFunc: setName
+            editFunc: setName,
+            autoCapitalize: "words"
         },
         {
             value: updated_nickName, subtitle: 'nickname',
             left: "account",
             rightIcon: "account-plus",
-            editFunc: setNickName
+            editFunc: setNickName,
+            autoCapitalize: "words"
         },
         {
             value: updated_phoneNumber, subtitle: 'phone',
@@ -91,7 +93,8 @@ const RoseForm = ({ user, props,
             value: updated_work, subtitle: 'occupation',
             left: "briefcase-account",
             rightIcon: "briefcase-plus",
-            editFunc: setWork
+            editFunc: setWork,
+            autoCapitalize: "words"
         },
         {
             // TODO: WHEN array
@@ -99,14 +102,16 @@ const RoseForm = ({ user, props,
             value: updated_tags, subtitle: 'Add tags (by commas) ',
             left: "tag",
             rightIcon: "tag",
-            editFunc: setTags
+            editFunc: setTags,
+            autoCapitalize: "words"
         },
         {
             value: updated_notes, subtitle: 'notes',
             left: "note",
             rightIcon: "note",
             editFunc: setNotes,
-            multiline: true
+            multiline: true,
+            autoCapitalize: "sentences"
         }
     ];
 
@@ -157,7 +162,7 @@ const RoseForm = ({ user, props,
                 onContentSizeChange={(contentHeight) => setContentHeight(contentHeight)}
             >
                 {
-                    formRows.map(({ left, subtitle, value, editFunc, keyboardType, multiline }) => (
+                    formRows.map(({ left, subtitle, value, editFunc, keyboardType, autoCapitalize, multiline }) => (
                         ((isUserProfile && !profileRowsToIgnore.includes(subtitle) || !isUserProfile))
                             ? <Card.Actions style={styles.cardContent} key={subtitle} >
                                 <Avatar.Icon {...props} icon={left} size={40} style={{ marginRight: 20 }} />
@@ -166,7 +171,7 @@ const RoseForm = ({ user, props,
                                     style={styles.textInput}
                                     // placeholder={value}
                                     value={value}
-                                    autoCapitalize="none"
+                                    autoCapitalize={autoCapitalize || "none"}
                                     autoComplete={false}
                                     autoCorrect={false}
                                     autoCompleteType={"off"}
