@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView } from 'react-native';
+import { Linking, ScrollView } from 'react-native';
 import { Button } from 'react-native-paper';
 import RoseViewField from '../partial/RoseViewField';
 import moment from 'moment';
@@ -27,21 +27,24 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
             rightFunc: () => { },
         },
         {
-            value: phoneNumber || '(123456789)', subtitle: 'phone',
+            value: phoneNumber || '123456789', subtitle: 'phone',
             left: "phone",
+            // TODO: country code?
             rightIcon: "phone",
-            rightFunc: () => { },
+            rightFunc: () => { Linking.openURL(`tel:${phoneNumber}`) },
+            secondRightIcon: "message-text",
+            secondRightFunc: () => { Linking.openURL(`sms:${phoneNumber}`) },
         },
         {
             value: email, subtitle: 'email',
             left: "email",
             rightIcon: "email",
-            rightFunc: () => { },
+            rightFunc: () => { Linking.openURL(`mailto:${email}`) },
         },
         {
             value: work || '(Add Occupation!)', subtitle: 'occupation',
             left: "briefcase-account",
-            rightIcon: "briefcase-plus",
+            // rightIcon: "briefcase-plus",
             rightFunc: () => { },
         },
         {
@@ -88,7 +91,7 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
     return (
         <ScrollView>
             {
-                viewRows.map(({ value, subtitle, left, rightIcon, rightFunc }) => (
+                viewRows.map(({ value, subtitle, left, rightIcon, secondRightIcon, rightFunc, secondRightFunc }) => (
                     ((isUserProfile && !profileRowsToIgnore.includes(subtitle) || !isUserProfile))
                         ? <RoseViewField
                             key={subtitle}
@@ -97,6 +100,8 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
                             left={left}
                             rightIcon={rightIcon}
                             rightFunc={rightFunc}
+                            secondRightIcon={secondRightIcon}
+                            secondRightFunc={secondRightFunc}
                             dataDetectorType={'phoneNumber'}
                         />
                         : null

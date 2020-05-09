@@ -39,8 +39,14 @@ export const BottomTabNavigator = (props) => {
         case 'Map':
             fabIcon = 'crosshairs-gps';
             fabActions = [
-                { icon: 'account-multiple', label: 'Place Met', onPress: () => setFilterType('place_met') },
-                { icon: 'home', label: 'Home Location', onPress: () => setFilterType('home') },
+                {
+                    icon: 'account-multiple', label: 'Place Met', onPress: () => setFilterType('place_met'),
+                    style: {  bottom: -55, },
+                },
+                {
+                    icon: 'home', label: 'Home Location', onPress: () => setFilterType('home'),
+                    style: { right: 75, top: 65, },
+                },
             ];
             onStateChange = ({ open }) => setFabOpen(open);
             break;
@@ -99,10 +105,12 @@ export const BottomTabNavigator = (props) => {
                         ? <FAB.Group
                             visible={isFocused}
                             icon={fabIcon}
+                            fabStyle={{}}
                             style={{
                                 position: 'absolute',
                                 //bottom: (screenHeight * 0.105),
                                 bottom: safeArea.bottom + 50,
+
                             }}
                             color="white"
                             actions={fabActions}
