@@ -10,9 +10,9 @@ export default () => {
         if (status === 'granted') {
             const calendars = await Calendar.getCalendarsAsync();
             // calendars.map(cal => console.log(cal.source.name))
-            const rozyCalendar = calendars.find(each => each.title === 'Rozy Calendar' );
+            const rozyCalendar = calendars.find(each => each.title === 'Rozy Calendar');
             if (rozyCalendar) {
-                // console.log(rozyCalendar);
+                console.log(rozyCalendar);
                 setRozyCalendar(rozyCalendar)
             } else {
                 console.log('no rozyCalendar');
@@ -21,34 +21,56 @@ export default () => {
         }
     });
 
-    const createCalendar = (async () => {
-        const defaultCal = await Calendar.getDefaultCalendarAsync();
-        console.log(defaultCal);
+    const createCalendar = async () => {
         const defaultCalendarSource = (Platform.OS === 'ios')
-            ? defaultCal.source
+            ? await Calendar.getDefaultCalendarAsync()
             : { isLocalAccount: true, name: 'Expo Calendar' };
-        const newCalendarID = await Calendar.createCalendarAsync({
+        // TODO: Handle error here
+        await Calendar.createCalendarAsync({
             title: 'Rozy Calendar',
             color: 'blue',
             entityType: Calendar.EntityTypes.EVENT,
-            sourceId: defaultCalendarSource.id,
-            source: defaultCalendarSource,
+            sourceId: defaultCalendarSource.source.id,
+            source: defaultCalendarSource.source,
             name: 'RozyCalendar',
             ownerAccount: 'personal',
             accessLevel: Calendar.CalendarAccessLevel.OWNER,
         });
-
-        console.log(`new cal ID is: ${newCalendarID}`);
         const calendars = await Calendar.getCalendarsAsync();
         const rozyCalendar = calendars.find(each => each.id === newCalendarID);
-        // console.log(calendars);
-        console.log(rozyCalendar);
-    })
+        console.log('rozyCalendar', rozyCalendar);
+    };
+
+    const createEvent = async (date, type, name, address) => {
+        // console.log('[_createEvent]: ', `${date} + ' is the ${type} for ${name} ` + name, rozyCalendar);
+        let title = '';
+        switch (type) {
+            case 'birthday':
+                title = `${name}'s birthday`;
+                break;
+            case 'date_met':
+                title = `The day you met ${name}`
+                break;
+            default:
+                title = `A special day for ${name}`;
+                break;
+        }
+        try {
+            await Calendar.createEventAsync(rozyCalendar.id, {
+                title, startDate: date, endDate: date, allDay: true,
+                location: address
+            })
+                .then(() => alert("Event successfully added to calendar"))
+
+        } catch (e) {
+            alert("There was a problem adding your event");
+        }
+    }
 
     useEffect(() => {
         getRozyCalendar();
     }, []);
 
-    return rozyCalendar;
+    return [rozyCalendar, createEvent];
 
 }

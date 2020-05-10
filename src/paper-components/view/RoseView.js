@@ -15,7 +15,7 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
     const { homeLocationCoords, homeFormatted_address, homeLocationName } = homeLocation || {};
     const { placeMetAtLocationCoords, placeMetAtFormatted_address, placeMetAtName } = placeMetAt || {};
 
-    const rozyCalendar = useCalendar();
+    const [rozyCalendar, createEvent] = useCalendar();
     // console.log('rozyCalendar', rozyCalendar);
 
     //
@@ -28,32 +28,6 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
             const intlCode = (match[1] ? '+1 ' : '');
             const formattedNumber = [intlCode, '(', match[2], ') ', match[3], '-', match[4]].join('');
             return formattedNumber;
-        }
-    }
-
-    const _createEvent = async (date, type) => {
-        // console.log('[_createEvent]: ', `${date} + ' is the ${type} for ${name} ` + name, rozyCalendar);
-        let title = '';
-        switch (type) {
-            case 'birthday':
-                title = `${name}'s birthday`;
-                break;
-            case 'date_met':
-                title = `The day you met ${name}`
-                break;
-            default:
-                title =`A special day for ${name}`;
-                break;
-        }
-        try {
-            await Calendar.createEventAsync(rozyCalendar.id, {
-                title, startDate: date, endDate: date, allDay: true,
-                location: placeMetAt.placeMetAtFormatted_address
-            })
-            .then(() => alert("Event successfully added to calendar"))
-
-        } catch (e) {
-            alert("There was a problem adding your event");
         }
     }
     // ────────────────────────────────────────────────────────────────────────────────
@@ -111,13 +85,13 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
             value: dateMet ? (moment(dateMet).format('MMM DD, YYYY')) : '(Enter Date met!)', subtitle: 'date met',
             left: "calendar",
             rightIcon: "calendar-heart",
-            rightFunc: () => { _createEvent(dateMet, 'date_met') },
+            rightFunc: () => { createEvent(dateMet, 'date_met', name, placeMetAtFormatted_address) },
         },
         {
             value: birthday ? (moment(birthday).format('MMM DD, YYYY')) : '(Enter Birthday!)', subtitle: 'birthday',
             left: "calendar",
             rightIcon: "calendar-heart",
-            rightFunc: () => { _createEvent(birthday, 'birthday') },
+            rightFunc: () => { createEvent(birthday, 'birthday', name, placeMetAtFormatted_address) },
         },
         {
             value: homeFormatted_address || '(Add location!)', subtitle: 'home location',
