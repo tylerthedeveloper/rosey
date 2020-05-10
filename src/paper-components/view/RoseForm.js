@@ -7,6 +7,7 @@ import { Avatar, Button, Card, Paragraph, TextInput } from 'react-native-paper';
 import PlacesInput from 'react-native-places-input';
 import Spacer from '../../components/Spacer';
 import useCurrentLocation from '../../hooks/useCurrentLocation';
+import useCalendar from '../../hooks/useCalendar';
 import * as Calendar from 'expo-calendar';
 
 const RoseForm = ({ user, props,
@@ -17,44 +18,6 @@ const RoseForm = ({ user, props,
 
     const { birthday, dateMet, email, homeLocation, name, nickName, notes, phoneNumber, placeMetAt, picture, tags, work, roseId
     } = user || {};
-
-    const getCal = (async () => {
-        const { status } = await Calendar.requestCalendarPermissionsAsync();
-        if (status === 'granted') {
-            const calendars = await Calendar.getCalendarsAsync();
-            // console.log('Here are all your calendars:');
-            const defaultCal = calendars.filter(cal =>
-                cal.source.type === 'caldav' && cal.allowsModifications
-            );
-            // console.log({ defaultCal})
-            // const rozyCalendar = calendars.find(each => each.source.name === 'Rozy Calendar');
-            // if (!rozyCalendar) {
-            //     createCalendar();      
-            // } else {
-            //     console.log(rozyCalendar);
-            // }
-        }
-    });
-
-    const createCalendar = async () => {
-        const defaultCalendarSource = { isLocalAccount: true, name: 'Expo Calendar' };
-        const newCalendarID = await Calendar.createCalendarAsync({
-            title: 'Rozy Calendar',
-            color: 'blue',
-            entityType: Calendar.EntityTypes.EVENT,
-            sourceId: defaultCalendarSource.id,
-            source: defaultCalendarSource,
-            name: 'RozyCalendar',
-            ownerAccount: 'personal',
-            accessLevel: Calendar.CalendarAccessLevel.OWNER,
-        });
-        console.log(`Your new calendar ID is: ${newCalendarID}`);
-    }
-
-
-    useEffect(() => {
-        getCal();
-    }, []);
 
     const { currentLocation, geoCodedLocation } = useCurrentLocation();
 
@@ -68,7 +31,6 @@ const RoseForm = ({ user, props,
     const [updated_nickName, setNickName] = useState(nickName);
     const [updated_phoneNumber, setPhone] = useState(phoneNumber);
     const [updated_homeLocation, setUpdated_homeLocation] = useState(homeLocation);
-    // const [updated_placeMetAt, setUpdated_placeMetAt] = useState(placeMetAt || {});
     const [updated_placeMetAt, setUpdated_placeMetAt] = useState(placeMetAt || {});
 
     // ────────────────────────────────────────────────────────────────────────────────
@@ -76,6 +38,7 @@ const RoseForm = ({ user, props,
     const [updated_picture, setPicture] = useState(picture);
     // ────────────────────────────────────────────────────────────────────────────────
 
+    // TODO: Convert to one user object?
     const updatedUser = {
         birthday: updated_birthday || new Date(Date.now()),
         dateMet: updated_dateMet || new Date(Date.now()),
