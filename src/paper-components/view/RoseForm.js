@@ -1,12 +1,13 @@
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { KeyboardAvoidingView, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { GOOGLE_API_KEY } from "react-native-dotenv";
 import { Avatar, Button, Card, Paragraph, TextInput } from 'react-native-paper';
 import PlacesInput from 'react-native-places-input';
 import Spacer from '../../components/Spacer';
 import useCurrentLocation from '../../hooks/useCurrentLocation';
+import * as Calendar from 'expo-calendar';
 
 const RoseForm = ({ user, props,
     form_updateFunction, form_updateFunctionText,
@@ -17,16 +18,43 @@ const RoseForm = ({ user, props,
     const { birthday, dateMet, email, homeLocation, name, nickName, notes, phoneNumber, placeMetAt, picture, tags, work, roseId
     } = user || {};
 
-    // useEffect(() => {
-    //     (async () => {
-    //         const { status } = await Calendar.requestCalendarPermissionsAsync();
-    //         if (status === 'granted') {
-    //             const calendars = await Calendar.getCalendarsAsync();
-    //             console.log('Here are all your calendars:');
-    //             console.log({ calendars });
-    //         }
-    //     })();
-    // }, []);
+    const getCal = (async () => {
+        const { status } = await Calendar.requestCalendarPermissionsAsync();
+        if (status === 'granted') {
+            const calendars = await Calendar.getCalendarsAsync();
+            // console.log('Here are all your calendars:');
+            const defaultCal = calendars.filter(cal =>
+                cal.source.type === 'caldav' && cal.allowsModifications
+            );
+            console.log({ defaultCal })
+            // const rozyCalendar = calendars.find(each => each.source.name === 'Rozy Calendar');
+            // if (!rozyCalendar) {
+            //     createCalendar();      
+            // } else {
+            //     console.log(rozyCalendar);
+            // }
+        }
+    });
+
+    const createCalendar = async () => {
+        const defaultCalendarSource = { isLocalAccount: true, name: 'Expo Calendar' };
+        const newCalendarID = await Calendar.createCalendarAsync({
+            title: 'Rozy Calendar',
+            color: 'blue',
+            entityType: Calendar.EntityTypes.EVENT,
+            sourceId: defaultCalendarSource.id,
+            source: defaultCalendarSource,
+            name: 'RozyCalendar',
+            ownerAccount: 'personal',
+            accessLevel: Calendar.CalendarAccessLevel.OWNER,
+        });
+        console.log(`Your new calendar ID is: ${newCalendarID}`);
+    }
+
+
+    useEffect(() => {
+        getCal();
+    }, []);
 
     const { currentLocation, geoCodedLocation } = useCurrentLocation();
 
