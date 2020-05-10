@@ -11,7 +11,8 @@ const MapScreen = ({ filterType }) => {
     // FIXME: Is this needed?
     
     // TODO: filter type
-    const [currentLocation] = useCurrentLocation();
+    //const [currentLocation] = useCurrentLocation();
+    const { currentLocation, geoCodedLocation } = useCurrentLocation();
 
     return (
         <>
