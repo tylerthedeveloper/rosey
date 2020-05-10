@@ -16,7 +16,11 @@ export default (roses, fetchAllRoses) => {
     const filterItems = (filterValue) => {
         // TODO: title CASE?
         setFilterToggle(false);
-        const sortedRoses = roses.sort((a, b) => a[filterValue].localeCompare(b[filterValue]))
+        const sortedRoses = roses.sort((a, b) => {
+            // console.log(a[filterValue], b[filterValue], a[filterValue].toString().localeCompare(b[filterValue].toString()));
+            return a[filterValue].toString().localeCompare(b[filterValue].toString());
+        })
+        // const sortedRoses = roses.sort((a, b) => a[filterValue]- b[filterValue])
         setFilteredRoses(sortedRoses);
     };
 

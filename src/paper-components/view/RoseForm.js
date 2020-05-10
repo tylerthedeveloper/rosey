@@ -26,7 +26,7 @@ const RoseForm = ({ user, props,
             const defaultCal = calendars.filter(cal =>
                 cal.source.type === 'caldav' && cal.allowsModifications
             );
-            console.log({ defaultCal })
+            // console.log({ defaultCal})
             // const rozyCalendar = calendars.find(each => each.source.name === 'Rozy Calendar');
             // if (!rozyCalendar) {
             //     createCalendar();      
