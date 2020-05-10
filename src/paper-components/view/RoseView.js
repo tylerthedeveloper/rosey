@@ -13,6 +13,21 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
     const { homeLocationCoords, homeFormatted_address, homeLocationName } = homeLocation || {};
     const { placeMetAtLocationCoords, placeMetAtFormatted_address, placeMetAtName } = placeMetAt || {};
 
+    //
+    // ─── FUNCTIONS ──────────────────────────────────────────────────────────────────
+    //
+    const _formatPhonenumber = (phone) => {
+        const cleaned = ('' + phone).replace(/\D/g, '')
+        const match = cleaned.match(/^(1|)?(\d{3})(\d{3})(\d{4})$/)
+        if (match) {
+            const intlCode = (match[1] ? '+1 ' : '');
+            const formattedNumber = [intlCode, '(', match[2], ') ', match[3], '-', match[4]].join('');
+            return formattedNumber;
+        }
+    }
+    // ────────────────────────────────────────────────────────────────────────────────
+
+
     const viewRows = [
         {
             value: name || '(No-Name?)', subtitle: 'name',
@@ -27,19 +42,21 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
             rightFunc: () => { },
         },
         {
-            value: phoneNumber || '123456789', subtitle: 'phone',
+            value: _formatPhonenumber(phoneNumber) || '123456789', subtitle: 'phone',
             left: "phone",
             // TODO: country code?
             rightIcon: "phone",
-            rightFunc: () => { Linking.openURL(`tel:${phoneNumber}`) },
+            rightFunc: () => { if (phoneNumber) Linking.openURL(`tel:${phoneNumber}`) },
             secondRightIcon: "message-text",
-            secondRightFunc: () => { Linking.openURL(`sms:${phoneNumber}`) },
+            secondRightFunc: () => { if (phoneNumber) Linking.openURL(`sms:${phoneNumber}`) },
         },
         {
             value: email, subtitle: 'email',
             left: "email",
             rightIcon: "email",
-            rightFunc: () => { Linking.openURL(`mailto:${email}`) },
+            rightFunc: () => {
+                if (email) Linking.openURL(`mailto:${email}`)
+            },
         },
         {
             value: work || '(Add Occupation!)', subtitle: 'occupation',
@@ -75,13 +92,29 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
             value: homeFormatted_address || '(Add location!)', subtitle: 'home location',
             left: "crosshairs-gps",
             rightIcon: "crosshairs-gps",
-            rightFunc: () => { },
+            rightFunc: () => {
+                if (homeFormatted_address) {
+                    const url = Platform.select({
+                        ios: `maps:0,0?q=${homeFormatted_address}`,
+                        android: `geo:0,0?q=${homeFormatted_address}`,
+                    })
+                    Linking.openURL(url)
+                }
+            },
         },
         {
             value: placeMetAtFormatted_address || '(Add location!)', subtitle: 'place met',
             left: "crosshairs-gps",
             rightIcon: "crosshairs-gps",
-            rightFunc: () => { },
+            rightFunc: () => {
+                if (placeMetAtFormatted_address) {
+                    const url = Platform.select({
+                        ios: `maps:0,0?q=${placeMetAtFormatted_address}`,
+                        android: `geo:0,0?q=${placeMetAtFormatted_address}`,
+                    })
+                    Linking.openURL(url)
+                }
+            },
         },
     ];
 

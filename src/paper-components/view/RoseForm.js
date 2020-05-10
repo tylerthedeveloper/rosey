@@ -160,7 +160,7 @@ const RoseForm = ({ user, props,
 
     if (isUserContactCard) {
         updatedUser.dateMet = undefined;
-        console.log(updatedUser.dateMet)
+        // console.log(updatedUser.dateMet)
     }
 
     return (
