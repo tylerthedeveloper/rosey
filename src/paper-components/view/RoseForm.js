@@ -123,16 +123,16 @@ const RoseForm = ({ user, props,
     // TODO: MOVE OUT?
     const _clearFormData = () => formRows.map(row => row.editFunc(''));
 
-    const _onChangeDate = (event, field, selectedDate, showSetter) => {
+    const [birth_datePicker, setBirth_datePicker] = useState(false);
+    const [datemet_Picker, setDatemet_Picker] = useState(false);
+
+    const _onChangeDate = (field, selectedDate, showSetter) => {
         // const currentDate = selectedDate || new Date(Date.now());
-        if (Platform.OS !== "iOS") {
+        if (Platform.OS !== "ios") {
             showSetter(false);
         }
         field(selectedDate || new Date(Date.now()));
     };
-
-    const [birth_datePicker, setBirth_datePicker] = useState(false);
-    const [datemet_Picker, setDatemet_Picker] = useState(false);
 
     const _makeLocationObject = (locationObject, locationType, locationSetter) => {
         const { geometry: { location: { lat, lng } }, formatted_address, name } = locationObject;
@@ -203,9 +203,10 @@ const RoseForm = ({ user, props,
                                 <TouchableOpacity onPress={() => setDatemet_Picker(!datemet_Picker)}>
                                     <Avatar.Icon {...props} icon={'calendar'} size={40} style={{ marginRight: 20 }} />
                                 </TouchableOpacity>
-                                <TouchableOpacity onPress={() => setDatemet_Picker(!datemet_Picker)}>
+                                <TouchableOpacity onPress={() => setDatemet_Picker(!datemet_Picker)}
+                                    style={styles.textInput}
+                                >
                                     <TextInput
-                                        style={styles.textInput}
                                         disabled={true}
                                         onTouchStart={() => setDatemet_Picker(!datemet_Picker)}
                                         value={moment(new Date(updated_dateMet)).format('MMM DD, YYYY')}
@@ -215,21 +216,25 @@ const RoseForm = ({ user, props,
                             {
                                 (datemet_Picker)
                                     ?
-                                    (Platform.OS === "iOS")
+                                    (Platform.OS === "ios")
                                         ? <>
                                             <Paragraph> Date Met </Paragraph>
                                             <DateTimePicker
                                                 value={updated_dateMet}
                                                 display="default"
                                                 style={{ width: '70%', alignSelf: 'center' }}
-                                                onChange={(e, date) => _onChangeDate(e, setDateMet, date, setBirth_datePicker)}
+                                                onChange={(event, date) => _onChangeDate(setDateMet, date)
+                                                }
                                             />
                                         </>
                                         : <DateTimePicker
                                             value={updated_dateMet}
                                             display="default"
                                             style={{ width: '70%', alignSelf: 'center' }}
-                                            onChange={(e, date) => _onChangeDate(e, setDateMet, date, setBirth_datePicker)}
+                                            onChange={(event, value) => {
+                                                setDatemet_Picker(false);
+                                                setDateMet(value || new Date(Date.now()));
+                                            }}
                                         />
                                     : null
                             }
@@ -251,21 +256,24 @@ const RoseForm = ({ user, props,
                     </Card.Actions>
                     {
                         (birth_datePicker)
-                            ? (Platform.OS === "iOS")
+                            ? (Platform.OS === "ios")
                                 ? <>
                                     <Paragraph> Birthday </Paragraph>
                                     <DateTimePicker
                                         value={updated_birthday}
                                         display="default"
-                                        style={{ width: '66%', alignSelf: 'center' }}
+                                        style={{ width: '70%', alignSelf: 'center' }}
                                         onChange={(e, date) => _onChangeDate(e, setBirthday, date, setBirth_datePicker)}
                                     />
                                 </>
                                 : < DateTimePicker
                                     value={updated_birthday}
                                     display="default"
-                                    style={{ width: '66%', alignSelf: 'center' }}
-                                    onChange={(e, date) => _onChangeDate(e, setBirthday, date, setBirth_datePicker)}
+                                    style={{ width: '70%', alignSelf: 'center' }}
+                                    onChange={(e, value) => {
+                                        setBirth_datePicker(false);
+                                        setBirthday(value || new Date(Date.now()));
+                                    }}
                                 />
                             : null
                     }
