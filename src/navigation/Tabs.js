@@ -41,11 +41,11 @@ export const BottomTabNavigator = (props) => {
             fabActions = [
                 {
                     icon: 'account-multiple', label: 'Place Met', onPress: () => setFilterType('place_met'),
-                    style: {  bottom: -55, },
+                    // style: {  bottom: -55, },
                 },
                 {
                     icon: 'home', label: 'Home Location', onPress: () => setFilterType('home'),
-                    style: { right: 75, top: 65, },
+                    // style: { right: 75, top: 65, },
                 },
             ];
             onStateChange = ({ open }) => setFabOpen(open);

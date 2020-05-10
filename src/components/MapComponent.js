@@ -4,7 +4,7 @@ import MapView, { Marker } from 'react-native-maps';
 const MapComponent = ({ navigation, coords, height, roses, filterType }) => {
 
     const markerList = roses.map((rose) => {
-        const { homeLocation, placeMetAt } = rose;
+        const { homeLocation, placeMetAt, name, roseId } = rose;
         const { homeLocationCoords, homeFormatted_address, homeLocationName } = homeLocation || {};
         const { placeMetAtLocationCoords, placeMetAtFormatted_address, placeMetAtName } = placeMetAt || {};
         if (filterType === 'place_met' &&
@@ -14,7 +14,7 @@ const MapComponent = ({ navigation, coords, height, roses, filterType }) => {
             return (
                 <Marker
                     coordinate={placeMetAtLocationCoords}
-                    title={placeMetAtFormatted_address}
+                    title={name + " @ " + placeMetAtFormatted_address}
                     image={require('../../assets/rose-marker.png')}
                     key={(placeMetAtLocationCoords.latitude + placeMetAtLocationCoords.longitude).toString()}
                 />
@@ -26,7 +26,7 @@ const MapComponent = ({ navigation, coords, height, roses, filterType }) => {
             return (
                 <Marker
                     coordinate={homeLocationCoords}
-                    title={homeFormatted_address}
+                    title={name + " @ " + homeFormatted_address}
                     image={require('../../assets/rose-marker.png')}
                     key={(homeLocationCoords.latitude + homeLocationCoords.longitude).toString()}
                 />

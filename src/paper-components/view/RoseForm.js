@@ -223,7 +223,7 @@ const RoseForm = ({ user, props,
                                                 value={updated_dateMet}
                                                 display="default"
                                                 style={{ width: '70%', alignSelf: 'center' }}
-                                                onChange={(event, date) => _onChangeDate(setDateMet, date)
+                                                onChange={(event, date) => setDateMet(date)
                                                 }
                                             />
                                         </>
@@ -233,7 +233,7 @@ const RoseForm = ({ user, props,
                                             style={{ width: '70%', alignSelf: 'center' }}
                                             onChange={(event, value) => {
                                                 setDatemet_Picker(false);
-                                                setDateMet(value || new Date(Date.now()));
+                                                setDateMet(value || updated_dateMet || new Date(Date.now()));
                                             }}
                                         />
                                     : null
@@ -246,9 +246,11 @@ const RoseForm = ({ user, props,
                         <TouchableOpacity onPress={() => setBirth_datePicker(!birth_datePicker)}>
                             <Avatar.Icon {...props} icon={'calendar'} size={40} style={{ marginRight: 20 }} />
                         </TouchableOpacity>
-                        <TouchableOpacity onPress={() => setBirth_datePicker(!birth_datePicker)}
+                        <TouchableOpacity
+                            onPress={() => setBirth_datePicker(!birth_datePicker)}
                             style={styles.textInput}>
                             <TextInput
+                                onTouchStart={() => setBirth_datePicker(!birth_datePicker)}
                                 disabled={true}
                                 value={moment(new Date(updated_birthday)).format('MMM DD, YYYY')}
                             />
@@ -263,16 +265,16 @@ const RoseForm = ({ user, props,
                                         value={updated_birthday}
                                         display="default"
                                         style={{ width: '70%', alignSelf: 'center' }}
-                                        onChange={(e, date) => _onChangeDate(e, setBirthday, date, setBirth_datePicker)}
+                                        onChange={(e, date) => setBirthday(date)}
                                     />
                                 </>
-                                : < DateTimePicker
+                                : <DateTimePicker
                                     value={updated_birthday}
                                     display="default"
                                     style={{ width: '70%', alignSelf: 'center' }}
                                     onChange={(e, value) => {
                                         setBirth_datePicker(false);
-                                        setBirthday(value || new Date(Date.now()));
+                                        setBirthday(value || updated_birthday || new Date(Date.now()));
                                     }}
                                 />
                             : null
