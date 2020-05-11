@@ -1,7 +1,6 @@
 import React from 'react';
 import { Linking, ScrollView } from 'react-native';
 import useCalendar from '../../hooks/useCalendar';
-import * as Calendar from 'expo-calendar';
 import { Button } from 'react-native-paper';
 import RoseViewField from '../partial/RoseViewField';
 import moment from 'moment';
@@ -16,7 +15,6 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
     const { placeMetAtLocationCoords, placeMetAtFormatted_address, placeMetAtName } = placeMetAt || {};
 
     const [rozyCalendar, createEvent] = useCalendar();
-    // console.log('rozyCalendar', rozyCalendar);
 
     //
     // ─── FUNCTIONS ──────────────────────────────────────────────────────────────────

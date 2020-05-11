@@ -7,8 +7,6 @@ import { Avatar, Button, Card, Paragraph, TextInput } from 'react-native-paper';
 import PlacesInput from 'react-native-places-input';
 import Spacer from '../../components/Spacer';
 import useCurrentLocation from '../../hooks/useCurrentLocation';
-import useCalendar from '../../hooks/useCalendar';
-import * as Calendar from 'expo-calendar';
 
 const RoseForm = ({ user, props,
     form_updateFunction, form_updateFunctionText,
@@ -30,7 +28,7 @@ const RoseForm = ({ user, props,
     const [updated_notes, setNotes] = useState(notes);
     const [updated_nickName, setNickName] = useState(nickName);
     const [updated_phoneNumber, setPhone] = useState(phoneNumber);
-    const [updated_homeLocation, setUpdated_homeLocation] = useState(homeLocation);
+    const [updated_homeLocation, setUpdated_homeLocation] = useState(homeLocation || {});
     const [updated_placeMetAt, setUpdated_placeMetAt] = useState(placeMetAt || {});
 
     // ────────────────────────────────────────────────────────────────────────────────
@@ -49,14 +47,8 @@ const RoseForm = ({ user, props,
             homeFormatted_address: '',
             homeLocationName: ''
         },
-        placeMetAt: updated_placeMetAt || {
-            placeMetAtFormatted_address: geoCodedLocation,
-            placeMetAtLocationCoords: {
-                latitude: currentLocation.latitude || -369,
-                longitude: currentLocation.longitude || -369,
-            },
-            placeMetAtName: "",
-        },
+        placeMetAt: updated_placeMetAt
+        ,
         /* -------------------------------------------------------------------------- */
         name: updated_name || '',
         notes: updated_notes || '',
@@ -163,6 +155,21 @@ const RoseForm = ({ user, props,
                     placeMetAtName: name
                 });
             }
+        }
+    }
+
+    const _setPlaceMet = () => {
+        if (!Object.keys(updatedUser.placeMetAt).length > 0) {
+            updatedUser.placeMetAt = {
+                placeMetAtFormatted_address: geoCodedLocation,
+                placeMetAtLocationCoords: {
+                    latitude: currentLocation.latitude || -369,
+                    longitude: currentLocation.longitude || -369,
+                },
+                placeMetAtName: "",
+            }
+        } else {
+            console.log('set me!');
         }
     }
     /* -------------------------------------------------------------------------- */
@@ -367,6 +374,7 @@ const RoseForm = ({ user, props,
                 }
                 <Button disabled={JSON.stringify(user) === JSON.stringify(updatedUser)}
                     onPress={() => {
+                        _setPlaceMet();
                         form_updateFunction({ roseObj: updatedUser, callback: () => form_updateFunction_callback(updatedUser) })
                     }}>
                     {form_updateFunctionText || 'Save'}
