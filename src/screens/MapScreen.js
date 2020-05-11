@@ -6,16 +6,12 @@ import useCurrentLocation from '../hooks/useCurrentLocation';
 
 const MapScreen = ({ navigation, filterType }) => {
 
-    const { state: { roses }, fetchAllRoses } = useContext(RoseContext);
-
-    // FIXME: Is this needed?
+    const { state: { roses } } = useContext(RoseContext);
 
     // TODO: filter type
-    //const [currentLocation] = useCurrentLocation();
     const { currentLocation, geoCodedLocation } = useCurrentLocation();
 
     const _goToRose = (roseId) => {
-        console.log(roseId);
         navigation.navigate('RoseDetail', { roseId: roseId });
     }
 
@@ -27,7 +23,6 @@ const MapScreen = ({ navigation, filterType }) => {
                 coords={currentLocation}
                 filterType={filterType}
                 navigationCallback={_goToRose}
-                //navigation={navigation}
             />
         </>
     )

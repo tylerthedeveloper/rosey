@@ -1,11 +1,13 @@
 import React from 'react';
 import { StyleSheet, Text, View } from 'react-native';
-import { MyButton } from '../paper-components/memo';
 import MapView, { Marker } from 'react-native-maps';
+import { Avatar } from 'react-native-paper';
+import { MyButton } from '../paper-components/memo';
 
-// TODO: Abstract logic
-const MapComponent = ({ navigationCallback, coords, height, roses, filterType }) => {
-
+const MapComponent = ({ props, navigationCallback, coords, height, roses, filterType }) => {
+    
+    // TODO: Abstract design for marker
+    
     const markerList = roses.map((rose) => {
         const { homeLocation, placeMetAt, name, roseId, tags } = rose;
         const { homeLocationCoords, homeFormatted_address, homeLocationName } = homeLocation || {};
@@ -27,20 +29,27 @@ const MapComponent = ({ navigationCallback, coords, height, roses, filterType })
                         tooltip={false}
                     >
                         <View style={styles.viewStyle}>
-                            <Text>
-                                Name: {name}
-                            </Text>
-                            <Text>
-                                Tags: {tags}
-                            </Text>
+                            <View style={{ flexDirection: 'row', marginVertical: 5 }}>
+                                <Avatar.Icon {...props} icon={'account-circle'} size={25} style={{ marginRight: 10 }} />
+                                <Text>
+                                    {name || '(no name)'}
+                                </Text>
+                            </View>
+                            <View style={{ flexDirection: 'row' }}>
+                                <Avatar.Icon {...props} icon={'tag'} size={25} style={{ marginRight: 10 }} />
+                                <Text>
+                                    {tags || '(no tags)'}
+                                </Text>
+                            </View>
                             <Text>
                                 {placeMetAtFormatted_address}
                             </Text>
                             <MyButton
                                 mode="contained"
-                                //onPress={() => navigationCallback(roseId)}
+                                icon="account-card-details"
+                                onPress={() => navigationCallback(roseId)}
                             >
-                                View info
+                                View
                             </MyButton>
                         </View>
                     </MapView.Callout>
@@ -56,7 +65,6 @@ const MapComponent = ({ navigationCallback, coords, height, roses, filterType })
                     title={name + " @ " + homeFormatted_address}
                     image={require('../../assets/rose-marker.png')}
                     key={(homeLocationCoords.latitude + homeLocationCoords.longitude).toString()}
-                //onSelect={() => console.log(roseId)}
                 />
             )
         }
