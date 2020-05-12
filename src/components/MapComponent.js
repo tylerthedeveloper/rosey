@@ -1,13 +1,13 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { StyleSheet, Text, View } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { Avatar } from 'react-native-paper';
 import { MyButton } from '../paper-components/memo';
 
 const MapComponent = ({ props, navigationCallback, coords, height, roses, filterType }) => {
-    
+
     // TODO: Abstract design for marker
-    
+
     const markerList = roses.map((rose) => {
         const { homeLocation, placeMetAt, name, roseId, tags } = rose;
         const { homeLocationCoords, homeFormatted_address, homeLocationName } = homeLocation || {};
@@ -70,16 +70,28 @@ const MapComponent = ({ props, navigationCallback, coords, height, roses, filter
         }
     });
 
+
+
+
+    const shouldSetInitialRegion = (coords &&
+        Object.keys(coords).length > 0 &&
+        coords.latitude !== -369 && coords.longitude !== -369
+    );
+
+    console.log(shouldSetInitialRegion)
+    console.log(coords, coords.latitude, coords.longitude)
+    
     return (
         <>
             {
-                (coords && Object.keys(coords).length)
+                (shouldSetInitialRegion)
                     ? <MapView
                         style={{ height: height || 300 }}
-                        region={{
+                        initialRegion={{
                             latitudeDelta: .01,
                             longitudeDelta: .01,
-                            ...coords
+                            latitude: coords.latitude,
+                            longitude: coords.longitude
                         }}
                     >
                         {markerList}
