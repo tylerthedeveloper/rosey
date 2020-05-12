@@ -7,7 +7,7 @@
       "ios",
       "android"
     ],
-    "version": "1.1.0",
+    "version": "1.2.0",
     "orientation": "portrait",
     "icon": "./assets/app-icon.png",
     "splash": {
@@ -24,7 +24,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.rosey-app.rosey",
-      "buildNumber": "1.0.7",
+      "buildNumber": "1.0.8",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": "no",
         "NSLocationWhenInUseUsageDescription": "Allow Rozy to use your location so you can easily add location to your roses"
@@ -32,7 +32,7 @@
     },
     "android": {
       "package": "com.rozy_app.rozy",
-      "versionCode": 1
+      "versionCode": 2
     }
   }
 }

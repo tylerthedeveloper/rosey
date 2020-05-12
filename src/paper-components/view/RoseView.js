@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView } from 'react-native';
+import { Linking, ScrollView } from 'react-native';
 import { Button } from 'react-native-paper';
 import RoseViewField from '../partial/RoseViewField';
 import moment from 'moment';
@@ -23,37 +23,40 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
         {
             value: nickName || '(No-nickName?)', subtitle: 'nickname',
             left: "account",
-            rightIcon: "account-plus",
+            // rightIcon: "account-plus",
             rightFunc: () => { },
         },
         {
-            value: phoneNumber || '(123456789)', subtitle: 'phone',
+            value: phoneNumber || '123456789', subtitle: 'phone',
             left: "phone",
+            // TODO: country code?
             rightIcon: "phone",
-            rightFunc: () => { },
+            rightFunc: () => { Linking.openURL(`tel:${phoneNumber}`) },
+            secondRightIcon: "message-text",
+            secondRightFunc: () => { Linking.openURL(`sms:${phoneNumber}`) },
         },
         {
             value: email, subtitle: 'email',
             left: "email",
             rightIcon: "email",
-            rightFunc: () => { },
+            rightFunc: () => { Linking.openURL(`mailto:${email}`) },
         },
         {
             value: work || '(Add Occupation!)', subtitle: 'occupation',
             left: "briefcase-account",
-            rightIcon: "briefcase-plus",
+            // rightIcon: "briefcase-plus",
             rightFunc: () => { },
         },
         {
             value: (tags && tags.length > 0) ? tags : '(Add some Tags!)', subtitle: 'tags',
             left: "tag",
-            rightIcon: "tag",
+            // rightIcon: "tag",
             rightFunc: () => { },
         },
         {
             value: notes || '(Add some notes!)', subtitle: 'notes',
             left: "note",
-            rightIcon: "note",
+            // rightIcon: "note",
             rightFunc: () => { },
         },
         {
@@ -82,23 +85,31 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
         },
     ];
 
-    const isUserProfile = (view_updateFunctionText === 'Update your profile');
-    const profileRowsToIgnore = ['notes', 'date met', 'place met', 'tags']
+    const isUserContactCard = (view_updateFunctionText === 'Update your contact card');
+    const contactCardRowsToIgnore = ['notes', 'date met', 'place met', 'tags']
 
     return (
         <ScrollView>
             {
-                viewRows.map(({ value, subtitle, left, rightIcon, rightFunc }) => (
-                    ((isUserProfile && !profileRowsToIgnore.includes(subtitle) || !isUserProfile))
-                        ? <RoseViewField
-                            key={subtitle}
-                            value={value}
-                            subtitle={subtitle}
-                            left={left}
-                            rightIcon={rightIcon}
-                            rightFunc={rightFunc}
-                            dataDetectorType={'phoneNumber'}
-                        />
+                viewRows.map(({ value, subtitle, left, rightIcon, secondRightIcon, rightFunc, secondRightFunc }) => (
+                    ((isUserContactCard && !contactCardRowsToIgnore.includes(subtitle) || !isUserContactCard))
+                        ? (isUserContactCard)
+                            ? <RoseViewField
+                                key={subtitle}
+                                value={value}
+                                subtitle={subtitle}
+                                left={left}
+                            />
+                            : <RoseViewField
+                                key={subtitle}
+                                value={value}
+                                subtitle={subtitle}
+                                left={left}
+                                rightIcon={rightIcon}
+                                rightFunc={rightFunc}
+                                secondRightIcon={secondRightIcon}
+                                secondRightFunc={secondRightFunc}
+                            />
                         : null
                 ))}
             <Button onPress={view_updateFunction}> {view_updateFunctionText} </Button>

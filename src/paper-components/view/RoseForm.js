@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { KeyboardAvoidingView, ScrollView, StyleSheet, View } from 'react-native';
-import { Avatar, Button, Card, TextInput, Divider, Paragraph, Title } from 'react-native-paper';
+import { KeyboardAvoidingView, ScrollView, StyleSheet, View, TouchableOpacity } from 'react-native';
+import { Avatar, Button, Card, TextInput, Divider, Chip, Paragraph, Title } from 'react-native-paper';
 import Spacer from '../../components/Spacer';
 
 import { GOOGLE_API_KEY } from "react-native-dotenv";
 import PlacesInput from 'react-native-places-input';
 import DateTimePicker from '@react-native-community/datetimepicker';
+import moment from 'moment';
 
 const RoseForm = ({ user, props,
     form_updateFunction, form_updateFunctionText,
@@ -34,8 +35,8 @@ const RoseForm = ({ user, props,
     // ────────────────────────────────────────────────────────────────────────────────
 
     const updatedUser = {
-        birthday: updated_birthday || new Date(Date.now()),
-        dateMet: updated_dateMet || Date.now(),
+        birthday: updated_birthday || Date.now(),
+        dateMet: updated_dateMet || new Date(Date.now()),
         email: updated_email || '',
         /* -------------------------------------------------------------------------- */
         homeLocation: updated_homeLocation || {
@@ -66,13 +67,15 @@ const RoseForm = ({ user, props,
             value: updated_name, subtitle: 'name',
             left: "account",
             rightIcon: "account-plus",
-            editFunc: setName
+            editFunc: setName,
+            autoCapitalize: "words"
         },
         {
             value: updated_nickName, subtitle: 'nickname',
             left: "account",
             rightIcon: "account-plus",
-            editFunc: setNickName
+            editFunc: setNickName,
+            autoCapitalize: "words"
         },
         {
             value: updated_phoneNumber, subtitle: 'phone',
@@ -91,7 +94,8 @@ const RoseForm = ({ user, props,
             value: updated_work, subtitle: 'occupation',
             left: "briefcase-account",
             rightIcon: "briefcase-plus",
-            editFunc: setWork
+            editFunc: setWork,
+            autoCapitalize: "words"
         },
         {
             // TODO: WHEN array
@@ -99,14 +103,16 @@ const RoseForm = ({ user, props,
             value: updated_tags, subtitle: 'Add tags (by commas) ',
             left: "tag",
             rightIcon: "tag",
-            editFunc: setTags
+            editFunc: setTags,
+            autoCapitalize: "words"
         },
         {
             value: updated_notes, subtitle: 'notes',
             left: "note",
             rightIcon: "note",
             editFunc: setNotes,
-            multiline: true
+            multiline: true,
+            autoCapitalize: "sentences"
         }
     ];
 
@@ -117,9 +123,15 @@ const RoseForm = ({ user, props,
     // TODO: MOVE OUT?
     const _clearFormData = () => formRows.map(row => row.editFunc(''));
 
-    const _onChangeDate = (event, field, selectedDate) => {
-        const currentDate = selectedDate || date;
-        field(currentDate);
+    const [birth_datePicker, setBirth_datePicker] = useState(false);
+    const [datemet_Picker, setDatemet_Picker] = useState(false);
+
+    const _onChangeDate = (field, selectedDate, showSetter) => {
+        // const currentDate = selectedDate || new Date(Date.now());
+        if (Platform.OS !== "ios") {
+            showSetter(false);
+        }
+        field(selectedDate || new Date(Date.now()));
     };
 
     const _makeLocationObject = (locationObject, locationType, locationSetter) => {
@@ -143,8 +155,13 @@ const RoseForm = ({ user, props,
     const [contentHeight, setContentHeight] = useState();
     const scrollRef = React.createRef();
 
-    const profileRowsToIgnore = ['notes', 'placeMet']
-    const isUserProfile = (form_updateFunctionText === 'Save profile');
+    const contactCardRowsToIgnore = ['notes', 'date met']
+    const isUserContactCard = (form_updateFunctionText === 'Save contact card');
+
+    if (isUserContactCard) {
+        updatedUser.dateMet = undefined;
+        console.log(updatedUser.dateMet)
+    }
 
     return (
         <KeyboardAvoidingView
@@ -157,8 +174,8 @@ const RoseForm = ({ user, props,
                 onContentSizeChange={(contentHeight) => setContentHeight(contentHeight)}
             >
                 {
-                    formRows.map(({ left, subtitle, value, editFunc, keyboardType, multiline }) => (
-                        ((isUserProfile && !profileRowsToIgnore.includes(subtitle) || !isUserProfile))
+                    formRows.map(({ left, subtitle, value, editFunc, keyboardType, autoCapitalize, multiline }) => (
+                        ((isUserContactCard && !contactCardRowsToIgnore.includes(subtitle) || !isUserContactCard))
                             ? <Card.Actions style={styles.cardContent} key={subtitle} >
                                 <Avatar.Icon {...props} icon={left} size={40} style={{ marginRight: 20 }} />
                                 <TextInput mode="outlined"
@@ -166,7 +183,7 @@ const RoseForm = ({ user, props,
                                     style={styles.textInput}
                                     // placeholder={value}
                                     value={value}
-                                    autoCapitalize="none"
+                                    autoCapitalize={autoCapitalize || "none"}
                                     autoComplete={false}
                                     autoCorrect={false}
                                     autoCompleteType={"off"}
@@ -180,25 +197,89 @@ const RoseForm = ({ user, props,
                 }
                 <Paragraph> Date Info </Paragraph>
                 {
-                    (!isUserProfile)
-                        ? <>
-                            <Title style={{ alignSelf: 'center' }}> Date Met</Title>
-                            <DateTimePicker
-                                value={updated_dateMet}
-                                display="default"
-                                style={{ width: '70%', alignSelf: 'center' }}
-                                onChange={(e, date) => _onChangeDate(e, setDateMet, date)}
-                            />
-                        </>
+                    (!isUserContactCard)
+                        ? <View style={{ alignItems: 'center' }}>
+                            <Card.Actions style={styles.cardContent}>
+                                <TouchableOpacity onPress={() => setDatemet_Picker(!datemet_Picker)}>
+                                    <Avatar.Icon {...props} icon={'calendar'} size={40} style={{ marginRight: 20 }} />
+                                </TouchableOpacity>
+                                <TouchableOpacity onPress={() => setDatemet_Picker(!datemet_Picker)}
+                                    style={styles.textInput}
+                                >
+                                    <TextInput
+                                        disabled={true}
+                                        onTouchStart={() => setDatemet_Picker(!datemet_Picker)}
+                                        value={moment(new Date(updated_dateMet)).format('MMM DD, YYYY')}
+                                    />
+                                </TouchableOpacity>
+                            </Card.Actions>
+                            {
+                                (datemet_Picker)
+                                    ?
+                                    (Platform.OS === "ios")
+                                        ? <>
+                                            <Paragraph> Date Met </Paragraph>
+                                            <DateTimePicker
+                                                value={updated_dateMet}
+                                                display="default"
+                                                style={{ width: '70%', alignSelf: 'center' }}
+                                                onChange={(event, date) => setDateMet(date)
+                                                }
+                                            />
+                                        </>
+                                        : <DateTimePicker
+                                            value={updated_dateMet}
+                                            display="default"
+                                            style={{ width: '70%', alignSelf: 'center' }}
+                                            onChange={(event, value) => {
+                                                setDatemet_Picker(false);
+                                                setDateMet(value || updated_dateMet || new Date(Date.now()));
+                                            }}
+                                        />
+                                    : null
+                            }
+                        </View>
                         : null
                 }
-                <Title style={{ alignSelf: 'center' }}>Birthday</Title>
-                <DateTimePicker
-                    value={updated_birthday}
-                    display="default"
-                    style={{ width: '70%', alignSelf: 'center' }}
-                    onChange={(e, date) => _onChangeDate(e, setBirthday, date)}
-                />
+                <View style={{ alignItems: 'center' }}>
+                    <Card.Actions style={styles.cardContent}>
+                        <TouchableOpacity onPress={() => setBirth_datePicker(!birth_datePicker)}>
+                            <Avatar.Icon {...props} icon={'calendar'} size={40} style={{ marginRight: 20 }} />
+                        </TouchableOpacity>
+                        <TouchableOpacity
+                            onPress={() => setBirth_datePicker(!birth_datePicker)}
+                            style={styles.textInput}>
+                            <TextInput
+                                onTouchStart={() => setBirth_datePicker(!birth_datePicker)}
+                                disabled={true}
+                                value={moment(new Date(updated_birthday)).format('MMM DD, YYYY')}
+                            />
+                        </TouchableOpacity>
+                    </Card.Actions>
+                    {
+                        (birth_datePicker)
+                            ? (Platform.OS === "ios")
+                                ? <>
+                                    <Paragraph> Birthday </Paragraph>
+                                    <DateTimePicker
+                                        value={updated_birthday}
+                                        display="default"
+                                        style={{ width: '70%', alignSelf: 'center' }}
+                                        onChange={(e, date) => setBirthday(date)}
+                                    />
+                                </>
+                                : <DateTimePicker
+                                    value={updated_birthday}
+                                    display="default"
+                                    style={{ width: '70%', alignSelf: 'center' }}
+                                    onChange={(e, value) => {
+                                        setBirth_datePicker(false);
+                                        setBirthday(value || updated_birthday || new Date(Date.now()));
+                                    }}
+                                />
+                            : null
+                    }
+                </View>
                 {/* TODO: preset location.... */}
                 <Paragraph> Location Stuff (please select below)</Paragraph>
                 <Card.Actions style={styles.cardContent}>
@@ -223,7 +304,7 @@ const RoseForm = ({ user, props,
                     />
                 </Card.Actions>
                 {
-                    (!isUserProfile)
+                    (!isUserContactCard)
                         ? <Card.Actions style={styles.cardContent}>
                             <Avatar.Icon {...props} icon={'crosshairs-gps'} size={40} style={{ marginRight: 10 }} />
                             <PlacesInput
@@ -262,9 +343,9 @@ const RoseForm = ({ user, props,
                 >
                     {form_secondFunctionText}
                 </Button>
-            </ScrollView>
+            </ScrollView >
             <Spacer />
-        </KeyboardAvoidingView>
+        </KeyboardAvoidingView >
     );
 }
 
@@ -284,6 +365,10 @@ const styles = StyleSheet.create({
         maxWidth: '90%'
     }
 });
-
+{/* //dateContainer: {
+        maxWidth: '80%',
+        alignSelf: 'center',
+        flexDirection: 'row'
+    }, */}
 export default RoseForm;
 

@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { StyleSheet } from 'react-native';
 import MapComponent from '../components/MapComponent';
 import { Context as RoseContext } from '../context/RoseContext';
@@ -6,13 +6,10 @@ import useCurrentLocation from '../hooks/useCurrentLocation';
 
 const MapScreen = ({ filterType }) => {
 
-    const { state: { roses } } = useContext(RoseContext);
+    const { state: { roses },fetchAllRoses } = useContext(RoseContext);
 
     // FIXME: Is this needed?
-    // useEffect(() => {
-    //     fetchAllRoses();
-    // }, []); 
-
+    
     // TODO: filter type
     const [currentLocation] = useCurrentLocation();
 
