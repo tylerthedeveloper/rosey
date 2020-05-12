@@ -70,16 +70,13 @@ const MapComponent = ({ props, navigationCallback, coords, height, roses, filter
         }
     });
 
-
-
-
     const shouldSetInitialRegion = (coords &&
         Object.keys(coords).length > 0 &&
         coords.latitude !== -369 && coords.longitude !== -369
     );
 
-    console.log(shouldSetInitialRegion)
-    console.log(coords, coords.latitude, coords.longitude)
+    // console.log(shouldSetInitialRegion)
+    // console.log(coords, coords.latitude, coords.longitude)
     
     return (
         <>
