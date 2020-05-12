@@ -1,5 +1,6 @@
 import React from 'react';
 import { Linking, ScrollView } from 'react-native';
+import useCalendar from '../../hooks/useCalendar';
 import { Button } from 'react-native-paper';
 import RoseViewField from '../partial/RoseViewField';
 import moment from 'moment';
@@ -12,6 +13,25 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
     const { birthday, dateMet, email, homeLocation, name, nickName, notes, phoneNumber, placeMetAt, picture, tags, work } = user || {};
     const { homeLocationCoords, homeFormatted_address, homeLocationName } = homeLocation || {};
     const { placeMetAtLocationCoords, placeMetAtFormatted_address, placeMetAtName } = placeMetAt || {};
+
+    const [rozyCalendar, createEvent] = useCalendar();
+
+    // TODO: move to constants?
+    //
+    // ─── FUNCTIONS ──────────────────────────────────────────────────────────────────
+    //
+    const _formatPhonenumber = (phone) => {
+        const cleaned = ('' + phone).replace(/\D/g, '')
+        const match = cleaned.match(/^(1|)?(\d{3})(\d{3})(\d{4})$/)
+        if (match) {
+            const intlCode = (match[1] ? '+1 ' : '');
+            const formattedNumber = [intlCode, '(', match[2], ') ', match[3], '-', match[4]].join('');
+            return formattedNumber;
+        }
+    }
+
+    const _handleEmptyField = () => alert('Enter data for that field in order to interact with it.');
+    // ────────────────────────────────────────────────────────────────────────────────
 
     const viewRows = [
         {
@@ -27,7 +47,7 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
             rightFunc: () => { },
         },
         {
-            value: phoneNumber || '123456789', subtitle: 'phone',
+            value: _formatPhonenumber(phoneNumber), subtitle: 'phone',
             left: "phone",
             // TODO: country code?
             rightIcon: "phone",
@@ -39,7 +59,9 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
             value: email, subtitle: 'email',
             left: "email",
             rightIcon: "email",
-            rightFunc: () => { Linking.openURL(`mailto:${email}`) },
+            rightFunc: () => {
+                Linking.openURL(`mailto:${email}`)
+            },
         },
         {
             value: work || '(Add Occupation!)', subtitle: 'occupation',
@@ -63,25 +85,37 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
             value: dateMet ? (moment(dateMet).format('MMM DD, YYYY')) : '(Enter Date met!)', subtitle: 'date met',
             left: "calendar",
             rightIcon: "calendar-heart",
-            rightFunc: () => { },
+            rightFunc: () => { if (dateMet) createEvent(dateMet, 'date_met', name, placeMetAtFormatted_address) },
         },
         {
             value: birthday ? (moment(birthday).format('MMM DD, YYYY')) : '(Enter Birthday!)', subtitle: 'birthday',
             left: "calendar",
             rightIcon: "calendar-heart",
-            rightFunc: () => { },
+            rightFunc: () => { if (birthday) createEvent(birthday, 'birthday', name, placeMetAtFormatted_address) },
         },
         {
-            value: homeFormatted_address || '(Add location!)', subtitle: 'home location',
+            value: homeFormatted_address, subtitle: 'home location',
             left: "crosshairs-gps",
             rightIcon: "crosshairs-gps",
-            rightFunc: () => { },
+            rightFunc: () => {
+                const url = Platform.select({
+                    ios: `maps:0,0?q=${homeFormatted_address}`,
+                    android: `geo:0,0?q=${homeFormatted_address}`,
+                })
+                Linking.openURL(url)
+            },
         },
         {
-            value: placeMetAtFormatted_address || '(Add location!)', subtitle: 'place met',
+            value: placeMetAtFormatted_address, subtitle: 'place met',
             left: "crosshairs-gps",
             rightIcon: "crosshairs-gps",
-            rightFunc: () => { },
+            rightFunc: () => {
+                const url = Platform.select({
+                    ios: `maps:0,0?q=${placeMetAtFormatted_address}`,
+                    android: `geo:0,0?q=${placeMetAtFormatted_address}`,
+                })
+                Linking.openURL(url)
+            },
         },
     ];
 

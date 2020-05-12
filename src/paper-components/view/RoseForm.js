@@ -1,12 +1,12 @@
-import React, { useState } from 'react';
-import { KeyboardAvoidingView, ScrollView, StyleSheet, View, TouchableOpacity } from 'react-native';
-import { Avatar, Button, Card, TextInput, Divider, Chip, Paragraph, Title } from 'react-native-paper';
-import Spacer from '../../components/Spacer';
-
-import { GOOGLE_API_KEY } from "react-native-dotenv";
-import PlacesInput from 'react-native-places-input';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
+import React, { useState, useEffect } from 'react';
+import { KeyboardAvoidingView, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { GOOGLE_API_KEY } from "react-native-dotenv";
+import { Avatar, Button, Card, Paragraph, TextInput } from 'react-native-paper';
+import PlacesInput from 'react-native-places-input';
+import Spacer from '../../components/Spacer';
+import useCurrentLocation from '../../hooks/useCurrentLocation';
 
 const RoseForm = ({ user, props,
     form_updateFunction, form_updateFunctionText,
@@ -17,6 +17,8 @@ const RoseForm = ({ user, props,
     const { birthday, dateMet, email, homeLocation, name, nickName, notes, phoneNumber, placeMetAt, picture, tags, work, roseId
     } = user || {};
 
+    const { currentLocation, geoCodedLocation } = useCurrentLocation();
+
     const [updated_birthday, setBirthday] = useState(birthday || new Date(Date.now()));
     const [updated_dateMet, setDateMet] = useState(dateMet || new Date(Date.now()));
     const [updated_email, setEmail] = useState(email);
@@ -26,16 +28,17 @@ const RoseForm = ({ user, props,
     const [updated_notes, setNotes] = useState(notes);
     const [updated_nickName, setNickName] = useState(nickName);
     const [updated_phoneNumber, setPhone] = useState(phoneNumber);
-    const [updated_homeLocation, setUpdated_homeLocation] = useState(homeLocation);
-    const [updated_placeMetAt, setUpdated_placeMetAt] = useState(placeMetAt);
+    const [updated_homeLocation, setUpdated_homeLocation] = useState(homeLocation || {});
+    const [updated_placeMetAt, setUpdated_placeMetAt] = useState(placeMetAt || {});
 
     // ────────────────────────────────────────────────────────────────────────────────
     // TODO: NOT YET USED //
     const [updated_picture, setPicture] = useState(picture);
     // ────────────────────────────────────────────────────────────────────────────────
 
+    // TODO: Convert to one user object?
     const updatedUser = {
-        birthday: updated_birthday || Date.now(),
+        birthday: updated_birthday || new Date(Date.now()),
         dateMet: updated_dateMet || new Date(Date.now()),
         email: updated_email || '',
         /* -------------------------------------------------------------------------- */
@@ -44,11 +47,8 @@ const RoseForm = ({ user, props,
             homeFormatted_address: '',
             homeLocationName: ''
         },
-        placeMetAt: updated_placeMetAt || {
-            placeMetAtLocationCoords: { latitude: -369, longitude: -369 },
-            placeMetAtFormatted_address: '',
-            placeMetAtName: ''
-        },
+        placeMetAt: updated_placeMetAt
+        ,
         /* -------------------------------------------------------------------------- */
         name: updated_name || '',
         notes: updated_notes || '',
@@ -59,8 +59,6 @@ const RoseForm = ({ user, props,
         work: updated_work || '',
         roseId: roseId || ''
     };
-
-    // console.log('updatedUser', updatedUser.homeLocation, updatedUser.placeMetAt);
 
     const formRows = [
         {
@@ -126,28 +124,52 @@ const RoseForm = ({ user, props,
     const [birth_datePicker, setBirth_datePicker] = useState(false);
     const [datemet_Picker, setDatemet_Picker] = useState(false);
 
-    const _onChangeDate = (field, selectedDate, showSetter) => {
-        // const currentDate = selectedDate || new Date(Date.now());
-        if (Platform.OS !== "ios") {
-            showSetter(false);
-        }
-        field(selectedDate || new Date(Date.now()));
-    };
-
     const _makeLocationObject = (locationObject, locationType, locationSetter) => {
-        const { geometry: { location: { lat, lng } }, formatted_address, name } = locationObject;
-        if (locationType === 'home') {
-            locationSetter({
-                homeLocationCoords: { latitude: lat, longitude: lng },
-                homeFormatted_address: formatted_address,
-                homeLocationName: name
-            });
-        } else if (locationType === 'place_met') {
-            locationSetter({
-                placeMetAtLocationCoords: { latitude: lat, longitude: lng },
-                placeMetAtFormatted_address: formatted_address,
-                placeMetAtName: name
-            });
+        if (locationType.includes('default')) {
+            const { location: { latitude, longitude }, formatted_address, name } = locationObject;
+            if (locationType === 'default_home') {
+                locationSetter({
+                    homeLocationCoords: { latitude, longitude },
+                    homeFormatted_address: formatted_address,
+                    homeLocationName: name
+                });
+            } else if (locationType === 'default_place_met') {
+                locationSetter({
+                    placeMetAtLocationCoords: { latitude, longitude },
+                    placeMetAtFormatted_address: formatted_address,
+                    placeMetAtName: name
+                });
+            }
+        } else {
+            const { geometry: { location: { lat, lng } }, formatted_address, name } = locationObject;
+            if (locationType === 'home') {
+                locationSetter({
+                    homeLocationCoords: { latitude: lat, longitude: lng },
+                    homeFormatted_address: formatted_address,
+                    homeLocationName: name
+                });
+            } else if (locationType === 'place_met') {
+                locationSetter({
+                    placeMetAtLocationCoords: { latitude: lat, longitude: lng },
+                    placeMetAtFormatted_address: formatted_address,
+                    placeMetAtName: name
+                });
+            }
+        }
+    }
+
+    const _setPlaceMet = () => {
+        if (!Object.keys(updatedUser.placeMetAt).length > 0) {
+            updatedUser.placeMetAt = {
+                placeMetAtFormatted_address: geoCodedLocation,
+                placeMetAtLocationCoords: {
+                    latitude: currentLocation.latitude || -369,
+                    longitude: currentLocation.longitude || -369,
+                },
+                placeMetAtName: "",
+            }
+        } else {
+            console.log('set me!');
         }
     }
     /* -------------------------------------------------------------------------- */
@@ -160,7 +182,8 @@ const RoseForm = ({ user, props,
 
     if (isUserContactCard) {
         updatedUser.dateMet = undefined;
-        console.log(updatedUser.dateMet)
+        updatedUser.notes = undefined;
+        updatedUser.tags = undefined;
     }
 
     return (
@@ -195,7 +218,7 @@ const RoseForm = ({ user, props,
                             : null
                     ))
                 }
-                <Paragraph> Date Info </Paragraph>
+                <Paragraph style={styles.sectionTitle}> Date Info </Paragraph>
                 {
                     (!isUserContactCard)
                         ? <View style={{ alignItems: 'center' }}>
@@ -281,20 +304,30 @@ const RoseForm = ({ user, props,
                     }
                 </View>
                 {/* TODO: preset location.... */}
-                <Paragraph> Location Stuff (please select below)</Paragraph>
+                <Paragraph style={styles.sectionTitle}> Location Stuff (please select below)</Paragraph>
+                <TouchableOpacity
+                    onPress={() => _makeLocationObject({
+                        location: currentLocation, formatted_address: geoCodedLocation, name: ""
+                    }, "default_home", setUpdated_homeLocation)}>
+                    <Paragraph style={{ alignSelf: 'center', color: 'blue' }}>
+                        Use current location for home
+                    </Paragraph>
+                </TouchableOpacity>
                 <Card.Actions style={styles.cardContent}>
                     <Avatar.Icon {...props} icon={'crosshairs-gps'} size={40} style={{ marginRight: 10 }} />
                     <PlacesInput
                         googleApiKey={GOOGLE_API_KEY}
                         onSelect={place => _makeLocationObject(place.result, 'home', setUpdated_homeLocation)}
-                        placeHolder={(homeLocation && homeLocation.homeFormatted_address) ? homeLocation.homeFormatted_address : "Home location"}
+                        placeHolder={(updated_homeLocation && updated_homeLocation.homeFormatted_address) ? updated_homeLocation.homeFormatted_address : "Home location"}
                         language={"en-US"}
                         textInputProps={{
-                            autoCorrect: false
+                            autoCorrect: false,
+                            fontWeight: 'bold'
                         }}
                         stylesContainer={{
                             position: 'relative',
                             alignSelf: 'center',
+                            fontWeight: 'bold',
                             margin: 0,
                             width: '80%',
                             marginBottom: 10
@@ -305,31 +338,43 @@ const RoseForm = ({ user, props,
                 </Card.Actions>
                 {
                     (!isUserContactCard)
-                        ? <Card.Actions style={styles.cardContent}>
-                            <Avatar.Icon {...props} icon={'crosshairs-gps'} size={40} style={{ marginRight: 10 }} />
-                            <PlacesInput
-                                googleApiKey={GOOGLE_API_KEY}
-                                onSelect={place => _makeLocationObject(place.result, 'place_met', setUpdated_placeMetAt)}
-                                placeHolder={(placeMetAt && placeMetAt.placeMetAtFormatted_address) ? placeMetAt.placeMetAtFormatted_address : "Place you met!"}
-                                language={"en-US"}
-                                value={placeMetAt}
-                                onChangeText={() => scrollRef.current?.scrollToEnd()}
-                                textInputProps={{
-                                    autoCorrect: false
-                                }}
-                                stylesContainer={{
-                                    position: 'relative',
-                                    alignSelf: 'center',
-                                    margin: 0,
-                                    width: '80%',
-                                    marginBottom: 10
-                                }}
-                            />
-                        </Card.Actions>
+                        ? <>
+                            <TouchableOpacity
+                                onPress={() => _makeLocationObject({
+                                    location: currentLocation, formatted_address: geoCodedLocation, name: ""
+                                }, "default_place_met", setUpdated_placeMetAt)}>
+                                <Paragraph style={{ alignSelf: 'center', color: 'blue' }}>
+                                    Use current location for place met
+                                </Paragraph>
+                            </TouchableOpacity>
+                            <Card.Actions style={styles.cardContent}>
+                                {/* TODO: SET NAME??? */}
+                                <Avatar.Icon {...props} icon={'crosshairs-gps'} size={40} style={{ marginRight: 10 }} />
+                                <PlacesInput
+                                    googleApiKey={GOOGLE_API_KEY}
+                                    onSelect={place => _makeLocationObject(place.result, 'place_met', setUpdated_placeMetAt)}
+                                    placeHolder={(updated_placeMetAt.placeMetAtFormatted_address) ? updated_placeMetAt.placeMetAtFormatted_address : "Place you met!"}
+                                    language={"en-US"}
+                                    value={updated_placeMetAt}
+                                    onChangeText={() => scrollRef.current?.scrollToEnd()}
+                                    textInputProps={{
+                                        autoCorrect: false
+                                    }}
+                                    stylesContainer={{
+                                        position: 'relative',
+                                        alignSelf: 'center',
+                                        margin: 0,
+                                        width: '80%',
+                                        marginBottom: 10
+                                    }}
+                                />
+                            </Card.Actions>
+                        </>
                         : null
                 }
                 <Button disabled={JSON.stringify(user) === JSON.stringify(updatedUser)}
                     onPress={() => {
+                        _setPlaceMet();
                         form_updateFunction({ roseObj: updatedUser, callback: () => form_updateFunction_callback(updatedUser) })
                     }}>
                     {form_updateFunctionText || 'Save'}
@@ -363,12 +408,11 @@ const styles = StyleSheet.create({
         //width: '70%',
         minWidth: '70%',
         maxWidth: '90%'
+    },
+    sectionTitle: {
+        fontWeight: 'bold',
+        marginVertical: 10
     }
 });
-{/* //dateContainer: {
-        maxWidth: '80%',
-        alignSelf: 'center',
-        flexDirection: 'row'
-    }, */}
-export default RoseForm;
 
+export default RoseForm;

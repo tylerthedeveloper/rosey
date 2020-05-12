@@ -2,6 +2,7 @@ import React, { useContext } from 'react';
 /* -------------------------------------------------------------------------- */
 /*                               Main Root Stack                              */
 /* -------------------------------------------------------------------------- */
+import { Platform } from 'react-native'
 import { TouchableOpacity, Image, Text } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { Appbar, Avatar } from 'react-native-paper';
@@ -61,7 +62,7 @@ export const RootStackNavigator = () => {
                                         }}
                                     >
                                         {
-                                            (initials)
+                                            (initials & !Platform.isPad)
                                                 ? <Avatar.Text size={40} label={initials}
                                                     style={{ borderColor: 'white', borderWidth: 1 }}
                                                 />
@@ -79,7 +80,7 @@ export const RootStackNavigator = () => {
                                     previous ? title :
                                         (Platform.OS === 'ios')
                                             ? <Image source={require('../../assets/rozy-logo.png')} style={{ height: 45, width: 75 }} />
-                                            : <Text style={{fontFamily: 'monospace' }}> Rozy </Text>
+                                            : <Text style={{ fontFamily: 'monospace' }}> Rozy </Text>
                                 }
                             />
                         </Appbar.Header>
