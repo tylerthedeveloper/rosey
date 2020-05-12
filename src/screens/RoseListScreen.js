@@ -15,7 +15,7 @@ const RoseListScreen = ({ navigation }) => {
         filteredRoses, filterToggle, setFilterToggle, filterItems, searchQuery, setSearchQuery
     ] = useListFilters(roses, fetchAllRoses);
 
-    // console.log('roses', roses);
+    // roses.map(rose => console.log('roses', rose.dateMet));
 
     return (
         <View style={styles.container}>
@@ -42,6 +42,7 @@ const RoseListScreen = ({ navigation }) => {
                 <View style={styles.filterChips}>
                     <Chip onPress={() => filterItems('name')}>Name</Chip>
                     <Chip onPress={() => filterItems('email')}>Email</Chip>
+                    <Chip onPress={() => filterItems('dateMet')}>Date Met</Chip>
                     <Chip onPress={() => filterItems('nickName')}>Nickname</Chip>
                     {/* // TODO: */}
                     {/* <Chip onPress={() => setFilterToggle('Date')}>Date Met</Chip> */}
