@@ -23,15 +23,15 @@ export default () => {
 
     const createCalendar = async () => {
         const defaultCalendarSource = (Platform.OS === 'ios')
-            ? await Calendar.getDefaultCalendarAsync()
+            ? (await Calendar.getDefaultCalendarAsync()).source
             : { isLocalAccount: true, name: 'Expo Calendar' };
         // TODO: Handle error here
         await Calendar.createCalendarAsync({
             title: 'Rozy Calendar',
             color: 'blue',
             entityType: Calendar.EntityTypes.EVENT,
-            sourceId: defaultCalendarSource.source.id,
-            source: defaultCalendarSource.source,
+            sourceId: defaultCalendarSource.id,
+            source: defaultCalendarSource,
             name: 'RozyCalendar',
             ownerAccount: 'personal',
             accessLevel: Calendar.CalendarAccessLevel.OWNER,

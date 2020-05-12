@@ -16,14 +16,14 @@ export default {
             placeMetAtName: ''
         },
         name: 'Tyler Citrin',
-        notes: 'Hey, my name is Tyler! You can add more roses on the previous \
-                screen with the plus button in the bottom corner. If you are \
-                interested in chatting, feel free to contact me!',
+        notes: 'Hey, my name is Tyler! You can add more roses on the previous' +
+            'screen with the plus button in the bottom corner. If you are' +
+            'interested in chatting, feel free to contact me!',
         nickName: 'Tito',
         phoneNumber: '',
         picture: '',
-        tags: '',
-        work: 'Developer',
+        tags: 'Friend',
+        work: 'Developer, PM',
         roseId: shortid.generate()
     }
 };

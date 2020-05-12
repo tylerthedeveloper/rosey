@@ -8,6 +8,8 @@ const MapComponent = ({ props, navigationCallback, coords, height, roses, filter
 
     // TODO: Abstract design for marker
 
+    // FIXME: Apply to BOTH home AND place met 
+
     const markerList = roses.map((rose) => {
         const { homeLocation, placeMetAt, name, roseId, tags } = rose;
         const { homeLocationCoords, homeFormatted_address, homeLocationName } = homeLocation || {};
@@ -75,9 +77,6 @@ const MapComponent = ({ props, navigationCallback, coords, height, roses, filter
         coords.latitude !== -369 && coords.longitude !== -369
     );
 
-    // console.log(shouldSetInitialRegion)
-    // console.log(coords, coords.latitude, coords.longitude)
-    
     return (
         <>
             {
@@ -118,3 +117,47 @@ const styles = StyleSheet.create({
 });
 
 export default MapComponent;
+
+// const PROVIDER = (Platform.OS === 'ios') ? '' : PROVIDER_GOOGLE;
+//     return (
+//         <>
+//             {
+//                 (coords && Object.keys(coords).length)
+//                     ? (Platform.OS === 'ios')
+//                         ? <MapView
+//                             style={{ height: height || 300 }}
+//                             initialRegion={{
+//                                 latitudeDelta: .01,
+//                                 longitudeDelta: .01,
+//                                 ...coords
+//                             }}
+//                         >
+//                             {markerList}
+//                         </MapView>
+//                         : <MapView
+//                             provider={PROVIDER_GOOGLE}
+//                             style={{ height: height || 300 }}
+//                             initialRegion={{
+//                                 latitudeDelta: .01,
+//                                 longitudeDelta: .01,
+//                                 ...coords
+//                             }}
+//                         >
+//                             {markerList}
+//                         </MapView>
+//                     : (Platform.OS === 'ios')
+//                         ? <MapView
+//                             style={{ height: height || 300 }}
+//                         >
+//                             {markerList}
+//                         </MapView>
+//                         : <MapView
+//                             provider={PROVIDER_GOOGLE}
+//                             style={{ height: height || 300 }}
+//                         >
+//                             {markerList}
+//                         </MapView>
+//             }
+//         </>
+//     )
+// }

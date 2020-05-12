@@ -16,6 +16,7 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
 
     const [rozyCalendar, createEvent] = useCalendar();
 
+    // TODO: move to constants?
     //
     // ─── FUNCTIONS ──────────────────────────────────────────────────────────────────
     //
@@ -28,8 +29,9 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
             return formattedNumber;
         }
     }
-    // ────────────────────────────────────────────────────────────────────────────────
 
+    const _handleEmptyField = () => alert('Enter data for that field in order to interact with it.');
+    // ────────────────────────────────────────────────────────────────────────────────
 
     const viewRows = [
         {
@@ -45,20 +47,20 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
             rightFunc: () => { },
         },
         {
-            value: _formatPhonenumber(phoneNumber) || '123456789', subtitle: 'phone',
+            value: _formatPhonenumber(phoneNumber), subtitle: 'phone',
             left: "phone",
             // TODO: country code?
             rightIcon: "phone",
-            rightFunc: () => { if (phoneNumber) Linking.openURL(`tel:${phoneNumber}`) },
+            rightFunc: () => { Linking.openURL(`tel:${phoneNumber}`) },
             secondRightIcon: "message-text",
-            secondRightFunc: () => { if (phoneNumber) Linking.openURL(`sms:${phoneNumber}`) },
+            secondRightFunc: () => { Linking.openURL(`sms:${phoneNumber}`) },
         },
         {
             value: email, subtitle: 'email',
             left: "email",
             rightIcon: "email",
             rightFunc: () => {
-                if (email) Linking.openURL(`mailto:${email}`)
+                Linking.openURL(`mailto:${email}`)
             },
         },
         {
@@ -83,40 +85,36 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
             value: dateMet ? (moment(dateMet).format('MMM DD, YYYY')) : '(Enter Date met!)', subtitle: 'date met',
             left: "calendar",
             rightIcon: "calendar-heart",
-            rightFunc: () => { createEvent(dateMet, 'date_met', name, placeMetAtFormatted_address) },
+            rightFunc: () => { if (dateMet) createEvent(dateMet, 'date_met', name, placeMetAtFormatted_address) },
         },
         {
             value: birthday ? (moment(birthday).format('MMM DD, YYYY')) : '(Enter Birthday!)', subtitle: 'birthday',
             left: "calendar",
             rightIcon: "calendar-heart",
-            rightFunc: () => { createEvent(birthday, 'birthday', name, placeMetAtFormatted_address) },
+            rightFunc: () => { if (birthday) createEvent(birthday, 'birthday', name, placeMetAtFormatted_address) },
         },
         {
-            value: homeFormatted_address || '(Add location!)', subtitle: 'home location',
+            value: homeFormatted_address, subtitle: 'home location',
             left: "crosshairs-gps",
             rightIcon: "crosshairs-gps",
             rightFunc: () => {
-                if (homeFormatted_address) {
-                    const url = Platform.select({
-                        ios: `maps:0,0?q=${homeFormatted_address}`,
-                        android: `geo:0,0?q=${homeFormatted_address}`,
-                    })
-                    Linking.openURL(url)
-                }
+                const url = Platform.select({
+                    ios: `maps:0,0?q=${homeFormatted_address}`,
+                    android: `geo:0,0?q=${homeFormatted_address}`,
+                })
+                Linking.openURL(url)
             },
         },
         {
-            value: placeMetAtFormatted_address || '(Add location!)', subtitle: 'place met',
+            value: placeMetAtFormatted_address, subtitle: 'place met',
             left: "crosshairs-gps",
             rightIcon: "crosshairs-gps",
             rightFunc: () => {
-                if (placeMetAtFormatted_address) {
-                    const url = Platform.select({
-                        ios: `maps:0,0?q=${placeMetAtFormatted_address}`,
-                        android: `geo:0,0?q=${placeMetAtFormatted_address}`,
-                    })
-                    Linking.openURL(url)
-                }
+                const url = Platform.select({
+                    ios: `maps:0,0?q=${placeMetAtFormatted_address}`,
+                    android: `geo:0,0?q=${placeMetAtFormatted_address}`,
+                })
+                Linking.openURL(url)
             },
         },
     ];
