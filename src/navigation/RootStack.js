@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 /* -------------------------------------------------------------------------- */
 /*                               Main Root Stack                              */
 /* -------------------------------------------------------------------------- */
@@ -9,8 +9,10 @@ import { Appbar, Avatar } from 'react-native-paper';
 import { theme } from '../core/theme'
 import { createStackNavigator } from '@react-navigation/stack';
 import { BottomTabNavigator } from './Tabs';
-import { AddRoseScreen, ContactCardScreen, RoseDetailScreen } from '../screens'
+import { AddRoseScreen, ContactCardScreen, RoseDetailScreen, TagScreen } from '../screens'
 import { AuthContext } from '../context/AuthContext';
+import { Context as TagContext } from '../context/TagContext';
+
 
 const RootStack = createStackNavigator();
 
@@ -31,6 +33,12 @@ export const RootStackNavigator = () => {
     // const theme = useTheme(); // TODO:
 
     const { state: { user } } = useContext(AuthContext);
+
+    const { getInitialTags } = useContext(TagContext);
+
+    useEffect(() => {
+        getInitialTags();
+    }, []);
 
     // TODO: Do i care about middle names??
     let initials = _generateInitials(user.name);
@@ -114,6 +122,11 @@ export const RootStackNavigator = () => {
                 name="ContactCard"
                 component={ContactCardScreen}
                 options={{ headerTitle: 'ContactCard' }}
+            />
+            <RootStack.Screen
+                name="TagScreen"
+                component={TagScreen}
+                options={{ headerTitle: 'Tags' }}
             />
         </RootStack.Navigator>
     )

@@ -355,7 +355,6 @@ const RoseForm = ({ user, props,
                                     onSelect={place => _makeLocationObject(place.result, 'place_met', setUpdated_placeMetAt)}
                                     placeHolder={(updated_placeMetAt.placeMetAtFormatted_address) ? updated_placeMetAt.placeMetAtFormatted_address : "Place you met!"}
                                     language={"en-US"}
-                                    value={updated_placeMetAt}
                                     onChangeText={() => scrollRef.current?.scrollToEnd()}
                                     textInputProps={{
                                         autoCorrect: false

@@ -1,17 +1,10 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import MapView, { Marker } from 'react-native-maps';
-import { Avatar } from 'react-native-paper';
-import { MyButton } from '../paper-components/memo';
+import MapView from 'react-native-maps';
 import MapMarker from './MapMarker';
 
 // TODO: Wrap with nav, dont pass all the way down???
 
-const MapComponent = ({ props, navigationCallback, coords, height, roses, filterType }) => {
-
-    // TODO: Abstract design for marker
-
-    // FIXME: Apply to BOTH home AND place met 
+const MapComponent = ({ navigationCallback, coords, height, roses, filterType }) => {
 
     const markerList = roses.map((rose) => {
         const { homeLocation, placeMetAt, name, roseId, tags } = rose;
@@ -23,6 +16,7 @@ const MapComponent = ({ props, navigationCallback, coords, height, roses, filter
             placeMetAtLocationCoords.longitude !== -369) {
             return (
                 <MapMarker
+                    key={(placeMetAtLocationCoords.latitude + placeMetAtLocationCoords.longitude).toString()}
                     roseId={roseId}
                     navigationCallback={navigationCallback}
                     name={name}
@@ -37,6 +31,7 @@ const MapComponent = ({ props, navigationCallback, coords, height, roses, filter
             homeLocationCoords.longitude !== -369) {
             return (
                 <MapMarker
+                    key={(homeLocationCoords.latitude + homeLocationCoords.longitude).toString()}
                     roseId={roseId}
                     navigationCallback={navigationCallback}
                     name={name}
@@ -77,20 +72,6 @@ const MapComponent = ({ props, navigationCallback, coords, height, roses, filter
         </>
     )
 }
-
-const styles = StyleSheet.create({
-    viewStyle: {
-        width: 200,
-        height: 210,
-        backgroundColor: "#fff",
-        padding: 20
-    },
-    textStyle: {
-        fontSize: 16,
-        alignSelf: 'center',
-        padding: 5
-    }
-});
 
 export default MapComponent;
 

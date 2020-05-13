@@ -29,7 +29,6 @@ const DrawerContent = (props) => {
     return (
         <DrawerContentScrollView {...props}>
             <Animated.View
-                //@ts-ignore
                 style={[
                     styles.drawerContent,
                     {
@@ -75,6 +74,7 @@ const DrawerContent = (props) => {
                 </View>
                 <Drawer.Section style={styles.drawerSection}>
                     <DrawerItem
+                        // TODO: understand where this size and color come from
                         icon={({ color, size }) => (
                             <MaterialCommunityIcons
                                 name="account-outline"
@@ -84,6 +84,17 @@ const DrawerContent = (props) => {
                         )}
                         label="Contact Card"
                         onPress={() => navigation.navigate('ContactCard')}
+                    />
+                    <DrawerItem
+                        icon={({ color, size }) => (
+                            <MaterialCommunityIcons
+                                name="tag"
+                                color={color}
+                                size={size}
+                            />
+                        )}
+                        label="Tags"
+                        onPress={() => navigation.navigate('TagScreen')}
                     />
                     {/* <DrawerItem
                         icon={({ color, size }) => (

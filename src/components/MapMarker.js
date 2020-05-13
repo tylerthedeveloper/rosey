@@ -11,7 +11,6 @@ const MapMarker = ({ props, roseId, coords, address, name, tags, navigationCallb
             coordinate={coords}
             title={name + " @ " + address}
             image={require('../../assets/rose-marker.png')}
-            key={(coords.latitude + coords.longitude).toString()}
         >
             <MapView.Callout
                 onPress={() => navigationCallback(roseId)}
