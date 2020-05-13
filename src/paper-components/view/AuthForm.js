@@ -13,7 +13,7 @@ const AuthForm = ({ headerText, errorMessage, onSubmit, submitButtonText, passwo
     return (
         <>
             <Logo />
-            <MyHeader >
+            <MyHeader>
                 {headerText}
             </MyHeader>
             {
@@ -52,26 +52,26 @@ const AuthForm = ({ headerText, errorMessage, onSubmit, submitButtonText, passwo
                 : null
             } */}
             <View style={styles.buttons}>
-            {
-                // TODO: PWD?
-                (headerText === 'Register')
-                    ? <MyButton
-                        mode="contained"
-                        onPress={() => onSubmit({ name, email })}
-                        // disabled={password.length < 6}
-                        disabled={name.length === 0 || email.length === 0}
-                    >
-                        {submitButtonText}
-                    </MyButton>
-                    : <MyButton
-                        mode="contained"
-                        onPress={() => onSubmit({ email })}
-                        // disabled={password.length < 6}
-                        disabled={email.length === 0}
-                    >
-                        {submitButtonText}
-                    </MyButton>
-            }
+                {
+                    // TODO: PWD?
+                    (headerText === 'Register')
+                        ? <MyButton
+                            mode="contained"
+                            onPress={() => onSubmit({ name, email })}
+                            // disabled={password.length < 6}
+                            disabled={name.length === 0 || email.length === 0}
+                        >
+                            {submitButtonText}
+                        </MyButton>
+                        : <MyButton
+                            mode="contained"
+                            onPress={() => onSubmit({ email })}
+                            // disabled={password.length < 6}
+                            disabled={email.length === 0}
+                        >
+                            {submitButtonText}
+                        </MyButton>
+                }
             </View>
         </>);
 }

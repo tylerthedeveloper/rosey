@@ -357,7 +357,8 @@ const RoseForm = ({ user, props,
                                     language={"en-US"}
                                     onChangeText={() => scrollRef.current?.scrollToEnd()}
                                     textInputProps={{
-                                        autoCorrect: false
+                                        autoCorrect: false,
+                                        //value: "El Paso, Texas"
                                     }}
                                     stylesContainer={{
                                         position: 'relative',
