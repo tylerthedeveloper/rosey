@@ -19,8 +19,6 @@ const RoseListScreen = ({ navigation }) => {
     ] = useListFilters(roses, fetchAllRoses);
 
     const [tagToggle, setTagToggle] = useState(false);
-
-
     const [selectedTags, setSelectedTags] = useState([]);
 
     const toggledSelected = (tag, idx) => {

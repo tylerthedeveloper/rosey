@@ -70,10 +70,10 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
             rightFunc: () => { },
         },
         {
-            value: (tags && tags.length > 0) ? tags : '(Add some Tags!)', subtitle: 'tags',
+            value: (tags && tags.length > 0) ? tags.join(', ') : '(Add some Tags!)', subtitle: 'tags',
+            // value: updated_tags, subtitle: 'Add tags (by commas) ',
             left: "tag",
             // rightIcon: "tag",
-            rightFunc: () => { },
         },
         {
             value: notes || '(Add some notes!)', subtitle: 'notes',

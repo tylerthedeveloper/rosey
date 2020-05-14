@@ -37,7 +37,6 @@ const TagScreen = () => {
                         </Chip>)
                     )
                 }
-
             </View>
             <MyTextInput value={newTag} onChangeText={setNewTag} style={{ height: 50 }} />
             <Button onPress={() => { addTag(newTag); setNewTag('') }} disabled={!newTag}>

@@ -1,12 +1,14 @@
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
-import React, { useState, useEffect } from 'react';
+import React, { useContext, useState } from 'react';
 import { KeyboardAvoidingView, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { GOOGLE_API_KEY } from "react-native-dotenv";
-import { Avatar, Button, Card, Paragraph, TextInput } from 'react-native-paper';
+import { Avatar, Button, Card, Chip, Paragraph, TextInput } from 'react-native-paper';
 import PlacesInput from 'react-native-places-input';
 import Spacer from '../../components/Spacer';
+import { Context as TagContext } from '../../context/TagContext';
 import useCurrentLocation from '../../hooks/useCurrentLocation';
+import { MyTextInput } from '../../paper-components/memo';
 
 const RoseForm = ({ user, props,
     form_updateFunction, form_updateFunctionText,
@@ -19,10 +21,12 @@ const RoseForm = ({ user, props,
 
     const { currentLocation, geoCodedLocation } = useCurrentLocation();
 
+    const { state: { tags: contextTags }, addTag } = useContext(TagContext);
+
     const [updated_birthday, setBirthday] = useState(birthday || new Date(Date.now()));
     const [updated_dateMet, setDateMet] = useState(dateMet || new Date(Date.now()));
     const [updated_email, setEmail] = useState(email);
-    const [updated_tags, setTags] = useState(tags);
+    const [updated_tags, setTags] = useState(tags || []);
     const [updated_work, setWork] = useState(work);
     const [updated_name, setName] = useState(name);
     const [updated_notes, setNotes] = useState(notes);
@@ -95,15 +99,6 @@ const RoseForm = ({ user, props,
             editFunc: setWork,
             autoCapitalize: "words"
         },
-        // {
-        //     // TODO: WHEN array
-        //     // value: (updated_tags && updated_tags.length > 0) ? updated_tags.join(',') : '(Add some Tags!)', subtitle: 'tag',
-        //     value: updated_tags, subtitle: 'Add tags (by commas) ',
-        //     left: "tag",
-        //     rightIcon: "tag",
-        //     editFunc: setTags,
-        //     autoCapitalize: "words"
-        // },
         {
             value: updated_notes, subtitle: 'notes',
             left: "note",
@@ -113,7 +108,6 @@ const RoseForm = ({ user, props,
             autoCapitalize: "sentences"
         }
     ];
-
     /* -------------------------------------------------------------------------- */
     /*                                Functions                                   */
     /* -------------------------------------------------------------------------- */
@@ -123,6 +117,18 @@ const RoseForm = ({ user, props,
 
     const [birth_datePicker, setBirth_datePicker] = useState(false);
     const [datemet_Picker, setDatemet_Picker] = useState(false);
+
+    const toggledSelected = (tag) => {
+        // const str = (tag + idx);
+        if (!updated_tags.includes(tag)) {
+            setTags([...updated_tags, tag]);
+        } else {
+            const filteredTags = updated_tags.filter(tg => tag !== tg);
+            setTags(filteredTags);
+        }
+    }
+    const [newTag, setNewTag] = useState('');
+    console.log(updated_tags);
 
     const _makeLocationObject = (locationObject, locationType, locationSetter) => {
         if (locationType.includes('default')) {
@@ -196,6 +202,11 @@ const RoseForm = ({ user, props,
                 ref={scrollRef}
                 onContentSizeChange={(contentHeight) => setContentHeight(contentHeight)}
             >
+                {/* 
+                //
+                // Form Section
+                //
+                 */}
                 {
                     formRows.map(({ left, subtitle, value, editFunc, keyboardType, autoCapitalize, multiline }) => (
                         ((isUserContactCard && !contactCardRowsToIgnore.includes(subtitle) || !isUserContactCard))
@@ -218,6 +229,37 @@ const RoseForm = ({ user, props,
                             : null
                     ))
                 }
+                {/* 
+                //
+                // Tag Section
+                //
+                 */}
+                <Paragraph style={styles.sectionTitle}> Tags (select below) </Paragraph>
+                <View style={styles.chips}>
+                    {
+                        contextTags.map((tag, index) =>
+                            (<Chip mode="outlined" style={styles.chip}
+                                key={tag + index}
+                                icon={'tag'}
+                                selectedColor={'blue'}
+                                selected={updated_tags.includes(tag)}
+                                onPress={() => toggledSelected(tag)}
+                            >
+                                {tag}
+                            </Chip>)
+                        )
+                    }
+                </View>
+                {/* TODO:  learn to center these*/}
+                <MyTextInput value={newTag} onChangeText={setNewTag} style={{ height: 50, marginLeft: 30, width: '100%', textAlign: 'center'  }} />
+                <Button onPress={() => { addTag(newTag); setNewTag('') }} disabled={!newTag}>
+                    Add Tag
+                </Button>
+                {/* 
+                //
+                // DATE SECTION
+                //
+                 */}
                 <Paragraph style={styles.sectionTitle}> Date Info </Paragraph>
                 {
                     (!isUserContactCard)
@@ -303,6 +345,11 @@ const RoseForm = ({ user, props,
                             : null
                     }
                 </View>
+                {/* 
+                //
+                // Location Section
+                //
+                 */}
                 {/* TODO: preset location.... */}
                 <Paragraph style={styles.sectionTitle}> Location Stuff (please select below)</Paragraph>
                 <TouchableOpacity
@@ -412,6 +459,17 @@ const styles = StyleSheet.create({
     sectionTitle: {
         fontWeight: 'bold',
         marginVertical: 10
+    },
+    chips: {
+        alignItems: 'center',
+        alignSelf: 'center',
+        flexDirection: 'row',
+        flexWrap: 'wrap',
+        paddingHorizontal: 5,
+    },
+    chip: {
+        marginHorizontal: 5,
+        marginVertical: 5
     }
 });
 
