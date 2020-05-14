@@ -13,15 +13,25 @@ export default (roses, fetchAllRoses) => {
 
     const [filterToggle, setFilterToggle] = useState(false);
 
-    const filterItems = (filterValue) => {
+    const filterItems = (filterValue, filterType) => {
         // TODO: title CASE?
-        setFilterToggle(false);
-        const sortedRoses = roses.sort((a, b) => {
-            // console.log(a[filterValue], b[filterValue], a[filterValue].toString().localeCompare(b[filterValue].toString()));
-            return a[filterValue].toString().localeCompare(b[filterValue].toString());
-        })
-        // const sortedRoses = roses.sort((a, b) => a[filterValue]- b[filterValue])
-        setFilteredRoses(sortedRoses);
+        if (filterType && filterType == 'tag') {
+            // console.log('filter a tag for: ', filterValue);
+            // console.log(roses);
+            // console.log(roses[0].tags);
+            // console.log(roses[0].tags.includes('Friend'));
+            const sortedRoses = roses.filter(rose => rose.tags.includes(filterValue));
+            console.log(sortedRoses);
+            setFilteredRoses(sortedRoses);
+        } else {
+            setFilterToggle(false);
+            const sortedRoses = roses.sort((a, b) => {
+                // console.log(a[filterValue], b[filterValue], a[filterValue].toString().localeCompare(b[filterValue].toString()));
+                return a[filterValue].toString().localeCompare(b[filterValue].toString());
+            })
+            // const sortedRoses = roses.sort((a, b) => a[filterValue]- b[filterValue])
+            setFilteredRoses(sortedRoses);
+        }
     };
 
     useEffect(() => {

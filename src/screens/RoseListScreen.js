@@ -1,21 +1,39 @@
-import React, { useContext } from 'react';
-import { FlatList, StyleSheet, View, TouchableOpacity } from 'react-native';
+import React, { useContext, useState } from 'react';
+import { FlatList, StyleSheet, ScrollView, View, TouchableOpacity } from 'react-native';
 import { Chip, IconButton, Searchbar, Headline } from 'react-native-paper';
 import { Context as RoseContext } from '../context/RoseContext';
+import { Context as TagContext } from '../context/TagContext';
 import { theme } from '../core/theme';
 import useListFilters from '../hooks/useListFilters';
 import { RoseListItem } from '../paper-components/partial';
 
 const RoseListScreen = ({ navigation }) => {
 
+    // TODO: move this to the hook
     const { state: { roses }, fetchAllRoses } = useContext(RoseContext);
+    const { state: { tags } } = useContext(TagContext);
 
     // const { primary, secondary, error } = theme.colors;
     const [
         filteredRoses, filterToggle, setFilterToggle, filterItems, searchQuery, setSearchQuery
     ] = useListFilters(roses, fetchAllRoses);
 
-    // roses.map(rose => console.log('roses', rose.dateMet));
+    const [tagToggle, setTagToggle] = useState(false);
+
+
+    const [selectedTags, setSelectedTags] = useState([]);
+
+    const toggledSelected = (tag, idx) => {
+        const str = (tag+idx);
+        if (!selectedTags.includes(str)) {
+            setSelectedTags([...selectedTags, str]);
+            filterItems(tag, 'tag');
+        } else {
+            const filteredTags = selectedTags.filter(tg => str !== tg);
+            setSelectedTags(filteredTags);
+        }
+    }
+    // console.log(selectedTags)
 
     return (
         <View style={styles.container}>
@@ -31,23 +49,50 @@ const RoseListScreen = ({ navigation }) => {
                     style={styles.searchBar}
                 />
                 <IconButton
+                    icon="tag"
+                    onPress={() => setTagToggle(!tagToggle)}
+                    size={25}
+                    style={styles.filterIcon}
+                />
+                <IconButton
                     icon="filter-variant"
                     onPress={() => setFilterToggle(!filterToggle)}
-                    size={35}
+                    size={25}
                     style={styles.filterIcon}
                 />
             </View>
             {
                 (filterToggle) &&
                 <View style={styles.filterChips}>
+                    {/* <Chip onPress={() => setTagToggle(!tagToggle)}>Tags</Chip> */}
                     <Chip onPress={() => filterItems('name')}>Name</Chip>
                     <Chip onPress={() => filterItems('email')}>Email</Chip>
                     <Chip onPress={() => filterItems('dateMet')}>Date Met</Chip>
                     <Chip onPress={() => filterItems('nickName')}>Nickname</Chip>
-                    {/* // TODO: */}
-                    {/* <Chip onPress={() => setFilterToggle('Date')}>Date Met</Chip> */}
-
                 </View>
+            }
+            {
+                (tagToggle) &&
+                <ScrollView style={styles.tags} horizontal
+                    automaticallyAdjustContentInsets={false}
+                    contentContainerStyle={{
+                        justifyContent: 'space-evenly',
+                        flex: 1,
+                        height: 40,
+                    }}
+                >
+                    {
+                        tags.map((tag, index) =>
+                            <Chip
+                                key={tag + index}
+                                onPress={() => toggledSelected(tag, index)}
+                                //onPress={() => filterItems(tag, 'tags')}
+                                selectedColor={'blue'}
+                                selected={selectedTags.includes(tag + index)}
+                            >{tag}</Chip>
+                        )
+                    }
+                </ScrollView>
             }
             <View style={styles.content}>
                 {
@@ -64,7 +109,7 @@ const RoseListScreen = ({ navigation }) => {
                         </TouchableOpacity>
                 }
             </View>
-        </View>
+        </View >
     )
 }
 
@@ -80,8 +125,8 @@ const styles = StyleSheet.create({
         marginLeft: 20,
     },
     searchBar: {
-        minWidth: '75%',
-        maxWidth: '85%',
+        minWidth: '65%',
+        maxWidth: '75%',
         flex: 1,
         shadowOffset: {
             width: 0,
@@ -96,6 +141,12 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         marginTop: 10,
         justifyContent: 'space-evenly'
+    },
+    tags: {
+        //flexDirection: 'row',
+        marginTop: 10,
+        //flex: 1,
+        maxHeight: 50,
     },
     content: {
         flex: 1,

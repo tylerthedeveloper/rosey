@@ -55,7 +55,7 @@ const RoseForm = ({ user, props,
         nickName: updated_nickName || '',
         phoneNumber: updated_phoneNumber || '',
         picture: updated_picture || '',
-        tags: updated_tags || '',
+        tags: updated_tags || [],
         work: updated_work || '',
         roseId: roseId || ''
     };
@@ -95,15 +95,15 @@ const RoseForm = ({ user, props,
             editFunc: setWork,
             autoCapitalize: "words"
         },
-        {
-            // TODO: WHEN array
-            // value: (updated_tags && updated_tags.length > 0) ? updated_tags.join(',') : '(Add some Tags!)', subtitle: 'tag',
-            value: updated_tags, subtitle: 'Add tags (by commas) ',
-            left: "tag",
-            rightIcon: "tag",
-            editFunc: setTags,
-            autoCapitalize: "words"
-        },
+        // {
+        //     // TODO: WHEN array
+        //     // value: (updated_tags && updated_tags.length > 0) ? updated_tags.join(',') : '(Add some Tags!)', subtitle: 'tag',
+        //     value: updated_tags, subtitle: 'Add tags (by commas) ',
+        //     left: "tag",
+        //     rightIcon: "tag",
+        //     editFunc: setTags,
+        //     autoCapitalize: "words"
+        // },
         {
             value: updated_notes, subtitle: 'notes',
             left: "note",
