@@ -1,7 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { FlatList, StyleSheet, ScrollView, View, TouchableOpacity } from 'react-native';
 import { Chip, IconButton, Searchbar, Headline } from 'react-native-paper';
-import { Context as RoseContext } from '../context/RoseContext';
 import { Context as TagContext } from '../context/TagContext';
 import { theme } from '../core/theme';
 import useListFilters from '../hooks/useListFilters';
@@ -10,28 +9,15 @@ import { RoseListItem } from '../paper-components/partial';
 const RoseListScreen = ({ navigation }) => {
 
     // TODO: move this to the hook
-    const { state: { roses }, fetchAllRoses } = useContext(RoseContext);
     const { state: { tags } } = useContext(TagContext);
 
     // const { primary, secondary, error } = theme.colors;
     const [
-        filteredRoses, filterToggle, setFilterToggle, filterItems, searchQuery, setSearchQuery
-    ] = useListFilters(roses, fetchAllRoses);
+        filteredRoses, filterToggle, setFilterToggle, filterItems, searchQuery, setSearchQuery,
+        selectedTags, toggledSelected
+    ] = useListFilters();
 
     const [tagToggle, setTagToggle] = useState(false);
-    const [selectedTags, setSelectedTags] = useState([]);
-
-    const toggledSelected = (tag, idx) => {
-        const str = (tag+idx);
-        if (!selectedTags.includes(str)) {
-            setSelectedTags([...selectedTags, str]);
-            filterItems(tag, 'tag');
-        } else {
-            const filteredTags = selectedTags.filter(tg => str !== tg);
-            setSelectedTags(filteredTags);
-        }
-    }
-    // console.log(selectedTags)
 
     return (
         <View style={styles.container}>
@@ -76,17 +62,18 @@ const RoseListScreen = ({ navigation }) => {
                     contentContainerStyle={{
                         justifyContent: 'space-evenly',
                         flex: 1,
-                        height: 40,
+                        height: 35,
                     }}
                 >
                     {
                         tags.map((tag, index) =>
                             <Chip
                                 key={tag + index}
-                                onPress={() => toggledSelected(tag, index)}
-                                //onPress={() => filterItems(tag, 'tags')}
                                 selectedColor={'blue'}
-                                selected={selectedTags.includes(tag + index)}
+                                onPress={() => toggledSelected(tag)}
+                                selected={selectedTags.includes(tag)}
+                                //onPress={() => toggledSelected(tag, index)}
+                                //selected={selectedTags.includes(tag + index)}
                             >{tag}</Chip>
                         )
                     }
@@ -144,7 +131,7 @@ const styles = StyleSheet.create({
         //flexDirection: 'row',
         marginTop: 10,
         //flex: 1,
-        maxHeight: 50,
+        maxHeight: 40,
     },
     content: {
         flex: 1,

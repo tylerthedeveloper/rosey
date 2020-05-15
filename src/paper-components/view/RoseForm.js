@@ -127,6 +127,13 @@ const RoseForm = ({ user, props,
             setTags(filteredTags);
         }
     }
+
+    const _addTag = (newTag) => {
+        addTag(newTag);
+        setNewTag('')
+        setTags([...updated_tags, newTag]);
+    }
+
     const [newTag, setNewTag] = useState('');
     console.log(updated_tags);
 
@@ -178,6 +185,7 @@ const RoseForm = ({ user, props,
             console.log('set me!');
         }
     }
+
     /* -------------------------------------------------------------------------- */
 
     const [contentHeight, setContentHeight] = useState();
@@ -251,8 +259,8 @@ const RoseForm = ({ user, props,
                     }
                 </View>
                 {/* TODO:  learn to center these*/}
-                <MyTextInput value={newTag} onChangeText={setNewTag} style={{ height: 50, marginLeft: 30, width: '100%', textAlign: 'center'  }} />
-                <Button onPress={() => { addTag(newTag); setNewTag('') }} disabled={!newTag}>
+                <MyTextInput value={newTag} onChangeText={setNewTag} style={{ height: 50, marginLeft: 30, width: '100%', textAlign: 'center' }} />
+                <Button onPress={() => _addTag(newTag)} disabled={!newTag}>
                     Add Tag
                 </Button>
                 {/* 

@@ -29,8 +29,6 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
             return formattedNumber;
         }
     }
-
-    const _handleEmptyField = () => alert('Enter data for that field in order to interact with it.');
     // ────────────────────────────────────────────────────────────────────────────────
 
     const viewRows = [

@@ -33,7 +33,7 @@ const RoseListItem = ({ rose }) => {
                 />
                 <Card.Actions>
                     <Paragraph> Tags: </Paragraph>
-                    <Paragraph> {tags.join(', ') || '(Add some tags!)'} </Paragraph>
+                    <Paragraph> {tags && Array.isArray(tags) && tags.join(', ') || '(Add some tags!)'} </Paragraph>
                 </Card.Actions>
             </Card>
         </TouchableOpacity >

@@ -24,7 +24,7 @@
     "ios": {
       "supportsTablet": true,
       "bundleIdentifier": "com.rosey-app.rosey",
-      "buildNumber": "1.1.0",
+      "buildNumber": "1.1.1",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": "no",
         "NSLocationWhenInUseUsageDescription": "Allow Rozy to use your location so you can easily add location to your roses",
@@ -33,7 +33,7 @@
     },
     "android": {
       "package": "com.rozy_app.rozy",
-      "versionCode": 4,
+      "versionCode": 5,
       "config": {
         "googleMaps": {
           "apiKey": "AIzaSyA5fMKf-ThAyziy-jqvTl287mPmQrXthzw"
