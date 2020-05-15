@@ -1,3 +1,8 @@
+
+// FIXME: 
+// 1. try to separate fetch all roses and fetch initial roses
+// chagne this to only PULL from local when needed 
+
 import { AsyncStorage } from 'react-native';
 import shortid from 'shortid';
 import createDataContext from './createDataContext';
@@ -24,18 +29,14 @@ const roseReducer = (state, action) => {
     }
 }
 
-const fetchOneRose = (dispatch) => async () => { }
+//const fetchOneRose = (dispatch) => async () => { }
 
 const addRose = (dispatch) => async ({ roseObj, callback }) => {
-    // if (!roseObj) {
-    // TODO:?
-    // }
     try {
         /* -------------------------------------------------------------------------- */
         // const response = await roseyApi.post('/roses', roseData);
         // const newRose = response.data.rose;
         /* -------------------------------------------------------------------------- */
-        // FIXME: BETTER GUID/UID 
         const roseId = (roseObj.name) ? shortid.generate(roseObj.name) : shortid.generate();
         roseObj.roseId = roseId;
         // console.log('added rose', roseObj)
@@ -60,7 +61,6 @@ const editRose = (dispatch) => async ({ roseObj, callback }) => {
         // const response = await roseyApi.post('/roses', roseData);
         // const newRose = response.data.rose;
         /* -------------------------------------------------------------------------- */
-        // FIXME: BETTER GUID/UID 
         // console.log('current rose', roseObj);
         const roses = await AsyncStorage.getItem('roses')
             .then(req => JSON.parse(req));
@@ -89,7 +89,6 @@ const fetchAllRoses = (dispatch) => async () => {
         // const roses = response.data.roses;
         // dispatch({ type: "fetch_roses", payload: roses });
         /* -------------------------------------------------------------------------- */
-        // TODO: retireve from local?
         const roseStringArray = await AsyncStorage.getItem('roses');
         if (roseStringArray) {
             //

@@ -22,7 +22,7 @@ export default {
         nickName: 'Tito',
         phoneNumber: '',
         picture: '',
-        tags: 'Friend',
+        tags: ['Friend'],
         work: 'Developer, PM',
         roseId: shortid.generate()
     }
