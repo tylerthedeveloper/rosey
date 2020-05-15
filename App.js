@@ -1,6 +1,6 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import React, { useEffect, useMemo, useReducer } from 'react';
+import React, { useEffect, useMemo, useReducer, useContext } from 'react';
 import { AsyncStorage } from 'react-native';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { Auth } from "./src/navigation/Auth";
@@ -8,6 +8,7 @@ import { App } from "./src/navigation/AppDrawer";
 import { isMountedRef, navigationRef } from './RootNavigation'; // TODO: Move into navigation
 // Context and PROVIDERS
 import { AuthContext } from './src/context/AuthContext';
+import { Provider as TagProvider } from './src/context/TagContext';
 import { Provider as RoseProvider } from './src/context/RoseContext';
 import theme from './src/core/theme';
 import ResolveAuthScreen from './src/screens/ResolveAuthScreen';
@@ -181,11 +182,11 @@ export default () => {
 
   const { tryLocalSignin } = authContext;
 
-  // FIXME:
+  // FIXME:???
   useEffect(() => {
     tryLocalSignin();
   }, []);
-
+    
   useEffect(() => {
     isMountedRef.current = true;
     return () => (isMountedRef.current = false);
@@ -204,6 +205,12 @@ export default () => {
     })();
   });
 
+
+  // useEffect(() => {
+  //   getInitialTags();
+  // }, []);
+
+
   const errorHandler = (error, stackTrace) => {
     /* Log the error to an error reporting service */
     console.log(error);
@@ -213,29 +220,31 @@ export default () => {
   return (
     <ErrorBoundary onError={errorHandler}>
       <AuthContext.Provider value={{ state, ...authContext }}>
-        <RoseProvider>
-          <PaperProvider theme={theme}>
-            {/* https://reactnavigation.org/docs/navigating-without-navigation-prop/ */}
-            {/* <App ref={(navigator) => setNavigator(navigator)} /> */}
-            <NavigationContainer ref={navigationRef}>
-              <AppStack.Navigator initialRouteName="ResolveAuth" headerMode='none'>
-                {
-                  state.isLoading ?
-                    <AppStack.Screen name="ResolveAuth" component={ResolveAuthScreen}
-                      options={{ headerTransparent: true, headerTitle: null }}
-                    />
-                    // FIXME: work without TOKEN!
-                    : (state.token === null)
-                      ? <AppStack.Screen name="authStack" component={Auth}
-                        headerMode="none"
+        <TagProvider>
+          <RoseProvider>
+            <PaperProvider theme={theme}>
+              {/* https://reactnavigation.org/docs/navigating-without-navigation-prop/ */}
+              {/* <App ref={(navigator) => setNavigator(navigator)} /> */}
+              <NavigationContainer ref={navigationRef}>
+                <AppStack.Navigator initialRouteName="ResolveAuth" headerMode='none'>
+                  {
+                    state.isLoading ?
+                      <AppStack.Screen name="ResolveAuth" component={ResolveAuthScreen}
                         options={{ headerTransparent: true, headerTitle: null }}
                       />
-                      : <AppStack.Screen name="mainFlow" component={App} />
-                }
-              </AppStack.Navigator>
-            </NavigationContainer>
-          </PaperProvider>
-        </RoseProvider>
+                      // FIXME: work without TOKEN!
+                      : (state.token === null)
+                        ? <AppStack.Screen name="authStack" component={Auth}
+                          headerMode="none"
+                          options={{ headerTransparent: true, headerTitle: null }}
+                        />
+                        : <AppStack.Screen name="mainFlow" component={App} />
+                  }
+                </AppStack.Navigator>
+              </NavigationContainer>
+            </PaperProvider>
+          </RoseProvider>
+        </TagProvider>
       </AuthContext.Provider>
     </ErrorBoundary>
   )

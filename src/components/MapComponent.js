@@ -1,14 +1,10 @@
-import React, { useState } from 'react';
-import { StyleSheet, Text, View } from 'react-native';
-import MapView, { Marker } from 'react-native-maps';
-import { Avatar } from 'react-native-paper';
-import { MyButton } from '../paper-components/memo';
+import React from 'react';
+import MapView from 'react-native-maps';
+import MapMarker from './MapMarker';
 
-const MapComponent = ({ props, navigationCallback, coords, height, roses, filterType }) => {
+// TODO: Wrap with nav, dont pass all the way down???
 
-    // TODO: Abstract design for marker
-
-    // FIXME: Apply to BOTH home AND place met 
+const MapComponent = ({ navigationCallback, coords, height, roses, filterType }) => {
 
     const markerList = roses.map((rose) => {
         const { homeLocation, placeMetAt, name, roseId, tags } = rose;
@@ -19,54 +15,29 @@ const MapComponent = ({ props, navigationCallback, coords, height, roses, filter
             placeMetAtLocationCoords.latitude !== -369 &&
             placeMetAtLocationCoords.longitude !== -369) {
             return (
-                <Marker
-                    coordinate={placeMetAtLocationCoords}
-                    title={name + " @ " + placeMetAtFormatted_address}
-                    image={require('../../assets/rose-marker.png')}
+                <MapMarker
                     key={(placeMetAtLocationCoords.latitude + placeMetAtLocationCoords.longitude).toString()}
-                >
-                    <MapView.Callout
-                        //onPress={() => navigation.navigate('RoseDetail', { roseId: roseId })}
-                        onPress={() => navigationCallback(roseId)}
-                        tooltip={false}
-                    >
-                        <View style={styles.viewStyle}>
-                            <View style={{ flexDirection: 'row', marginVertical: 5 }}>
-                                <Avatar.Icon {...props} icon={'account-circle'} size={25} style={{ marginRight: 10 }} />
-                                <Text>
-                                    {name || '(no name)'}
-                                </Text>
-                            </View>
-                            <View style={{ flexDirection: 'row' }}>
-                                <Avatar.Icon {...props} icon={'tag'} size={25} style={{ marginRight: 10 }} />
-                                <Text>
-                                    {tags || '(no tags)'}
-                                </Text>
-                            </View>
-                            <Text>
-                                {placeMetAtFormatted_address}
-                            </Text>
-                            <MyButton
-                                mode="contained"
-                                icon="account-card-details"
-                                onPress={() => navigationCallback(roseId)}
-                            >
-                                View
-                            </MyButton>
-                        </View>
-                    </MapView.Callout>
-                </Marker>
+                    roseId={roseId}
+                    navigationCallback={navigationCallback}
+                    name={name}
+                    tags={tags}
+                    coords={placeMetAtLocationCoords}
+                    address={placeMetAtName || placeMetAtFormatted_address}
+                />
             )
         } else if (filterType === 'home' &&
             homeLocationCoords &&
             homeLocationCoords.latitude !== -369 &&
             homeLocationCoords.longitude !== -369) {
             return (
-                <Marker
-                    coordinate={homeLocationCoords}
-                    title={name + " @ " + homeFormatted_address}
-                    image={require('../../assets/rose-marker.png')}
+                <MapMarker
                     key={(homeLocationCoords.latitude + homeLocationCoords.longitude).toString()}
+                    roseId={roseId}
+                    navigationCallback={navigationCallback}
+                    name={name}
+                    tags={tags}
+                    coords={homeLocationCoords}
+                    address={homeLocationName || homeFormatted_address}
                 />
             )
         }
@@ -101,20 +72,6 @@ const MapComponent = ({ props, navigationCallback, coords, height, roses, filter
         </>
     )
 }
-
-const styles = StyleSheet.create({
-    viewStyle: {
-        width: 200,
-        height: 210,
-        backgroundColor: "#fff",
-        padding: 20
-    },
-    textStyle: {
-        fontSize: 16,
-        alignSelf: 'center',
-        padding: 5
-    }
-});
 
 export default MapComponent;
 
