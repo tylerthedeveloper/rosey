@@ -1,9 +1,10 @@
 import React from 'react';
-import { Linking, ScrollView } from 'react-native';
+import { Linking, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import useCalendar from '../../hooks/useCalendar';
 import { Button } from 'react-native-paper';
 import RoseViewField from '../partial/RoseViewField';
 import moment from 'moment';
+import { SocialIcon } from 'react-native-elements'
 
 const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
     view_secondFunction, view_secondFunctionText,
@@ -120,8 +121,38 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
     const isUserContactCard = (view_updateFunctionText === 'Update your contact card');
     const contactCardRowsToIgnore = ['notes', 'date met', 'place met', 'tags']
 
+    const socialProfiles = [
+        { type: 'facebook', appUrl: "fb://profile?id=tyler.citrin", webUrl: 'https://facebook.com/tyler.citrin' },
+        { type: 'linkedin', appUrl: "linkedin://in/tcitrin/", webUrl: 'https://linkedin.com/in/tcitrin/' },
+        { type: 'instagram', appUrl: 'instagram://user?username={tcit6}', webUrl: 'https://instagram.com/tcit6' },
+        { type: 'snapchat', appUrl: 'snapchat://add/msoli14', webUrl: 'https://www.snapchat.com/add/msoli14' },
+        { type: 'twitter', appUrl: 'twitter://user?screen_name=tcit6', webUrl: 'https://twitter.com/tcit6' },
+    ]
+
     return (
         <ScrollView>
+            <View style={styles.socialMediaSection}>
+                {
+                    socialProfiles.map(soc => (
+                        <TouchableOpacity key={soc.type} onPress={() => Linking.canOpenURL(soc.appUrl).then(supported => {
+                            if (supported) {
+                                return Linking.openURL(soc.appUrl);
+                            } else {
+                                return Linking.openURL(soc.webUrl);
+                            }
+                        })}
+                        >
+                            <SocialIcon
+                                raised
+                                style={{
+                                    opacity: (soc.appUrl || soc.webUrl) ? 1 : .5
+                                }}
+                                type={soc.type}
+                            />
+                        </TouchableOpacity>
+                    ))
+                }
+            </View>
             {
                 viewRows.map(({ value, subtitle, left, rightIcon, secondRightIcon, rightFunc, secondRightFunc }) => (
                     ((isUserContactCard && !contactCardRowsToIgnore.includes(subtitle) || !isUserContactCard))
@@ -143,7 +174,8 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
                                 secondRightFunc={secondRightFunc}
                             />
                         : null
-                ))}
+                ))
+            }
             <Button onPress={view_updateFunction}> {view_updateFunctionText} </Button>
             <Button
                 style={{ marginBottom: 10 }}
@@ -153,8 +185,20 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
                 }}
             > {view_secondFunctionText}
             </Button>
-        </ScrollView>
+        </ScrollView >
     );
 };
+
+
+
+const styles = StyleSheet.create({
+    socialMediaSection: {
+        flex: 1,
+        flexWrap: 'wrap',
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        marginVertical: 10
+    },
+});
 
 export default RoseView;
