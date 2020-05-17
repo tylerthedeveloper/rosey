@@ -162,8 +162,10 @@ export default () => {
           // await AsyncStorage.removeItem('user');
           const user = await AsyncStorage.getItem('user');
           if (user) {
+            console.log(user)
             dispatch({ type: 'signin', payload: JSON.parse(user) });
           } else {
+            console.log('need_to_signin')
             dispatch({ type: 'need_to_signin' });
           }
         } catch (err) {

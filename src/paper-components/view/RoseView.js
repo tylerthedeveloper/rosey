@@ -124,7 +124,7 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
     // https://app.urlgeni.us/
 
     const { facebook, linkedin, instagram, snapchat, twitter, whatsapp } = socialProfiles || {};
-    console.log(socialProfiles);
+    // console.log(socialProfiles);
 
     const socialLinkedIcons = [
         { type: 'facebook', value: facebook, appUrl: `fb://profile?username=${facebook}`, webUrl: `https://facebook.com/${facebook}` },

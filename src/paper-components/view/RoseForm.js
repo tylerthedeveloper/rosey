@@ -238,7 +238,7 @@ const RoseForm = ({ user, props,
     }
     // ────────────────────────────────────────────────────────────────────────────────
 
-    console.log(socialProfiles);
+    // console.log(socialProfiles);
 
     return (
         <KeyboardAvoidingView
@@ -345,6 +345,7 @@ const RoseForm = ({ user, props,
                                 <TouchableOpacity onPress={() => setDatemet_Picker(!datemet_Picker)}
                                     style={styles.textInput}
                                 >
+                                    <Paragraph style={{ fontStyle: 'italic' }}> Date Met </Paragraph>
                                     <TextInput
                                         disabled={true}
                                         onTouchStart={() => setDatemet_Picker(!datemet_Picker)}
@@ -355,26 +356,15 @@ const RoseForm = ({ user, props,
                             {
                                 (datemet_Picker)
                                     ?
-                                    (Platform.OS === "ios")
-                                        ? <>
-                                            <Paragraph> Date Met </Paragraph>
-                                            <DateTimePicker
-                                                value={updated_dateMet}
-                                                display="default"
-                                                style={{ width: '70%', alignSelf: 'center' }}
-                                                onChange={(event, date) => setDateMet(date)
-                                                }
-                                            />
-                                        </>
-                                        : <DateTimePicker
-                                            value={updated_dateMet}
-                                            display="default"
-                                            style={{ width: '70%', alignSelf: 'center' }}
-                                            onChange={(event, value) => {
-                                                setDatemet_Picker(false);
-                                                setDateMet(value || updated_dateMet || new Date(Date.now()));
-                                            }}
-                                        />
+                                    <DateTimePicker
+                                        value={updated_dateMet}
+                                        display="default"
+                                        style={{ width: '70%', alignSelf: 'center' }}
+                                        onChange={(event, value) => {
+                                            setDatemet_Picker(false);
+                                            setDateMet(value || updated_dateMet || new Date(Date.now()));
+                                        }}
+                                    />
                                     : null
                             }
                         </View>
@@ -388,6 +378,7 @@ const RoseForm = ({ user, props,
                         <TouchableOpacity
                             onPress={() => setBirth_datePicker(!birth_datePicker)}
                             style={styles.textInput}>
+                            <Paragraph style={{ fontStyle: 'italic' }}> Birthday </Paragraph>
                             <TextInput
                                 onTouchStart={() => setBirth_datePicker(!birth_datePicker)}
                                 disabled={true}
@@ -397,17 +388,7 @@ const RoseForm = ({ user, props,
                     </Card.Actions>
                     {
                         (birth_datePicker)
-                            ? (Platform.OS === "ios")
-                                ? <>
-                                    <Paragraph> Birthday </Paragraph>
-                                    <DateTimePicker
-                                        value={updated_birthday}
-                                        display="default"
-                                        style={{ width: '70%', alignSelf: 'center' }}
-                                        onChange={(e, date) => setBirthday(date)}
-                                    />
-                                </>
-                                : <DateTimePicker
+                            ? <DateTimePicker
                                     value={updated_birthday}
                                     display="default"
                                     style={{ width: '70%', alignSelf: 'center' }}
@@ -427,7 +408,7 @@ const RoseForm = ({ user, props,
                         location: currentLocation, formatted_address: geoCodedLocation, name: ""
                     }, "default_home", setUpdated_homeLocation)}>
                     <Paragraph style={{ alignSelf: 'center', color: 'blue' }}>
-                        Use current location for home
+                        Use location for home
                     </Paragraph>
                 </TouchableOpacity>
                 <Card.Actions style={styles.cardContent}>
@@ -461,7 +442,7 @@ const RoseForm = ({ user, props,
                                     location: currentLocation, formatted_address: geoCodedLocation, name: ""
                                 }, "default_place_met", setUpdated_placeMetAt)}>
                                 <Paragraph style={{ alignSelf: 'center', color: 'blue' }}>
-                                    Use current location for place met
+                                    Use location for place met
                                 </Paragraph>
                             </TouchableOpacity>
                             <Card.Actions style={styles.cardContent}>
@@ -475,7 +456,9 @@ const RoseForm = ({ user, props,
                                     onChangeText={() => scrollRef.current?.scrollToEnd()}
                                     textInputProps={{
                                         autoCorrect: false,
-                                        //value: "El Paso, Texas"
+                                        fontWeight: 'bold',
+                                        //value: "El Paso, Texas",
+                                        query: geoCodedLocation
                                     }}
                                     stylesContainer={{
                                         position: 'relative',
