@@ -28,7 +28,15 @@
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": "no",
         "NSLocationWhenInUseUsageDescription": "Allow Rozy to use your location so you can easily add location to your roses",
-        "NSCalendarsUsageDescription": "Allow Rozy to interact with your calendar so you can save special events"
+        "NSCalendarsUsageDescription": "Allow Rozy to interact with your calendar so you can save special events",
+        "LSApplicationQueriesSchemes": [
+          "fb",
+          "linkedin",
+          "instagram",
+          "snapchat",
+          "twitter",
+          "whatsapp"
+        ]
       }
     },
     "android": {

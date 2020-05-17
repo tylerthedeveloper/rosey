@@ -1,7 +1,7 @@
 import React from 'react';
 import { Linking, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import useCalendar from '../../hooks/useCalendar';
-import { Button } from 'react-native-paper';
+import { Button, Divider } from 'react-native-paper';
 import RoseViewField from '../partial/RoseViewField';
 import moment from 'moment';
 import { SocialIcon } from 'react-native-elements'
@@ -11,7 +11,7 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
     view_updateFunction_callback
 }) => {
 
-    const { birthday, dateMet, email, homeLocation, name, nickName, notes, phoneNumber, placeMetAt, picture, tags, work } = user || {};
+    const { birthday, dateMet, email, homeLocation, name, nickName, notes, phoneNumber, placeMetAt, picture, socialProfiles, tags, work } = user || {};
     const { homeLocationCoords, homeFormatted_address, homeLocationName } = homeLocation || {};
     const { placeMetAtLocationCoords, placeMetAtFormatted_address, placeMetAtName } = placeMetAt || {};
 
@@ -121,38 +121,50 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
     const isUserContactCard = (view_updateFunctionText === 'Update your contact card');
     const contactCardRowsToIgnore = ['notes', 'date met', 'place met', 'tags']
 
-    const socialProfiles = [
-        { type: 'facebook', appUrl: "fb://profile?id=tyler.citrin", webUrl: 'https://facebook.com/tyler.citrin' },
-        { type: 'linkedin', appUrl: "linkedin://in/tcitrin/", webUrl: 'https://linkedin.com/in/tcitrin/' },
-        { type: 'instagram', appUrl: 'instagram://user?username={tcit6}', webUrl: 'https://instagram.com/tcit6' },
-        { type: 'snapchat', appUrl: 'snapchat://add/msoli14', webUrl: 'https://www.snapchat.com/add/msoli14' },
-        { type: 'twitter', appUrl: 'twitter://user?screen_name=tcit6', webUrl: 'https://twitter.com/tcit6' },
-    ]
+    // https://app.urlgeni.us/
+
+    const { facebook, linkedin, instagram, snapchat, twitter, whatsapp } = socialProfiles || {};
+    console.log(socialProfiles);
+
+    const socialLinkedIcons = [
+        { type: 'facebook', value: facebook, appUrl: `fb://profile?username=${facebook}`, webUrl: `https://facebook.com/${facebook}` },
+        { type: 'linkedin', value: linkedin, appUrl: `linkedin://in/${linkedin}/`, webUrl: `https://linkedin.com/in/${linkedin}/` },
+        { type: 'instagram', value: instagram, appUrl: `instagram://user?username=${instagram}`, webUrl: `https://instagram.com/${instagram}` },
+        { type: 'snapchat', value: snapchat, appUrl: `snapchat://add/${snapchat}`, webUrl: `https://www.snapchat.com/add/${snapchat}` },
+        { type: 'twitter', value: twitter, appUrl: `twitter://user?screen_name=${twitter}`, webUrl: `https://twitter.com/${twitter}` },
+        { type: 'whatsapp', value: whatsapp, appUrl: `https://wa.me/${whatsapp}`, webUrl: `https://wa.me/${whatsapp}` }
+    ];
 
     return (
         <ScrollView>
+            {/* Social Section */}
             <View style={styles.socialMediaSection}>
                 {
-                    socialProfiles.map(soc => (
-                        <TouchableOpacity key={soc.type} onPress={() => Linking.canOpenURL(soc.appUrl).then(supported => {
-                            if (supported) {
-                                return Linking.openURL(soc.appUrl);
+                    socialLinkedIcons.map(({ appUrl, type, value, webUrl }) => (
+                        <TouchableOpacity key={type} style={{ marginHorizontal: 10 }} onPress={() => {
+                            if (!value) {
+                                return;
                             } else {
-                                return Linking.openURL(soc.webUrl);
+                                Linking.canOpenURL(appUrl)
+                                    .then((supported) => Linking.openURL((supported) ? appUrl : webUrl))
+                                    .catch((err) => console.error('An error occurred', err))
                             }
-                        })}
+                        }}
                         >
                             <SocialIcon
                                 raised
+                                light
                                 style={{
-                                    opacity: (soc.appUrl || soc.webUrl) ? 1 : .5
+                                    opacity: (value && (appUrl || webUrl)) ? 1 : .4,
                                 }}
-                                type={soc.type}
+                                type={type}
                             />
                         </TouchableOpacity>
                     ))
                 }
             </View>
+            <Divider />
+            {/* Fields Section */}
             {
                 viewRows.map(({ value, subtitle, left, rightIcon, secondRightIcon, rightFunc, secondRightFunc }) => (
                     ((isUserContactCard && !contactCardRowsToIgnore.includes(subtitle) || !isUserContactCard))
@@ -189,14 +201,13 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
     );
 };
 
-
-
 const styles = StyleSheet.create({
     socialMediaSection: {
         flex: 1,
         flexWrap: 'wrap',
         flexDirection: 'row',
         justifyContent: 'space-around',
+        marginHorizontal: 5,
         marginVertical: 10
     },
 });

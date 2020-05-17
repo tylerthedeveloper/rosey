@@ -48,14 +48,14 @@ export default () => {
 
   const _generateUser = ({ name, email }) => {
     return {
-      name: name || '',
-      email: email || '',
       birthday: new Date(Date.now()),
+      email: email || '',
       homeLocation: {
         homeLocationCoords: { latitude: -369, longitude: -369 },
         homeFormatted_address: '',
         homeLocationName: ''
       },
+      name: name || '',
       nickName: '', phoneNumber: '',
       // placeMetAt: {
       //   placeMetAtLocationCoords: { latitude: -369, longitude: -369 },
@@ -63,7 +63,15 @@ export default () => {
       //   placeMetAtName: ''
       // },
       picture: '',
-      tags: '',
+      socialProfiles: {
+        facebook: '',
+        linkedin: '',
+        instagram: '',
+        snapchat: '',
+        twitter: '',
+        whatsapp: ''
+      },
+      // tags: '',
       work: ''
     };
   }
@@ -151,6 +159,7 @@ export default () => {
           //   }
           // }
           /* -------------------------------------------------------------------------- */
+          // await AsyncStorage.removeItem('user');
           const user = await AsyncStorage.getItem('user');
           if (user) {
             dispatch({ type: 'signin', payload: JSON.parse(user) });
@@ -186,7 +195,7 @@ export default () => {
   useEffect(() => {
     tryLocalSignin();
   }, []);
-    
+
   useEffect(() => {
     isMountedRef.current = true;
     return () => (isMountedRef.current = false);
