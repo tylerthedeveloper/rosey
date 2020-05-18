@@ -1,16 +1,17 @@
 import React from 'react';
-import { Linking, ScrollView } from 'react-native';
+import { Linking, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import useCalendar from '../../hooks/useCalendar';
-import { Button } from 'react-native-paper';
+import { Button, Divider } from 'react-native-paper';
 import RoseViewField from '../partial/RoseViewField';
 import moment from 'moment';
+import { SocialIcon } from 'react-native-elements'
 
 const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
     view_secondFunction, view_secondFunctionText,
     view_updateFunction_callback
 }) => {
 
-    const { birthday, dateMet, email, homeLocation, name, nickName, notes, phoneNumber, placeMetAt, picture, tags, work } = user || {};
+    const { birthday, dateMet, email, homeLocation, name, nickName, notes, phoneNumber, placeMetAt, picture, socialProfiles, tags, work } = user || {};
     const { homeLocationCoords, homeFormatted_address, homeLocationName } = homeLocation || {};
     const { placeMetAtLocationCoords, placeMetAtFormatted_address, placeMetAtName } = placeMetAt || {};
 
@@ -120,8 +121,50 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
     const isUserContactCard = (view_updateFunctionText === 'Update your contact card');
     const contactCardRowsToIgnore = ['notes', 'date met', 'place met', 'tags']
 
+    // https://app.urlgeni.us/
+
+    const { facebook, linkedin, instagram, snapchat, twitter, whatsapp } = socialProfiles || {};
+    // console.log(socialProfiles);
+
+    const socialLinkedIcons = [
+        { type: 'facebook', value: facebook, appUrl: `fb://profile?username=${facebook}`, webUrl: `https://facebook.com/${facebook}` },
+        { type: 'linkedin', value: linkedin, appUrl: `linkedin://in/${linkedin}/`, webUrl: `https://linkedin.com/in/${linkedin}/` },
+        { type: 'instagram', value: instagram, appUrl: `instagram://user?username=${instagram}`, webUrl: `https://instagram.com/${instagram}` },
+        { type: 'snapchat', value: snapchat, appUrl: `snapchat://add/${snapchat}`, webUrl: `https://www.snapchat.com/add/${snapchat}` },
+        { type: 'twitter', value: twitter, appUrl: `twitter://user?screen_name=${twitter}`, webUrl: `https://twitter.com/${twitter}` },
+        { type: 'whatsapp', value: whatsapp, appUrl: `https://wa.me/${whatsapp}`, webUrl: `https://wa.me/${whatsapp}` }
+    ];
+
     return (
         <ScrollView>
+            {/* Social Section */}
+            <View style={styles.socialMediaSection}>
+                {
+                    socialLinkedIcons.map(({ appUrl, type, value, webUrl }) => (
+                        <TouchableOpacity key={type} style={{ marginHorizontal: 10 }} onPress={() => {
+                            if (!value) {
+                                return;
+                            } else {
+                                Linking.canOpenURL(appUrl)
+                                    .then((supported) => Linking.openURL((supported) ? appUrl : webUrl))
+                                    .catch((err) => console.error('An error occurred', err))
+                            }
+                        }}
+                        >
+                            <SocialIcon
+                                raised
+                                light
+                                style={{
+                                    opacity: (value && (appUrl || webUrl)) ? 1 : .4,
+                                }}
+                                type={type}
+                            />
+                        </TouchableOpacity>
+                    ))
+                }
+            </View>
+            <Divider />
+            {/* Fields Section */}
             {
                 viewRows.map(({ value, subtitle, left, rightIcon, secondRightIcon, rightFunc, secondRightFunc }) => (
                     ((isUserContactCard && !contactCardRowsToIgnore.includes(subtitle) || !isUserContactCard))
@@ -143,7 +186,8 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
                                 secondRightFunc={secondRightFunc}
                             />
                         : null
-                ))}
+                ))
+            }
             <Button onPress={view_updateFunction}> {view_updateFunctionText} </Button>
             <Button
                 style={{ marginBottom: 10 }}
@@ -153,8 +197,19 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
                 }}
             > {view_secondFunctionText}
             </Button>
-        </ScrollView>
+        </ScrollView >
     );
 };
+
+const styles = StyleSheet.create({
+    socialMediaSection: {
+        flex: 1,
+        flexWrap: 'wrap',
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        marginHorizontal: 5,
+        marginVertical: 10
+    },
+});
 
 export default RoseView;
