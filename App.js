@@ -67,6 +67,7 @@ export default () => {
         facebook: '',
         linkedin: '',
         instagram: '',
+        medium: '',
         snapchat: '',
         twitter: '',
         whatsapp: ''

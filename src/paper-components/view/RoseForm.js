@@ -37,11 +37,12 @@ const RoseForm = ({ user, props,
     const [updated_homeLocation, setUpdated_homeLocation] = useState(homeLocation || {});
     const [updated_placeMetAt, setUpdated_placeMetAt] = useState(placeMetAt || {});
 
-    const { facebook, linkedin, instagram, snapchat, twitter, whatsapp } = socialProfiles || {};
+    const { facebook, linkedin, instagram, medium, snapchat, twitter, whatsapp } = socialProfiles || {};
 
     const [updated_facebook, setFacebook] = useState(facebook || '');
     const [updated_linkedin, setLinkedin] = useState(linkedin || '');
     const [updated_instagram, setInstagram] = useState(instagram || '');
+    const [updated_medium, setMedium] = useState(medium || '');
     const [updated_snapchat, setSnapchat] = useState(snapchat || '');
     const [updated_twitter, setTwitter] = useState(twitter || '');
     const [updated_whatsapp, setWhatsapp] = useState(whatsapp || '');
@@ -74,6 +75,7 @@ const RoseForm = ({ user, props,
             facebook: updated_facebook,
             linkedin: updated_linkedin,
             instagram: updated_instagram,
+            medium: updated_medium,
             snapchat: updated_snapchat,
             twitter: updated_twitter,
             whatsapp: updated_whatsapp
@@ -87,6 +89,7 @@ const RoseForm = ({ user, props,
         { type: 'facebook', value: updated_facebook, setter: setFacebook },
         { type: 'linkedin', value: updated_linkedin, setter: setLinkedin },
         { type: 'instagram', value: updated_instagram, setter: setInstagram },
+        { type: 'medium', value: updated_medium, setter: setMedium },
         { type: 'snapchat', value: updated_snapchat, setter: setSnapchat },
         { type: 'twitter', value: updated_twitter, setter: setTwitter },
         { type: 'whatsapp', value: updated_whatsapp, setter: setWhatsapp }
@@ -389,14 +392,14 @@ const RoseForm = ({ user, props,
                     {
                         (birth_datePicker)
                             ? <DateTimePicker
-                                    value={updated_birthday}
-                                    display="default"
-                                    style={{ width: '70%', alignSelf: 'center' }}
-                                    onChange={(e, value) => {
-                                        setBirth_datePicker(false);
-                                        setBirthday(value || updated_birthday || new Date(Date.now()));
-                                    }}
-                                />
+                                value={updated_birthday}
+                                display="default"
+                                style={{ width: '70%', alignSelf: 'center' }}
+                                onChange={(e, value) => {
+                                    setBirth_datePicker(false);
+                                    setBirthday(value || updated_birthday || new Date(Date.now()));
+                                }}
+                            />
                             : null
                     }
                 </View>
