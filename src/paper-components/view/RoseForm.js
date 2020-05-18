@@ -3,12 +3,13 @@ import moment from 'moment';
 import React, { useContext, useState } from 'react';
 import { KeyboardAvoidingView, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import { GOOGLE_API_KEY } from "react-native-dotenv";
-import { Avatar, Button, Card, Chip, Paragraph, TextInput } from 'react-native-paper';
+import { Avatar, Button, Card, Chip, Paragraph, TextInput, Searchbar } from 'react-native-paper';
 import PlacesInput from 'react-native-places-input';
 import Spacer from '../../components/Spacer';
 import { Context as TagContext } from '../../context/TagContext';
 import useCurrentLocation from '../../hooks/useCurrentLocation';
 import { MyTextInput } from '../../paper-components/memo';
+import { SocialIcon } from 'react-native-elements'
 
 const RoseForm = ({ user, props,
     form_updateFunction, form_updateFunctionText,
@@ -16,7 +17,8 @@ const RoseForm = ({ user, props,
     form_updateFunction_callback
 }) => {
 
-    const { birthday, dateMet, email, homeLocation, name, nickName, notes, phoneNumber, placeMetAt, picture, tags, work, roseId
+    const {
+        birthday, dateMet, email, homeLocation, name, nickName, notes, phoneNumber, placeMetAt, picture, socialProfiles, tags, work, roseId
     } = user || {};
 
     const { currentLocation, geoCodedLocation } = useCurrentLocation();
@@ -34,6 +36,15 @@ const RoseForm = ({ user, props,
     const [updated_phoneNumber, setPhone] = useState(phoneNumber);
     const [updated_homeLocation, setUpdated_homeLocation] = useState(homeLocation || {});
     const [updated_placeMetAt, setUpdated_placeMetAt] = useState(placeMetAt || {});
+
+    const { facebook, linkedin, instagram, snapchat, twitter, whatsapp } = socialProfiles || {};
+
+    const [updated_facebook, setFacebook] = useState(facebook || '');
+    const [updated_linkedin, setLinkedin] = useState(linkedin || '');
+    const [updated_instagram, setInstagram] = useState(instagram || '');
+    const [updated_snapchat, setSnapchat] = useState(snapchat || '');
+    const [updated_twitter, setTwitter] = useState(twitter || '');
+    const [updated_whatsapp, setWhatsapp] = useState(whatsapp || '');
 
     // ────────────────────────────────────────────────────────────────────────────────
     // TODO: NOT YET USED //
@@ -59,10 +70,27 @@ const RoseForm = ({ user, props,
         nickName: updated_nickName || '',
         phoneNumber: updated_phoneNumber || '',
         picture: updated_picture || '',
+        socialProfiles: {
+            facebook: updated_facebook,
+            linkedin: updated_linkedin,
+            instagram: updated_instagram,
+            snapchat: updated_snapchat,
+            twitter: updated_twitter,
+            whatsapp: updated_whatsapp
+        },
         tags: updated_tags || [],
         work: updated_work || '',
         roseId: roseId || ''
     };
+
+    const socialLinkedIcons = [
+        { type: 'facebook', value: updated_facebook, setter: setFacebook },
+        { type: 'linkedin', value: updated_linkedin, setter: setLinkedin },
+        { type: 'instagram', value: updated_instagram, setter: setInstagram },
+        { type: 'snapchat', value: updated_snapchat, setter: setSnapchat },
+        { type: 'twitter', value: updated_twitter, setter: setTwitter },
+        { type: 'whatsapp', value: updated_whatsapp, setter: setWhatsapp }
+    ];
 
     const formRows = [
         {
@@ -111,6 +139,11 @@ const RoseForm = ({ user, props,
     /* -------------------------------------------------------------------------- */
     /*                                Functions                                   */
     /* -------------------------------------------------------------------------- */
+    const [currentSocialEntry, setCurrentSocialEntry] = useState({
+        editSocialEntry: false, type: '', setter: () => null
+    });
+    // const [currentSocialSetter, setCurrentSocialSetter] = useState(() => null);
+
 
     // TODO: MOVE OUT?
     const _clearFormData = () => formRows.map(row => row.editFunc(''));
@@ -135,7 +168,7 @@ const RoseForm = ({ user, props,
     }
 
     const [newTag, setNewTag] = useState('');
-    console.log(updated_tags);
+    // console.log(updated_tags);
 
     const _makeLocationObject = (locationObject, locationType, locationSetter) => {
         if (locationType.includes('default')) {
@@ -173,6 +206,7 @@ const RoseForm = ({ user, props,
 
     const _setPlaceMet = () => {
         if (!Object.keys(updatedUser.placeMetAt).length > 0) {
+            console.log('please set me!!');
             updatedUser.placeMetAt = {
                 placeMetAtFormatted_address: geoCodedLocation,
                 placeMetAtLocationCoords: {
@@ -182,15 +216,18 @@ const RoseForm = ({ user, props,
                 placeMetAtName: "",
             }
         } else {
-            console.log('set me!');
+            console.log('i am set??');
         }
     }
 
-    /* -------------------------------------------------------------------------- */
-
     const [contentHeight, setContentHeight] = useState();
     const scrollRef = React.createRef();
+    /* -------------------------------------------------------------------------- */
 
+
+    /* -------------------------------------------------------------------------- */
+    /*                         User Card Specifics                                */
+    /* -------------------------------------------------------------------------- */
     const contactCardRowsToIgnore = ['notes', 'date met']
     const isUserContactCard = (form_updateFunctionText === 'Save contact card');
 
@@ -199,6 +236,9 @@ const RoseForm = ({ user, props,
         updatedUser.notes = undefined;
         updatedUser.tags = undefined;
     }
+    // ────────────────────────────────────────────────────────────────────────────────
+
+    // console.log(socialProfiles);
 
     return (
         <KeyboardAvoidingView
@@ -210,11 +250,45 @@ const RoseForm = ({ user, props,
                 ref={scrollRef}
                 onContentSizeChange={(contentHeight) => setContentHeight(contentHeight)}
             >
-                {/* 
-                //
-                // Form Section
-                //
-                 */}
+                {/* Social Section */}
+                <Paragraph style={styles.sectionTitle}> Social Media </Paragraph>
+                <View style={styles.socialMediaSection}>
+                    {
+                        socialLinkedIcons.map(({ setter, type, value }) => (
+                            <TouchableOpacity key={type} style={{ marginHorizontal: 10 }}
+                                onPress={() => {
+                                    setCurrentSocialEntry({ setter, type, editSocialEntry: true })
+                                }}
+                            >
+                                <SocialIcon
+                                    raised
+                                    light
+                                    style={{
+                                        opacity: (value) ? 1 : .5
+                                    }}
+                                    type={type}
+                                />
+                            </TouchableOpacity>
+                        ))}
+                </View>
+                {
+                    // TODO: Different keyboards for whatsap??
+                    // TODO: Combine whatsapp and phone?
+                    currentSocialEntry.editSocialEntry && <Searchbar
+                        placeholder={`Enter value for ${currentSocialEntry.type}`}
+                        style={{ marginHorizontal: 25, marginVertical: 10 }}
+                        icon={currentSocialEntry.type}
+                        onChangeText={currentSocialEntry.setter}
+                        keyboardType={"default"}
+                        returnKeyType={"done"}
+                        autoCompleteType={"off"}
+                        autoCorrect={false}
+                        autoCapitalize={"none"}
+                        value={eval(`updated_${currentSocialEntry.type}`)}
+                    />
+                }
+                {/* Form Section */}
+                <Paragraph style={styles.sectionTitle}> Personal </Paragraph>
                 {
                     formRows.map(({ left, subtitle, value, editFunc, keyboardType, autoCapitalize, multiline }) => (
                         ((isUserContactCard && !contactCardRowsToIgnore.includes(subtitle) || !isUserContactCard))
@@ -237,11 +311,7 @@ const RoseForm = ({ user, props,
                             : null
                     ))
                 }
-                {/* 
-                //
-                // Tag Section
-                //
-                 */}
+                {/* Tag Section */}
                 <Paragraph style={styles.sectionTitle}> Tags (select below) </Paragraph>
                 <View style={styles.chips}>
                     {
@@ -263,11 +333,7 @@ const RoseForm = ({ user, props,
                 <Button onPress={() => _addTag(newTag)} disabled={!newTag}>
                     Add Tag
                 </Button>
-                {/* 
-                //
-                // DATE SECTION
-                //
-                 */}
+                {/*  DATE SECTION */}
                 <Paragraph style={styles.sectionTitle}> Date Info </Paragraph>
                 {
                     (!isUserContactCard)
@@ -279,6 +345,7 @@ const RoseForm = ({ user, props,
                                 <TouchableOpacity onPress={() => setDatemet_Picker(!datemet_Picker)}
                                     style={styles.textInput}
                                 >
+                                    <Paragraph style={{ fontStyle: 'italic' }}> Date Met </Paragraph>
                                     <TextInput
                                         disabled={true}
                                         onTouchStart={() => setDatemet_Picker(!datemet_Picker)}
@@ -289,26 +356,15 @@ const RoseForm = ({ user, props,
                             {
                                 (datemet_Picker)
                                     ?
-                                    (Platform.OS === "ios")
-                                        ? <>
-                                            <Paragraph> Date Met </Paragraph>
-                                            <DateTimePicker
-                                                value={updated_dateMet}
-                                                display="default"
-                                                style={{ width: '70%', alignSelf: 'center' }}
-                                                onChange={(event, date) => setDateMet(date)
-                                                }
-                                            />
-                                        </>
-                                        : <DateTimePicker
-                                            value={updated_dateMet}
-                                            display="default"
-                                            style={{ width: '70%', alignSelf: 'center' }}
-                                            onChange={(event, value) => {
-                                                setDatemet_Picker(false);
-                                                setDateMet(value || updated_dateMet || new Date(Date.now()));
-                                            }}
-                                        />
+                                    <DateTimePicker
+                                        value={updated_dateMet}
+                                        display="default"
+                                        style={{ width: '70%', alignSelf: 'center' }}
+                                        onChange={(event, value) => {
+                                            setDatemet_Picker(false);
+                                            setDateMet(value || updated_dateMet || new Date(Date.now()));
+                                        }}
+                                    />
                                     : null
                             }
                         </View>
@@ -322,6 +378,7 @@ const RoseForm = ({ user, props,
                         <TouchableOpacity
                             onPress={() => setBirth_datePicker(!birth_datePicker)}
                             style={styles.textInput}>
+                            <Paragraph style={{ fontStyle: 'italic' }}> Birthday </Paragraph>
                             <TextInput
                                 onTouchStart={() => setBirth_datePicker(!birth_datePicker)}
                                 disabled={true}
@@ -331,17 +388,7 @@ const RoseForm = ({ user, props,
                     </Card.Actions>
                     {
                         (birth_datePicker)
-                            ? (Platform.OS === "ios")
-                                ? <>
-                                    <Paragraph> Birthday </Paragraph>
-                                    <DateTimePicker
-                                        value={updated_birthday}
-                                        display="default"
-                                        style={{ width: '70%', alignSelf: 'center' }}
-                                        onChange={(e, date) => setBirthday(date)}
-                                    />
-                                </>
-                                : <DateTimePicker
+                            ? <DateTimePicker
                                     value={updated_birthday}
                                     display="default"
                                     style={{ width: '70%', alignSelf: 'center' }}
@@ -353,11 +400,7 @@ const RoseForm = ({ user, props,
                             : null
                     }
                 </View>
-                {/* 
-                //
-                // Location Section
-                //
-                 */}
+                {/* Location Section */}
                 {/* TODO: preset location.... */}
                 <Paragraph style={styles.sectionTitle}> Location Stuff (please select below)</Paragraph>
                 <TouchableOpacity
@@ -365,7 +408,7 @@ const RoseForm = ({ user, props,
                         location: currentLocation, formatted_address: geoCodedLocation, name: ""
                     }, "default_home", setUpdated_homeLocation)}>
                     <Paragraph style={{ alignSelf: 'center', color: 'blue' }}>
-                        Use current location for home
+                        Use location for home
                     </Paragraph>
                 </TouchableOpacity>
                 <Card.Actions style={styles.cardContent}>
@@ -399,7 +442,7 @@ const RoseForm = ({ user, props,
                                     location: currentLocation, formatted_address: geoCodedLocation, name: ""
                                 }, "default_place_met", setUpdated_placeMetAt)}>
                                 <Paragraph style={{ alignSelf: 'center', color: 'blue' }}>
-                                    Use current location for place met
+                                    Use location for place met
                                 </Paragraph>
                             </TouchableOpacity>
                             <Card.Actions style={styles.cardContent}>
@@ -413,7 +456,9 @@ const RoseForm = ({ user, props,
                                     onChangeText={() => scrollRef.current?.scrollToEnd()}
                                     textInputProps={{
                                         autoCorrect: false,
-                                        //value: "El Paso, Texas"
+                                        fontWeight: 'bold',
+                                        //value: "El Paso, Texas",
+                                        query: geoCodedLocation
                                     }}
                                     stylesContainer={{
                                         position: 'relative',
@@ -478,7 +523,14 @@ const styles = StyleSheet.create({
     chip: {
         marginHorizontal: 5,
         marginVertical: 5
-    }
+    },
+    socialMediaSection: {
+        flex: 1,
+        flexWrap: 'wrap',
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        marginVertical: 10
+    },
 });
 
 export default RoseForm;
