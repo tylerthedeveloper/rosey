@@ -146,13 +146,6 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
                     socialLinkedIcons.map(({ appUrl, type, value, webUrl }) => (
                         (value)
                             ? <TouchableOpacity key={type} style={{ marginHorizontal: 10 }} onPress={() => {
-                                {/* if (!value) {
-                                    console.log('!value');
-                                    <Tooltip popover={<Text>Info here</Text>}>
-                                        <Text>Press me</Text>
-                                    </Tooltip>
-                                    return;
-                                } else { */}
                                 Linking.canOpenURL(appUrl)
                                     .then((supported) => Linking.openURL((supported) ? appUrl : webUrl))
                                     .catch((err) => console.error('An error occurred', err))

@@ -22,6 +22,7 @@ const RoseForm = ({ user, props,
     } = user || {};
 
     const { currentLocation, geoCodedLocation } = useCurrentLocation();
+    console.log(geoCodedLocation);
 
     const { state: { tags: contextTags }, addTag } = useContext(TagContext);
 
@@ -145,8 +146,6 @@ const RoseForm = ({ user, props,
     const [currentSocialEntry, setCurrentSocialEntry] = useState({
         editSocialEntry: false, type: '', setter: () => null
     });
-    // const [currentSocialSetter, setCurrentSocialSetter] = useState(() => null);
-
 
     // TODO: MOVE OUT?
     const _clearFormData = () => formRows.map(row => row.editFunc(''));
@@ -223,8 +222,26 @@ const RoseForm = ({ user, props,
         }
     }
 
+    const _setHelperText = (type) => {
+        switch (type) {
+            case 'facebook':
+            case 'linkedin':
+            case 'medium':
+                return `Enter username for ${type}`;
+            case 'instagram':
+            case 'snapchat':
+            case 'twitter':
+                return `Enter handle for ${type}`;
+            case 'whatsapp':
+                return 'Add Intnl number for whatsapp';
+            default:
+                return `Enter value for ${type}`;
+        }
+    }
+
     const [contentHeight, setContentHeight] = useState();
     const scrollRef = React.createRef();
+    const placeInputRef = React.createRef();
     /* -------------------------------------------------------------------------- */
 
 
@@ -277,18 +294,23 @@ const RoseForm = ({ user, props,
                 {
                     // TODO: Different keyboards for whatsap??
                     // TODO: Combine whatsapp and phone?
-                    currentSocialEntry.editSocialEntry && <Searchbar
-                        placeholder={`Enter value for ${currentSocialEntry.type}`}
-                        style={{ marginHorizontal: 25, marginVertical: 10 }}
-                        icon={currentSocialEntry.type}
-                        onChangeText={currentSocialEntry.setter}
-                        keyboardType={"default"}
-                        returnKeyType={"done"}
-                        autoCompleteType={"off"}
-                        autoCorrect={false}
-                        autoCapitalize={"none"}
-                        value={eval(`updated_${currentSocialEntry.type}`)}
-                    />
+                    (currentSocialEntry.editSocialEntry)
+                        ? <>
+                            {/* <Paragraph style={{ alignSelf: 'center' }}> Click here for help! {_setHelperText(currentSocialEntry.type)}</Paragraph> */}
+                            <Searchbar
+                                placeholder={_setHelperText(currentSocialEntry.type)}
+                                style={{ marginHorizontal: 25, marginVertical: 10 }}
+                                icon={currentSocialEntry.type}
+                                onChangeText={currentSocialEntry.setter}
+                                keyboardType={(currentSocialEntry.type !== 'whatsapp') ? "default" : 'phone-pad'}
+                                returnKeyType={"done"}
+                                autoCompleteType={"off"}
+                                autoCorrect={false}
+                                autoCapitalize={"none"}
+                                value={eval(`updated_${currentSocialEntry.type}`)}
+                            />
+                        </>
+                        : null
                 }
                 {/* Form Section */}
                 <Paragraph style={styles.sectionTitle}> Personal </Paragraph>
@@ -454,21 +476,25 @@ const RoseForm = ({ user, props,
                                 <PlacesInput
                                     googleApiKey={GOOGLE_API_KEY}
                                     onSelect={place => _makeLocationObject(place.result, 'place_met', setUpdated_placeMetAt)}
-                                    placeHolder={(updated_placeMetAt.placeMetAtFormatted_address) ? updated_placeMetAt.placeMetAtFormatted_address : "Place you met!"}
+                                    placeHolder={updated_placeMetAt.placeMetAtFormatted_address || geoCodedLocation || "Place you met!"}
                                     language={"en-US"}
                                     onChangeText={() => scrollRef.current?.scrollToEnd()}
                                     textInputProps={{
                                         autoCorrect: false,
                                         fontWeight: 'bold',
-                                        //value: "El Paso, Texas",
-                                        query: geoCodedLocation
                                     }}
+                                    query={geoCodedLocation}
                                     stylesContainer={{
                                         position: 'relative',
                                         alignSelf: 'center',
                                         margin: 0,
                                         width: '80%',
                                         marginBottom: 10
+                                    }}
+                                    ref={placeInputRef}
+                                    stylesList={{
+                                        position: 'absolute',
+                                        bottom: (placeInputRef.current) ? placeInputRef.current.height : 0
                                     }}
                                 />
                             </Card.Actions>
