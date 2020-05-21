@@ -54,6 +54,7 @@ const MapComponent = ({ navigationCallback, coords, height, roses, filterType })
                 (shouldSetInitialRegion)
                     ? <MapView
                         style={{ height: height || 300 }}
+                        showsUserLocation
                         initialRegion={{
                             latitudeDelta: .01,
                             longitudeDelta: .01,

@@ -4,12 +4,12 @@ import MapComponent from '../components/MapComponent';
 import { Context as RoseContext } from '../context/RoseContext';
 import useCurrentLocation from '../hooks/useCurrentLocation';
 
-const MapScreen = ({ navigation, filterType }) => {
+const MapScreen = ({ navigation, filterType, resetCurrentLocation }) => {
 
     const { state: { roses } } = useContext(RoseContext);
 
     // TODO: filter type
-    const { currentLocation, geoCodedLocation } = useCurrentLocation();
+    const { currentLocation } = useCurrentLocation();
 
     const _goToRose = (roseId) => {
         navigation.navigate('RoseDetail', { roseId: roseId });
@@ -30,7 +30,7 @@ const MapScreen = ({ navigation, filterType }) => {
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        
         justifyContent: 'center'
     }
 });

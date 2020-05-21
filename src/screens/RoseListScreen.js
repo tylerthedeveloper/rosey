@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
     },
     tags: {
         //flexDirection: 'row',
-        marginTop: 10,
+        marginTop: 15,
         //flex: 1,
         maxHeight: 40,
     },

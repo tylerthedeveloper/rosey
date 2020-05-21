@@ -160,15 +160,15 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
                                     type={type}
                                 />
                             </TouchableOpacity>
-                            : <Tooltip popover={<Text style={{ color: 'white' }}>Edit your profile{"\n"}to add social media</Text>}
+                            : <Tooltip key={type} popover={<Text style={{ color: 'white' }}>Edit your profile{"\n"}to add social media</Text>}
                                 containerStyle={{ flexWrap: 'wrap', height: 100 }}
-
                             >
                                 <SocialIcon
                                     raised
                                     light
                                     style={{
                                         opacity: (value && (appUrl || webUrl)) ? 1 : .4,
+                                        marginHorizontal: 10
                                     }}
                                     type={type}
                                 />
