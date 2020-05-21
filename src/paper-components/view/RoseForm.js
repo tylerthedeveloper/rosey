@@ -22,7 +22,7 @@ const RoseForm = ({ user, props,
     } = user || {};
 
     const { currentLocation, geoCodedLocation } = useCurrentLocation();
-    console.log(geoCodedLocation);
+    // console.log(geoCodedLocation);
 
     const { state: { tags: contextTags }, addTag } = useContext(TagContext);
 
@@ -208,7 +208,7 @@ const RoseForm = ({ user, props,
 
     const _setPlaceMet = () => {
         if (!Object.keys(updatedUser.placeMetAt).length > 0) {
-            console.log('please set me!!');
+            // console.log('please set me!!');
             updatedUser.placeMetAt = {
                 placeMetAtFormatted_address: geoCodedLocation,
                 placeMetAtLocationCoords: {
@@ -218,7 +218,7 @@ const RoseForm = ({ user, props,
                 placeMetAtName: "",
             }
         } else {
-            console.log('i am set??');
+            // console.log('i am set??');
         }
     }
 
