@@ -1,6 +1,6 @@
 import React, { useContext } from 'react';
-import { AuthContext } from '../context/AuthContext';
-import RoseViewContainer from '../paper-components/RoseViewContainer';
+import { AuthContext } from '../../context/AuthContext';
+import RoseViewContainer from '../../paper-components/RoseViewContainer';
 
 const ContactCardScreen = () => {
 

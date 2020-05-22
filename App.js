@@ -11,7 +11,7 @@ import { AuthContext } from './src/context/AuthContext';
 import { Provider as TagProvider } from './src/context/TagContext';
 import { Provider as RoseProvider } from './src/context/RoseContext';
 import theme from './src/core/theme';
-import ResolveAuthScreen from './src/screens/ResolveAuthScreen';
+import { ResolveAuthScreen } from './src/screens/Auth';
 import ErrorBoundary from 'react-native-error-boundary'
 
 import * as Location from 'expo-location';

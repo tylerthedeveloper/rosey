@@ -9,7 +9,8 @@ import { Appbar, Avatar } from 'react-native-paper';
 import { theme } from '../core/theme'
 import { createStackNavigator } from '@react-navigation/stack';
 import { BottomTabNavigator } from './Tabs';
-import { AddRoseScreen, ContactCardScreen, RoseDetailScreen, TagScreen } from '../screens'
+import { AddRoseScreen, RoseDetailScreen } from '../screens'
+import { ContactCardScreen, TagScreen } from '../screens/Drawer'
 import { AuthContext } from '../context/AuthContext';
 import { Context as TagContext } from '../context/TagContext';
 

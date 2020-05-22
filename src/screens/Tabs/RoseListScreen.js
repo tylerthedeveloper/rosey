@@ -1,10 +1,10 @@
 import React, { useContext, useState } from 'react';
 import { FlatList, StyleSheet, ScrollView, View, TouchableOpacity } from 'react-native';
 import { Chip, IconButton, Searchbar, Headline } from 'react-native-paper';
-import { Context as TagContext } from '../context/TagContext';
-import { theme } from '../core/theme';
-import useListFilters from '../hooks/useListFilters';
-import { RoseListItem } from '../paper-components/partial';
+import { Context as TagContext } from '../../context/TagContext';
+import { theme } from '../../core/theme';
+import useListFilters from '../../hooks/useListFilters';
+import { RoseListItem } from '../../paper-components/partial';
 
 const RoseListScreen = ({ navigation }) => {
 

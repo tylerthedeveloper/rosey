@@ -1,6 +1,7 @@
 import React from 'react';
 import { Linking, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import useCalendar from '../../hooks/useCalendar';
+import useContacts from '../../hooks/useContacts';
 import { Button, Divider } from 'react-native-paper';
 import RoseViewField from '../partial/RoseViewField';
 import moment from 'moment';
@@ -16,8 +17,9 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
     const { homeLocationCoords, homeFormatted_address, homeLocationName } = homeLocation || {};
     const { placeMetAtLocationCoords, placeMetAtFormatted_address, placeMetAtName } = placeMetAt || {};
 
-    const [rozyCalendar, createEvent] = useCalendar();
-
+    const { createContact } = useContacts();
+    const { createEvent } = useCalendar();
+    
     // TODO: move to constants?
     //
     // ─── FUNCTIONS ──────────────────────────────────────────────────────────────────
@@ -35,13 +37,13 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
 
     const viewRows = [
         {
-            value: name || '(No-Name?)', subtitle: 'name',
+            value: name, subtitle: 'name',
             left: "account",
             rightIcon: "account-plus",
-            rightFunc: () => { },
+            rightFunc: () => { createContact(user) },
         },
         {
-            value: nickName || '(No-nickName?)', subtitle: 'nickname',
+            value: nickName, subtitle: 'nickname',
             left: "account",
             // rightIcon: "account-plus",
             rightFunc: () => { },
@@ -64,7 +66,7 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
             },
         },
         {
-            value: work || '(Add Occupation!)', subtitle: 'occupation',
+            value: work, subtitle: 'occupation',
             left: "briefcase-account",
             // rightIcon: "briefcase-plus",
             rightFunc: () => { },
@@ -76,7 +78,7 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
             // rightIcon: "tag",
         },
         {
-            value: notes || '(Add some notes!)', subtitle: 'notes',
+            value: notes, subtitle: 'notes',
             left: "note",
             // rightIcon: "note",
             rightFunc: () => { },

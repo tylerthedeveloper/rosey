@@ -81,6 +81,6 @@ export default () => {
         getRozyCalendar();
     }, []);
 
-    return [rozyCalendar, createEvent];
+    return { rozyCalendar, createEvent };
 
 }
