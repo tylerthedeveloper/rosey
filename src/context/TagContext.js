@@ -45,11 +45,10 @@ const getInitialTags = (dispatch) => async () => {
             // FIXME: This experimental when needed to reset cache
             // await AsyncStorage.removeItem('tags');
             // ─────────────────────────────────────────────────────────────────
-            console.log('tagStringArray', tagStringArray);
             const tags = JSON.parse(tagStringArray);
             dispatch({ type: "get_initial_tags", payload: [...(tags || [])] });
         } else {
-            console.log('there are no tags');
+            // console.log('there are no tags');
             dispatch({ type: "get_initial_tags", payload: [] });
         }
     } catch (err) {
@@ -65,12 +64,9 @@ const addTag = (dispatch) => async (tag) => {
         // API Section here//
         /* -------------------------------------------------------------------------- */
         // FIXME: PULL FROM CURRENT STATE???
-        console.log(tag);
         const tags = await AsyncStorage.getItem('tags')
             .then(req => JSON.parse(req));
-        console.log(tags);
         const updatedTagList = [...(tags || []), tag];
-        console.log(updatedTagList);
         await AsyncStorage.setItem('tags', JSON.stringify(updatedTagList));
         dispatch({ type: "add_tag", payload: tag });
         //callback();

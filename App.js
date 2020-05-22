@@ -67,6 +67,7 @@ export default () => {
         facebook: '',
         linkedin: '',
         instagram: '',
+        medium: '',
         snapchat: '',
         twitter: '',
         whatsapp: ''
@@ -131,7 +132,7 @@ export default () => {
           // const updatedUserObj = response.data;
           // console.log('updateContactCard:', roseObj)
           /* -------------------------------------------------------------------------- */
-          console.log('roseObj', callback, roseObj);
+          // console.log('roseObj', callback, roseObj);
           await AsyncStorage.setItem('user', JSON.stringify(roseObj));
           dispatch({ type: 'update_contact_card', payload: roseObj });
           if (callback) {
@@ -143,7 +144,7 @@ export default () => {
       },
       // TODO: what about if token exists and user doesnt?
       tryLocalSignin: async () => {
-        console.log('tryLocalSignin');
+        // console.log('tryLocalSignin');
         try {
           /* -------------------------------------------------------------------------- */
           // const storageArr = await AsyncStorage.multiGet(['token', 'user']);
@@ -162,10 +163,10 @@ export default () => {
           // await AsyncStorage.removeItem('user');
           const user = await AsyncStorage.getItem('user');
           if (user) {
-            console.log(user)
+            // console.log(user)
             dispatch({ type: 'signin', payload: JSON.parse(user) });
           } else {
-            console.log('need_to_signin')
+            // console.log('need_to_signin')
             dispatch({ type: 'need_to_signin' });
           }
         } catch (err) {
@@ -207,7 +208,7 @@ export default () => {
     (async () => {
       let { status } = await Location.requestPermissionsAsync();
       if (status !== 'granted') {
-        console.log('Permission to access location was denied');
+        alert('Permission to access location was denied');
       }
 
       // let location = await Location.getCurrentPositionAsync({});

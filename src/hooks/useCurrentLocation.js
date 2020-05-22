@@ -20,7 +20,8 @@ export default () => {
     const checkForLocation = async () => {
         const { status } = await Location.requestPermissionsAsync();
         if (status !== 'granted') {
-            console.log('Permission to access location was denied');
+            // console.log('Permission to access location was denied');
+            alert('Permission to access location was denied')
         } else {
             // console.log('granted')
             const location = await Location.getCurrentPositionAsync({});

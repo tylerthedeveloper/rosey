@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet } from 'react-native';
-import { Card } from 'react-native-paper';
+import { Card, IconButton } from 'react-native-paper';
 import { RoseHeader } from './partial';
 import { RoseForm, RoseView } from './view';
 
@@ -26,6 +26,21 @@ const RoseViewContainer = ({
         <>
             <Card style={styles.card}>
                 <RoseHeader {...{ name, picture, homeCity, homeState, homeCountry }} />
+                {
+                    (!editing)
+                        ? <IconButton
+                            icon="pencil"
+                            size={25}
+                            onPress={() => setEditing(true)}
+                            style={{ right: 10, top: 5, alignSelf: 'flex-end', position: 'absolute' }}
+                        />
+                        : <IconButton
+                            icon="close-circle"
+                            size={25}
+                            onPress={() => setEditing(false)}
+                            style={{ right: 10, top: 5, alignSelf: 'flex-end', position: 'absolute' }}
+                        />
+                }
             </Card >
             {
                 (!editing)
