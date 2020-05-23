@@ -112,8 +112,10 @@ export default () => {
           // dispatch({ type: 'signin', payload: { token, user } });
           /* -------------------------------------------------------------------------- */
           const user = await AsyncStorage.getItem('user');
+          // console.log('singin', user)
           if (!user) {
             const _user = _generateUser({ email });
+            await AsyncStorage.setItem('user', JSON.stringify(_user));
             // console.log('sign in user', _user);
             dispatch({ type: 'signin', payload: _user });
           } else {
@@ -162,8 +164,8 @@ export default () => {
           /* -------------------------------------------------------------------------- */
           // await AsyncStorage.removeItem('user');
           const user = await AsyncStorage.getItem('user');
+          // console.log(user)
           if (user) {
-            // console.log(user)
             dispatch({ type: 'signin', payload: JSON.parse(user) });
           } else {
             // console.log('need_to_signin')

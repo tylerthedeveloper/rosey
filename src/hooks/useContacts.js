@@ -10,9 +10,10 @@ export default () => {
         const { status } = await Contacts.requestPermissionsAsync();
         if (status === 'granted') {
 
-            if (Platform.OS === 'oos') {
+            if (Platform.OS === 'ios') {
                 const containerId = await Contacts.getDefaultContainerIdAsync();
                 setContainerID(containerId);
+                // console.log(containerId);
             }
 
             const { data } = await Contacts.getContactsAsync();
@@ -48,15 +49,16 @@ export default () => {
     }
 
     const _formatDate = (date, label) => {
-        const _dateObj = new Date(date);
-        let _date = {
-            day: _dateObj.getDate(),
-            month: _dateObj.getMonth() + 1,
-            year: _dateObj.getFullYear()
+        const _date = new Date(date);
+        let _dateObj = {
+            day: _date.getDate(),
+            month: _date.getMonth() + 1,
+            year: _date.getFullYear()
         };
         if (label) {
             _dateObj.label = label;
         }
+        return _dateObj;
     }
 
     // TODO: continue to make helpers ^ 
@@ -84,7 +86,9 @@ export default () => {
         if (homeAddress && Object.keys(homeAddress).length > 0) _addresses.push(homeAddress);
         if (placeMetAddress && Object.keys(placeMetAddress).length > 0) _addresses.push(placeMetAddress);
 
-        const _birthday = _formatDate(birthday);
+        // const _birthday = _formatDate(birthday);
+        const _birthday = (_birthday) ? _formatDate(birthday) : {};
+        // const _dateMet = (_dateMet) ? _formatDate(dateMet, 'date met') : {};
         const _dateMet = _formatDate(dateMet, 'date met');
         // const _socialProfiles = Object.keys(socialProfiles).map(key => )
         // console.log(_socialProfiles)
@@ -105,23 +109,23 @@ export default () => {
         const newContactObj = {
             birthday: _birthday,
             dates: [_dateMet],
-            firstName: _firstName,
-            middleName: _middleName,
-            lastName: _lastName,
+            firstName: _firstName || '',
+            middleName: _middleName || '',
+            lastName: _lastName || '',
             addresses: [...(_addresses || [])],
-            name,
-            nickname: nickName,
-            emails: [_email],
-            phoneNumbers: [_phone],
-            jobTitle: work,
+            name: name || '',
+            nickname: nickName || '',
+            emails: [(_email) ? _email : null],
+            phoneNumbers: [(_phone) ? _phone : null],
+            jobTitle: work || '',
             note: `Tags: ${tags.join(', ')}${"\n"}${notes}`
         };
         // socialProfiles: [...(socialProfiles || [])],
         // 
         await Contacts.addContactAsync(newContactObj, (Platform.OS === 'ios' ? containerID : null))
             .then(success => alert('Contact Successfully added'))
-            .catch(err => console.log(err))
-            // .catch(err => alert('Error adding contact'))
+            // .catch(err => console.log(err))
+            .catch(err => alert('Error adding contact'))
     };
 
     useEffect(() => {
