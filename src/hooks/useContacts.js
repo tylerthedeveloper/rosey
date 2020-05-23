@@ -45,6 +45,18 @@ export default () => {
         return _address;
     }
 
+    const _formatDate = (date, label) => {
+        const _dateObj = new Date(date);
+        let _date = {
+            day: _dateObj.getDate(),
+            month: _dateObj.getMonth() + 1,
+            year: _dateObj.getFullYear()
+        };
+        if (label) {
+            _dateObj.label = label;
+        }
+    }
+
     const createContact = async (newContact) => {
         const {
             birthday, dateMet, email, homeLocation, name, nickName, notes,
@@ -68,20 +80,8 @@ export default () => {
         if (homeAddress && Object.keys(homeAddress).length > 0) _addresses.push(homeAddress);
         if (placeMetAddress && Object.keys(placeMetAddress).length > 0) _addresses.push(placeMetAddress);
 
-        // TODO: abstract out
-        const _birthdayObj = new Date(birthday);
-        let _birthday = {
-            day: _birthdayObj.getDate(),
-            month: _birthdayObj.getMonth() + 1,
-            year: _birthdayObj.getFullYear()
-        };
-        const _dateMetObj = new Date(dateMet);
-        let _dateMet = {
-            day: _dateMetObj.getDate(),
-            month: _dateMetObj.getMonth() + 1,
-            year: _dateMetObj.getFullYear(),
-            label: 'date met'
-        };
+        const _birthday = _formatDate(birthday);
+        const _dateMet = _formatDate(dateMet, 'date met');
         // const _socialProfiles = Object.keys(socialProfiles).map(key => )
         // console.log(_socialProfiles)
         const _email = {
@@ -114,7 +114,6 @@ export default () => {
         };
         // socialProfiles: [...(socialProfiles || [])],
         // 
-        // console.log(newContactObj);
         await Contacts.addContactAsync(newContactObj, (Platform.OS === 'ios' ? containerID : null))
             .then(success => alert('Contact Successfully added'))
             // .catch(err => console.log(err))
