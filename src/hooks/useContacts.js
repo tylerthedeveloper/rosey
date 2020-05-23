@@ -23,10 +23,20 @@ export default () => {
         }
     });
 
+    // FIXME: this needs a ton of work for different length addresses
+    // len 3: city/state/country
+    // len 4 (what order?): city/state/country, postal code?
+    // len 4 (with 3 == len 2, total == 5):full address
+
     const _formatAddress = (formatted_address, label) => {
         const _locationParsed = formatted_address.split(',')
         let _address = { label, id: label };
-        if (_locationParsed && _locationParsed.length >= 0) {
+        if (_locationParsed && _locationParsed.length == 3) {
+            _address.city = _locationParsed[0].trim();
+            _address.region = _locationParsed[1].trim();
+            _address.country = _locationParsed[2].trim();
+        }
+        else if (_locationParsed && _locationParsed.length == 4) {
             _address.street = _locationParsed[0].trim();
             if (_locationParsed.length >= 1) {
                 _address.city = _locationParsed[1].trim();
@@ -81,14 +91,21 @@ export default () => {
         }
 
         let _addresses = [];
-        const homeAddress = _formatAddress(homeLocation.homeFormatted_address, 'home');
-        const placeMetAddress = _formatAddress(placeMetAt.placeMetAtFormatted_address, 'place met');
+        console.log(homeLocation);
+        const homeAddress = (homeLocation && Object.keys(homeLocation).length > 0)
+            ? _formatAddress(homeLocation.homeFormatted_address, 'home')
+            : {};
+        const placeMetAddress = (placeMetAt && Object.keys(placeMetAt).length > 0)
+            ? _formatAddress(placeMetAt.placeMetAtFormatted_address, 'place met')
+            : {};
+        // console.log('placeMetAddress', placeMetAddress);
         if (homeAddress && Object.keys(homeAddress).length > 0) _addresses.push(homeAddress);
         if (placeMetAddress && Object.keys(placeMetAddress).length > 0) _addresses.push(placeMetAddress);
 
-        // const _birthday = _formatDate(birthday);
-        const _birthday = (_birthday) ? _formatDate(birthday) : {};
+        // TODO: will there ever be a no date option
+        // const _birthday = (_birthday) ? _formatDate(birthday) : {};
         // const _dateMet = (_dateMet) ? _formatDate(dateMet, 'date met') : {};
+        const _birthday = _formatDate(birthday);
         const _dateMet = _formatDate(dateMet, 'date met');
         // const _socialProfiles = Object.keys(socialProfiles).map(key => )
         // console.log(_socialProfiles)
@@ -106,26 +123,25 @@ export default () => {
             id: phoneNumber,
             label: 'mobile'
         };
-        const newContactObj = {
-            birthday: _birthday,
-            dates: [_dateMet],
-            firstName: _firstName || '',
-            middleName: _middleName || '',
-            lastName: _lastName || '',
-            addresses: [...(_addresses || [])],
-            name: name || '',
-            nickname: nickName || '',
-            emails: [(_email) ? _email : null],
-            phoneNumbers: [(_phone) ? _phone : null],
-            jobTitle: work || '',
-            note: `Tags: ${tags.join(', ')}${"\n"}${notes}`
-        };
+        const newContactObj = {};
+        if (_birthday) newContactObj.birthday = _birthday;
+        if (_dateMet) newContactObj.dates = [_dateMet];
+        if (_firstName) newContactObj.firstName = _firstName;
+        if (_middleName) newContactObj.middleName = _middleName;
+        if (_lastName) newContactObj.lastName = _lastName;
+        if (nickName) newContactObj.nickname = nickName;
+        if (email) newContactObj.emails = [_email];
+        if (phoneNumber) newContactObj.phoneNumbers = [_phone];
+        if (work) newContactObj.jobTitle = work;
+        if (tags || notes) newContactObj.note = `Tags: ${tags.join(', ')}${"\n"}${notes}`;
+        if (_addresses && _addresses.length > 0) newContactObj.addresses = _addresses;
+
         // socialProfiles: [...(socialProfiles || [])],
-        // 
+
         await Contacts.addContactAsync(newContactObj, (Platform.OS === 'ios' ? containerID : null))
             .then(success => alert('Contact Successfully added'))
-            // .catch(err => console.log(err))
-            .catch(err => alert('Error adding contact'))
+            .catch(err => console.log(err))
+        // .catch(err => alert('Error adding contact'))
     };
 
     useEffect(() => {
