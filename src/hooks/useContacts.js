@@ -10,8 +10,10 @@ export default () => {
         const { status } = await Contacts.requestPermissionsAsync();
         if (status === 'granted') {
 
-            const containerId = await Contacts.getDefaultContainerIdAsync();
-            setContainerID(containerId);
+            if (Platform.OS === 'oos') {
+                const containerId = await Contacts.getDefaultContainerIdAsync();
+                setContainerID(containerId);
+            }
 
             const { data } = await Contacts.getContactsAsync();
             if (data.length > 0) {
@@ -57,11 +59,13 @@ export default () => {
         }
     }
 
+    // TODO: continue to make helpers ^ 
     const createContact = async (newContact) => {
         const {
             birthday, dateMet, email, homeLocation, name, nickName, notes,
             phoneNumber, placeMetAt, picture, socialProfiles, tags, work, roseId
         } = newContact || {};
+
         let _names = name.split(' ');
         let _firstName = '', _middleName = '', _lastName = '';
         if (_names && _names.length > 0) {
@@ -116,10 +120,9 @@ export default () => {
         // 
         await Contacts.addContactAsync(newContactObj, (Platform.OS === 'ios' ? containerID : null))
             .then(success => alert('Contact Successfully added'))
-            // .catch(err => console.log(err))
-            .catch(err => alert('Error adding contact'))
+            .catch(err => console.log(err))
+            // .catch(err => alert('Error adding contact'))
     };
-
 
     useEffect(() => {
         getContactsPermissions();
