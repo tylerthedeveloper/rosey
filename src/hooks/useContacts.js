@@ -20,12 +20,36 @@ export default () => {
         }
     });
 
+    const _formatAddress = (formatted_address, label) => {
+        const _locationParsed = formatted_address.split(',')
+        let _address = { label, id: label };
+        if (_locationParsed && _locationParsed.length >= 0) {
+            _address.street = _locationParsed[0].trim();
+            if (_locationParsed.length >= 1) {
+                _address.city = _locationParsed[1].trim();
+            }
+            if (_locationParsed.length >= 2) {
+                const stateAndPostalCode = _locationParsed[2].trim().split(' ');
+                // console.log(stateAndPostalCode)
+                if (stateAndPostalCode && stateAndPostalCode.length >= 1) {
+                    _address.region = stateAndPostalCode[0];
+                    if (stateAndPostalCode && stateAndPostalCode.length == 2) {
+                        _address.postalCode = stateAndPostalCode[1];
+                    }
+                }
+            }
+            if (_locationParsed.length >= 3) {
+                _address.country = _locationParsed[3].trim();
+            }
+        }
+        return _address;
+    }
+
     const createContact = async (newContact) => {
         const {
             birthday, dateMet, email, homeLocation, name, nickName, notes,
             phoneNumber, placeMetAt, picture, socialProfiles, tags, work, roseId
         } = newContact || {};
-        // console.log(newContact);
         let _names = name.split(' ');
         let _firstName = '', _middleName = '', _lastName = '';
         if (_names && _names.length > 0) {
@@ -38,13 +62,13 @@ export default () => {
             }
         }
 
-        // const homeAddress = {
-        //     street:
-        //     city:
-        //     state:
-        //     postalCode:
-        // };
+        let _addresses = [];
+        const homeAddress = _formatAddress(homeLocation.homeFormatted_address, 'home');
+        const placeMetAddress = _formatAddress(placeMetAt.placeMetAtFormatted_address, 'place met');
+        if (homeAddress && Object.keys(homeAddress).length > 0) _addresses.push(homeAddress);
+        if (placeMetAddress && Object.keys(placeMetAddress).length > 0) _addresses.push(placeMetAddress);
 
+        // TODO: abstract out
         const _birthdayObj = new Date(birthday);
         let _birthday = {
             day: _birthdayObj.getDate(),
@@ -58,7 +82,6 @@ export default () => {
             year: _dateMetObj.getFullYear(),
             label: 'date met'
         };
-        console.log('dateMet', dateMet, _dateMet);
         // const _socialProfiles = Object.keys(socialProfiles).map(key => )
         // console.log(_socialProfiles)
         const _email = {
@@ -81,21 +104,21 @@ export default () => {
             firstName: _firstName,
             middleName: _middleName,
             lastName: _lastName,
+            addresses: [...(_addresses || [])],
             name,
             nickname: nickName,
             emails: [_email],
             phoneNumbers: [_phone],
             jobTitle: work,
-            note: notes
+            note: `Tags: ${tags.join(', ')}${"\n"}${notes}`
         };
-        //postalAddresses: [],
         // socialProfiles: [...(socialProfiles || [])],
-        // `Tags: tags.join(', ') + {"\n"} notes`
-        console.log(newContactObj);
+        // 
+        // console.log(newContactObj);
         await Contacts.addContactAsync(newContactObj, (Platform.OS === 'ios' ? containerID : null))
-            .then(success => alert('Conact Successfully added'))
-            .catch(err => console.log(err))
-        // .catch(err => alert('Error adding contact'))
+            .then(success => alert('Contact Successfully added'))
+            // .catch(err => console.log(err))
+            .catch(err => alert('Error adding contact'))
     };
 
 
