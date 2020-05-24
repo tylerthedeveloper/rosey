@@ -9,6 +9,7 @@ import { isMountedRef, navigationRef } from './RootNavigation'; // TODO: Move in
 // Context and PROVIDERS
 import { AuthContext } from './src/context/AuthContext';
 import { Provider as TagProvider } from './src/context/TagContext';
+import { Provider as ContactProvider } from './src/context/ContactsContext';
 import { Provider as RoseProvider } from './src/context/RoseContext';
 import theme from './src/core/theme';
 import { ResolveAuthScreen } from './src/screens/Auth';
@@ -236,27 +237,29 @@ export default () => {
       <AuthContext.Provider value={{ state, ...authContext }}>
         <TagProvider>
           <RoseProvider>
-            <PaperProvider theme={theme}>
-              {/* https://reactnavigation.org/docs/navigating-without-navigation-prop/ */}
-              {/* <App ref={(navigator) => setNavigator(navigator)} /> */}
-              <NavigationContainer ref={navigationRef}>
-                <AppStack.Navigator initialRouteName="ResolveAuth" headerMode='none'>
-                  {
-                    state.isLoading ?
-                      <AppStack.Screen name="ResolveAuth" component={ResolveAuthScreen}
-                        options={{ headerTransparent: true, headerTitle: null }}
-                      />
-                      // FIXME: work without TOKEN!
-                      : (state.token === null)
-                        ? <AppStack.Screen name="authStack" component={Auth}
-                          headerMode="none"
+            <ContactProvider>
+              <PaperProvider theme={theme}>
+                {/* https://reactnavigation.org/docs/navigating-without-navigation-prop/ */}
+                {/* <App ref={(navigator) => setNavigator(navigator)} /> */}
+                <NavigationContainer ref={navigationRef}>
+                  <AppStack.Navigator initialRouteName="ResolveAuth" headerMode='none'>
+                    {
+                      state.isLoading ?
+                        <AppStack.Screen name="ResolveAuth" component={ResolveAuthScreen}
                           options={{ headerTransparent: true, headerTitle: null }}
                         />
-                        : <AppStack.Screen name="mainFlow" component={App} />
-                  }
-                </AppStack.Navigator>
-              </NavigationContainer>
-            </PaperProvider>
+                        // FIXME: work without TOKEN!
+                        : (state.token === null)
+                          ? <AppStack.Screen name="authStack" component={Auth}
+                            headerMode="none"
+                            options={{ headerTransparent: true, headerTitle: null }}
+                          />
+                          : <AppStack.Screen name="mainFlow" component={App} />
+                    }
+                  </AppStack.Navigator>
+                </NavigationContainer>
+              </PaperProvider>
+            </ContactProvider>
           </RoseProvider>
         </TagProvider>
       </AuthContext.Provider>
