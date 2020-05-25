@@ -235,9 +235,9 @@ export default () => {
   return (
     <ErrorBoundary onError={errorHandler}>
       <AuthContext.Provider value={{ state, ...authContext }}>
-        <TagProvider>
-          <RoseProvider>
-            <ContactProvider>
+        <RoseProvider>
+          <ContactProvider>
+            <TagProvider>
               <PaperProvider theme={theme}>
                 {/* https://reactnavigation.org/docs/navigating-without-navigation-prop/ */}
                 {/* <App ref={(navigator) => setNavigator(navigator)} /> */}
@@ -259,9 +259,9 @@ export default () => {
                   </AppStack.Navigator>
                 </NavigationContainer>
               </PaperProvider>
-            </ContactProvider>
-          </RoseProvider>
-        </TagProvider>
+            </TagProvider>
+          </ContactProvider>
+        </RoseProvider>
       </AuthContext.Provider>
     </ErrorBoundary>
   )

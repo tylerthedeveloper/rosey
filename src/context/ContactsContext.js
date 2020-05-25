@@ -4,11 +4,12 @@ import { AsyncStorage } from 'react-native';
 // Reducer
 const ContactReducer = (state, action) => {
     const { payload } = action;
+    // console.log('payload', action.type)
     switch (action.type) {
         case 'get_imported_contacts':
-            return { ...state, contactsImported: payload };
+            return { ...state, contactsImported: payload || {} };
         case 'add_new_contacts':
-            return { ...state, contactsImported: {...state.contactsImported, ...payload} };
+            return { ...state, contactsImported: { ...state.contactsImported, ...payload } };
         case 'set_contacts':
             return { ...state, _contacts: payload };
         default:
@@ -31,7 +32,8 @@ const getImportedContacts = (dispatch) => async () => {
             // await AsyncStorage.removeItem('importedContactIDs');
             // ─────────────────────────────────────────────────────────────────
             const parsedImportedContactIDs = JSON.parse(importedContactIDs);
-            dispatch({ type: "get_imported_contacts", payload: {...parsedImportedContactIDs} });
+            // dispatch({ type: "get_imported_contacts", payload: {...parsedImportedContactIDs} });
+            dispatch({ type: "get_imported_contacts", payload: parsedImportedContactIDs });
         } else {
             dispatch({ type: "get_imported_contacts", payload: {} });
         }
@@ -49,8 +51,11 @@ const updateImportedContacts = (dispatch) => async (updatedImportedContacts) => 
         // FIXME: PULL FROM CURRENT STATE???
         const importedContacts = await AsyncStorage.getItem('importedContacts')
             .then(req => JSON.parse(req));
-        const _updatedContacts = {...importedContacts, ...updatedImportedContacts};
-        console.log(_updatedContacts.length, _updatedContacts);
+        console.log('importedContacts', importedContacts);
+        // const updatedImportedContactIDs = Object.keys(updatedImportedContacts);
+        console.log('updatedImportedContactIDs', updatedImportedContacts);
+        const _updatedContacts = { ...importedContacts, ...updatedImportedContacts };
+        // console.log(Object.keys(_updatedContacts).length, _updatedContacts);
         await AsyncStorage.setItem('importedContacts', JSON.stringify(_updatedContacts));
         dispatch({ type: "add_new_contacts", payload: updatedImportedContacts });
     } catch (err) {

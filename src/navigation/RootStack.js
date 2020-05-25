@@ -12,6 +12,7 @@ import { AddRoseScreen, RoseDetailScreen } from '../screens';
 import { ContactCardScreen, ContactsScreen, TagScreen } from '../screens/Drawer';
 import { BottomTabNavigator } from './Tabs';
 
+import { Context as ContactsContext } from '../context/ContactsContext';
 
 const RootStack = createStackNavigator();
 
@@ -34,9 +35,12 @@ export const RootStackNavigator = () => {
     const { state: { user } } = useContext(AuthContext);
 
     const { getInitialTags } = useContext(TagContext);
+    const { getImportedContacts } = useContext(ContactsContext);
 
     useEffect(() => {
+        getImportedContacts();
         getInitialTags();
+        console.log('root')
     }, []);
 
     // TODO: Do i care about middle names??

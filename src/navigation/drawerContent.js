@@ -15,14 +15,14 @@ const DrawerContent = (props) => {
     const { navigation } = props;
 
     const { state: { user: { name } } } = useContext(AuthContext);
-    const { getImportedContacts } = useContext(ContactsContext);
+    // const { getImportedContacts } = useContext(ContactsContext);
     const { getContactsPermissions } = useContacts();
 
     // TODO: Explore if this needs to live somewhere else?
     useEffect(() => {
-        getImportedContacts();
+        // getImportedContacts();
+        console.log('i am importing contacts from drwawre parent')
         getContactsPermissions();
-        // console.log('i am importing contacts from drwawre parent')
     }, []);
 
     // TODO: Try to get second inital

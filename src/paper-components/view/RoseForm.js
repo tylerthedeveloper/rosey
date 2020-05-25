@@ -427,7 +427,7 @@ const RoseForm = ({ user, props,
                 </View>
                 {/* Location Section */}
                 {/* TODO: preset location.... */}
-                <Paragraph style={styles.sectionTitle}> Location Stuff (please select below)</Paragraph>
+                <Paragraph style={styles.sectionTitle}> Location Section (please select below)</Paragraph>
                 <TouchableOpacity
                     onPress={() => _makeLocationObject({
                         location: currentLocation, formatted_address: geoCodedLocation, name: ""

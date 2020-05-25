@@ -5,9 +5,8 @@ import { Context as ContactsContext } from '../context/ContactsContext';
 export default () => {
 
     const [containerID, setContainerID] = useState({});
-    // const [contactList, setContactList] = useState([]);
 
-    const { contactsImported, _setContacts } = useContext(ContactsContext);
+    const { _setContacts } = useContext(ContactsContext);
 
     const getContactsPermissions = (async () => {
         const { status } = await Contacts.requestPermissionsAsync();
@@ -19,15 +18,18 @@ export default () => {
                 // console.log(containerId);
             }
 
-            console.log('trying to get contacts permisions');
             const { data } = await Contacts.getContactsAsync();
             if (data.length > 0) {
-                console.log('there are contacts', data.length);
-                // setContactList([data[0]]);
-                const _dict = Object.assign({}, ...data.slice(0, 2).map((ct) => {
-                    return {[ct.id]: ct}
-                }));
-                // console.log(_dict);
+                // await getImportedContacts();
+                // console.log('contactsImported in usecontacts, getImportedContacts', contactsImported);
+                // const _dict = Object.assign({}, ...data.slice(0, 2).map((ct) => {
+                //     const id = ct.id;
+                //     const isImported = (contactsImported[id] && (id in contactsImported)) ? true : false;
+                //     const _contact = { [id]: { ...ct, isImported } };
+                //     return (_contact);
+                // }));
+                const _dict = Object.assign({}, ...data.slice(0, 5).map((ct) => ({[ct.id]: ct})));
+                // console.log('_dict', _dict);
                 _setContacts(_dict);
             }
         }
@@ -151,13 +153,9 @@ export default () => {
         await Contacts.addContactAsync(newContactObj, (Platform.OS === 'ios' ? containerID : null))
             .then(success => alert('Contact Successfully added'))
             // FIXME: these should be switched
-            .catch(err => console.log(err))
-        // .catch(err => alert('Error adding contact'))
+            // .catch(err => console.log(err))
+            .catch(err => alert('Error adding contact'))
     };
-
-    // useEffect(() => {
-    //     getContactsPermissions();
-    // }, []);
 
     return { getContactsPermissions, createContact };
 
