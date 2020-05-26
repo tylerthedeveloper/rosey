@@ -14,7 +14,7 @@ import { Provider as RoseProvider } from './src/context/RoseContext';
 import theme from './src/core/theme';
 import { ResolveAuthScreen } from './src/screens/Auth';
 import ErrorBoundary from 'react-native-error-boundary'
-
+import Constants from "./src/constants";
 import * as Location from 'expo-location';
 
 export default () => {
@@ -47,37 +47,6 @@ export default () => {
     { isLoading: true, token: null, errorMessage: '', user: {} }
   );
 
-  const _generateUser = ({ name, email }) => {
-    return {
-      birthday: new Date(Date.now()),
-      email: email || '',
-      homeLocation: {
-        homeLocationCoords: { latitude: -369, longitude: -369 },
-        homeFormatted_address: '',
-        homeLocationName: ''
-      },
-      name: name || '',
-      nickName: '', phoneNumber: '',
-      // placeMetAt: {
-      //   placeMetAtLocationCoords: { latitude: -369, longitude: -369 },
-      //   placeMetAtFormatted_address: '',
-      //   placeMetAtName: ''
-      // },
-      picture: '',
-      socialProfiles: {
-        facebook: '',
-        linkedin: '',
-        instagram: '',
-        medium: '',
-        snapchat: '',
-        twitter: '',
-        whatsapp: ''
-      },
-      // tags: '',
-      work: ''
-    };
-  }
-
   const authContext = useMemo(() => {
     return {
       signup: async ({ name, email, password }) => {
@@ -89,7 +58,7 @@ export default () => {
           // dispatch({ type: 'signup', payload: { token, user } });
           /* -------------------------------------------------------------------------- */
           // console.log('singup', name, email)
-          const user = _generateUser({ name, email });
+          const user =  Constants._generateUser({ name, email, userType: 'user' });
           // console.log('sign up user', user);
           await AsyncStorage.setItem('user', JSON.stringify(user));
           dispatch({ type: 'signup', payload: user });
@@ -115,7 +84,7 @@ export default () => {
           const user = await AsyncStorage.getItem('user');
           // console.log('singin', user)
           if (!user) {
-            const _user = _generateUser({ email });
+            const _user = Constants._generateUser({ email, userType: 'user' });
             await AsyncStorage.setItem('user', JSON.stringify(_user));
             // console.log('sign in user', _user);
             dispatch({ type: 'signin', payload: _user });

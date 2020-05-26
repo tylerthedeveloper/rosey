@@ -9,27 +9,26 @@ import createDataContext from './createDataContext';
 import Constants from '../constants';
 
 const roseReducer = (state, action) => {
+    const { payload } = action;
     switch (action.type) {
-        case 'add_rose':
-            return { ...state, roses: [...state.roses, action.payload] };
-        case 'edit_rose':
-            return { ...state, roses: action.payload };
-        // case 'fetch_rose':
-        //     return state;
         case 'fetch_roses':
-            return { ...state, roses: action.payload };
+            return { ...state, roses: payload };
+        case 'add_rose':
+            return { ...state, roses: [...state.roses, payload] };
+        case 'edit_rose':
+            return { ...state, roses: payload };
+        case 'add_batch_roses':
+            return { ...state, roses: [...state.roses, ...payload] };
         case 'delete_rose':
-            return { ...state, roses: action.payload };
+            return { ...state, roses: payload };
         case 'add_error_message':
-            return { ...state, errorMessage: action.payload };
+            return { ...state, errorMessage: payload };
         case 'clear_error_message':
             return { ...state, errorMessage: '' };
         default:
             return state;
     }
 }
-
-//const fetchOneRose = (dispatch) => async () => { }
 
 const addRose = (dispatch) => async ({ roseObj, callback }) => {
     try {
@@ -49,6 +48,50 @@ const addRose = (dispatch) => async ({ roseObj, callback }) => {
         await AsyncStorage.setItem('roses', JSON.stringify(updatedRoseList));
         dispatch({ type: "add_rose", payload: roseObj });
         callback(roseObj);
+    } catch (err) {
+        console.log(err.message);
+        dispatch({ type: "add_error_message", payload: err.message });
+    }
+}
+
+const _extractContactToRose = (contact) => {
+    // console.log('contact', contact)
+    const { email, name, nickName, phoneNumbers } = contact;
+    const newRose = Constants._generateUser({ name, email });
+    if (name) newRose.name = name;
+    if (email) newRose.email = email;
+    if (nickName) newRose.nickName = nickName;
+    // FIXME: get work?
+    // FIXME: get birthday?
+    // FIXME: what else...
+    if (phoneNumbers && phoneNumbers.length > 0 && phoneNumbers[0] && phoneNumbers[0].digits) {
+        // FIXME: Country code
+        // TODO: do i need if for country code?
+        // const countryCode = someLookUpForCountryCode(newRose.phoneNumbers[0].countryCode);
+        // newRose.phoneNumber = `+${countryCode} + ${phoneNumbers[0].digits}`;
+        newRose.phoneNumber = phoneNumbers[0].digits;
+    }
+    newRose.roseId = (contact.name) ? shortid.generate(contact.name) : shortid.generate();
+    // console.log(newRose);
+    return newRose;
+}
+
+const batch_addRoses = (dispatch) => async ({ contactList, callback }) => {
+    try {
+        /* -------------------------------------------------------------------------- */
+        // const response = await roseyApi.post('/roses', roseData);
+        // const newRose = response.data.rose;
+        /* -------------------------------------------------------------------------- */
+        // console.log('contactList', contactList)
+        const newContactsConveretedToRoses = contactList.map(ct => _extractContactToRose(ct));
+        console.log('newContactsConveretedToRoses', newContactsConveretedToRoses);
+        const roses = await AsyncStorage.getItem('roses')
+            .then(req => JSON.parse(req));
+        const updatedRoseList = [...(roses || []), ...newContactsConveretedToRoses];
+        // console.log(' updatedRoseList', updatedRoseList);
+        await AsyncStorage.setItem('roses', JSON.stringify(updatedRoseList));
+        dispatch({ type: "add_batch_roses", payload: newContactsConveretedToRoses });
+        callback();
     } catch (err) {
         console.log(err.message);
         dispatch({ type: "add_error_message", payload: err.message });
@@ -132,7 +175,7 @@ const clearErrorMessage = (dispatch) => () => {
 
 export const { Context, Provider } = createDataContext(
     roseReducer, // reducer
-    { fetchAllRoses, clearErrorMessage, addRose, editRose, deleteRose }, //list of action functions
+    { fetchAllRoses, clearErrorMessage, addRose, editRose, deleteRose, batch_addRoses }, //list of action functions
     {
         roses: [], errorMessage: ''
     } //default state values

@@ -84,7 +84,7 @@ const RoseListScreen = ({ navigation }) => {
                     (filteredRoses && filteredRoses.length > 0)
                         ? <FlatList
                             data={filteredRoses}
-                            keyExtractor={(item) => (item.roseId)}
+                            keyExtractor={(item, index) => (item.roseId + index)}
                             renderItem={({ item }) => {
                                 return (<RoseListItem rose={item} />)
                             }}

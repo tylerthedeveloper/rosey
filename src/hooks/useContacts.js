@@ -28,8 +28,7 @@ export default () => {
                 //     const _contact = { [id]: { ...ct, isImported } };
                 //     return (_contact);
                 // }));
-                const _dict = Object.assign({}, ...data.slice(0, 5).map((ct) => ({[ct.id]: ct})));
-                // console.log('_dict', _dict);
+                const _dict = Object.assign({}, ...data.slice(0, 15).map((ct) => ({[ct.id]: ct})));
                 _setContacts(_dict);
             }
         }
