@@ -40,7 +40,7 @@ export const RootStackNavigator = () => {
     useEffect(() => {
         getImportedContacts();
         getInitialTags();
-        console.log('root')
+        // console.log('root')
     }, []);
 
     // TODO: Do i care about middle names??

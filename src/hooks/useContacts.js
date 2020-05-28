@@ -15,20 +15,12 @@ export default () => {
             if (Platform.OS === 'ios') {
                 const containerId = await Contacts.getDefaultContainerIdAsync();
                 setContainerID(containerId);
-                // console.log(containerId);
             }
 
             const { data } = await Contacts.getContactsAsync();
             if (data.length > 0) {
-                // await getImportedContacts();
-                // console.log('contactsImported in usecontacts, getImportedContacts', contactsImported);
-                // const _dict = Object.assign({}, ...data.slice(0, 2).map((ct) => {
-                //     const id = ct.id;
-                //     const isImported = (contactsImported[id] && (id in contactsImported)) ? true : false;
-                //     const _contact = { [id]: { ...ct, isImported } };
-                //     return (_contact);
-                // }));
-                const _dict = Object.assign({}, ...data.slice(0, 15).map((ct) => ({[ct.id]: ct})));
+                const _dict = Object.assign({}, ...data.slice(0, 16).map((ct) => ({[ct.id]: ct})));
+                // console.log(_dict[Object.keys(_dict)[0]])
                 _setContacts(_dict);
             }
         }
@@ -102,7 +94,7 @@ export default () => {
         }
 
         let _addresses = [];
-        console.log(homeLocation);
+        // console.log(homeLocation);
         const homeAddress = (homeLocation && Object.keys(homeLocation).length > 0)
             ? _formatAddress(homeLocation.homeFormatted_address, 'home')
             : {};
@@ -151,7 +143,6 @@ export default () => {
 
         await Contacts.addContactAsync(newContactObj, (Platform.OS === 'ios' ? containerID : null))
             .then(success => alert('Contact Successfully added'))
-            // FIXME: these should be switched
             // .catch(err => console.log(err))
             .catch(err => alert('Error adding contact'))
     };

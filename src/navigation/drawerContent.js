@@ -21,7 +21,7 @@ const DrawerContent = (props) => {
     // TODO: Explore if this needs to live somewhere else?
     useEffect(() => {
         // getImportedContacts();
-        console.log('i am importing contacts from drwawre parent')
+        // console.log('i am importing contacts from drwawre parent')
         getContactsPermissions();
     }, []);
 

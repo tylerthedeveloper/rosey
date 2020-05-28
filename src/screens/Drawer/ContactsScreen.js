@@ -30,9 +30,9 @@ const ContactsScreen = () => {
     const _selectContact = (item) => {
         const contactID = item.id;
         const selectedContact = _allContactList[contactID];
-        console.log('contactID', contactID, selectedContact.name);
+        // console.log('contactID', contactID, selectedContact.name);
         if (!(contactID in contactsSelected)) {
-            console.log('not yet included')
+            // console.log('not yet included')
             const _updatedContactsSelected = { ...contactsSelected };
             // console.log('selectedContact', selectedContact);
             _updatedContactsSelected[contactID] = selectedContact;
@@ -44,7 +44,7 @@ const ContactsScreen = () => {
             }
             // FIXME: cannot be disabled because cannot uncheck it...
         } else if (!Object.keys(contactsImported).includes(contactID)) {
-            console.log('actsImported.includes')
+            // console.log('actsImported.includes')
             // setContactsSelected([...contactsSelected.filter(id => id !== contactID)])
             // const _upatedContacts = { ..._allContactList };
             // _upatedContacts[contactID] = { ...selectedContact, isImported: false };
@@ -52,10 +52,9 @@ const ContactsScreen = () => {
         }
     }
 
-
     const _renderItem = (id) => {
         const item = _allContactList[id];
-        const { name, nickname } = item;
+        const { name, nickname, note } = item;
         const _isImported = (id in contactsImported || id in contactsSelected);
         // FIXME: uncomment below
         // if (_isImported) return null;
@@ -80,11 +79,13 @@ const ContactsScreen = () => {
             contactList.push(contactsSelected[key]);
             return ({ [key]: true })
         }));
-        console.log('contactsSelected', updatedImportedContactIDs);
+        // console.log('contactsSelected', updatedImportedContactIDs);
         await updateImportedContacts(updatedImportedContactIDs);
         await batch_addRoses({ contactList, callback: () => alert(`${contactList.length} Contacts added successfully`) });
         setContactsSelected([]);
     }
+
+
 
     return (
         <View style={styles.container}>
@@ -95,7 +96,7 @@ const ContactsScreen = () => {
             </Button>
             <Button onPress={() => { _onPressImportContacts() }}
                 style={{ marginBottom: 10 }}
-                disabled={contactsSelected.length === 0}
+                disabled={Object.keys(contactsSelected).length === 0}
             >
                 Import {Object.keys(contactsSelected).length} {(Object.keys(contactsSelected).length === 1) ? 'Contact' : 'Contacts'}
             </Button>

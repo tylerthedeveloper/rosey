@@ -84,7 +84,7 @@ const batch_addRoses = (dispatch) => async ({ contactList, callback }) => {
         /* -------------------------------------------------------------------------- */
         // console.log('contactList', contactList)
         const newContactsConveretedToRoses = contactList.map(ct => _extractContactToRose(ct));
-        console.log('newContactsConveretedToRoses', newContactsConveretedToRoses);
+        // console.log('newContactsConveretedToRoses', newContactsConveretedToRoses);
         const roses = await AsyncStorage.getItem('roses')
             .then(req => JSON.parse(req));
         const updatedRoseList = [...(roses || []), ...newContactsConveretedToRoses];
