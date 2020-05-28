@@ -56,11 +56,11 @@ const addRose = (dispatch) => async ({ roseObj, callback }) => {
 
 const _extractContactToRose = (contact) => {
     // console.log('contact', contact)
-    const { email, name, nickName, phoneNumbers } = contact;
+    const { emails, name, nickname, phoneNumbers } = contact;
+    let email = (emails && emails.length > 0) ? emails[0]['email'] : '';
     const newRose = Constants._generateUser({ name, email });
-    if (name) newRose.name = name;
-    if (email) newRose.email = email;
-    if (nickName) newRose.nickName = nickName;
+    // if (name) newRose.name = name;
+    if (nickname) newRose.nickName = nickname;
     // FIXME: get work?
     // FIXME: get birthday?
     // FIXME: what else...

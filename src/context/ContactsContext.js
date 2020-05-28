@@ -29,7 +29,7 @@ const getImportedContacts = (dispatch) => async () => {
         if (importedContactIDs) {
             // ───  ────────────────────────────────────────────────────────────
             // FIXME: This experimental when needed to reset cache
-            // await AsyncStorage.removeItem('importedContactIDs');
+            // await AsyncStorage.removeItem('importedContacts');
             // ─────────────────────────────────────────────────────────────────
             const parsedImportedContactIDs = JSON.parse(importedContactIDs);
             // dispatch({ type: "get_imported_contacts", payload: {...parsedImportedContactIDs} });

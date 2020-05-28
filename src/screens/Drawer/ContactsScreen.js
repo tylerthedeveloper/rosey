@@ -54,10 +54,10 @@ const ContactsScreen = () => {
 
     const _renderItem = (id) => {
         const item = _allContactList[id];
-        const { name, nickname, note } = item;
+        const { name, nickname } = item;
         const _isImported = (id in contactsImported || id in contactsSelected);
         // FIXME: uncomment below
-        // if (_isImported) return null;
+        // if (_isImported) { return null; }
         return (
             <ListItem
                 key={id}
@@ -80,8 +80,8 @@ const ContactsScreen = () => {
             return ({ [key]: true })
         }));
         // console.log('contactsSelected', updatedImportedContactIDs);
-        await updateImportedContacts(updatedImportedContactIDs);
         await batch_addRoses({ contactList, callback: () => alert(`${contactList.length} Contacts added successfully`) });
+        await updateImportedContacts(updatedImportedContactIDs);
         setContactsSelected([]);
     }
 
