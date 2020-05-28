@@ -55,24 +55,24 @@ const addRose = (dispatch) => async ({ roseObj, callback }) => {
 }
 
 const _extractContactToRose = (contact) => {
-    // console.log('contact', contact)
-    const { emails, name, nickname, phoneNumbers } = contact;
+    console.log('contact', contact)
+    const { company, emails, name, nickname, phoneNumbers } = contact;
     let email = (emails && emails.length > 0) ? emails[0]['email'] : '';
     const newRose = Constants._generateUser({ name, email });
     // if (name) newRose.name = name;
     if (nickname) newRose.nickName = nickname;
-    // FIXME: get work?
+    if (company) newRose.work = company;
+    // FIXME: get work for android?
     // FIXME: get birthday?
     // FIXME: what else...
-    if (phoneNumbers && phoneNumbers.length > 0 && phoneNumbers[0] && phoneNumbers[0].digits) {
+    if (phoneNumbers && phoneNumbers.length > 0 && phoneNumbers[0] && phoneNumbers[0].number) {
         // FIXME: Country code
         // TODO: do i need if for country code?
         // const countryCode = someLookUpForCountryCode(newRose.phoneNumbers[0].countryCode);
         // newRose.phoneNumber = `+${countryCode} + ${phoneNumbers[0].digits}`;
-        newRose.phoneNumber = phoneNumbers[0].digits;
+        newRose.phoneNumber = phoneNumbers[0].number;
     }
     newRose.roseId = (contact.name) ? shortid.generate(contact.name) : shortid.generate();
-    // console.log(newRose);
     return newRose;
 }
 

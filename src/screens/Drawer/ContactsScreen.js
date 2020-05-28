@@ -15,7 +15,6 @@ const ContactsScreen = () => {
     const { state: { contactsImported, _contacts }, updateImportedContacts } = useContext(ContactsContext);
     const { batch_addRoses } = useContext(RoseContext);
 
-
     const [contactsSelected, setContactsSelected] = useState({});
     const [_allContactList, _set_allContactList] = useState(_contacts);
 
@@ -84,8 +83,6 @@ const ContactsScreen = () => {
         await updateImportedContacts(updatedImportedContactIDs);
         setContactsSelected([]);
     }
-
-
 
     return (
         <View style={styles.container}>
