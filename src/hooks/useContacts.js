@@ -20,7 +20,6 @@ export default () => {
             const { data } = await Contacts.getContactsAsync();
             if (data.length > 0) {
                 const _dict = Object.assign({}, ...data.map((ct) => ({[ct.id]: ct})));
-                // console.log(_dict[Object.keys(_dict)[0]])
                 _setContacts(_dict);
             }
         }

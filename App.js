@@ -77,7 +77,6 @@ export default () => {
           /* -------------------------------------------------------------------------- */
           // const response = await roseyApi.post('/signin', { email, password });
           // const { token, user } = response.data;
-          // console.log('signin:', token, user)
           // await AsyncStorage.multiSet([['token', token], ['user', JSON.stringify(user)]]);
           // dispatch({ type: 'signin', payload: { token, user } });
           /* -------------------------------------------------------------------------- */
