@@ -59,6 +59,13 @@ const ContactsScreen = () => {
         setContactsSelected([]);
     }
 
+
+    //     VirtualizedList: You have a large list that is slow to update - make sure your renderItem function renders components that 
+    // follow React performance best practices like PureComponent, shouldComponentUpdate, etc. Object {
+    //   "contentLength": 32778.5,
+    //   "dt": 5521,
+    //   "prevDt": 525,
+    // }
     const _renderItem = (id) => {
         const item = _allContactList[id];
         const { name, nickname } = item;

@@ -19,9 +19,20 @@ export default () => {
 
             const { data } = await Contacts.getContactsAsync();
             if (data.length > 0) {
-                // const _dict = Object.assign({}, ...data.map((ct) => ({[ct.id]: ct})));
                 const _dict = Object.assign({}, ...data/**.slice(0, 1000)*/.map((ct) => {
-                    if (ct['name']) return ({ [ct.id]: ct })
+                    if (ct['name']) {
+                        // console.log(ct['name'], ct['emails'][0]['email']);
+                        const phoneNumbers = ct['phoneNumbers'];
+                        const emails = ct['emails'];
+                        if (phoneNumbers !== undefined && phoneNumbers.length > 0 && ct['name'] !== phoneNumbers[0]['number']) {
+                            if (emails === undefined) return ({ [ct.id]: ct });
+                            else if (emails.length > 0 && ct['name'] !== emails[0]['email']) return ({ [ct.id]: ct });
+                        }
+                        else if (emails !== undefined && emails.length > 0 && ct['name'] !== emails[0]['email']) {
+                            if (phoneNumbers === undefined) return ({ [ct.id]: ct });
+                            else if (phoneNumbers.length > 0 && ct['name'] !== phoneNumbers[0]['number']) return ({ [ct.id]: ct });
+                        }
+                    }
                 }));
                 _setContacts(_dict);
             }
