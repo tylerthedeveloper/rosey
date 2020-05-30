@@ -57,14 +57,10 @@ export default () => {
           // await AsyncStorage.multiSet([['token', token], ['user', JSON.stringify(user)]]);
           // dispatch({ type: 'signup', payload: { token, user } });
           /* -------------------------------------------------------------------------- */
-          // console.log('singup', name, email)
           const user =  Constants._generateUser({ name, email, userType: 'user' });
           // console.log('sign up user', user);
           await AsyncStorage.setItem('user', JSON.stringify(user));
           dispatch({ type: 'signup', payload: user });
-          // const newUser = await AsyncStorage.getItem('user');
-          // console.log('newUser', newUser);
-          // console.log('newUser', JSON.parse(newUser));
         } catch (err) {
           // console.log('RESPONSE', err.response.data.message);
           // const { message } = err.response.data;
@@ -81,14 +77,11 @@ export default () => {
           // dispatch({ type: 'signin', payload: { token, user } });
           /* -------------------------------------------------------------------------- */
           const user = await AsyncStorage.getItem('user');
-          // console.log('singin', user)
           if (!user) {
             const _user = Constants._generateUser({ email, userType: 'user' });
             await AsyncStorage.setItem('user', JSON.stringify(_user));
-            // console.log('sign in user', _user);
             dispatch({ type: 'signin', payload: _user });
           } else {
-            // console.log('sign in user', user);
             dispatch({ type: 'signin', payload: JSON.parse(user) });
           }
         } catch (err) {
@@ -96,14 +89,11 @@ export default () => {
         }
       },
       updateContactCard: async ({ roseObj, callback }) => {
-        // console.log(userData);
         try {
           /* -------------------------------------------------------------------------- */
           // const response = await roseyApi.post('/contact_card', userData);
           // const updatedUserObj = response.data;
-          // console.log('updateContactCard:', roseObj)
           /* -------------------------------------------------------------------------- */
-          // console.log('roseObj', callback, roseObj);
           await AsyncStorage.setItem('user', JSON.stringify(roseObj));
           dispatch({ type: 'update_contact_card', payload: roseObj });
           if (callback) {
@@ -175,6 +165,8 @@ export default () => {
     return () => (isMountedRef.current = false);
   }, []);
 
+  // FIXME: Ask again?
+  // FIXME: Ask for all permissions here?
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestPermissionsAsync();

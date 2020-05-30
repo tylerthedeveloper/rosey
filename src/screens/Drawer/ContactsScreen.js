@@ -29,11 +29,8 @@ const ContactsScreen = () => {
     const _selectContact = (item) => {
         const contactID = item.id;
         const selectedContact = _allContactList[contactID];
-        // console.log('contactID', contactID, selectedContact.name);
         if (!(contactID in contactsSelected)) {
-            // console.log('not yet included')
             const _updatedContactsSelected = { ...contactsSelected };
-            // console.log('selectedContact', selectedContact);
             _updatedContactsSelected[contactID] = selectedContact;
             setContactsSelected(_updatedContactsSelected);
             if (selectedContact) {
@@ -49,6 +46,17 @@ const ContactsScreen = () => {
             // _upatedContacts[contactID] = { ...selectedContact, isImported: false };
             // _set_allContactList(_upatedContacts);
         }
+    }
+
+    const _onPressImportContacts = async () => {
+        const contactList = [];
+        const updatedImportedContactIDs = Object.assign({}, ...Object.keys(contactsSelected).map(key => {
+            contactList.push(contactsSelected[key]);
+            return ({ [key]: true })
+        }));
+        await batch_addRoses({ contactList, callback: () => alert(`${contactList.length} Contacts added successfully`) });
+        await updateImportedContacts(updatedImportedContactIDs);
+        setContactsSelected([]);
     }
 
     const _renderItem = (id) => {
@@ -72,21 +80,20 @@ const ContactsScreen = () => {
         )
     }
 
-    const _onPressImportContacts = async () => {
-        const contactList = [];
-        const updatedImportedContactIDs = Object.assign({}, ...Object.keys(contactsSelected).map(key => {
-            contactList.push(contactsSelected[key]);
-            return ({ [key]: true })
-        }));
-        // console.log('contactsSelected', updatedImportedContactIDs);
-        await batch_addRoses({ contactList, callback: () => alert(`${contactList.length} Contacts added successfully`) });
-        await updateImportedContacts(updatedImportedContactIDs);
-        setContactsSelected([]);
-    }
+    const _sortedKeys = Object.keys(_allContactList).sort((a, b) => {
+        // const textA = (_allContactList[a]['name'] !== undefined && _allContactList[a]['name'] !== '') ? _allContactList[a]['name'].toUpperCase() : '';
+        // const textB = (_allContactList[b]['name'] !== undefined && _allContactList[b]['name'] !== '') ? _allContactList[b]['name'].toUpperCase() : '';
+        const textA = _allContactList[a]['name'].toUpperCase();
+        const textB = _allContactList[b]['name'].toUpperCase();
+
+        return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
+
+    });
+    // _sortedKeys.map(k => console.log(_allContactList[k]['name']));
 
     return (
         <View style={styles.container}>
-            <MyHeader style={styles.Headline}> Manager your Contacts here! </MyHeader>
+            <MyHeader style={styles.Headline}> Manage your Contacts here! </MyHeader>
             <Button onPress={() => { selectAllContacts() }}
             >
                 Select all Contacts
@@ -98,7 +105,7 @@ const ContactsScreen = () => {
                 Import {Object.keys(contactsSelected).length} {(Object.keys(contactsSelected).length === 1) ? 'Contact' : 'Contacts'}
             </Button>
             <FlatList
-                data={Object.keys(_allContactList)}
+                data={_sortedKeys}
                 keyExtractor={(id) => (id)}
                 renderItem={({ item }) => _renderItem(item)}
             />

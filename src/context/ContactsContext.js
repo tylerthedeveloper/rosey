@@ -4,7 +4,6 @@ import { AsyncStorage } from 'react-native';
 // Reducer
 const ContactReducer = (state, action) => {
     const { payload } = action;
-    // console.log('payload', action.type)
     switch (action.type) {
         case 'get_imported_contacts':
             return { ...state, contactsImported: payload || {} };
@@ -51,11 +50,7 @@ const updateImportedContacts = (dispatch) => async (updatedImportedContacts) => 
         // FIXME: PULL FROM CURRENT STATE???
         const importedContacts = await AsyncStorage.getItem('importedContacts')
             .then(req => JSON.parse(req));
-        console.log('importedContacts', importedContacts);
-        // const updatedImportedContactIDs = Object.keys(updatedImportedContacts);
-        console.log('updatedImportedContactIDs', updatedImportedContacts);
         const _updatedContacts = { ...importedContacts, ...updatedImportedContacts };
-        // console.log(Object.keys(_updatedContacts).length, _updatedContacts);
         await AsyncStorage.setItem('importedContacts', JSON.stringify(_updatedContacts));
         dispatch({ type: "add_new_contacts", payload: updatedImportedContacts });
     } catch (err) {

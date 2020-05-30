@@ -55,7 +55,7 @@ const addRose = (dispatch) => async ({ roseObj, callback }) => {
 }
 
 const _extractContactToRose = (contact) => {
-    console.log('contact', contact)
+    // console.log('contact', contact)
     const { company, emails, name, nickname, phoneNumbers } = contact;
     let email = (emails && emails.length > 0) ? emails[0]['email'] : '';
     const newRose = Constants._generateUser({ name, email });

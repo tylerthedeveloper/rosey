@@ -19,7 +19,10 @@ export default () => {
 
             const { data } = await Contacts.getContactsAsync();
             if (data.length > 0) {
-                const _dict = Object.assign({}, ...data.map((ct) => ({[ct.id]: ct})));
+                // const _dict = Object.assign({}, ...data.map((ct) => ({[ct.id]: ct})));
+                const _dict = Object.assign({}, ...data/**.slice(0, 1000)*/.map((ct) => {
+                    if (ct['name']) return ({ [ct.id]: ct })
+                }));
                 _setContacts(_dict);
             }
         }
