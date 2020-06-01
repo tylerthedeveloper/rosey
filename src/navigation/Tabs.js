@@ -3,7 +3,7 @@
 /* -------------------------------------------------------------------------- */
 import React, { useState } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import MapScreen from '../screens/MapScreen';
+import MapScreen from '../screens//Tabs/MapScreen';
 import { FontAwesome } from '@expo/vector-icons';
 import { Portal, FAB } from 'react-native-paper';
 import { useIsFocused } from '@react-navigation/native';
@@ -25,14 +25,14 @@ export const BottomTabNavigator = (props) => {
         : 'RoseListStack';
 
     const [fabOpen, setFabOpen] = useState(false);
-    const [filterType, setFilterType] = useState('place_met');
+    const [filterType, setFilterType] = useState('home');
     let fabIcon = 'account-plus';
     let fabActions = [];
     let onStateChange = () => null;
     
     switch (routeName) {
         case 'RoseListStack':
-            fabIcon = 'account-plus';
+            fabIcon = 'plus';
             fabActions = [];
             onFabPress = () => props.navigation.navigate('AddRose')
             onStateChange = () => null;

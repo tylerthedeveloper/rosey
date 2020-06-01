@@ -1,10 +1,13 @@
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Avatar, Caption, Drawer, Paragraph, Title, useTheme } from 'react-native-paper';
 import Animated from 'react-native-reanimated';
 import { AuthContext } from '../context/AuthContext';
+import { Context as ContactsContext } from '../context/ContactsContext';
+import useContacts from '../hooks/useContacts';
+
 // import { PreferencesContext } from './context/preferencesContext';
 
 const DrawerContent = (props) => {
@@ -12,6 +15,15 @@ const DrawerContent = (props) => {
     const { navigation } = props;
 
     const { state: { user: { name } } } = useContext(AuthContext);
+    // const { getImportedContacts } = useContext(ContactsContext);
+    const { getContactsPermissions } = useContacts();
+
+    // TODO: Explore if this needs to live somewhere else?
+    useEffect(() => {
+        // getImportedContacts();
+        // console.log('i am importing contacts from drwawre parent')
+        getContactsPermissions();
+    }, []);
 
     // TODO: Try to get second inital
     const firstInitial = (name) ? name.substring(0, 1).toUpperCase() : '';
@@ -82,8 +94,19 @@ const DrawerContent = (props) => {
                                 size={size}
                             />
                         )}
-                        label="Contact Card"
+                        label="My Contact Card"
                         onPress={() => navigation.navigate('ContactCard')}
+                    />
+                    <DrawerItem
+                        icon={({ color, size }) => (
+                            <MaterialCommunityIcons
+                                name="contacts"
+                                color={color}
+                                size={size}
+                            />
+                        )}
+                        label="Contacts"
+                        onPress={() => navigation.navigate('ContactsScreen')}
                     />
                     <DrawerItem
                         icon={({ color, size }) => (

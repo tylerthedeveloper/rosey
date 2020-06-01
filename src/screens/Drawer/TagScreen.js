@@ -1,8 +1,8 @@
 import React, { useContext, useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Button, Chip } from 'react-native-paper';
-import { Context as TagContext } from '../context/TagContext';
-import { MyHeader, MyTextInput } from '../paper-components/memo';
+import { Context as TagContext } from '../../context/TagContext';
+import { MyHeader, MyTextInput } from '../../paper-components/memo';
 
 const TagScreen = () => {
 

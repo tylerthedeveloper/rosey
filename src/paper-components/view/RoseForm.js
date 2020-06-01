@@ -386,8 +386,8 @@ const RoseForm = ({ user, props,
                                         display="default"
                                         style={{ width: '70%', alignSelf: 'center' }}
                                         onChange={(event, value) => {
-                                            setDatemet_Picker(false);
                                             setDateMet(value || updated_dateMet || new Date(Date.now()));
+                                            setTimeout(() => setDatemet_Picker(false), 2000);
                                         }}
                                     />
                                     : null
@@ -418,8 +418,8 @@ const RoseForm = ({ user, props,
                                 display="default"
                                 style={{ width: '70%', alignSelf: 'center' }}
                                 onChange={(e, value) => {
-                                    setBirth_datePicker(false);
                                     setBirthday(value || updated_birthday || new Date(Date.now()));
+                                    setTimeout(() => setBirth_datePicker(false), 2000);
                                 }}
                             />
                             : null
@@ -427,7 +427,7 @@ const RoseForm = ({ user, props,
                 </View>
                 {/* Location Section */}
                 {/* TODO: preset location.... */}
-                <Paragraph style={styles.sectionTitle}> Location Stuff (please select below)</Paragraph>
+                <Paragraph style={styles.sectionTitle}> Location Section (please select below)</Paragraph>
                 <TouchableOpacity
                     onPress={() => _makeLocationObject({
                         location: currentLocation, formatted_address: geoCodedLocation, name: ""

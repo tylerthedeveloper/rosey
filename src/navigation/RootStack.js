@@ -1,18 +1,18 @@
+import { createStackNavigator } from '@react-navigation/stack';
 import React, { useContext, useEffect } from 'react';
 /* -------------------------------------------------------------------------- */
 /*                               Main Root Stack                              */
 /* -------------------------------------------------------------------------- */
-import { Platform } from 'react-native'
-import { TouchableOpacity, Image, Text } from 'react-native';
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { Image, Platform, Text, TouchableOpacity } from 'react-native';
 import { Appbar, Avatar } from 'react-native-paper';
-import { theme } from '../core/theme'
-import { createStackNavigator } from '@react-navigation/stack';
-import { BottomTabNavigator } from './Tabs';
-import { AddRoseScreen, ContactCardScreen, RoseDetailScreen, TagScreen } from '../screens'
 import { AuthContext } from '../context/AuthContext';
 import { Context as TagContext } from '../context/TagContext';
+import { theme } from '../core/theme';
+import { AddRoseScreen, RoseDetailScreen } from '../screens';
+import { ContactCardScreen, ContactsScreen, TagScreen } from '../screens/Drawer';
+import { BottomTabNavigator } from './Tabs';
 
+import { Context as ContactsContext } from '../context/ContactsContext';
 
 const RootStack = createStackNavigator();
 
@@ -35,9 +35,12 @@ export const RootStackNavigator = () => {
     const { state: { user } } = useContext(AuthContext);
 
     const { getInitialTags } = useContext(TagContext);
+    const { getImportedContacts } = useContext(ContactsContext);
 
     useEffect(() => {
+        getImportedContacts();
         getInitialTags();
+        // console.log('root')
     }, []);
 
     // TODO: Do i care about middle names??
@@ -121,7 +124,12 @@ export const RootStackNavigator = () => {
             <RootStack.Screen
                 name="ContactCard"
                 component={ContactCardScreen}
-                options={{ headerTitle: 'ContactCard' }}
+                options={{ headerTitle: 'My Contact Card' }}
+            />
+            <RootStack.Screen
+                name="ContactsScreen"
+                component={ContactsScreen}
+                options={{ headerTitle: 'Contacts' }}
             />
             <RootStack.Screen
                 name="TagScreen"

@@ -1,8 +1,8 @@
 import React, { useContext, useEffect } from 'react';
 import { StyleSheet } from 'react-native';
-import MapComponent from '../components/MapComponent';
-import { Context as RoseContext } from '../context/RoseContext';
-import useCurrentLocation from '../hooks/useCurrentLocation';
+import MapComponent from '../../components/MapComponent';
+import { Context as RoseContext } from '../../context/RoseContext';
+import useCurrentLocation from '../../hooks/useCurrentLocation';
 
 const MapScreen = ({ navigation, filterType, resetCurrentLocation }) => {
 

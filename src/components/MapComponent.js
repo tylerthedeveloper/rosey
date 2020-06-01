@@ -23,6 +23,7 @@ const MapComponent = ({ navigationCallback, coords, height, roses, filterType })
                     tags={tags}
                     coords={placeMetAtLocationCoords}
                     address={placeMetAtName || placeMetAtFormatted_address}
+                    style={{ width: 50, height: 50 }}
                 />
             )
         } else if (filterType === 'home' &&
@@ -31,6 +32,7 @@ const MapComponent = ({ navigationCallback, coords, height, roses, filterType })
             homeLocationCoords.longitude !== -369) {
             return (
                 <MapMarker
+                    style={{ width: 50, height: 50 }}
                     key={(homeLocationCoords.latitude + homeLocationCoords.longitude).toString()}
                     roseId={roseId}
                     navigationCallback={navigationCallback}
