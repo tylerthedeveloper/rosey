@@ -22,6 +22,7 @@ const RoseForm = ({ user, props,
     } = user || {};
 
     const { currentLocation, geoCodedLocation } = useCurrentLocation();
+    // console.log(geoCodedLocation);
 
     const { state: { tags: contextTags }, addTag } = useContext(TagContext);
 
@@ -37,11 +38,12 @@ const RoseForm = ({ user, props,
     const [updated_homeLocation, setUpdated_homeLocation] = useState(homeLocation || {});
     const [updated_placeMetAt, setUpdated_placeMetAt] = useState(placeMetAt || {});
 
-    const { facebook, linkedin, instagram, snapchat, twitter, whatsapp } = socialProfiles || {};
+    const { facebook, linkedin, instagram, medium, snapchat, twitter, whatsapp } = socialProfiles || {};
 
     const [updated_facebook, setFacebook] = useState(facebook || '');
     const [updated_linkedin, setLinkedin] = useState(linkedin || '');
     const [updated_instagram, setInstagram] = useState(instagram || '');
+    const [updated_medium, setMedium] = useState(medium || '');
     const [updated_snapchat, setSnapchat] = useState(snapchat || '');
     const [updated_twitter, setTwitter] = useState(twitter || '');
     const [updated_whatsapp, setWhatsapp] = useState(whatsapp || '');
@@ -74,6 +76,7 @@ const RoseForm = ({ user, props,
             facebook: updated_facebook,
             linkedin: updated_linkedin,
             instagram: updated_instagram,
+            medium: updated_medium,
             snapchat: updated_snapchat,
             twitter: updated_twitter,
             whatsapp: updated_whatsapp
@@ -87,6 +90,7 @@ const RoseForm = ({ user, props,
         { type: 'facebook', value: updated_facebook, setter: setFacebook },
         { type: 'linkedin', value: updated_linkedin, setter: setLinkedin },
         { type: 'instagram', value: updated_instagram, setter: setInstagram },
+        { type: 'medium', value: updated_medium, setter: setMedium },
         { type: 'snapchat', value: updated_snapchat, setter: setSnapchat },
         { type: 'twitter', value: updated_twitter, setter: setTwitter },
         { type: 'whatsapp', value: updated_whatsapp, setter: setWhatsapp }
@@ -142,8 +146,6 @@ const RoseForm = ({ user, props,
     const [currentSocialEntry, setCurrentSocialEntry] = useState({
         editSocialEntry: false, type: '', setter: () => null
     });
-    // const [currentSocialSetter, setCurrentSocialSetter] = useState(() => null);
-
 
     // TODO: MOVE OUT?
     const _clearFormData = () => formRows.map(row => row.editFunc(''));
@@ -206,7 +208,7 @@ const RoseForm = ({ user, props,
 
     const _setPlaceMet = () => {
         if (!Object.keys(updatedUser.placeMetAt).length > 0) {
-            console.log('please set me!!');
+            // console.log('please set me!!');
             updatedUser.placeMetAt = {
                 placeMetAtFormatted_address: geoCodedLocation,
                 placeMetAtLocationCoords: {
@@ -216,12 +218,30 @@ const RoseForm = ({ user, props,
                 placeMetAtName: "",
             }
         } else {
-            console.log('i am set??');
+            // console.log('i am set??');
+        }
+    }
+
+    const _setHelperText = (type) => {
+        switch (type) {
+            case 'facebook':
+            case 'linkedin':
+            case 'medium':
+                return `Enter username for ${type}`;
+            case 'instagram':
+            case 'snapchat':
+            case 'twitter':
+                return `Enter handle for ${type}`;
+            case 'whatsapp':
+                return 'Add Intnl number for whatsapp';
+            default:
+                return `Enter value for ${type}`;
         }
     }
 
     const [contentHeight, setContentHeight] = useState();
     const scrollRef = React.createRef();
+    const placeInputRef = React.createRef();
     /* -------------------------------------------------------------------------- */
 
 
@@ -274,18 +294,23 @@ const RoseForm = ({ user, props,
                 {
                     // TODO: Different keyboards for whatsap??
                     // TODO: Combine whatsapp and phone?
-                    currentSocialEntry.editSocialEntry && <Searchbar
-                        placeholder={`Enter value for ${currentSocialEntry.type}`}
-                        style={{ marginHorizontal: 25, marginVertical: 10 }}
-                        icon={currentSocialEntry.type}
-                        onChangeText={currentSocialEntry.setter}
-                        keyboardType={"default"}
-                        returnKeyType={"done"}
-                        autoCompleteType={"off"}
-                        autoCorrect={false}
-                        autoCapitalize={"none"}
-                        value={eval(`updated_${currentSocialEntry.type}`)}
-                    />
+                    (currentSocialEntry.editSocialEntry)
+                        ? <>
+                            {/* <Paragraph style={{ alignSelf: 'center' }}> Click here for help! {_setHelperText(currentSocialEntry.type)}</Paragraph> */}
+                            <Searchbar
+                                placeholder={_setHelperText(currentSocialEntry.type)}
+                                style={{ marginHorizontal: 25, marginVertical: 10 }}
+                                icon={currentSocialEntry.type}
+                                onChangeText={currentSocialEntry.setter}
+                                keyboardType={(currentSocialEntry.type !== 'whatsapp') ? "default" : 'phone-pad'}
+                                returnKeyType={"done"}
+                                autoCompleteType={"off"}
+                                autoCorrect={false}
+                                autoCapitalize={"none"}
+                                value={eval(`updated_${currentSocialEntry.type}`)}
+                            />
+                        </>
+                        : null
                 }
                 {/* Form Section */}
                 <Paragraph style={styles.sectionTitle}> Personal </Paragraph>
@@ -361,8 +386,8 @@ const RoseForm = ({ user, props,
                                         display="default"
                                         style={{ width: '70%', alignSelf: 'center' }}
                                         onChange={(event, value) => {
-                                            setDatemet_Picker(false);
                                             setDateMet(value || updated_dateMet || new Date(Date.now()));
+                                            setTimeout(() => setDatemet_Picker(false), 2000);
                                         }}
                                     />
                                     : null
@@ -389,20 +414,20 @@ const RoseForm = ({ user, props,
                     {
                         (birth_datePicker)
                             ? <DateTimePicker
-                                    value={updated_birthday}
-                                    display="default"
-                                    style={{ width: '70%', alignSelf: 'center' }}
-                                    onChange={(e, value) => {
-                                        setBirth_datePicker(false);
-                                        setBirthday(value || updated_birthday || new Date(Date.now()));
-                                    }}
-                                />
+                                value={updated_birthday}
+                                display="default"
+                                style={{ width: '70%', alignSelf: 'center' }}
+                                onChange={(e, value) => {
+                                    setBirthday(value || updated_birthday || new Date(Date.now()));
+                                    setTimeout(() => setBirth_datePicker(false), 2000);
+                                }}
+                            />
                             : null
                     }
                 </View>
                 {/* Location Section */}
                 {/* TODO: preset location.... */}
-                <Paragraph style={styles.sectionTitle}> Location Stuff (please select below)</Paragraph>
+                <Paragraph style={styles.sectionTitle}> Location Section (please select below)</Paragraph>
                 <TouchableOpacity
                     onPress={() => _makeLocationObject({
                         location: currentLocation, formatted_address: geoCodedLocation, name: ""
@@ -451,21 +476,25 @@ const RoseForm = ({ user, props,
                                 <PlacesInput
                                     googleApiKey={GOOGLE_API_KEY}
                                     onSelect={place => _makeLocationObject(place.result, 'place_met', setUpdated_placeMetAt)}
-                                    placeHolder={(updated_placeMetAt.placeMetAtFormatted_address) ? updated_placeMetAt.placeMetAtFormatted_address : "Place you met!"}
+                                    placeHolder={updated_placeMetAt.placeMetAtFormatted_address || geoCodedLocation || "Place you met!"}
                                     language={"en-US"}
                                     onChangeText={() => scrollRef.current?.scrollToEnd()}
                                     textInputProps={{
                                         autoCorrect: false,
                                         fontWeight: 'bold',
-                                        //value: "El Paso, Texas",
-                                        query: geoCodedLocation
                                     }}
+                                    query={geoCodedLocation}
                                     stylesContainer={{
                                         position: 'relative',
                                         alignSelf: 'center',
                                         margin: 0,
                                         width: '80%',
                                         marginBottom: 10
+                                    }}
+                                    ref={placeInputRef}
+                                    stylesList={{
+                                        position: 'absolute',
+                                        bottom: (placeInputRef.current) ? placeInputRef.current.height : 0
                                     }}
                                 />
                             </Card.Actions>

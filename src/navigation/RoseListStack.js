@@ -3,7 +3,7 @@ import React from 'react';
 /*                                List Section                                */
 /* -------------------------------------------------------------------------- */
 import { createStackNavigator } from '@react-navigation/stack';
-import RoseListScreen from '../screens/RoseListScreen';
+import RoseListScreen from '../screens/Tabs/RoseListScreen';
 
 const ListStack = createStackNavigator();
 export const roseListStack = ({ navigation }) => {

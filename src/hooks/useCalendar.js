@@ -26,7 +26,7 @@ export default () => {
             ? (await Calendar.getDefaultCalendarAsync()).source
             : { isLocalAccount: true, name: 'Expo Calendar' };
         // TODO: Handle error here
-        await Calendar.createCalendarAsync({
+        const newCalendarID = await Calendar.createCalendarAsync({
             title: 'Rozy Calendar',
             color: 'blue',
             entityType: Calendar.EntityTypes.EVENT,
@@ -38,7 +38,8 @@ export default () => {
         });
         const calendars = await Calendar.getCalendarsAsync();
         const rozyCalendar = calendars.find(each => each.id === newCalendarID);
-        console.log('rozyCalendar', rozyCalendar);
+        setRozyCalendar(rozyCalendar);
+        // console.log('rozyCalendar', rozyCalendar);
     };
 
     const createEvent = async (date, type, name, address) => {
@@ -71,7 +72,7 @@ export default () => {
             })
                 .then(() => alert("Event successfully added to calendar"))
         } catch (e) {
-            console.log(e);
+            // console.log(e);
             alert("There was a problem adding your event");
         }
     }
@@ -80,6 +81,6 @@ export default () => {
         getRozyCalendar();
     }, []);
 
-    return [rozyCalendar, createEvent];
+    return { rozyCalendar, createEvent };
 
 }

@@ -1,10 +1,10 @@
 import React, { useContext, useState } from 'react';
 import { FlatList, StyleSheet, ScrollView, View, TouchableOpacity } from 'react-native';
 import { Chip, IconButton, Searchbar, Headline } from 'react-native-paper';
-import { Context as TagContext } from '../context/TagContext';
-import { theme } from '../core/theme';
-import useListFilters from '../hooks/useListFilters';
-import { RoseListItem } from '../paper-components/partial';
+import { Context as TagContext } from '../../context/TagContext';
+import { theme } from '../../core/theme';
+import useListFilters from '../../hooks/useListFilters';
+import { RoseListItem } from '../../paper-components/partial';
 
 const RoseListScreen = ({ navigation }) => {
 
@@ -84,7 +84,7 @@ const RoseListScreen = ({ navigation }) => {
                     (filteredRoses && filteredRoses.length > 0)
                         ? <FlatList
                             data={filteredRoses}
-                            keyExtractor={(item) => (item.roseId)}
+                            keyExtractor={(item, index) => (item.roseId + index)}
                             renderItem={({ item }) => {
                                 return (<RoseListItem rose={item} />)
                             }}
@@ -129,7 +129,7 @@ const styles = StyleSheet.create({
     },
     tags: {
         //flexDirection: 'row',
-        marginTop: 10,
+        marginTop: 15,
         //flex: 1,
         maxHeight: 40,
     },

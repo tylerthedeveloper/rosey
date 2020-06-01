@@ -1,37 +1,38 @@
-import React, { useState } from 'react';
 /* -------------------------------------------------------------------------- */
 /*                                 Tab Section                                */
 /* -------------------------------------------------------------------------- */
+import React, { useState } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import MapScreen from '../screens/MapScreen';
+import MapScreen from '../screens//Tabs/MapScreen';
 import { FontAwesome } from '@expo/vector-icons';
 import { Portal, FAB } from 'react-native-paper';
 import { useIsFocused } from '@react-navigation/native';
 import { roseListStack } from './RoseListStack';
 import { theme } from '../core/theme';
-import { Dimensions } from 'react-native';
 import { useSafeArea } from 'react-native-safe-area-context';
+//import { Dimensions } from 'react-native';
 
 const BottomTabs = createBottomTabNavigator();
 
 export const BottomTabNavigator = (props) => {
 
     const isFocused = useIsFocused();
-    const screenHeight = Dimensions.get('screen').height;
-    const screenWidth = Dimensions.get('screen').width;
+    // const screenHeight = Dimensions.get('screen').height;
+    // const screenWidth = Dimensions.get('screen').width;
     const safeArea = useSafeArea();
     const routeName = props.route.state
         ? props.route.state.routes[props.route.state.index].name
         : 'RoseListStack';
 
     const [fabOpen, setFabOpen] = useState(false);
-    const [filterType, setFilterType] = useState('place_met');
+    const [filterType, setFilterType] = useState('home');
     let fabIcon = 'account-plus';
     let fabActions = [];
     let onStateChange = () => null;
+    
     switch (routeName) {
         case 'RoseListStack':
-            fabIcon = 'account-plus';
+            fabIcon = 'plus';
             fabActions = [];
             onFabPress = () => props.navigation.navigate('AddRose')
             onStateChange = () => null;
@@ -46,7 +47,7 @@ export const BottomTabNavigator = (props) => {
                 {
                     icon: 'home', label: 'Home Location', onPress: () => setFilterType('home'),
                     // style: { right: 75, top: 65, },
-                },
+                }
             ];
             onStateChange = ({ open }) => setFabOpen(open);
             break;
@@ -64,12 +65,8 @@ export const BottomTabNavigator = (props) => {
     return (
         <React.Fragment>
             <BottomTabs.Navigator backBehavior="order" initialRouteName="RoseListStack"
-                tabBarOptions={{
-
-                }}
-                screenOptions={{
-                    tabBarColor
-                }}
+                tabBarOptions={{}}
+                screenOptions={{}}
             >
                 <BottomTabs.Screen name="Map"
                     // TODO:
@@ -82,8 +79,9 @@ export const BottomTabNavigator = (props) => {
                             />)
                     }}
                 >
-                    {(props) => <MapScreen //currentLocation={currentLocation}
+                    {(props) => <MapScreen
                         filterType={filterType}
+                        resetCurrentLocation
                         {...props}
                     />}
                 </BottomTabs.Screen>

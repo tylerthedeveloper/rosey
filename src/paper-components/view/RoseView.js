@@ -1,10 +1,12 @@
 import React from 'react';
 import { Linking, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import useCalendar from '../../hooks/useCalendar';
+import useContacts from '../../hooks/useContacts';
 import { Button, Divider } from 'react-native-paper';
 import RoseViewField from '../partial/RoseViewField';
 import moment from 'moment';
 import { SocialIcon } from 'react-native-elements'
+import { Tooltip, Text } from 'react-native-elements';
 
 const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
     view_secondFunction, view_secondFunctionText,
@@ -15,8 +17,9 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
     const { homeLocationCoords, homeFormatted_address, homeLocationName } = homeLocation || {};
     const { placeMetAtLocationCoords, placeMetAtFormatted_address, placeMetAtName } = placeMetAt || {};
 
-    const [rozyCalendar, createEvent] = useCalendar();
-
+    const { createContact } = useContacts();
+    const { createEvent } = useCalendar();
+    
     // TODO: move to constants?
     //
     // ─── FUNCTIONS ──────────────────────────────────────────────────────────────────
@@ -34,13 +37,13 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
 
     const viewRows = [
         {
-            value: name || '(No-Name?)', subtitle: 'name',
+            value: name, subtitle: 'name',
             left: "account",
             rightIcon: "account-plus",
-            rightFunc: () => { },
+            rightFunc: () => { createContact(user) },
         },
         {
-            value: nickName || '(No-nickName?)', subtitle: 'nickname',
+            value: nickName, subtitle: 'nickname',
             left: "account",
             // rightIcon: "account-plus",
             rightFunc: () => { },
@@ -63,19 +66,19 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
             },
         },
         {
-            value: work || '(Add Occupation!)', subtitle: 'occupation',
+            value: work, subtitle: 'occupation',
             left: "briefcase-account",
             // rightIcon: "briefcase-plus",
             rightFunc: () => { },
         },
         {
-            value: (tags && tags.length > 0) ? tags.join(', ') : '(Add some Tags!)', subtitle: 'tags',
+            value: tags ? ((Array.isArray(tags) && tags.length > 0) ? tags.join(', ') : tags) : '(Add some Tags!)', subtitle: 'tags',
             // value: updated_tags, subtitle: 'Add tags (by commas) ',
             left: "tag",
             // rightIcon: "tag",
         },
         {
-            value: notes || '(Add some notes!)', subtitle: 'notes',
+            value: notes, subtitle: 'notes',
             left: "note",
             // rightIcon: "note",
             rightFunc: () => { },
@@ -123,13 +126,15 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
 
     // https://app.urlgeni.us/
 
-    const { facebook, linkedin, instagram, snapchat, twitter, whatsapp } = socialProfiles || {};
+    const { facebook, linkedin, instagram, medium, snapchat, twitter, whatsapp } = socialProfiles || {};
     // console.log(socialProfiles);
 
+    // https://pureoxygenlabs.com/10-app-url-schemes-for-marketers/
     const socialLinkedIcons = [
         { type: 'facebook', value: facebook, appUrl: `fb://profile?username=${facebook}`, webUrl: `https://facebook.com/${facebook}` },
         { type: 'linkedin', value: linkedin, appUrl: `linkedin://in/${linkedin}/`, webUrl: `https://linkedin.com/in/${linkedin}/` },
         { type: 'instagram', value: instagram, appUrl: `instagram://user?username=${instagram}`, webUrl: `https://instagram.com/${instagram}` },
+        { type: 'medium', value: medium, appUrl: `https://medium.com/@${medium}`, webUrl: `https://medium.com/@${medium}` },
         { type: 'snapchat', value: snapchat, appUrl: `snapchat://add/${snapchat}`, webUrl: `https://www.snapchat.com/add/${snapchat}` },
         { type: 'twitter', value: twitter, appUrl: `twitter://user?screen_name=${twitter}`, webUrl: `https://twitter.com/${twitter}` },
         { type: 'whatsapp', value: whatsapp, appUrl: `https://wa.me/${whatsapp}`, webUrl: `https://wa.me/${whatsapp}` }
@@ -141,25 +146,35 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
             <View style={styles.socialMediaSection}>
                 {
                     socialLinkedIcons.map(({ appUrl, type, value, webUrl }) => (
-                        <TouchableOpacity key={type} style={{ marginHorizontal: 10 }} onPress={() => {
-                            if (!value) {
-                                return;
-                            } else {
+                        (value)
+                            ? <TouchableOpacity key={type} style={{ marginHorizontal: 10 }} onPress={() => {
                                 Linking.canOpenURL(appUrl)
                                     .then((supported) => Linking.openURL((supported) ? appUrl : webUrl))
                                     .catch((err) => console.error('An error occurred', err))
-                            }
-                        }}
-                        >
-                            <SocialIcon
-                                raised
-                                light
-                                style={{
-                                    opacity: (value && (appUrl || webUrl)) ? 1 : .4,
-                                }}
-                                type={type}
-                            />
-                        </TouchableOpacity>
+                            }}
+                            >
+                                <SocialIcon
+                                    raised
+                                    light
+                                    style={{
+                                        opacity: (value && (appUrl || webUrl)) ? 1 : .4,
+                                    }}
+                                    type={type}
+                                />
+                            </TouchableOpacity>
+                            : <Tooltip key={type} popover={<Text style={{ color: 'white' }}>Edit your profile{"\n"}to add social media</Text>}
+                                containerStyle={{ flexWrap: 'wrap', height: 100 }}
+                            >
+                                <SocialIcon
+                                    raised
+                                    light
+                                    style={{
+                                        opacity: (value && (appUrl || webUrl)) ? 1 : .4,
+                                        marginHorizontal: 10
+                                    }}
+                                    type={type}
+                                />
+                            </Tooltip>
                     ))
                 }
             </View>

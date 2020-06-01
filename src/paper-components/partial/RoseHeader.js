@@ -1,6 +1,6 @@
 import React from 'react';
 import { ImageBackground, StyleSheet } from 'react-native';
-import { Avatar, Card, Paragraph, Title } from 'react-native-paper';
+import { Avatar, Card, Paragraph, Title, IconButton } from 'react-native-paper';
 import { theme } from '../../core/theme';
 
 const RoseHeader = ({ name, picture, homeCity, homeState, homeCountry }) => (
@@ -9,6 +9,13 @@ const RoseHeader = ({ name, picture, homeCity, homeState, homeCountry }) => (
         source={require('../../../assets/background_dot_2x.png')}
         resizeMode="repeat"
         style={styles.headerBackgroundImage}>
+            {/* <IconButton
+                icon="pencil"
+                //color={Colors.red500}
+                size={20}
+                onPress={() => console.log('Pressed')}
+                style={{ right: 10, alignSelf: 'flex-end', position: 'absolute' }}
+            /> */}
         <Card.Content style={{ alignSelf: 'center', alignItems: 'center' }}>
             <Avatar.Image
                 style={styles.avatar}

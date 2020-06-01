@@ -9,11 +9,12 @@ import { isMountedRef, navigationRef } from './RootNavigation'; // TODO: Move in
 // Context and PROVIDERS
 import { AuthContext } from './src/context/AuthContext';
 import { Provider as TagProvider } from './src/context/TagContext';
+import { Provider as ContactProvider } from './src/context/ContactsContext';
 import { Provider as RoseProvider } from './src/context/RoseContext';
 import theme from './src/core/theme';
-import ResolveAuthScreen from './src/screens/ResolveAuthScreen';
+import { ResolveAuthScreen } from './src/screens/Auth';
 import ErrorBoundary from 'react-native-error-boundary'
-
+import Constants from "./src/constants";
 import * as Location from 'expo-location';
 
 export default () => {
@@ -46,36 +47,6 @@ export default () => {
     { isLoading: true, token: null, errorMessage: '', user: {} }
   );
 
-  const _generateUser = ({ name, email }) => {
-    return {
-      birthday: new Date(Date.now()),
-      email: email || '',
-      homeLocation: {
-        homeLocationCoords: { latitude: -369, longitude: -369 },
-        homeFormatted_address: '',
-        homeLocationName: ''
-      },
-      name: name || '',
-      nickName: '', phoneNumber: '',
-      // placeMetAt: {
-      //   placeMetAtLocationCoords: { latitude: -369, longitude: -369 },
-      //   placeMetAtFormatted_address: '',
-      //   placeMetAtName: ''
-      // },
-      picture: '',
-      socialProfiles: {
-        facebook: '',
-        linkedin: '',
-        instagram: '',
-        snapchat: '',
-        twitter: '',
-        whatsapp: ''
-      },
-      // tags: '',
-      work: ''
-    };
-  }
-
   const authContext = useMemo(() => {
     return {
       signup: async ({ name, email, password }) => {
@@ -86,14 +57,10 @@ export default () => {
           // await AsyncStorage.multiSet([['token', token], ['user', JSON.stringify(user)]]);
           // dispatch({ type: 'signup', payload: { token, user } });
           /* -------------------------------------------------------------------------- */
-          // console.log('singup', name, email)
-          const user = _generateUser({ name, email });
+          const user =  Constants._generateUser({ name, email, userType: 'user' });
           // console.log('sign up user', user);
           await AsyncStorage.setItem('user', JSON.stringify(user));
           dispatch({ type: 'signup', payload: user });
-          // const newUser = await AsyncStorage.getItem('user');
-          // console.log('newUser', newUser);
-          // console.log('newUser', JSON.parse(newUser));
         } catch (err) {
           // console.log('RESPONSE', err.response.data.message);
           // const { message } = err.response.data;
@@ -106,17 +73,15 @@ export default () => {
           /* -------------------------------------------------------------------------- */
           // const response = await roseyApi.post('/signin', { email, password });
           // const { token, user } = response.data;
-          // console.log('signin:', token, user)
           // await AsyncStorage.multiSet([['token', token], ['user', JSON.stringify(user)]]);
           // dispatch({ type: 'signin', payload: { token, user } });
           /* -------------------------------------------------------------------------- */
           const user = await AsyncStorage.getItem('user');
           if (!user) {
-            const _user = _generateUser({ email });
-            // console.log('sign in user', _user);
+            const _user = Constants._generateUser({ email, userType: 'user' });
+            await AsyncStorage.setItem('user', JSON.stringify(_user));
             dispatch({ type: 'signin', payload: _user });
           } else {
-            // console.log('sign in user', user);
             dispatch({ type: 'signin', payload: JSON.parse(user) });
           }
         } catch (err) {
@@ -124,14 +89,11 @@ export default () => {
         }
       },
       updateContactCard: async ({ roseObj, callback }) => {
-        // console.log(userData);
         try {
           /* -------------------------------------------------------------------------- */
           // const response = await roseyApi.post('/contact_card', userData);
           // const updatedUserObj = response.data;
-          // console.log('updateContactCard:', roseObj)
           /* -------------------------------------------------------------------------- */
-          console.log('roseObj', callback, roseObj);
           await AsyncStorage.setItem('user', JSON.stringify(roseObj));
           dispatch({ type: 'update_contact_card', payload: roseObj });
           if (callback) {
@@ -143,7 +105,7 @@ export default () => {
       },
       // TODO: what about if token exists and user doesnt?
       tryLocalSignin: async () => {
-        console.log('tryLocalSignin');
+        // console.log('tryLocalSignin');
         try {
           /* -------------------------------------------------------------------------- */
           // const storageArr = await AsyncStorage.multiGet(['token', 'user']);
@@ -161,11 +123,11 @@ export default () => {
           /* -------------------------------------------------------------------------- */
           // await AsyncStorage.removeItem('user');
           const user = await AsyncStorage.getItem('user');
+          // console.log(user)
           if (user) {
-            console.log(user)
             dispatch({ type: 'signin', payload: JSON.parse(user) });
           } else {
-            console.log('need_to_signin')
+            // console.log('need_to_signin')
             dispatch({ type: 'need_to_signin' });
           }
         } catch (err) {
@@ -203,11 +165,13 @@ export default () => {
     return () => (isMountedRef.current = false);
   }, []);
 
+  // FIXME: Ask again?
+  // FIXME: Ask for all permissions here?
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestPermissionsAsync();
       if (status !== 'granted') {
-        console.log('Permission to access location was denied');
+        alert('Permission to access location was denied');
       }
 
       // let location = await Location.getCurrentPositionAsync({});
@@ -231,31 +195,33 @@ export default () => {
   return (
     <ErrorBoundary onError={errorHandler}>
       <AuthContext.Provider value={{ state, ...authContext }}>
-        <TagProvider>
-          <RoseProvider>
-            <PaperProvider theme={theme}>
-              {/* https://reactnavigation.org/docs/navigating-without-navigation-prop/ */}
-              {/* <App ref={(navigator) => setNavigator(navigator)} /> */}
-              <NavigationContainer ref={navigationRef}>
-                <AppStack.Navigator initialRouteName="ResolveAuth" headerMode='none'>
-                  {
-                    state.isLoading ?
-                      <AppStack.Screen name="ResolveAuth" component={ResolveAuthScreen}
-                        options={{ headerTransparent: true, headerTitle: null }}
-                      />
-                      // FIXME: work without TOKEN!
-                      : (state.token === null)
-                        ? <AppStack.Screen name="authStack" component={Auth}
-                          headerMode="none"
+        <RoseProvider>
+          <ContactProvider>
+            <TagProvider>
+              <PaperProvider theme={theme}>
+                {/* https://reactnavigation.org/docs/navigating-without-navigation-prop/ */}
+                {/* <App ref={(navigator) => setNavigator(navigator)} /> */}
+                <NavigationContainer ref={navigationRef}>
+                  <AppStack.Navigator initialRouteName="ResolveAuth" headerMode='none'>
+                    {
+                      state.isLoading ?
+                        <AppStack.Screen name="ResolveAuth" component={ResolveAuthScreen}
                           options={{ headerTransparent: true, headerTitle: null }}
                         />
-                        : <AppStack.Screen name="mainFlow" component={App} />
-                  }
-                </AppStack.Navigator>
-              </NavigationContainer>
-            </PaperProvider>
-          </RoseProvider>
-        </TagProvider>
+                        // FIXME: work without TOKEN!
+                        : (state.token === null)
+                          ? <AppStack.Screen name="authStack" component={Auth}
+                            headerMode="none"
+                            options={{ headerTransparent: true, headerTitle: null }}
+                          />
+                          : <AppStack.Screen name="mainFlow" component={App} />
+                    }
+                  </AppStack.Navigator>
+                </NavigationContainer>
+              </PaperProvider>
+            </TagProvider>
+          </ContactProvider>
+        </RoseProvider>
       </AuthContext.Provider>
     </ErrorBoundary>
   )
