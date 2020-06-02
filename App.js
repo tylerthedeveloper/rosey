@@ -1,6 +1,7 @@
+import React, { useEffect, useMemo, useReducer, useContext } from 'react';
+import { Linking } from 'expo';
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import React, { useEffect, useMemo, useReducer, useContext } from 'react';
 import { AsyncStorage } from 'react-native';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { Auth } from "./src/navigation/Auth";
@@ -16,6 +17,8 @@ import { ResolveAuthScreen } from './src/screens/Auth';
 import ErrorBoundary from 'react-native-error-boundary'
 import Constants from "./src/constants";
 import * as Location from 'expo-location';
+
+const prefix = Linking.makeUrl('/');
 
 export default () => {
 
@@ -47,6 +50,12 @@ export default () => {
     { isLoading: true, token: null, errorMessage: '', user: {} }
   );
 
+  const linking = {
+    prefixes: [prefix],
+  };
+  console.log(prefix);
+
+
   const authContext = useMemo(() => {
     return {
       signup: async ({ name, email, password }) => {
@@ -57,7 +66,7 @@ export default () => {
           // await AsyncStorage.multiSet([['token', token], ['user', JSON.stringify(user)]]);
           // dispatch({ type: 'signup', payload: { token, user } });
           /* -------------------------------------------------------------------------- */
-          const user =  Constants._generateUser({ name, email, userType: 'user' });
+          const user = Constants._generateUser({ name, email, userType: 'user' });
           // console.log('sign up user', user);
           await AsyncStorage.setItem('user', JSON.stringify(user));
           dispatch({ type: 'signup', payload: user });
@@ -201,7 +210,7 @@ export default () => {
               <PaperProvider theme={theme}>
                 {/* https://reactnavigation.org/docs/navigating-without-navigation-prop/ */}
                 {/* <App ref={(navigator) => setNavigator(navigator)} /> */}
-                <NavigationContainer ref={navigationRef}>
+                <NavigationContainer ref={navigationRef} linking={linking}>
                   <AppStack.Navigator initialRouteName="ResolveAuth" headerMode='none'>
                     {
                       state.isLoading ?
