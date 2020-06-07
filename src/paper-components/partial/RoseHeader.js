@@ -9,13 +9,6 @@ const RoseHeader = ({ name, picture, homeCity, homeState, homeCountry, isUserCon
         source={require('../../../assets/background_dot_2x.png')}
         resizeMode="repeat"
         style={styles.headerBackgroundImage}>
-        {/* <IconButton
-                icon="pencil"
-                //color={Colors.red500}
-                size={20}
-                onPress={() => console.log('Pressed')}
-                style={{ right: 10, alignSelf: 'flex-end', position: 'absolute' }}
-            /> */}
         <Card.Content style={{ alignSelf: 'center', alignItems: 'center' }}>
             <Avatar.Image
                 style={styles.avatar}
@@ -28,19 +21,6 @@ const RoseHeader = ({ name, picture, homeCity, homeState, homeCountry, isUserCon
             <Title style={styles.userNameText}>{name || 'No-name!'}</Title>
             {/* <Paragraph style={styles.userCityText}>{homeCity || '(city)'}, {homeState || '(state)'}, {homeCountry || '(country)'}</Paragraph> */}
         </Card.Content>
-        {/* (!editing)
-                ? <IconButton
-                    icon="pencil"
-                    size={25}
-                    onPress={() => _setEditing(true)}
-                    style={{ right: 10, top: 5, alignSelf: 'flex-end', position: 'absolute' }}
-                />
-                : <IconButton
-                    icon="close-circle"
-                    size={25}
-                    onPress={() => _setEditing(false)}
-                    style={{ right: 10, top: 5, alignSelf: 'flex-end', position: 'absolute' }}
-                /> */}
         <IconButton
             icon={editing ? "close-circle" : "pencil"}
             size={25}

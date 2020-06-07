@@ -103,15 +103,17 @@ export const RootStackNavigator = () => {
                 name="Main"
                 component={BottomTabNavigator}
                 options={({ navigation, route }) => {
-                    // console.log('!@# options', { route });
+                    {/* console.log('route', route) */}
                     const routeName = route.state
                         ? route.state.routes[route.state.index].name
                         : 'Home';
+                    {/* console.log('!@# routeName', routeName ); */}
                     return { headerTitle: routeName };
                 }}
             />
             <RootStack.Screen
                 name="AddRose"
+                path="addrose"
                 component={AddRoseScreen}
                 options={{ headerTitle: 'Add Rose' }}
             />

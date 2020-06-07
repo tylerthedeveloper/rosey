@@ -3,6 +3,7 @@ import { Share, StyleSheet } from 'react-native';
 import { Card, IconButton } from 'react-native-paper';
 import { RoseHeader } from './partial';
 import { RoseForm, RoseView } from './view';
+import { Linking } from 'expo';
 
 // TODO: Clean props!
 // navigation, props, view_updateFunction, form_secondFunction
@@ -24,12 +25,19 @@ const RoseViewContainer = ({
 
     const isUserContactCard = (view_updateFunctionText === 'Update your contact card');
 
+    // const prefix = Linking.makeUrl('/');
+    let redirectUrl = Linking.makeUrl('main/home/add'); //, { hello: 'world', goodbye: 'now' });
+    console.log(redirectUrl)
+    const _shareProfile = async () => {
+        Linking.openURL(redirectUrl);
+    }
+
     const shareProfile = async () => {
         try {
             const result = await Share.share({
                 title: 'App link',
                 message: 'Share your contact card with existing friends',
-                url: 'https://google.com'
+                url: redirectUrl//'exp://ve-9ga.tcitrin.rosey-app.exp.direct:80/--/RoseListStack'
             });
 
             if (result.action === Share.sharedAction) {
@@ -50,31 +58,6 @@ const RoseViewContainer = ({
         <>
             <Card style={styles.card}>
                 <RoseHeader {...{ name, picture, homeCity, homeState, homeCountry, isUserContactCard, editing, _setEditing, shareProfile }} />
-                {/* // FIXME: these need to be in the rose header */}
-                {/* {
-                    (!editing)
-                        ? <IconButton
-                            icon="pencil"
-                            size={25}
-                            onPress={() => setEditing(true)}
-                            style={{ right: 10, top: 5, alignSelf: 'flex-end', position: 'absolute' }}
-                        />
-                        : <IconButton
-                            icon="close-circle"
-                            size={25}
-                            onPress={() => setEditing(false)}
-                            style={{ right: 10, top: 5, alignSelf: 'flex-end', position: 'absolute' }}
-                        />
-                } */}
-                {/* {
-                    (isUserContactCard) &&
-                    <IconButton
-                        icon="share"
-                        size={25}
-                        onPress={shareProfile}
-                        style={{ right: 10, top: 120, alignSelf: 'flex-end', position: 'absolute' }}
-                    />
-                } */}
             </Card >
             {
                 (!editing)

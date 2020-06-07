@@ -9,8 +9,8 @@ import DrawerContent from './drawerContent';
 const Drawer = createDrawerNavigator();
 export const App = () => {
     return (
-        <Drawer.Navigator initialRouteName="Main" drawerType="slide" drawerContent={props => <DrawerContent {...props} />}>
-            <Drawer.Screen name="Main" component={RootStackNavigator} />
+        <Drawer.Navigator initialRouteName="App" drawerType="slide" drawerContent={props => <DrawerContent {...props} />}>
+            <Drawer.Screen name="App" component={RootStackNavigator} />
         </Drawer.Navigator >
     );
 }

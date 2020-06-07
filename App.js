@@ -1,12 +1,12 @@
-import React, { useEffect, useMemo, useReducer, useContext } from 'react';
+import React, { useEffect, useMemo, useReducer, useContext, useState } from 'react';
 import { Linking } from 'expo';
-import { NavigationContainer } from '@react-navigation/native';
+import { NavigationContainer, useLinking } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
 import { AsyncStorage } from 'react-native';
 import { Provider as PaperProvider } from 'react-native-paper';
 import { Auth } from "./src/navigation/Auth";
 import { App } from "./src/navigation/AppDrawer";
-import { isMountedRef, navigationRef } from './RootNavigation'; // TODO: Move into navigation
+import { isMountedRef, navigationRef, navigate } from './RootNavigation'; // TODO: Move into navigation
 // Context and PROVIDERS
 import { AuthContext } from './src/context/AuthContext';
 import { Provider as TagProvider } from './src/context/TagContext';
@@ -18,7 +18,7 @@ import ErrorBoundary from 'react-native-error-boundary'
 import Constants from "./src/constants";
 import * as Location from 'expo-location';
 
-const prefix = Linking.makeUrl('/');
+// const prefix = Linking.makeUrl('/');
 
 export default () => {
 
@@ -50,11 +50,55 @@ export default () => {
     { isLoading: true, token: null, errorMessage: '', user: {} }
   );
 
-  const linking = {
-    prefixes: [prefix],
-  };
-  console.log(prefix);
+  // const ref = React.useRef();
+  // const { getInitialState } = useLinking(ref, {
+  //   prefixes: [prefix],
+  //   config: {
+  //     App: {
+  //       path: 'main',
+  //       screens: {
+  //         Home: {
+  //           path: 'home',
+  //           screens: {
+  //             AddRose: 'add'
+  //           }
+  //         },
+  //       }
+  //     }
+  //   }
+  // });
 
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => (isMountedRef.current = false);
+  }, []);
+
+
+  useEffect(() => {
+    Linking.getInitialURL().then(url => {
+      // TODO: Try?
+      if (Linking.parse(url).path === 'main/home/add') {
+        // console.log('linking')
+        // FIXME:  This is is super hacky and doesnt work if app is open
+        setTimeout(() => navigate('AddRose'), 0);
+      }
+    })
+  }, [])
+
+  const _handleOpenURL = (event) => {
+    console.log('event', event);
+    // const route = e.url.replace(/.*?:\/\//g, '');
+    if (Linking.parse(event.url).path === 'main/home/add') {
+      // FIXME:  This is is super hacky and doesnt work if app is open
+      navigate('AddRose');
+    }
+  }
+
+  useEffect(() => {
+    Linking.addEventListener('url', _handleOpenURL);
+    // console.log('listener');
+    return () => (Linking.removeEventListener('url', _handleOpenURL));
+  }, [])
 
   const authContext = useMemo(() => {
     return {
@@ -164,14 +208,8 @@ export default () => {
 
   const { tryLocalSignin } = authContext;
 
-  // FIXME:???
   useEffect(() => {
     tryLocalSignin();
-  }, []);
-
-  useEffect(() => {
-    isMountedRef.current = true;
-    return () => (isMountedRef.current = false);
   }, []);
 
   // FIXME: Ask again?
@@ -189,12 +227,12 @@ export default () => {
     })();
   });
 
-
+  // TODO:?
   // useEffect(() => {
   //   getInitialTags();
   // }, []);
 
-
+  // TODO:
   const errorHandler = (error, stackTrace) => {
     /* Log the error to an error reporting service */
     console.log(error);
@@ -210,7 +248,7 @@ export default () => {
               <PaperProvider theme={theme}>
                 {/* https://reactnavigation.org/docs/navigating-without-navigation-prop/ */}
                 {/* <App ref={(navigator) => setNavigator(navigator)} /> */}
-                <NavigationContainer ref={navigationRef} linking={linking}>
+                <NavigationContainer ref={navigationRef} >
                   <AppStack.Navigator initialRouteName="ResolveAuth" headerMode='none'>
                     {
                       state.isLoading ?
