@@ -76,17 +76,16 @@ export default () => {
   }, [])
 
   const [state, dispatch] = useReducer((state, action) => {
+    const { payload } = action;
     switch (action.type) {
       case 'add_error':
-        return { ...state, errorMessage: action.payload };
+        return { ...state, errorMessage: payload };
       case 'signup':
-        /* -------------------------------------------------------------------------- */
-        const { token, user } = action.payload;
-        return { errorMessage: '', token, user, isLoading: false };
-      /* -------------------------------------------------------------------------- */
+        return { errorMessage: '', token: payload.token, user: payload.user, isLoading: false };
       case 'signin':
-        return { errorMessage: '', user: action.payload, isLoading: false };
+        return { errorMessage: '', token: payload.token, user: payload.user, isLoading: false };
       case 'update_contact_card':
+        console.log('update_contact_card', action.payload)
         return { ...state, user: action.payload };
       case 'clear_error_message':
         return { ...state, errorMessage: '' };
@@ -129,43 +128,43 @@ export default () => {
       // set timeout
       // fech API
       // check if users are different
-        // same == do notjing
-        // different reset
+      // same == do notjing
+      // different reset
       signin: async ({ email, password }) => {
         try {
           /* -------------------------------------------------------------------------- */
           const response = await roseyApi.post('/signin', { email, password });
           const { token, user } = response.data;
-          console.log(token, user);
-          
+          // console.log(token, user);
           await AsyncStorage.multiSet([['token', token], ['user', JSON.stringify(user)]]);
           dispatch({ type: 'signin', payload: { token, user } });
           /* -------------------------------------------------------------------------- */
           // const user = await AsyncStorage.getItem('user');
-          if (!user) {
-            const _user = Constants._generateUser({ email, userType: 'user' });
-            await AsyncStorage.setItem('user', JSON.stringify(_user));
-            dispatch({ type: 'signin', payload: _user });
-          } else {
-            dispatch({ type: 'signin', payload: JSON.parse(user) });
-          }
+          // if (!user) {
+          //   const _user = Constants._generateUser({ email, userType: 'user' });
+          //   await AsyncStorage.setItem('user', JSON.stringify(_user));
+          //   dispatch({ type: 'signin', payload: _user });
+          // } else {
+          //   await AsyncStorage.setItem('user', JSON.stringify(user));
+          //   dispatch({ type: 'signin', payload: JSON.parse(user) });
+          // }
         } catch (err) {
           dispatch({ type: 'add_error', payload: 'Something went wrong with sign in' });
         }
       },
       updateContactCard: async ({ roseObj, callback }) => {
         try {
-          /* -------------------------------------------------------------------------- */
-          // const response = await roseyApi.post('/contact_card', userData);
-          // const updatedUserObj = response.data;
-          /* -------------------------------------------------------------------------- */
-          await AsyncStorage.setItem('user', JSON.stringify(roseObj));
-          dispatch({ type: 'update_contact_card', payload: roseObj });
+          const response = await roseyApi.post('/contact_card', { userObj: roseObj });
+          const updatedUserObj = response.data;
+          await AsyncStorage.setItem('user', JSON.stringify(updatedUserObj));
+          // console.log('aftwr set user')
+          dispatch({ type: 'update_contact_card', payload: updatedUserObj });
           if (callback) {
             callback();
           }
         } catch (err) {
-          dispatch({ type: 'add_error', payload: 'Something went wrong with sign in' });
+          console.log(err);
+          dispatch({ type: 'add_error', payload: 'Something went wrong editng contact card' });
         }
       },
       // TODO: what about if token exists and user doesnt?
@@ -180,8 +179,6 @@ export default () => {
           if (storageArr) {
             const token = storageArr[0][1];
             const userObj = storageArr[1][1];
-            // console.log('storageArr', token)
-            // console.log('tryLocalSignin', JSON.parse(userObj))
             // FIXME: will this fail if user never flushed to data cache?
             if (token !== null && userObj !== null) {
               console.log('token and user');
@@ -191,15 +188,8 @@ export default () => {
               dispatch({ type: 'need_to_signin' });
             }
           }
-          // const user = await AsyncStorage.getItem('user');
-          // console.log(user)
-          if (user) {
-            dispatch({ type: 'signin', payload: JSON.parse(user) });
-          } else {
-            // console.log('need_to_signin')
-            dispatch({ type: 'need_to_signin' });
-          }
         } catch (err) {
+          console.log(err)
           dispatch({ type: 'add_error', payload: 'Something went wrong with sign in' });
         }
       },
@@ -210,7 +200,7 @@ export default () => {
         // console.log('signout')
         try {
           /* -------------------------------------------------------------------------- */
-          // await AsyncStorage.removeItem('token'); // TODO: And user?
+          await AsyncStorage.removeItem('token'); // FIXME: And user? maybe this is when i should definitely refetch...?
           // await AsyncStorage.multiRemove(['token', 'user']);
           /* -------------------------------------------------------------------------- */
           // await AsyncStorage.removeItem('user');

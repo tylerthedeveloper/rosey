@@ -74,10 +74,12 @@ const RoseViewContainer = ({
                         form_secondFunctionText={form_secondFunctionText}
                         // form_updateFunction_callback
                         form_updateFunction_callback={(obj) => {
+                            console.log('obj', obj)
                             if (!form_updateFunction_callback) {
                                 setEditing(false);
                             } else {
                                 form_updateFunction_callback(obj);
+                                setEditing(false);
                             }
                         }}
                     />
