@@ -40,12 +40,12 @@ const AuthForm = ({ headerText, errorMessage, onSubmit, submitButtonText, passwo
                 // onSubmitEditing={() => { secondTextInput.focus(); }}
                 returnKeyType={"next"}
             />
-            {/* <MyTextInput label="Password"
+            <MyTextInput label="Password"
                 value={password}
                 onChangeText={setPassword}
                 autoCorrect={false}
                 secureTextEntry
-            /> */}
+            />
             {(errorMessage) ? <Text style={styles.errorMessage}> {errorMessage} </Text> : null}
             {/* {(password.length < 6)
                 ? <Text style={styles.errorMessage}> {passwordError} </Text>
@@ -57,9 +57,9 @@ const AuthForm = ({ headerText, errorMessage, onSubmit, submitButtonText, passwo
                     (headerText === 'Register')
                         ? <MyButton
                             mode="contained"
-                            onPress={() => onSubmit({ name, email })}
+                            onPress={() => onSubmit({ name, email, password })}
                             // disabled={password.length < 6}
-                            disabled={name.length === 0 || email.length === 0}
+                            disabled={name.length === 0 || email.length === 0 || password.length === 0}
                         >
                             {submitButtonText}
                         </MyButton>

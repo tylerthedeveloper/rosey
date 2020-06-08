@@ -25,30 +25,28 @@ const RoseViewContainer = ({
 
     const isUserContactCard = (view_updateFunctionText === 'Update your contact card');
 
-    // const prefix = Linking.makeUrl('/');
-    let redirectUrl = Linking.makeUrl('main/home/add'); //, { hello: 'world', goodbye: 'now' });
-    console.log(redirectUrl)
-    const _shareProfile = async () => {
-        Linking.openURL(redirectUrl);
-    }
+    let redirectUrl = Linking.makeUrl('main/home/add', { hello: 'world', goodbye: 'now' }); //, { hello: 'world', goodbye: 'now' });
 
     const shareProfile = async () => {
         try {
-            const result = await Share.share({
+            // const result =
+            await Share.share({
                 title: 'App link',
                 message: 'Share your contact card with existing friends',
-                url: redirectUrl//'exp://ve-9ga.tcitrin.rosey-app.exp.direct:80/--/RoseListStack'
+                url: redirectUrl //'exp://ve-9ga.tcitrin.rosey-app.exp.direct:80/--/main/home/add'
             });
-
+            /*
             if (result.action === Share.sharedAction) {
                 if (result.activityType) {
                     // shared with activity type of result.activityType
+                    // console.log(result)
                 } else {
                     // shared
                 }
             } else if (result.action === Share.dismissedAction) {
                 // dismissed
             }
+            */
         } catch (error) {
             alert(error.message);
         }
