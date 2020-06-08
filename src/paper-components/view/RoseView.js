@@ -27,6 +27,7 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
     const _formatPhonenumber = (phone) => {
         const cleaned = ('' + phone).replace(/\D/g, '')
         const match = cleaned.match(/^(1|)?(\d{3})(\d{3})(\d{4})$/)
+        // console.log('hone', phone, match)
         if (match) {
             const intlCode = (match[1] ? '+1 ' : '');
             const formattedNumber = [intlCode, '(', match[2], ') ', match[3], '-', match[4]].join('');

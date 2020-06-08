@@ -1,9 +1,9 @@
+import { Linking } from 'expo';
 import React, { useState } from 'react';
 import { Share, StyleSheet } from 'react-native';
-import { Card, IconButton } from 'react-native-paper';
+import { Card } from 'react-native-paper';
 import { RoseHeader } from './partial';
 import { RoseForm, RoseView } from './view';
-import { Linking } from 'expo';
 
 // TODO: Clean props!
 // navigation, props, view_updateFunction, form_secondFunction
@@ -16,37 +16,21 @@ const RoseViewContainer = ({
 }) => {
 
     const { homeLocation, name, picture, tags } = user || {};
-
     const { homeCity, homeState, homeCountry } = homeLocation || {};
 
     const [editing, setEditing] = useState(false);
-
     const _setEditing = (editing) => setEditing(editing);
-
     const isUserContactCard = (view_updateFunctionText === 'Update your contact card');
 
-    let redirectUrl = Linking.makeUrl('main/home/add', { hello: 'world', goodbye: 'now' }); //, { hello: 'world', goodbye: 'now' });
-
+    let redirectUrl = Linking.makeUrl('main/home/add', { userID: user._id });
     const shareProfile = async () => {
         try {
             // const result =
             await Share.share({
                 title: 'App link',
                 message: 'Share your contact card with existing friends',
-                url: redirectUrl //'exp://ve-9ga.tcitrin.rosey-app.exp.direct:80/--/main/home/add'
+                url: redirectUrl 
             });
-            /*
-            if (result.action === Share.sharedAction) {
-                if (result.activityType) {
-                    // shared with activity type of result.activityType
-                    // console.log(result)
-                } else {
-                    // shared
-                }
-            } else if (result.action === Share.dismissedAction) {
-                // dismissed
-            }
-            */
         } catch (error) {
             alert(error.message);
         }
@@ -74,7 +58,6 @@ const RoseViewContainer = ({
                         form_secondFunctionText={form_secondFunctionText}
                         // form_updateFunction_callback
                         form_updateFunction_callback={(obj) => {
-                            console.log('obj', obj)
                             if (!form_updateFunction_callback) {
                                 setEditing(false);
                             } else {

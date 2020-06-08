@@ -25,7 +25,6 @@ import theme from './src/core/theme';
 
 export default () => {
 
-
   useEffect(() => {
     isMountedRef.current = true;
     return () => (isMountedRef.current = false);
@@ -108,6 +107,7 @@ export default () => {
       signup: async ({ name, email, password }) => {
         try {
           const _user = Constants._generateUser({ name, email, password, userType: 'user' });
+          // console.log('_user', _user)
           const response = await roseyApi.post('/signup', { user: _user });
           const { token, user } = response.data;
           console.log(token, user);
@@ -135,19 +135,8 @@ export default () => {
           /* -------------------------------------------------------------------------- */
           const response = await roseyApi.post('/signin', { email, password });
           const { token, user } = response.data;
-          // console.log(token, user);
           await AsyncStorage.multiSet([['token', token], ['user', JSON.stringify(user)]]);
           dispatch({ type: 'signin', payload: { token, user } });
-          /* -------------------------------------------------------------------------- */
-          // const user = await AsyncStorage.getItem('user');
-          // if (!user) {
-          //   const _user = Constants._generateUser({ email, userType: 'user' });
-          //   await AsyncStorage.setItem('user', JSON.stringify(_user));
-          //   dispatch({ type: 'signin', payload: _user });
-          // } else {
-          //   await AsyncStorage.setItem('user', JSON.stringify(user));
-          //   dispatch({ type: 'signin', payload: JSON.parse(user) });
-          // }
         } catch (err) {
           dispatch({ type: 'add_error', payload: 'Something went wrong with sign in' });
         }
@@ -155,10 +144,10 @@ export default () => {
       updateContactCard: async ({ roseObj, callback }) => {
         try {
           const response = await roseyApi.post('/contact_card', { userObj: roseObj });
-          const updatedUserObj = response.data;
-          await AsyncStorage.setItem('user', JSON.stringify(updatedUserObj));
-          // console.log('aftwr set user')
-          dispatch({ type: 'update_contact_card', payload: updatedUserObj });
+          const { user } = response.data;
+          // console.log('aftwr set user', user)
+          await AsyncStorage.setItem('user', JSON.stringify(user));
+          dispatch({ type: 'update_contact_card', payload: user });
           if (callback) {
             callback();
           }

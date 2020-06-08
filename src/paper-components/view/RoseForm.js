@@ -253,12 +253,20 @@ const RoseForm = ({ user, props,
 
     if (isUserContactCard) {
         updatedUser.dateMet = undefined;
+        updatedUser.placeMetAt = undefined;
         updatedUser.notes = undefined;
-        updatedUser.tags = undefined;
+        
+        // TODO:? KEEP?
+        updatedUser.tags = undefined; 
+        ///
+        
+        updatedUser.roseId = undefined;
     }
     // ────────────────────────────────────────────────────────────────────────────────
 
+    // FIXME:
     // console.log(socialProfiles);
+    console.log(JSON.stringify(user), JSON.stringify(updatedUser));
 
     return (
         <KeyboardAvoidingView
@@ -503,7 +511,7 @@ const RoseForm = ({ user, props,
                 }
                 <Button disabled={JSON.stringify(user) === JSON.stringify(updatedUser)}
                     onPress={() => {
-                        _setPlaceMet();
+                        if (!isUserContactCard) _setPlaceMet();
                         form_updateFunction({ roseObj: updatedUser, callback: () => form_updateFunction_callback(updatedUser) })
                     }}>
                     {form_updateFunctionText || 'Save'}
@@ -517,9 +525,9 @@ const RoseForm = ({ user, props,
                 >
                     {form_secondFunctionText}
                 </Button>
-            </ScrollView >
+            </ScrollView>
             <Spacer />
-        </KeyboardAvoidingView >
+        </KeyboardAvoidingView>
     );
 }
 

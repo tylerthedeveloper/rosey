@@ -37,7 +37,7 @@ export default {
                     placeMetAtFormatted_address: '',
                     placeMetAtName: ''
                 },
-                tags: '',
+                tags: [],
             }
         };
         return newUser;
