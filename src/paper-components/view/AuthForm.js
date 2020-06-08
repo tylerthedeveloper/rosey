@@ -65,7 +65,7 @@ const AuthForm = ({ headerText, errorMessage, onSubmit, submitButtonText, passwo
                         </MyButton>
                         : <MyButton
                             mode="contained"
-                            onPress={() => onSubmit({ email })}
+                            onPress={() => onSubmit({ email, password })}
                             // disabled={password.length < 6}
                             disabled={email.length === 0}
                         >

@@ -83,7 +83,7 @@ export default () => {
         /* -------------------------------------------------------------------------- */
         const { token, user } = action.payload;
         return { errorMessage: '', token, user, isLoading: false };
-        /* -------------------------------------------------------------------------- */
+      /* -------------------------------------------------------------------------- */
       case 'signin':
         return { errorMessage: '', user: action.payload, isLoading: false };
       case 'update_contact_card':
@@ -123,15 +123,25 @@ export default () => {
           dispatch({ type: 'add_error', payload: "Something went wrong with sign up" });
         }
       },
+      // TODO: 
+      // 1. check if user exists locally
+      // share local user...
+      // set timeout
+      // fech API
+      // check if users are different
+        // same == do notjing
+        // different reset
       signin: async ({ email, password }) => {
         try {
           /* -------------------------------------------------------------------------- */
-          // const response = await roseyApi.post('/signin', { email, password });
-          // const { token, user } = response.data;
-          // await AsyncStorage.multiSet([['token', token], ['user', JSON.stringify(user)]]);
-          // dispatch({ type: 'signin', payload: { token, user } });
+          const response = await roseyApi.post('/signin', { email, password });
+          const { token, user } = response.data;
+          console.log(token, user);
+          
+          await AsyncStorage.multiSet([['token', token], ['user', JSON.stringify(user)]]);
+          dispatch({ type: 'signin', payload: { token, user } });
           /* -------------------------------------------------------------------------- */
-          const user = await AsyncStorage.getItem('user');
+          // const user = await AsyncStorage.getItem('user');
           if (!user) {
             const _user = Constants._generateUser({ email, userType: 'user' });
             await AsyncStorage.setItem('user', JSON.stringify(_user));
@@ -169,19 +179,19 @@ export default () => {
           const storageArr = await AsyncStorage.multiGet(['token', 'user']);
           if (storageArr) {
             const token = storageArr[0][1];
-            const user = storageArr[1][1];
-            console.log('storageArr', token, user)
-            // console.log('tryLocalSignin', JSON.parse(user).user)
+            const userObj = storageArr[1][1];
+            // console.log('storageArr', token)
+            // console.log('tryLocalSignin', JSON.parse(userObj))
             // FIXME: will this fail if user never flushed to data cache?
-            // if (token && user) {
-            //   dispatch({ type: 'signin', payload: { token, user: JSON.parse(user).user } });
-            // } else {
-            //   dispatch({ type: 'need_to_signin' });
-            // }
+            if (token !== null && userObj !== null) {
+              console.log('token and user');
+              dispatch({ type: 'signin', payload: { token, user: JSON.parse(userObj) } });
+            } else {
+              console.log('THER IS NO token and user');
+              dispatch({ type: 'need_to_signin' });
+            }
           }
-          /* -------------------------------------------------------------------------- */
-
-          const user = await AsyncStorage.getItem('user');
+          // const user = await AsyncStorage.getItem('user');
           // console.log(user)
           if (user) {
             dispatch({ type: 'signin', payload: JSON.parse(user) });
