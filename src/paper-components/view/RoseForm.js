@@ -21,7 +21,9 @@ const RoseForm = ({ user, props,
         birthday, dateMet, email, homeLocation, name, nickName, notes, phoneNumber, placeMetAt, picture, socialProfiles, tags, work, roseId
     } = user || {};
 
-    console.log('user.name', user);
+    // console.log('user.name', user);
+    // alert(`That user has a name of: ${user.name}`);
+
     const { currentLocation, geoCodedLocation } = useCurrentLocation();
     const { state: { tags: contextTags }, addTag } = useContext(TagContext);
 
