@@ -25,7 +25,7 @@ export default {
             },
             work: ''
         };
-        console.log('password', password);
+        // console.log('password', password);
         if (userType === 'user') {
             newUser.password = password;
         } else if (userType !== 'user') {

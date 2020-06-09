@@ -32,21 +32,17 @@ export default () => {
 
   useEffect(() => {
     Linking.getInitialURL().then(url => {
-      // TODO: Try?
-      if (Linking.parse(url).path === 'main/home/add') {
-        // console.log('linking')
-        // FIXME:  This is is super hacky and doesnt work if app is open
-        setTimeout(() => navigate('AddRose'), 0);
+      const { path, queryParams: { userID } } = Linking.parse(url);
+      if (path === 'main/home/add' && (userID !== '' && userID !== undefined && userID !== null)) {
+        setTimeout(() => navigate('AddRose', { shared: true, userID }), 0);
       }
     })
   }, [])
 
   const _handleOpenURL = (event) => {
-    // console.log('event', event);
-    // const route = e.url.replace(/.*?:\/\//g, '');
-    if (Linking.parse(event.url).path === 'main/home/add') {
-      // FIXME:  This is is super hacky and doesnt work if app is open
-      navigate('AddRose');
+    const { path, queryParams: { userID } } = Linking.parse(event.url);
+    if (path === 'main/home/add' && (userID !== '' && userID !== undefined && userID !== null)) {
+      navigate('AddRose', { shared: true, userID });
     }
   }
 
@@ -84,7 +80,7 @@ export default () => {
       case 'signin':
         return { errorMessage: '', token: payload.token, user: payload.user, isLoading: false };
       case 'update_contact_card':
-        console.log('update_contact_card', action.payload)
+        // console.log('update_contact_card', action.payload)
         return { ...state, user: action.payload };
       case 'clear_error_message':
         return { ...state, errorMessage: '' };
@@ -99,18 +95,15 @@ export default () => {
     { isLoading: true, token: null, errorMessage: '', user: {} }
   );
 
-
-
-
   const authContext = useMemo(() => {
     return {
       signup: async ({ name, email, password }) => {
         try {
           const _user = Constants._generateUser({ name, email, password, userType: 'user' });
           // console.log('_user', _user)
-          const response = await roseyApi.post('/signup', { user: _user });
+          const response = await roseyApi.post('/auth/signup', { user: _user });
           const { token, user } = response.data;
-          console.log(token, user);
+          // console.log(token, user);
           await AsyncStorage.multiSet([['token', token], ['user', JSON.stringify(user)]]);
           dispatch({ type: 'signup', payload: { token, user } });
           // dispatch({ type: 'signup', payload: user });
@@ -133,7 +126,7 @@ export default () => {
       signin: async ({ email, password }) => {
         try {
           /* -------------------------------------------------------------------------- */
-          const response = await roseyApi.post('/signin', { email, password });
+          const response = await roseyApi.post('/auth/signin', { email, password });
           const { token, user } = response.data;
           await AsyncStorage.multiSet([['token', token], ['user', JSON.stringify(user)]]);
           dispatch({ type: 'signin', payload: { token, user } });
@@ -143,7 +136,7 @@ export default () => {
       },
       updateContactCard: async ({ roseObj, callback }) => {
         try {
-          const response = await roseyApi.post('/contact_card', { userObj: roseObj });
+          const response = await roseyApi.post('/users/contact_card', { userObj: roseObj });
           const { user } = response.data;
           // console.log('aftwr set user', user)
           await AsyncStorage.setItem('user', JSON.stringify(user));

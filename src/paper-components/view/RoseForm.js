@@ -21,9 +21,8 @@ const RoseForm = ({ user, props,
         birthday, dateMet, email, homeLocation, name, nickName, notes, phoneNumber, placeMetAt, picture, socialProfiles, tags, work, roseId
     } = user || {};
 
+    console.log('user.name', user);
     const { currentLocation, geoCodedLocation } = useCurrentLocation();
-    // console.log(geoCodedLocation);
-
     const { state: { tags: contextTags }, addTag } = useContext(TagContext);
 
     const [updated_birthday, setBirthday] = useState(birthday || new Date(Date.now()));
@@ -255,18 +254,18 @@ const RoseForm = ({ user, props,
         updatedUser.dateMet = undefined;
         updatedUser.placeMetAt = undefined;
         updatedUser.notes = undefined;
-        
+
         // TODO:? KEEP?
-        updatedUser.tags = undefined; 
+        updatedUser.tags = undefined;
         ///
-        
+
         updatedUser.roseId = undefined;
     }
     // ────────────────────────────────────────────────────────────────────────────────
 
     // FIXME:
     // console.log(socialProfiles);
-    console.log(JSON.stringify(user), JSON.stringify(updatedUser));
+    // console.log(JSON.stringify(user), JSON.stringify(updatedUser));
 
     return (
         <KeyboardAvoidingView
