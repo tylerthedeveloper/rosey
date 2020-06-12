@@ -8,7 +8,7 @@ import { RoseForm, RoseView } from './view';
 // TODO: Clean props!
 // navigation, props, view_updateFunction, form_secondFunction
 const RoseViewContainer = ({
-    user,
+    user, isApiLoading, errorMessage,
     view_updateFunctionText, view_secondFunction, view_secondFunctionText,
     view_updateFunction_callback,
     form_updateFunction, form_updateFunctionText, form_secondFunctionText,
@@ -46,12 +46,13 @@ const RoseViewContainer = ({
                     ? <RoseView
                         {...{
                             // view_updateFunction, seconf... TODO:
-                            user, view_updateFunction: () => setEditing(true), view_updateFunctionText,
+                            user, isApiLoading, view_updateFunction: () => setEditing(true), view_updateFunctionText,
                             view_secondFunction, view_secondFunctionText, view_updateFunction_callback
                         }}
                     />
                     : <RoseForm
                         user={user}
+                        isApiLoading={isApiLoading}
                         form_updateFunction={form_updateFunction}
                         form_updateFunctionText={form_updateFunctionText}
                         form_secondFunction={() => setEditing(false)}

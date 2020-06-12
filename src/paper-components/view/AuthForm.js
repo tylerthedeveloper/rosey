@@ -9,7 +9,6 @@ const AuthForm = ({ headerText, errorMessage, isApiLoading, onSubmit, submitButt
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [loading, setLoading] = useState(false);
 
     return (
         <>
@@ -52,33 +51,25 @@ const AuthForm = ({ headerText, errorMessage, isApiLoading, onSubmit, submitButt
                 ? <Text style={styles.errorMessage}> {passwordError} </Text>
                 : null
             } */}
-            {(isApiLoading) && <ActivityIndicator animating={true} size={'large'}/>}
+            {(isApiLoading) && <ActivityIndicator animating={true} size={'large'} />}
             <View style={styles.buttons}>
                 {
                     // TODO: PWD?
                     (headerText === 'Register')
                         ? <MyButton
                             mode="contained"
-                            onPress={() => {
-                                {/* setLoading(true); */}
-                                onSubmit({ name, email, password })
-                                {/* setLoading(false); */}
-                            }}
+                            onPress={() => onSubmit({ name, email, password })}
                             // disabled={password.length < 6}
-                            disabled={name.length === 0 || email.length === 0 || password.length === 0}
+                            disabled={name.length === 0 || email.length === 0 ||
+                                password.length === 0 || isApiLoading}
                         >
                             {submitButtonText}
                         </MyButton>
                         : <MyButton
                             mode="contained"
-                            //onPress={() => onSubmit({ email, password })}
-                            onPress={() => {
-                                setLoading(true);
-                                onSubmit({ email, password })
-                                setLoading(false);
-                            }}
+                            onPress={() => onSubmit({ email, password })}
                             // disabled={password.length < 6}
-                            disabled={email.length === 0 || password.length === 0}
+                            disabled={email.length === 0 || password.length === 0 || isApiLoading}
                         >
                             {submitButtonText}
                         </MyButton>

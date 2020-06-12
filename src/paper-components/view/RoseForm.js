@@ -10,8 +10,10 @@ import { Context as TagContext } from '../../context/TagContext';
 import useCurrentLocation from '../../hooks/useCurrentLocation';
 import { MyTextInput } from '../../paper-components/memo';
 import { SocialIcon } from 'react-native-elements'
+import { ActivityIndicator, Colors } from 'react-native-paper';
 
-const RoseForm = ({ user, props,
+
+const RoseForm = ({ user, isApiLoading, errorMessage, props,
     form_updateFunction, form_updateFunctionText,
     form_secondFunction, form_secondFunctionText,
     form_updateFunction_callback
@@ -510,6 +512,7 @@ const RoseForm = ({ user, props,
                         </>
                         : null
                 }
+                {(isApiLoading) && <ActivityIndicator animating={true} size={'large'}/>}
                 <Button disabled={JSON.stringify(user) === JSON.stringify(updatedUser)}
                     onPress={() => {
                         if (!isUserContactCard) _setPlaceMet();

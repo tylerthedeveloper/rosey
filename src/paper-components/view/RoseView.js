@@ -8,11 +8,11 @@ import moment from 'moment';
 import { SocialIcon } from 'react-native-elements'
 import { Tooltip, Text } from 'react-native-elements';
 
-const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
+const RoseView = ({ user, isApiLoading, view_updateFunction, view_updateFunctionText,
     view_secondFunction, view_secondFunctionText,
     view_updateFunction_callback
 }) => {
-
+    
     const { birthday, dateMet, email, homeLocation, name, nickName, notes, phoneNumber, placeMetAt, picture, socialProfiles, tags, work } = user || {};
     const { homeLocationCoords, homeFormatted_address, homeLocationName } = homeLocation || {};
     const { placeMetAtLocationCoords, placeMetAtFormatted_address, placeMetAtName } = placeMetAt || {};

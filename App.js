@@ -74,7 +74,7 @@ export default () => {
     const { payload } = action;
     switch (action.type) {
       case 'set_api_loading':
-        return { ...state, isLoading: false, isApiLoading: true };
+        return { ...state,  isApiLoading: true, errorMessage: '' };
       case 'add_error':
         return { ...state, errorMessage: payload, isLoading: false, isApiLoading: false };
       case 'signup':
@@ -82,8 +82,7 @@ export default () => {
       case 'signin':
         return { errorMessage: '', token: payload.token, user: payload.user, isLoading: false, isApiLoading: false };
       case 'update_contact_card':
-        // console.log('update_contact_card', action.payload)
-        return { ...state, user: action.payload };
+        return { ...state, user: action.payload, isApiLoading: false };
       case 'clear_error_message':
         return { ...state, errorMessage: '' };
       case 'signout': // TODO: User null??? user: null
@@ -115,7 +114,7 @@ export default () => {
           // if (err.message.includes('duplicate')) {
 
           // }
-          dispatch({ type: 'add_error', payload: "Something went wrong with sign up" });
+          dispatch({ type: 'add_error', payload: "Something went wrong with sign up, consider trying a different email" });
         }
       },
       // TODO: 
@@ -129,20 +128,20 @@ export default () => {
       signin: async ({ email, password }) => {
         try {
           /* -------------------------------------------------------------------------- */
-          dispatch({ type: 'set_api_loading' });
+          dispatch({ type: 'set_api_loading' });  
           const response = await roseyApi.post('/auth/signin', { email, password });
           const { token, user } = response.data;
           await AsyncStorage.multiSet([['token', token], ['user', JSON.stringify(user)]]);
           dispatch({ type: 'signin', payload: { token, user } });
         } catch (err) {
-          dispatch({ type: 'add_error', payload: 'Something went wrong with sign in' });
+          dispatch({ type: 'add_error', payload: 'Something went wrong with sign in, please check your spelling and try again' });
         }
       },
       updateContactCard: async ({ roseObj, callback }) => {
         try {
+          dispatch({ type: 'set_api_loading' });         
           const response = await roseyApi.post('/users/contact_card', { userObj: roseObj });
           const { user } = response.data;
-          // console.log('aftwr set user', user)
           await AsyncStorage.setItem('user', JSON.stringify(user));
           dispatch({ type: 'update_contact_card', payload: user });
           if (callback) {
@@ -167,10 +166,10 @@ export default () => {
             const userObj = storageArr[1][1];
             // FIXME: will this fail if user never flushed to data cache?
             if (token !== null && userObj !== null) {
-              console.log('token and user');
+              // console.log('token and user');
               dispatch({ type: 'signin', payload: { token, user: JSON.parse(userObj) } });
             } else {
-              console.log('THER IS NO token and user');
+              // console.log('THER IS NO token and user');
               dispatch({ type: 'need_to_signin' });
             }
           }
