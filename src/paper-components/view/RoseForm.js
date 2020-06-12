@@ -549,7 +549,8 @@ const styles = StyleSheet.create({
     },
     sectionTitle: {
         fontWeight: 'bold',
-        marginVertical: 10
+        marginVertical: 10,
+        marginLeft: 8
     },
     chips: {
         alignItems: 'center',

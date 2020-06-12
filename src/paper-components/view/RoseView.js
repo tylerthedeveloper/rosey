@@ -19,7 +19,7 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
 
     const { createContact } = useContacts();
     const { createEvent } = useCalendar();
-    
+
     // TODO: move to constants?
     //
     // ─── FUNCTIONS ──────────────────────────────────────────────────────────────────
@@ -142,7 +142,7 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
     ];
 
     return (
-        <ScrollView>
+        <ScrollView style={{ marginBottom: 15 }}>
             {/* Social Section */}
             <View style={styles.socialMediaSection}>
                 {

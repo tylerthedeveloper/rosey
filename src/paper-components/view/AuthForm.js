@@ -2,13 +2,14 @@ import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-elements';
 import { Logo, MyButton, MyHeader, MyTextInput } from '../../paper-components/memo';
+import { ActivityIndicator, Colors } from 'react-native-paper';
 
-const AuthForm = ({ headerText, errorMessage, onSubmit, submitButtonText, passwordError }) => {
+const AuthForm = ({ headerText, errorMessage, isApiLoading, onSubmit, submitButtonText, passwordError }) => {
 
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    // const [shouldBeDisabled, setShouldBeDisabled] = useState(email.length === 0 || name.length === 0);
+    const [loading, setLoading] = useState(false);
 
     return (
         <>
@@ -51,13 +52,18 @@ const AuthForm = ({ headerText, errorMessage, onSubmit, submitButtonText, passwo
                 ? <Text style={styles.errorMessage}> {passwordError} </Text>
                 : null
             } */}
+            {(isApiLoading) && <ActivityIndicator animating={true} size={'large'}/>}
             <View style={styles.buttons}>
                 {
                     // TODO: PWD?
                     (headerText === 'Register')
                         ? <MyButton
                             mode="contained"
-                            onPress={() => onSubmit({ name, email, password })}
+                            onPress={() => {
+                                {/* setLoading(true); */}
+                                onSubmit({ name, email, password })
+                                {/* setLoading(false); */}
+                            }}
                             // disabled={password.length < 6}
                             disabled={name.length === 0 || email.length === 0 || password.length === 0}
                         >
@@ -65,9 +71,14 @@ const AuthForm = ({ headerText, errorMessage, onSubmit, submitButtonText, passwo
                         </MyButton>
                         : <MyButton
                             mode="contained"
-                            onPress={() => onSubmit({ email, password })}
+                            //onPress={() => onSubmit({ email, password })}
+                            onPress={() => {
+                                setLoading(true);
+                                onSubmit({ email, password })
+                                setLoading(false);
+                            }}
                             // disabled={password.length < 6}
-                            disabled={email.length === 0}
+                            disabled={email.length === 0 || password.length === 0}
                         >
                             {submitButtonText}
                         </MyButton>

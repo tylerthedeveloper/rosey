@@ -73,12 +73,14 @@ export default () => {
   const [state, dispatch] = useReducer((state, action) => {
     const { payload } = action;
     switch (action.type) {
+      case 'set_api_loading':
+        return { ...state, isLoading: false, isApiLoading: true };
       case 'add_error':
-        return { ...state, errorMessage: payload };
+        return { ...state, errorMessage: payload, isLoading: false, isApiLoading: false };
       case 'signup':
-        return { errorMessage: '', token: payload.token, user: payload.user, isLoading: false };
+        return { errorMessage: '', token: payload.token, user: payload.user, isLoading: false, isApiLoading: false };
       case 'signin':
-        return { errorMessage: '', token: payload.token, user: payload.user, isLoading: false };
+        return { errorMessage: '', token: payload.token, user: payload.user, isLoading: false, isApiLoading: false };
       case 'update_contact_card':
         // console.log('update_contact_card', action.payload)
         return { ...state, user: action.payload };
@@ -92,13 +94,14 @@ export default () => {
         return state;
     }
   },
-    { isLoading: true, token: null, errorMessage: '', user: {} }
+    { isLoading: true, token: null, isApiLoading: false, errorMessage: '', user: {} }
   );
 
   const authContext = useMemo(() => {
     return {
       signup: async ({ name, email, password }) => {
         try {
+          dispatch({ type: 'set_api_loading' });
           const _user = Constants._generateUser({ name, email, password, userType: 'user' });
           // console.log('_user', _user)
           const response = await roseyApi.post('/auth/signup', { user: _user });
@@ -126,6 +129,7 @@ export default () => {
       signin: async ({ email, password }) => {
         try {
           /* -------------------------------------------------------------------------- */
+          dispatch({ type: 'set_api_loading' });
           const response = await roseyApi.post('/auth/signin', { email, password });
           const { token, user } = response.data;
           await AsyncStorage.multiSet([['token', token], ['user', JSON.stringify(user)]]);
