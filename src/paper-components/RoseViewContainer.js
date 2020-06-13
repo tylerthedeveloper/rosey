@@ -53,6 +53,7 @@ const RoseViewContainer = ({
                     : <RoseForm
                         user={user}
                         isApiLoading={isApiLoading}
+                        errorMessage={errorMessage}
                         form_updateFunction={form_updateFunction}
                         form_updateFunctionText={form_updateFunctionText}
                         form_secondFunction={() => setEditing(false)}

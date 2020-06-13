@@ -74,7 +74,7 @@ export default () => {
     const { payload } = action;
     switch (action.type) {
       case 'set_api_loading':
-        return { ...state,  isApiLoading: true, errorMessage: '' };
+        return { ...state, isApiLoading: true, errorMessage: '' };
       case 'add_error':
         return { ...state, errorMessage: payload, isLoading: false, isApiLoading: false };
       case 'signup':
@@ -82,7 +82,7 @@ export default () => {
       case 'signin':
         return { errorMessage: '', token: payload.token, user: payload.user, isLoading: false, isApiLoading: false };
       case 'update_contact_card':
-        return { ...state, user: action.payload, isApiLoading: false };
+        return { ...state, user: action.payload, isApiLoading: false, errorMessage: '' };
       case 'clear_error_message':
         return { ...state, errorMessage: '' };
       case 'signout': // TODO: User null??? user: null
@@ -128,7 +128,7 @@ export default () => {
       signin: async ({ email, password }) => {
         try {
           /* -------------------------------------------------------------------------- */
-          dispatch({ type: 'set_api_loading' });  
+          dispatch({ type: 'set_api_loading' });
           const response = await roseyApi.post('/auth/signin', { email, password });
           const { token, user } = response.data;
           await AsyncStorage.multiSet([['token', token], ['user', JSON.stringify(user)]]);
@@ -139,7 +139,8 @@ export default () => {
       },
       updateContactCard: async ({ roseObj, callback }) => {
         try {
-          dispatch({ type: 'set_api_loading' });         
+          // console.log('updateContactCard')
+          dispatch({ type: 'set_api_loading' });
           const response = await roseyApi.post('/users/contact_card', { userObj: roseObj });
           const { user } = response.data;
           await AsyncStorage.setItem('user', JSON.stringify(user));

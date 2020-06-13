@@ -1,7 +1,7 @@
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
 import React, { useContext, useState } from 'react';
-import { KeyboardAvoidingView, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { KeyboardAvoidingView, ScrollView, StyleSheet, TouchableOpacity, Text, View } from 'react-native';
 import { GOOGLE_API_KEY } from "react-native-dotenv";
 import { Avatar, Button, Card, Chip, Paragraph, TextInput, Searchbar } from 'react-native-paper';
 import PlacesInput from 'react-native-places-input';
@@ -12,7 +12,6 @@ import { MyTextInput } from '../../paper-components/memo';
 import { SocialIcon } from 'react-native-elements'
 import { ActivityIndicator, Colors } from 'react-native-paper';
 
-
 const RoseForm = ({ user, isApiLoading, errorMessage, props,
     form_updateFunction, form_updateFunctionText,
     form_secondFunction, form_secondFunctionText,
@@ -20,11 +19,8 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
 }) => {
 
     const {
-        birthday, dateMet, email, homeLocation, name, nickName, notes, phoneNumber, placeMetAt, picture, socialProfiles, tags, work, roseId
+        birthday, dateMet, email, homeLocation, name, nickName, notes, phoneNumber, placeMetAt, picture, socialProfiles, tags, work, roseId, _id
     } = user || {};
-
-    // console.log('user.name', user);
-    // alert(`That user has a name of: ${user.name}`);
 
     const { currentLocation, geoCodedLocation } = useCurrentLocation();
     const { state: { tags: contextTags }, addTag } = useContext(TagContext);
@@ -512,8 +508,9 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                         </>
                         : null
                 }
-                {(isApiLoading) && <ActivityIndicator animating={true} size={'large'}/>}
-                <Button disabled={JSON.stringify(user) === JSON.stringify(updatedUser)}
+                {(isApiLoading) && <ActivityIndicator animating={true} size={'large'} />}
+                {(errorMessage) ? <Text style={styles.errorMessage}> {errorMessage} </Text> : null}
+                <Button disabled={JSON.stringify(user) === JSON.stringify(updatedUser) || isApiLoading}
                     onPress={() => {
                         if (!isUserContactCard) _setPlaceMet();
                         form_updateFunction({ roseObj: updatedUser, callback: () => form_updateFunction_callback(updatedUser) })
@@ -573,6 +570,10 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
         marginVertical: 10
     },
+    errorMessage: {
+        color: 'red',
+        margin: 10
+    }
 });
 
 export default RoseForm;
