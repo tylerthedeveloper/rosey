@@ -22,14 +22,16 @@ const RoseViewContainer = ({
     const _setEditing = (editing) => setEditing(editing);
     const isUserContactCard = (view_updateFunctionText === 'Update your contact card');
 
-    let redirectUrl = Linking.makeUrl('main/home/add', { userID: user._id });
+    // let redirectUrl = `http://localhost:3000/users/app'?userID=${user._id}`;
+    const redirectUrl = `https://rosey-server.herokuapp.com/users/app?userID=${user._id}`;
+
     const shareProfile = async () => {
         try {
             // const result =
             await Share.share({
                 title: 'App link',
                 message: 'Share your contact card with existing friends',
-                url: redirectUrl 
+                url: redirectUrl
             });
         } catch (error) {
             alert(error.message);

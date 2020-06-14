@@ -33,6 +33,7 @@ export default () => {
   useEffect(() => {
     Linking.getInitialURL().then(url => {
       const { path, queryParams: { userID } } = Linking.parse(url);
+      // console.log('path, user', path, userID);
       if (path === 'main/home/add' && (userID !== '' && userID !== undefined && userID !== null)) {
         setTimeout(() => navigate('AddRose', { shared: true, userID }), 0);
       }

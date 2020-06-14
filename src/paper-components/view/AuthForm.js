@@ -79,14 +79,6 @@ const AuthForm = ({ headerText, errorMessage, isApiLoading, onSubmit, submitButt
 }
 
 const styles = StyleSheet.create({
-    buttons: {
-        // padding: 15,
-        // minWidth: '70%',
-        // maxWidth: '85%',
-        // alignSelf: 'center',
-        // alignItems: 'center',
-        // justifyContent: 'center',
-    },
     errorMessage: {
         color: 'red',
         margin: 10
