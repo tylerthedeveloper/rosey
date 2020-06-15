@@ -169,7 +169,6 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
     }
 
     const [newTag, setNewTag] = useState('');
-    // console.log(updated_tags);
 
     const _makeLocationObject = (locationObject, locationType, locationSetter) => {
         if (locationType.includes('default')) {
@@ -207,7 +206,6 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
 
     const _setPlaceMet = () => {
         if (!Object.keys(updatedUser.placeMetAt).length > 0) {
-            // console.log('please set me!!');
             updatedUser.placeMetAt = {
                 placeMetAtFormatted_address: geoCodedLocation,
                 placeMetAtLocationCoords: {
@@ -264,7 +262,6 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
     // ────────────────────────────────────────────────────────────────────────────────
 
     // FIXME:
-    // console.log(socialProfiles);
     // console.log(JSON.stringify(user), JSON.stringify(updatedUser));
 
     return (

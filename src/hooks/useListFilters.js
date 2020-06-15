@@ -17,7 +17,7 @@ export default () => {
     const [selectedTags, setSelectedTags] = useState([]);
 
     const toggledSelected = (tag, idx) => {
-        const str = (tag + idx);
+        // const str = (tag + idx);
         if (!selectedTags.includes(tag)) {
             setSelectedTags([...selectedTags, tag]);
             filterItems(tag, 'tag', [...selectedTags, tag]);
@@ -37,7 +37,6 @@ export default () => {
         } else {
             setFilterToggle(false);
             const sortedRoses = roses.sort((a, b) => {
-                // console.log(a[filterValue], b[filterValue], a[filterValue].toString().localeCompare(b[filterValue].toString()));
                 return a[filterValue].toString().localeCompare(b[filterValue].toString());
             })
             // const sortedRoses = roses.sort((a, b) => a[filterValue]- b[filterValue])

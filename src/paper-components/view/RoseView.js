@@ -128,7 +128,6 @@ const RoseView = ({ user, isApiLoading, view_updateFunction, view_updateFunction
     // https://app.urlgeni.us/
 
     const { facebook, linkedin, instagram, medium, snapchat, twitter, whatsapp } = socialProfiles || {};
-    // console.log(socialProfiles);
 
     // https://pureoxygenlabs.com/10-app-url-schemes-for-marketers/
     const socialLinkedIcons = [

@@ -10,7 +10,6 @@ const AddRoseScreen = ({ navigation, route }) => {
 
     const { addRose } = useContext(RoseContext);
     const { shared, userID } = route.params || {};
-    console.log(shared, userID);
 
     const [user, setUser] = useState({});
     const [dialogVisible, setDialogVisible] = useState(false);
@@ -19,7 +18,6 @@ const AddRoseScreen = ({ navigation, route }) => {
         try {
             const response = await roseyApi.post(`/users/share`, { userID });
             const { user } = response.data;
-            // console.log(response.data);
             _showDialog();
             setUser(user);
         } catch (e) {
