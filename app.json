@@ -31,6 +31,7 @@
         "NSLocationWhenInUseUsageDescription": "Allow Rozy to use your location so you can easily add location to your roses",
         "NSCalendarsUsageDescription": "Allow Rozy to interact with your calendar so you can save special events",
         "NSContactsUsageDescription": "Allow Rozy to interact with your contacts so you can import and export your contacts for a more seamless app experience.",
+        "NSCameraUsageDescription": "Allow Rozy to use the camera to scan barcodes so you can quickly add other's roses!",
         "LSApplicationQueriesSchemes": [
           "fb",
           "linkedin",
