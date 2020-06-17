@@ -1,4 +1,3 @@
-import { Linking } from 'expo';
 import React, { useState } from 'react';
 import { Share, StyleSheet } from 'react-native';
 import { Card } from 'react-native-paper';

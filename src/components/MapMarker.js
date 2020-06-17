@@ -1,5 +1,5 @@
 import React from 'react';
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, View, Image } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { Avatar } from 'react-native-paper';
 import { MyButton } from '../paper-components/memo';
@@ -10,8 +10,13 @@ const MapMarker = ({ props, roseId, coords, address, name, tags, navigationCallb
         <Marker
             coordinate={coords}
             title={name + " @ " + address}
-            image={require('../../assets/rose-marker.png')}
+        //image={require('../../assets/rose-marker.png')}
         >
+            <Image
+                source={require('../../assets/rose-marker.png')}
+                style={{ width: 60, height: 60 }}
+                resizeMode="contain"
+            />
             <MapView.Callout
                 onPress={() => navigationCallback(roseId)}
                 tooltip={false}
