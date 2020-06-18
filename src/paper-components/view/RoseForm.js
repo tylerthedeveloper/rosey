@@ -37,6 +37,8 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
     const [updated_homeLocation, setUpdated_homeLocation] = useState(homeLocation || {});
     const [updated_placeMetAt, setUpdated_placeMetAt] = useState(placeMetAt || {});
 
+    const isPhoneValid = (updated_phoneNumber.length > 0 && updated_phoneNumber.length !== 10);
+
     const { facebook, linkedin, instagram, medium, snapchat, twitter, whatsapp } = socialProfiles || {};
 
     const [updated_facebook, setFacebook] = useState(facebook || '');
@@ -334,6 +336,7 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                                     autoCompleteType={"off"}
                                     onChangeText={editFunc}
                                     multiline={multiline}
+                                    disabled={subtitle === "email" && isUserContactCard}
                                     keyboardType={keyboardType}
                                 />
                             </Card.Actions>
@@ -506,8 +509,9 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                         : null
                 }
                 {(isApiLoading) && <ActivityIndicator animating={true} size={'large'} />}
+                {(isPhoneValid) ? <Text style={styles.errorMessage}> Phone # must be 10 digits </Text> : null}
                 {(errorMessage) ? <Text style={styles.errorMessage}> {errorMessage} </Text> : null}
-                <Button disabled={JSON.stringify(user) === JSON.stringify(updatedUser) || isApiLoading}
+                <Button disabled={JSON.stringify(user) === JSON.stringify(updatedUser) || isApiLoading || isPhoneValid}
                     onPress={() => {
                         if (!isUserContactCard) _setPlaceMet();
                         form_updateFunction({ roseObj: updatedUser, callback: () => form_updateFunction_callback(updatedUser) })
