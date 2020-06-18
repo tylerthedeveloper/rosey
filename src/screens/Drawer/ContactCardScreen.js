@@ -4,10 +4,10 @@ import RoseViewContainer from '../../paper-components/RoseViewContainer';
 
 const ContactCardScreen = () => {
 
-    const { state: { user }, updateContactCard, signout } = useContext(AuthContext);
+    const { state: { user, isApiLoading, errorMessage }, updateContactCard, signout } = useContext(AuthContext);
     return (
         <RoseViewContainer {...{
-            user, 
+            user, isApiLoading, errorMessage,
             view_updateFunctionText: "Update your contact card",
             view_secondFunction: signout, view_secondFunctionText: "Logout",
             form_updateFunction: updateContactCard, form_updateFunctionText: "Save contact card",

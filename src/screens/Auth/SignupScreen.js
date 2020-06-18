@@ -7,7 +7,7 @@ import { Background } from '../../paper-components/memo';
 
 const SignupScreen = ({ navigation }) => {
 
-    const { state: { errorMessage }, signup, clearErrorMessage } = useContext(AuthContext);
+    const { state: { errorMessage, isApiLoading }, signup, clearErrorMessage } = useContext(AuthContext);
     useEffect(() => navigation.addListener('focus', clearErrorMessage), []);
 
     return (
@@ -18,6 +18,7 @@ const SignupScreen = ({ navigation }) => {
                 errorMessage={errorMessage}
                 onSubmit={signup}
                 passwordError={"Password length must be greater than 6 characters"}
+                isApiLoading={isApiLoading}
             />
             <View style={styles.row}>
                 <Text style={styles.label}>Already have an account? </Text>

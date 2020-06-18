@@ -9,7 +9,7 @@ import { AuthContext } from '../context/AuthContext';
 import { Context as TagContext } from '../context/TagContext';
 import { theme } from '../core/theme';
 import { AddRoseScreen, RoseDetailScreen } from '../screens';
-import { ContactCardScreen, ContactsScreen, TagScreen } from '../screens/Drawer';
+import { ContactCardScreen, ContactsScreen, QRCodeScreen, TagScreen } from '../screens/Drawer';
 import { BottomTabNavigator } from './Tabs';
 
 import { Context as ContactsContext } from '../context/ContactsContext';
@@ -40,7 +40,6 @@ export const RootStackNavigator = () => {
     useEffect(() => {
         getImportedContacts();
         getInitialTags();
-        // console.log('root')
     }, []);
 
     // TODO: Do i care about middle names??
@@ -103,7 +102,6 @@ export const RootStackNavigator = () => {
                 name="Main"
                 component={BottomTabNavigator}
                 options={({ navigation, route }) => {
-                    // console.log('!@# options', { route });
                     const routeName = route.state
                         ? route.state.routes[route.state.index].name
                         : 'Home';
@@ -112,6 +110,7 @@ export const RootStackNavigator = () => {
             />
             <RootStack.Screen
                 name="AddRose"
+                path="addrose"
                 component={AddRoseScreen}
                 options={{ headerTitle: 'Add Rose' }}
             />
@@ -135,6 +134,11 @@ export const RootStackNavigator = () => {
                 name="TagScreen"
                 component={TagScreen}
                 options={{ headerTitle: 'Tags' }}
+            />
+            <RootStack.Screen
+                name="QRCode"
+                component={QRCodeScreen}
+                options={{ headerTitle: 'QRCode' }}
             />
         </RootStack.Navigator>
     )

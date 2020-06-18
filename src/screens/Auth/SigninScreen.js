@@ -8,7 +8,7 @@ import { AuthForm } from '../../paper-components/view';
 
 const SigninScreen = ({ navigation }) => {
 
-    const { state: { errorMessage }, signin, clearErrorMessage } = useContext(AuthContext);
+    const { state: { errorMessage, isApiLoading }, signin, clearErrorMessage } = useContext(AuthContext);
     useEffect(() => navigation.addListener('focus', () => {
         clearErrorMessage();
     }), []);
@@ -20,6 +20,7 @@ const SigninScreen = ({ navigation }) => {
                 submitButtonText="Sign In"
                 errorMessage={errorMessage}
                 onSubmit={signin}
+                isApiLoading={isApiLoading}
                 passwordError={"Password length must be greater than 6 characters"}
             />
             <View style={styles.row}>

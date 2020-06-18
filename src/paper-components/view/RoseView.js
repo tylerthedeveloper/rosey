@@ -8,18 +8,18 @@ import moment from 'moment';
 import { SocialIcon } from 'react-native-elements'
 import { Tooltip, Text } from 'react-native-elements';
 
-const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
+const RoseView = ({ user, isApiLoading, view_updateFunction, view_updateFunctionText,
     view_secondFunction, view_secondFunctionText,
     view_updateFunction_callback
 }) => {
-
+    
     const { birthday, dateMet, email, homeLocation, name, nickName, notes, phoneNumber, placeMetAt, picture, socialProfiles, tags, work } = user || {};
     const { homeLocationCoords, homeFormatted_address, homeLocationName } = homeLocation || {};
     const { placeMetAtLocationCoords, placeMetAtFormatted_address, placeMetAtName } = placeMetAt || {};
 
     const { createContact } = useContacts();
     const { createEvent } = useCalendar();
-    
+
     // TODO: move to constants?
     //
     // ─── FUNCTIONS ──────────────────────────────────────────────────────────────────
@@ -27,6 +27,7 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
     const _formatPhonenumber = (phone) => {
         const cleaned = ('' + phone).replace(/\D/g, '')
         const match = cleaned.match(/^(1|)?(\d{3})(\d{3})(\d{4})$/)
+        // console.log('hone', phone, match)
         if (match) {
             const intlCode = (match[1] ? '+1 ' : '');
             const formattedNumber = [intlCode, '(', match[2], ') ', match[3], '-', match[4]].join('');
@@ -127,7 +128,6 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
     // https://app.urlgeni.us/
 
     const { facebook, linkedin, instagram, medium, snapchat, twitter, whatsapp } = socialProfiles || {};
-    // console.log(socialProfiles);
 
     // https://pureoxygenlabs.com/10-app-url-schemes-for-marketers/
     const socialLinkedIcons = [
@@ -141,7 +141,7 @@ const RoseView = ({ user, view_updateFunction, view_updateFunctionText,
     ];
 
     return (
-        <ScrollView>
+        <ScrollView style={{ marginBottom: 15 }}>
             {/* Social Section */}
             <View style={styles.socialMediaSection}>
                 {

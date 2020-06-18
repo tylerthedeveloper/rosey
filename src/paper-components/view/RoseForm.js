@@ -1,7 +1,7 @@
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
 import React, { useContext, useState } from 'react';
-import { KeyboardAvoidingView, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { KeyboardAvoidingView, ScrollView, StyleSheet, TouchableOpacity, Text, View } from 'react-native';
 import { GOOGLE_API_KEY } from "react-native-dotenv";
 import { Avatar, Button, Card, Chip, Paragraph, TextInput, Searchbar } from 'react-native-paper';
 import PlacesInput from 'react-native-places-input';
@@ -10,20 +10,19 @@ import { Context as TagContext } from '../../context/TagContext';
 import useCurrentLocation from '../../hooks/useCurrentLocation';
 import { MyTextInput } from '../../paper-components/memo';
 import { SocialIcon } from 'react-native-elements'
+import { ActivityIndicator, Colors } from 'react-native-paper';
 
-const RoseForm = ({ user, props,
+const RoseForm = ({ user, isApiLoading, errorMessage, props,
     form_updateFunction, form_updateFunctionText,
     form_secondFunction, form_secondFunctionText,
     form_updateFunction_callback
 }) => {
 
     const {
-        birthday, dateMet, email, homeLocation, name, nickName, notes, phoneNumber, placeMetAt, picture, socialProfiles, tags, work, roseId
+        birthday, dateMet, email, homeLocation, name, nickName, notes, phoneNumber, placeMetAt, picture, socialProfiles, tags, work, roseId, _id
     } = user || {};
 
     const { currentLocation, geoCodedLocation } = useCurrentLocation();
-    // console.log(geoCodedLocation);
-
     const { state: { tags: contextTags }, addTag } = useContext(TagContext);
 
     const [updated_birthday, setBirthday] = useState(birthday || new Date(Date.now()));
@@ -170,7 +169,6 @@ const RoseForm = ({ user, props,
     }
 
     const [newTag, setNewTag] = useState('');
-    // console.log(updated_tags);
 
     const _makeLocationObject = (locationObject, locationType, locationSetter) => {
         if (locationType.includes('default')) {
@@ -208,7 +206,6 @@ const RoseForm = ({ user, props,
 
     const _setPlaceMet = () => {
         if (!Object.keys(updatedUser.placeMetAt).length > 0) {
-            // console.log('please set me!!');
             updatedUser.placeMetAt = {
                 placeMetAtFormatted_address: geoCodedLocation,
                 placeMetAtLocationCoords: {
@@ -253,12 +250,19 @@ const RoseForm = ({ user, props,
 
     if (isUserContactCard) {
         updatedUser.dateMet = undefined;
+        updatedUser.placeMetAt = undefined;
         updatedUser.notes = undefined;
+
+        // TODO:? KEEP?
         updatedUser.tags = undefined;
+        ///
+
+        updatedUser.roseId = undefined;
     }
     // ────────────────────────────────────────────────────────────────────────────────
 
-    // console.log(socialProfiles);
+    // FIXME:
+    // console.log(JSON.stringify(user), JSON.stringify(updatedUser));
 
     return (
         <KeyboardAvoidingView
@@ -501,9 +505,11 @@ const RoseForm = ({ user, props,
                         </>
                         : null
                 }
-                <Button disabled={JSON.stringify(user) === JSON.stringify(updatedUser)}
+                {(isApiLoading) && <ActivityIndicator animating={true} size={'large'} />}
+                {(errorMessage) ? <Text style={styles.errorMessage}> {errorMessage} </Text> : null}
+                <Button disabled={JSON.stringify(user) === JSON.stringify(updatedUser) || isApiLoading}
                     onPress={() => {
-                        _setPlaceMet();
+                        if (!isUserContactCard) _setPlaceMet();
                         form_updateFunction({ roseObj: updatedUser, callback: () => form_updateFunction_callback(updatedUser) })
                     }}>
                     {form_updateFunctionText || 'Save'}
@@ -517,9 +523,9 @@ const RoseForm = ({ user, props,
                 >
                     {form_secondFunctionText}
                 </Button>
-            </ScrollView >
+            </ScrollView>
             <Spacer />
-        </KeyboardAvoidingView >
+        </KeyboardAvoidingView>
     );
 }
 
@@ -540,7 +546,8 @@ const styles = StyleSheet.create({
     },
     sectionTitle: {
         fontWeight: 'bold',
-        marginVertical: 10
+        marginVertical: 10,
+        marginLeft: 8
     },
     chips: {
         alignItems: 'center',
@@ -560,6 +567,10 @@ const styles = StyleSheet.create({
         justifyContent: 'space-around',
         marginVertical: 10
     },
+    errorMessage: {
+        color: 'red',
+        margin: 10
+    }
 });
 
 export default RoseForm;

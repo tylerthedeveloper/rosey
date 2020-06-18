@@ -2,13 +2,13 @@ import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-elements';
 import { Logo, MyButton, MyHeader, MyTextInput } from '../../paper-components/memo';
+import { ActivityIndicator, Colors } from 'react-native-paper';
 
-const AuthForm = ({ headerText, errorMessage, onSubmit, submitButtonText, passwordError }) => {
+const AuthForm = ({ headerText, errorMessage, isApiLoading, onSubmit, submitButtonText, passwordError }) => {
 
     const [name, setName] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    // const [shouldBeDisabled, setShouldBeDisabled] = useState(email.length === 0 || name.length === 0);
 
     return (
         <>
@@ -40,34 +40,36 @@ const AuthForm = ({ headerText, errorMessage, onSubmit, submitButtonText, passwo
                 // onSubmitEditing={() => { secondTextInput.focus(); }}
                 returnKeyType={"next"}
             />
-            {/* <MyTextInput label="Password"
+            <MyTextInput label="Password"
                 value={password}
                 onChangeText={setPassword}
                 autoCorrect={false}
                 secureTextEntry
-            /> */}
+            />
             {(errorMessage) ? <Text style={styles.errorMessage}> {errorMessage} </Text> : null}
             {/* {(password.length < 6)
                 ? <Text style={styles.errorMessage}> {passwordError} </Text>
                 : null
             } */}
+            {(isApiLoading) && <ActivityIndicator animating={true} size={'large'} />}
             <View style={styles.buttons}>
                 {
                     // TODO: PWD?
                     (headerText === 'Register')
                         ? <MyButton
                             mode="contained"
-                            onPress={() => onSubmit({ name, email })}
+                            onPress={() => onSubmit({ name, email, password })}
                             // disabled={password.length < 6}
-                            disabled={name.length === 0 || email.length === 0}
+                            disabled={name.length === 0 || email.length === 0 ||
+                                password.length === 0 || isApiLoading}
                         >
                             {submitButtonText}
                         </MyButton>
                         : <MyButton
                             mode="contained"
-                            onPress={() => onSubmit({ email })}
+                            onPress={() => onSubmit({ email, password })}
                             // disabled={password.length < 6}
-                            disabled={email.length === 0}
+                            disabled={email.length === 0 || password.length === 0 || isApiLoading}
                         >
                             {submitButtonText}
                         </MyButton>
@@ -77,14 +79,6 @@ const AuthForm = ({ headerText, errorMessage, onSubmit, submitButtonText, passwo
 }
 
 const styles = StyleSheet.create({
-    buttons: {
-        // padding: 15,
-        // minWidth: '70%',
-        // maxWidth: '85%',
-        // alignSelf: 'center',
-        // alignItems: 'center',
-        // justifyContent: 'center',
-    },
     errorMessage: {
         color: 'red',
         margin: 10

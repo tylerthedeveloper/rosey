@@ -21,7 +21,6 @@ export default () => {
             if (data.length > 0) {
                 const _dict = Object.assign({}, ...data/**.slice(0, 1000)*/.map((ct) => {
                     if (ct['name']) {
-                        // console.log(ct['name'], ct['emails'][0]['email']);
                         const phoneNumbers = ct['phoneNumbers'];
                         const emails = ct['emails'];
                         if (phoneNumbers !== undefined && phoneNumbers.length > 0 && ct['name'] !== phoneNumbers[0]['number']) {
