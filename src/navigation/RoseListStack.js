@@ -9,7 +9,7 @@ const ListStack = createStackNavigator();
 export const roseListStack = ({ navigation }) => {
     return (
         <ListStack.Navigator headerMode="none">
-            <ListStack.Screen name="RoseList" component={RoseListScreen} 
+            <ListStack.Screen name="RoseList" component={RoseListScreen}
                 
             />
             {/* <ListStack.Screen name="RoseDetail" component={RoseDetailScreen}

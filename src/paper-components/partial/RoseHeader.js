@@ -3,19 +3,12 @@ import { ImageBackground, StyleSheet } from 'react-native';
 import { Avatar, Card, Paragraph, Title, IconButton } from 'react-native-paper';
 import { theme } from '../../core/theme';
 
-const RoseHeader = ({ name, picture, homeCity, homeState, homeCountry }) => (
+const RoseHeader = ({ name, picture, homeCity, homeState, homeCountry, isUserContactCard, editing, _setEditing, shareProfile }) => (
     <ImageBackground
         // source={{ uri: 'https://picsum.photos/700' }}
         source={require('../../../assets/background_dot_2x.png')}
         resizeMode="repeat"
         style={styles.headerBackgroundImage}>
-            {/* <IconButton
-                icon="pencil"
-                //color={Colors.red500}
-                size={20}
-                onPress={() => console.log('Pressed')}
-                style={{ right: 10, alignSelf: 'flex-end', position: 'absolute' }}
-            /> */}
         <Card.Content style={{ alignSelf: 'center', alignItems: 'center' }}>
             <Avatar.Image
                 style={styles.avatar}
@@ -28,6 +21,21 @@ const RoseHeader = ({ name, picture, homeCity, homeState, homeCountry }) => (
             <Title style={styles.userNameText}>{name || 'No-name!'}</Title>
             {/* <Paragraph style={styles.userCityText}>{homeCity || '(city)'}, {homeState || '(state)'}, {homeCountry || '(country)'}</Paragraph> */}
         </Card.Content>
+        <IconButton
+            icon={editing ? "close-circle" : "pencil"}
+            size={25}
+            onPress={() => _setEditing(!editing)}
+            style={{ right: 10, top: 5, alignSelf: 'flex-end', position: 'absolute' }}
+        />
+        {
+            (isUserContactCard) &&
+            <IconButton
+                icon="share"
+                size={25}
+                onPress={shareProfile}
+                style={{ right: 10, top: 120, alignSelf: 'flex-end', position: 'absolute' }}
+            />
+        }
     </ImageBackground>
 );
 

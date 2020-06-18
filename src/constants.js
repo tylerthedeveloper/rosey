@@ -1,7 +1,7 @@
 import shortid from 'shortid';
 
 export default {
-    _generateUser: ({ name, email, userType }) => {
+    _generateUser: ({ name, email, password, userType }) => {
         let newUser = {
             birthday: new Date(Date.now()),
             email: email || '',
@@ -25,16 +25,19 @@ export default {
             },
             work: ''
         };
-        if (userType !== 'user') {
+        // console.log('password', password);
+        if (userType === 'user') {
+            newUser.password = password;
+        } else if (userType !== 'user') {
             newUser = {
-                ...newUser, 
+                ...newUser,
                 dateMet: new Date(Date.now()),
                 placeMetAt: {
-                  placeMetAtLocationCoords: { latitude: -369, longitude: -369 },
-                  placeMetAtFormatted_address: '',
-                  placeMetAtName: ''
+                    placeMetAtLocationCoords: { latitude: -369, longitude: -369 },
+                    placeMetAtFormatted_address: '',
+                    placeMetAtName: ''
                 },
-                tags: '',
+                tags: [],
             }
         };
         return newUser;

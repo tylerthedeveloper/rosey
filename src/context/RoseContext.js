@@ -38,13 +38,10 @@ const addRose = (dispatch) => async ({ roseObj, callback }) => {
         /* -------------------------------------------------------------------------- */
         const roseId = (roseObj.name) ? shortid.generate(roseObj.name) : shortid.generate();
         roseObj.roseId = roseId;
-        // console.log('added rose', roseObj)
         // FIXME: PULL FROM CURRENT STATE???
         const roses = await AsyncStorage.getItem('roses')
             .then(req => JSON.parse(req));
-        // console.log('roses from added', roses);
         const updatedRoseList = [...(roses || []), roseObj];
-        // console.log(' updatedRoseList', updatedRoseList);
         await AsyncStorage.setItem('roses', JSON.stringify(updatedRoseList));
         dispatch({ type: "add_rose", payload: roseObj });
         callback(roseObj);
@@ -55,7 +52,6 @@ const addRose = (dispatch) => async ({ roseObj, callback }) => {
 }
 
 const _extractContactToRose = (contact) => {
-    // console.log('contact', contact)
     const { company, emails, name, nickname, phoneNumbers } = contact;
     let email = (emails && emails.length > 0) ? emails[0]['email'] : '';
     const newRose = Constants._generateUser({ name, email });
@@ -82,13 +78,10 @@ const batch_addRoses = (dispatch) => async ({ contactList, callback }) => {
         // const response = await roseyApi.post('/roses', roseData);
         // const newRose = response.data.rose;
         /* -------------------------------------------------------------------------- */
-        // console.log('contactList', contactList)
         const newContactsConveretedToRoses = contactList.map(ct => _extractContactToRose(ct));
-        // console.log('newContactsConveretedToRoses', newContactsConveretedToRoses);
         const roses = await AsyncStorage.getItem('roses')
             .then(req => JSON.parse(req));
         const updatedRoseList = [...(roses || []), ...newContactsConveretedToRoses];
-        // console.log(' updatedRoseList', updatedRoseList);
         await AsyncStorage.setItem('roses', JSON.stringify(updatedRoseList));
         dispatch({ type: "add_batch_roses", payload: newContactsConveretedToRoses });
         callback();
@@ -104,10 +97,8 @@ const editRose = (dispatch) => async ({ roseObj, callback }) => {
         // const response = await roseyApi.post('/roses', roseData);
         // const newRose = response.data.rose;
         /* -------------------------------------------------------------------------- */
-        // console.log('current rose', roseObj);
         const roses = await AsyncStorage.getItem('roses')
             .then(req => JSON.parse(req));
-        // console.log('roses', roses);
         const updatedRoseList = roses.map(rose => {
             // console.log(rose.name, roseObj.roseId, rose.roseId)
             if (rose.roseId && roseObj.roseId === rose.roseId) {
@@ -115,7 +106,6 @@ const editRose = (dispatch) => async ({ roseObj, callback }) => {
             }
             return rose;
         });
-        // console.log('updatedRoseList', updatedRoseList);
         await AsyncStorage.setItem('roses', JSON.stringify(updatedRoseList));
         dispatch({ type: "edit_rose", payload: updatedRoseList });
         callback(roseObj);

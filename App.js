@@ -1,39 +1,89 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import React, { useEffect, useMemo, useReducer, useContext } from 'react';
+import { Linking } from 'expo';
+import * as Location from 'expo-location';
+import React, { useEffect, useMemo, useReducer } from 'react';
 import { AsyncStorage } from 'react-native';
+import ErrorBoundary from 'react-native-error-boundary';
 import { Provider as PaperProvider } from 'react-native-paper';
-import { Auth } from "./src/navigation/Auth";
+// Screens
 import { App } from "./src/navigation/AppDrawer";
-import { isMountedRef, navigationRef } from './RootNavigation'; // TODO: Move into navigation
+import { Auth } from "./src/navigation/Auth";
+import { ResolveAuthScreen } from './src/screens/Auth';
+// Helpers
+import { isMountedRef, navigate, navigationRef } from './RootNavigation'; // TODO: Move into navigation
+import roseyApi from './src/api/roseyApi';
+import Constants from "./src/constants";
 // Context and PROVIDERS
 import { AuthContext } from './src/context/AuthContext';
-import { Provider as TagProvider } from './src/context/TagContext';
 import { Provider as ContactProvider } from './src/context/ContactsContext';
 import { Provider as RoseProvider } from './src/context/RoseContext';
+import { Provider as TagProvider } from './src/context/TagContext';
 import theme from './src/core/theme';
-import { ResolveAuthScreen } from './src/screens/Auth';
-import ErrorBoundary from 'react-native-error-boundary'
-import Constants from "./src/constants";
-import * as Location from 'expo-location';
+
+// const prefix = Linking.makeUrl('/');
 
 export default () => {
 
-  const AppStack = createStackNavigator();
+  useEffect(() => {
+    isMountedRef.current = true;
+    return () => (isMountedRef.current = false);
+  }, []);
+
+  useEffect(() => {
+    Linking.getInitialURL().then(url => {
+      const { path, queryParams: { userID } } = Linking.parse(url);
+      // console.log('path, user', path, userID);
+      if (path === 'main/home/add' && (userID !== '' && userID !== undefined && userID !== null)) {
+        setTimeout(() => navigate('AddRose', { shared: true, userID }), 0);
+      }
+    })
+  }, [])
+
+  const _handleOpenURL = (event) => {
+    const { path, queryParams: { userID } } = Linking.parse(event.url);
+    if (path === 'main/home/add' && (userID !== '' && userID !== undefined && userID !== null)) {
+      navigate('AddRose', { shared: true, userID });
+    }
+  }
+
+  // const ref = React.useRef();
+  // const { getInitialState } = useLinking(ref, {
+  //   prefixes: [prefix],
+  //   config: {
+  //     App: {
+  //       path: 'main',
+  //       screens: {
+  //         Home: {
+  //           path: 'home',
+  //           screens: {
+  //             AddRose: 'add'
+  //           }
+  //         },
+  //       }
+  //     }
+  //   }
+  // });
+
+  useEffect(() => {
+    Linking.addEventListener('url', _handleOpenURL);
+    // console.log('listener');
+    return () => (Linking.removeEventListener('url', _handleOpenURL));
+  }, [])
 
   const [state, dispatch] = useReducer((state, action) => {
+    const { payload } = action;
     switch (action.type) {
+      case 'set_api_loading':
+        return { ...state, isApiLoading: true, errorMessage: '' };
       case 'add_error':
-        return { ...state, errorMessage: action.payload };
+        return { ...state, errorMessage: payload, isLoading: false, isApiLoading: false };
       case 'signup':
+        return { errorMessage: '', token: payload.token, user: payload.user, isLoading: false, isApiLoading: false };
       case 'signin':
-        /* -------------------------------------------------------------------------- */
-        // const { token, user } = action.payload;
-        // return { errorMessage: '', token, user, isLoading: false };
-        /* -------------------------------------------------------------------------- */
-        return { errorMessage: '', user: action.payload, isLoading: false };
+        return { errorMessage: '', token: payload.token, user: payload.user, isLoading: false, isApiLoading: false };
       case 'update_contact_card':
-        return { ...state, user: action.payload };
+        return { ...state, user: action.payload, isApiLoading: false, errorMessage: '' };
       case 'clear_error_message':
         return { ...state, errorMessage: '' };
       case 'signout': // TODO: User null??? user: null
@@ -44,93 +94,89 @@ export default () => {
         return state;
     }
   },
-    { isLoading: true, token: null, errorMessage: '', user: {} }
+    { isLoading: true, token: null, isApiLoading: false, errorMessage: '', user: {} }
   );
 
   const authContext = useMemo(() => {
     return {
       signup: async ({ name, email, password }) => {
         try {
-          /* -------------------------------------------------------------------------- */
-          // const response = await roseyApi.post('/signup', { email, password });
-          // const { token, user } = response.data;
-          // await AsyncStorage.multiSet([['token', token], ['user', JSON.stringify(user)]]);
-          // dispatch({ type: 'signup', payload: { token, user } });
-          /* -------------------------------------------------------------------------- */
-          const user =  Constants._generateUser({ name, email, userType: 'user' });
-          // console.log('sign up user', user);
-          await AsyncStorage.setItem('user', JSON.stringify(user));
-          dispatch({ type: 'signup', payload: user });
+          dispatch({ type: 'set_api_loading' });
+          const _user = Constants._generateUser({ name, email, password, userType: 'user' });
+          // console.log('_user', _user)
+          const response = await roseyApi.post('/auth/signup', { user: _user });
+          const { token, user } = response.data;
+          // console.log(token, user);
+          await AsyncStorage.multiSet([['token', token], ['user', JSON.stringify(user)]]);
+          dispatch({ type: 'signup', payload: { token, user } });
+          // dispatch({ type: 'signup', payload: user });
         } catch (err) {
-          // console.log('RESPONSE', err.response.data.message);
-          // const { message } = err.response.data;
-          dispatch({ type: 'add_error', payload: err.message || 'Something went wrong with sign up' });
+          // FIXME: if necessary, tell user duplicate email 
+          // if (err.message.includes('duplicate')) {
+
+          // }
+          dispatch({ type: 'add_error', payload: "Something went wrong with sign up, consider trying a different email" });
         }
       },
+      // TODO: 
+      // 1. check if user exists locally
+      // share local user...
+      // set timeout
+      // fech API
+      // check if users are different
+      // same == do notjing
+      // different reset
       signin: async ({ email, password }) => {
-        // FIXME: work without API
         try {
           /* -------------------------------------------------------------------------- */
-          // const response = await roseyApi.post('/signin', { email, password });
-          // const { token, user } = response.data;
-          // await AsyncStorage.multiSet([['token', token], ['user', JSON.stringify(user)]]);
-          // dispatch({ type: 'signin', payload: { token, user } });
-          /* -------------------------------------------------------------------------- */
-          const user = await AsyncStorage.getItem('user');
-          if (!user) {
-            const _user = Constants._generateUser({ email, userType: 'user' });
-            await AsyncStorage.setItem('user', JSON.stringify(_user));
-            dispatch({ type: 'signin', payload: _user });
-          } else {
-            dispatch({ type: 'signin', payload: JSON.parse(user) });
-          }
+          dispatch({ type: 'set_api_loading' });
+          const response = await roseyApi.post('/auth/signin', { email, password });
+          const { token, user } = response.data;
+          await AsyncStorage.multiSet([['token', token], ['user', JSON.stringify(user)]]);
+          dispatch({ type: 'signin', payload: { token, user } });
         } catch (err) {
-          dispatch({ type: 'add_error', payload: 'Something went wrong with sign in' });
+          dispatch({ type: 'add_error', payload: 'Something went wrong with sign in, please check your spelling and try again' });
         }
       },
       updateContactCard: async ({ roseObj, callback }) => {
         try {
-          /* -------------------------------------------------------------------------- */
-          // const response = await roseyApi.post('/contact_card', userData);
-          // const updatedUserObj = response.data;
-          /* -------------------------------------------------------------------------- */
-          await AsyncStorage.setItem('user', JSON.stringify(roseObj));
-          dispatch({ type: 'update_contact_card', payload: roseObj });
+          // console.log('updateContactCard')
+          dispatch({ type: 'set_api_loading' });
+          const response = await roseyApi.post('/users/contact_card', { userObj: roseObj });
+          const { user } = response.data;
+          await AsyncStorage.setItem('user', JSON.stringify(user));
+          dispatch({ type: 'update_contact_card', payload: user });
           if (callback) {
             callback();
           }
         } catch (err) {
-          dispatch({ type: 'add_error', payload: 'Something went wrong with sign in' });
+          console.log(err);
+          dispatch({ type: 'add_error', payload: 'Something went wrong editng contact card' });
         }
       },
       // TODO: what about if token exists and user doesnt?
       tryLocalSignin: async () => {
-        // console.log('tryLocalSignin');
+        console.log('tryLocalSignin');
+        // await AsyncStorage.removeItem('user');
+        // await AsyncStorage.removeItem('token');
+        // await AsyncStorage.removeItem('roses');
         try {
           /* -------------------------------------------------------------------------- */
-          // const storageArr = await AsyncStorage.multiGet(['token', 'user']);
-          // if (storageArr) {
-          //   const token = storageArr[0][1];
-          //   const user = storageArr[1][1];
-          //   // console.log('tryLocalSignin', JSON.parse(user).user)
-          //   // FIXME: will this fail if user never flushed to data cache?
-          //   if (token && user) {
-          //     dispatch({ type: 'signin', payload: { token, user: JSON.parse(user).user } });
-          //   } else {
-          //     dispatch({ type: 'need_to_signin' });
-          //   }
-          // }
-          /* -------------------------------------------------------------------------- */
-          // await AsyncStorage.removeItem('user');
-          const user = await AsyncStorage.getItem('user');
-          // console.log(user)
-          if (user) {
-            dispatch({ type: 'signin', payload: JSON.parse(user) });
-          } else {
-            // console.log('need_to_signin')
-            dispatch({ type: 'need_to_signin' });
+          const storageArr = await AsyncStorage.multiGet(['token', 'user']);
+          if (storageArr) {
+            const token = storageArr[0][1];
+            const userObj = storageArr[1][1];
+            // FIXME: will this fail if user never flushed to data cache?
+            if (token !== null && userObj !== null) {
+              // console.log('token and user');
+              dispatch({ type: 'signin', payload: { token, user: JSON.parse(userObj) } });
+            } else {
+              // console.log('THER IS NO token and user');
+              dispatch({ type: 'need_to_signin' });
+            }
           }
         } catch (err) {
+          console.log(err)
           dispatch({ type: 'add_error', payload: 'Something went wrong with sign in' });
         }
       },
@@ -141,7 +187,7 @@ export default () => {
         // console.log('signout')
         try {
           /* -------------------------------------------------------------------------- */
-          // await AsyncStorage.removeItem('token'); // TODO: And user?
+          await AsyncStorage.removeItem('token'); // FIXME: And user? maybe this is when i should definitely refetch...?
           // await AsyncStorage.multiRemove(['token', 'user']);
           /* -------------------------------------------------------------------------- */
           // await AsyncStorage.removeItem('user');
@@ -155,15 +201,10 @@ export default () => {
 
   const { tryLocalSignin } = authContext;
 
-  // FIXME:???
   useEffect(() => {
     tryLocalSignin();
   }, []);
 
-  useEffect(() => {
-    isMountedRef.current = true;
-    return () => (isMountedRef.current = false);
-  }, []);
 
   // FIXME: Ask again?
   // FIXME: Ask for all permissions here?
@@ -180,17 +221,19 @@ export default () => {
     })();
   });
 
-
+  // TODO:?
   // useEffect(() => {
   //   getInitialTags();
   // }, []);
 
-
+  // TODO:
   const errorHandler = (error, stackTrace) => {
     /* Log the error to an error reporting service */
     console.log(error);
     // console.error(stackTrace);
   }
+
+  const AppStack = createStackNavigator();
 
   return (
     <ErrorBoundary onError={errorHandler}>
@@ -201,7 +244,7 @@ export default () => {
               <PaperProvider theme={theme}>
                 {/* https://reactnavigation.org/docs/navigating-without-navigation-prop/ */}
                 {/* <App ref={(navigator) => setNavigator(navigator)} /> */}
-                <NavigationContainer ref={navigationRef}>
+                <NavigationContainer ref={navigationRef} >
                   <AppStack.Navigator initialRouteName="ResolveAuth" headerMode='none'>
                     {
                       state.isLoading ?
