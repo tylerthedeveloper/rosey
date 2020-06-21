@@ -11,6 +11,7 @@ import useCurrentLocation from '../../hooks/useCurrentLocation';
 import { MyTextInput } from '../../paper-components/memo';
 import { SocialIcon } from 'react-native-elements'
 import { ActivityIndicator, Colors } from 'react-native-paper';
+import * as Constants from '../../constants';
 
 const RoseForm = ({ user, isApiLoading, errorMessage, props,
     form_updateFunction, form_updateFunctionText,
@@ -25,7 +26,7 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
     const { currentLocation, geoCodedLocation } = useCurrentLocation();
     const { state: { tags: contextTags }, addTag } = useContext(TagContext);
 
-    const [updated_birthday, setBirthday] = useState(birthday || new Date(Date.now()));
+    const [updated_birthday, setBirthday] = useState((birthday !== undefined) ? birthday : new Date(Date.now()));
     const [updated_dateMet, setDateMet] = useState((dateMet !== undefined) ? dateMet : new Date(Date.now()));
     const [updated_email, setEmail] = useState(email);
     const [updated_tags, setTags] = useState(tags || []);
@@ -52,20 +53,16 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
     const [updated_picture, setPicture] = useState(picture);
     // ────────────────────────────────────────────────────────────────────────────────
 
-    // TODO: Convert to one user object?
     const updatedUser = {
         birthday: updated_birthday || new Date(Date.now()),
         dateMet: updated_dateMet || new Date(Date.now()),
         email: updated_email || '',
-        /* -------------------------------------------------------------------------- */
         homeLocation: updated_homeLocation || {
             homeLocationCoords: { latitude: -369, longitude: -369 },
             homeFormatted_address: '',
             homeLocationName: ''
         },
-        placeMetAt: updated_placeMetAt
-        ,
-        /* -------------------------------------------------------------------------- */
+        placeMetAt: updated_placeMetAt,
         name: updated_name || '',
         notes: updated_notes || '',
         nickName: updated_nickName || '',
@@ -146,7 +143,6 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
         editSocialEntry: false, type: '', setter: () => null
     });
 
-    // TODO: MOVE OUT?
     const _clearFormData = () => formRows.map(row => row.editFunc(''));
 
     const [birth_datePicker, setBirth_datePicker] = useState(false);
@@ -266,28 +262,29 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
     const rowIgnoreArr = ["__v", "_id"]
 
     // TODO: move to utils
-    const _areObjectsEqual = (a, b, ignoreArray) => {
-        let equality = true;
-        for (let key of Object.keys(a)) {
-            if (!ignoreArray.includes(key)) {
-                if (a[key] === b[key]) {
-                    continue;
-                }
-                if (Array.isArray(a[key])) {
-                    if (!(a[key].sort().toString() == b[key].sort().toString())) return false;
-                } else if (typeof a[key] === 'object') {
-                    equality = _areObjectsEqual(a[key], b[key], ignoreArray)
-                    if (!equality) break;
-                } else if (a[key] !== b[key]) {
-                    return false;
-                }
+    // const _areObjectsEqual = (a, b, ignoreArray) => {
+    //     let equality = true;
+    //     for (let key of Object.keys(a)) {
+    //         if (!ignoreArray.includes(key)) {
+    //             if (a[key] === b[key]) {
+    //                 continue;
+    //             }
+    //             // FIXME: need to decide what to do with tags
+    //             if (Array.isArray(a[key]) && b[key] !== undefined) {
+    //                 if (!(a[key].sort().toString() == b[key].sort().toString())) return false;
+    //             } else if (typeof a[key] === 'object') {
+    //                 equality = _areObjectsEqual(a[key], b[key], ignoreArray)
+    //                 if (!equality) break;
+    //             } else if (a[key] !== b[key]) {
+    //                 return false;
+    //             }
+    //         }
+    //     };
+    //     return equality;
+    // }
 
-            }
-        };
-        return equality;
-    }
 
-    const isUserEdited = _areObjectsEqual(user, updatedUser, rowIgnoreArr);
+    const isUserEdited = Constants.default._areObjectsEqual(user, updatedUser, rowIgnoreArr);
     // ────────────────────────────────────────────────────────────────────────────────
 
     return (
@@ -419,10 +416,11 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                                 (datemet_Picker)
                                     ?
                                     <DateTimePicker
-                                        value={updated_dateMet}
+                                        value={updated_dateMet || new Date(Date.now())}
                                         display="default"
                                         style={{ width: '70%', alignSelf: 'center' }}
                                         onChange={(event, value) => {
+                                            console.log('event and value', value)
                                             setDateMet(value || updated_dateMet || new Date(Date.now()));
                                             setTimeout(() => setDatemet_Picker(false), 2000);
                                         }}
@@ -451,10 +449,11 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                     {
                         (birth_datePicker)
                             ? <DateTimePicker
-                                value={updated_birthday}
+                                value={updated_birthday || new Date(Date.now())}
                                 display="default"
                                 style={{ width: '70%', alignSelf: 'center' }}
                                 onChange={(e, value) => {
+                                    console.log('birthday event and value', value)
                                     setBirthday(value || updated_birthday || new Date(Date.now()));
                                     setTimeout(() => setBirth_datePicker(false), 2000);
                                 }}
@@ -463,7 +462,6 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                     }
                 </View>
                 {/* Location Section */}
-                {/* TODO: preset location.... */}
                 <Paragraph style={styles.sectionTitle}> Location Section (please select below)</Paragraph>
                 <TouchableOpacity
                     onPress={() => _makeLocationObject({

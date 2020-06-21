@@ -1,47 +1,69 @@
 import shortid from 'shortid';
 
-export default {
-    _generateUser: ({ name, email, password, userType }) => {
-        let newUser = {
-            birthday: new Date(Date.now()),
-            email: email || '',
-            homeLocation: {
-                homeLocationCoords: { latitude: -369, longitude: -369 },
-                homeFormatted_address: '',
-                homeLocationName: ''
+const _generateUser = ({ name, email, password, userType }) => {
+    let newUser = {
+        birthday: new Date(Date.now()),
+        email: email || '',
+        homeLocation: {
+            homeLocationCoords: { latitude: -369, longitude: -369 },
+            homeFormatted_address: '',
+            homeLocationName: ''
+        },
+        name: name || '',
+        nickName: '',
+        phoneNumber: '',
+        picture: '',
+        socialProfiles: {
+            facebook: '',
+            linkedin: '',
+            instagram: '',
+            medium: '',
+            snapchat: '',
+            twitter: '',
+            whatsapp: ''
+        },
+        work: ''
+    };
+    // console.log('password', password);
+    if (userType === 'user') {
+        newUser.password = password;
+    } else if (userType !== 'user') {
+        newUser = {
+            ...newUser,
+            dateMet: new Date(Date.now()),
+            placeMetAt: {
+                placeMetAtLocationCoords: { latitude: -369, longitude: -369 },
+                placeMetAtFormatted_address: '',
+                placeMetAtName: ''
             },
-            name: name || '',
-            nickName: '',
-            phoneNumber: '',
-            picture: '',
-            socialProfiles: {
-                facebook: '',
-                linkedin: '',
-                instagram: '',
-                medium: '',
-                snapchat: '',
-                twitter: '',
-                whatsapp: ''
-            },
-            work: ''
-        };
-        // console.log('password', password);
-        if (userType === 'user') {
-            newUser.password = password;
-        } else if (userType !== 'user') {
-            newUser = {
-                ...newUser,
-                dateMet: new Date(Date.now()),
-                placeMetAt: {
-                    placeMetAtLocationCoords: { latitude: -369, longitude: -369 },
-                    placeMetAtFormatted_address: '',
-                    placeMetAtName: ''
-                },
-                tags: [],
+            tags: [],
+        }
+    };
+    return newUser;
+}
+
+const _areObjectsEqual = (a, b, ignoreArray) => {
+    let equality = true;
+    for (let key of Object.keys(a)) {
+        if (!ignoreArray.includes(key)) {
+            if (a[key] === b[key]) {
+                continue;
             }
-        };
-        return newUser;
-    },
+            if (Array.isArray(a[key]) && b[key] !== undefined) {
+                if (!(a[key].sort().toString() == b[key].sort().toString())) return false;
+            } else if (typeof a[key] === 'object') {
+                equality = _areObjectsEqual(a[key], b[key], ignoreArray)
+                if (!equality) break;
+            } else if (a[key] !== b[key]) {
+                return false;
+            }
+        }
+    };
+    return equality;
+}
+export default {
+    _generateUser,
+    _areObjectsEqual,
     my_personal_card: {
         birthday: '',
         dateMet: '',
