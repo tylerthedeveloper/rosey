@@ -26,7 +26,7 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
     const { state: { tags: contextTags }, addTag } = useContext(TagContext);
 
     const [updated_birthday, setBirthday] = useState(birthday || new Date(Date.now()));
-    const [updated_dateMet, setDateMet] = useState(dateMet || new Date(Date.now()));
+    const [updated_dateMet, setDateMet] = useState((dateMet !== undefined) ? dateMet : new Date(Date.now()));
     const [updated_email, setEmail] = useState(email);
     const [updated_tags, setTags] = useState(tags || []);
     const [updated_work, setWork] = useState(work);
@@ -36,8 +36,6 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
     const [updated_phoneNumber, setPhone] = useState(phoneNumber);
     const [updated_homeLocation, setUpdated_homeLocation] = useState(homeLocation || {});
     const [updated_placeMetAt, setUpdated_placeMetAt] = useState(placeMetAt || {});
-
-    const isPhoneValid = (updated_phoneNumber.length > 0 && updated_phoneNumber.length !== 10);
 
     const { facebook, linkedin, instagram, medium, snapchat, twitter, whatsapp } = socialProfiles || {};
 
@@ -217,7 +215,6 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                 placeMetAtName: "",
             }
         } else {
-            // console.log('i am set??');
         }
     }
 
@@ -254,17 +251,44 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
         updatedUser.dateMet = undefined;
         updatedUser.placeMetAt = undefined;
         updatedUser.notes = undefined;
-
         // TODO:? KEEP?
         updatedUser.tags = undefined;
         ///
-
         updatedUser.roseId = undefined;
     }
     // ────────────────────────────────────────────────────────────────────────────────
 
-    // FIXME:
-    // console.log(JSON.stringify(user), JSON.stringify(updatedUser));
+
+    /* -------------------------------------------------------------------------- */
+    /*                         Bool checks                                        */
+    /* -------------------------------------------------------------------------- */
+    const isPhoneValid = (updated_phoneNumber.length > 0 && updated_phoneNumber.length !== 10);
+    const rowIgnoreArr = ["__v", "_id"]
+
+    // TODO: move to utils
+    const _areObjectsEqual = (a, b, ignoreArray) => {
+        let equality = true;
+        for (let key of Object.keys(a)) {
+            if (!ignoreArray.includes(key)) {
+                if (a[key] === b[key]) {
+                    continue;
+                }
+                if (Array.isArray(a[key])) {
+                    if (!(a[key].sort().toString() == b[key].sort().toString())) return false;
+                } else if (typeof a[key] === 'object') {
+                    equality = _areObjectsEqual(a[key], b[key], ignoreArray)
+                    if (!equality) break;
+                } else if (a[key] !== b[key]) {
+                    return false;
+                }
+
+            }
+        };
+        return equality;
+    }
+
+    const isUserEdited = _areObjectsEqual(user, updatedUser, rowIgnoreArr);
+    // ────────────────────────────────────────────────────────────────────────────────
 
     return (
         <KeyboardAvoidingView
@@ -344,27 +368,33 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                     ))
                 }
                 {/* Tag Section */}
-                <Paragraph style={styles.sectionTitle}> Tags (select below) </Paragraph>
-                <View style={styles.chips}>
-                    {
-                        contextTags.map((tag, index) =>
-                            (<Chip mode="outlined" style={styles.chip}
-                                key={tag + index}
-                                icon={'tag'}
-                                selectedColor={'blue'}
-                                selected={updated_tags.includes(tag)}
-                                onPress={() => toggledSelected(tag)}
-                            >
-                                {tag}
-                            </Chip>)
-                        )
-                    }
-                </View>
-                {/* TODO:  learn to center these*/}
-                <MyTextInput value={newTag} onChangeText={setNewTag} style={{ height: 50, marginLeft: 30, width: '100%', textAlign: 'center' }} />
-                <Button onPress={() => _addTag(newTag)} disabled={!newTag}>
-                    Add Tag
-                </Button>
+                {
+                    (!isUserContactCard)
+                        ? <>
+                            <Paragraph style={styles.sectionTitle}> Tags (select below) </Paragraph>
+                            <View style={styles.chips}>
+                                {
+                                    contextTags.map((tag, index) =>
+                                        (<Chip mode="outlined" style={styles.chip}
+                                            key={tag + index}
+                                            icon={'tag'}
+                                            selectedColor={'blue'}
+                                            selected={updated_tags.includes(tag)}
+                                            onPress={() => toggledSelected(tag)}
+                                        >
+                                            {tag}
+                                        </Chip>)
+                                    )
+                                }
+                            </View>
+                            {/* TODO:  learn to center these*/}
+                            <MyTextInput value={newTag} onChangeText={setNewTag} style={{ height: 50, marginLeft: 30, width: '100%', textAlign: 'center' }} />
+                            <Button onPress={() => _addTag(newTag)} disabled={!newTag}>
+                                Add Tag
+                            </Button>
+                        </>
+                        : null
+                }
                 {/*  DATE SECTION */}
                 <Paragraph style={styles.sectionTitle}> Date Info </Paragraph>
                 {
@@ -511,7 +541,7 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                 {(isApiLoading) && <ActivityIndicator animating={true} size={'large'} />}
                 {(isPhoneValid) ? <Text style={styles.errorMessage}> Phone # must be 10 digits </Text> : null}
                 {(errorMessage) ? <Text style={styles.errorMessage}> {errorMessage} </Text> : null}
-                <Button disabled={JSON.stringify(user) === JSON.stringify(updatedUser) || isApiLoading || isPhoneValid}
+                <Button disabled={isUserEdited || isApiLoading || isPhoneValid}
                     onPress={() => {
                         if (!isUserContactCard) _setPlaceMet();
                         form_updateFunction({ roseObj: updatedUser, callback: () => form_updateFunction_callback(updatedUser) })

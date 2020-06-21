@@ -211,15 +211,14 @@ export default () => {
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestPermissionsAsync();
-      if (status !== 'granted') {
-        alert('Permission to access location was denied');
-      }
-
+      // if (status !== 'granted') {
+      //   alert('Permission to access location was denied');
+      // }
       // let location = await Location.getCurrentPositionAsync({});
       // setLocation(location);
       // console.log(location)
     })();
-  });
+  }, []);
 
   // TODO:?
   // useEffect(() => {
