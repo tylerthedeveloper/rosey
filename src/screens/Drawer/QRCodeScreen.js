@@ -67,7 +67,7 @@ const QRCodeScreen = () => {
                 size={200}
                 color={'purple'}
             />
-            <Button onPress={() => { _askForPermissions(); }} mode="contained">
+            <Button onPress={() => _askForPermissions()} mode="contained">
                 Scan a QR Code
             </Button>
             {

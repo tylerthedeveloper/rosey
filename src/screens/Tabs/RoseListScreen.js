@@ -66,16 +66,20 @@ const RoseListScreen = ({ navigation }) => {
                     }}
                 >
                     {
-                        tags.map((tag, index) =>
-                            <Chip
-                                key={tag + index}
-                                selectedColor={'blue'}
-                                onPress={() => toggledSelected(tag)}
-                                selected={selectedTags.includes(tag)}
+                        (tags && tags.length > 0)
+                            ? tags.map((tag, index) =>
+                                <Chip
+                                    key={tag + index}
+                                    selectedColor={'blue'}
+                                    onPress={() => toggledSelected(tag)}
+                                    selected={selectedTags.includes(tag)}
                                 //onPress={() => toggledSelected(tag, index)}
                                 //selected={selectedTags.includes(tag + index)}
-                            >{tag}</Chip>
-                        )
+                                >{tag}</Chip>
+                            )
+                            : <Chip onPress={() => navigation.navigate('TagScreen')} selectedColor={'blue'}>
+                                No tags - go add some!
+                            </Chip>
                     }
                 </ScrollView>
             }
