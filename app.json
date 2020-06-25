@@ -45,7 +45,7 @@
     },
     "android": {
       "package": "com.rozy_app.rozy",
-      "versionCode": 13,
+      "versionCode": 14,
       "config": {
         "googleMaps": {
           "apiKey": "AIzaSyA5fMKf-ThAyziy-jqvTl287mPmQrXthzw"
