@@ -26,12 +26,18 @@ const RoseViewContainer = ({
 
     const shareProfile = async () => {
         try {
-            // const result =
-            await Share.share({
-                title: 'App link',
-                message: 'Share your contact card with existing friends',
-                url: redirectUrl
-            });
+            if (Platform.OS === "ios") {
+                await Share.share({
+                    title: 'App link',
+                    message: 'Share your contact card with existing friends',
+                    url: redirectUrl
+                });
+            } else if (Platform.OS === "android") {
+                await Share.share({
+                    title: 'App link',
+                    message: `Share your contact card with existing friends: ${redirectUrl}`,
+                });
+            }
         } catch (error) {
             alert(error.message);
         }

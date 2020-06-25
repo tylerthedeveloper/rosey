@@ -34,7 +34,7 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
     const [updated_name, setName] = useState(name);
     const [updated_notes, setNotes] = useState(notes);
     const [updated_nickName, setNickName] = useState(nickName);
-    const [updated_phoneNumber, setPhone] = useState(phoneNumber);
+    const [updated_phoneNumber, setPhone] = useState(phoneNumber || '');
     const [updated_homeLocation, setUpdated_homeLocation] = useState(homeLocation || {});
     const [updated_placeMetAt, setUpdated_placeMetAt] = useState(placeMetAt || {});
 
@@ -260,30 +260,6 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
     /* -------------------------------------------------------------------------- */
     const isPhoneValid = (updated_phoneNumber.length > 0 && updated_phoneNumber.length !== 10);
     const rowIgnoreArr = ["__v", "_id"]
-
-    // TODO: move to utils
-    // const _areObjectsEqual = (a, b, ignoreArray) => {
-    //     let equality = true;
-    //     for (let key of Object.keys(a)) {
-    //         if (!ignoreArray.includes(key)) {
-    //             if (a[key] === b[key]) {
-    //                 continue;
-    //             }
-    //             // FIXME: need to decide what to do with tags
-    //             if (Array.isArray(a[key]) && b[key] !== undefined) {
-    //                 if (!(a[key].sort().toString() == b[key].sort().toString())) return false;
-    //             } else if (typeof a[key] === 'object') {
-    //                 equality = _areObjectsEqual(a[key], b[key], ignoreArray)
-    //                 if (!equality) break;
-    //             } else if (a[key] !== b[key]) {
-    //                 return false;
-    //             }
-    //         }
-    //     };
-    //     return equality;
-    // }
-
-
     const isUserEdited = Constants.default._areObjectsEqual(user, updatedUser, rowIgnoreArr);
     // ────────────────────────────────────────────────────────────────────────────────
 

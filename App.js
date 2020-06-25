@@ -3,7 +3,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import { Linking } from 'expo';
 import * as Location from 'expo-location';
 import React, { useEffect, useMemo, useReducer } from 'react';
-import { AsyncStorage } from 'react-native';
+import { Alert, AsyncStorage } from 'react-native';
 import ErrorBoundary from 'react-native-error-boundary';
 import { Provider as PaperProvider } from 'react-native-paper';
 // Screens
@@ -31,19 +31,29 @@ export default () => {
   }, []);
 
   useEffect(() => {
+    // ANDROID!!!
     Linking.getInitialURL().then(url => {
       const { path, queryParams: { userID } } = Linking.parse(url);
       // console.log('path, user', path, userID);
-      if (path === 'main/home/add' && (userID !== '' && userID !== undefined && userID !== null)) {
-        setTimeout(() => navigate('AddRose', { shared: true, userID }), 0);
+      if (path === 'main/home/add') {
+        if (userID !== '' && userID !== undefined && userID !== null) {
+          setTimeout(() => navigate('AddRose', { shared: true, userID }), 0);
+        } else if (userID === '' || userID === undefined || userID == null) {
+          // Alert()
+          alert('Looks like you tried to share a user that did not exist /:')
+        }
       }
     })
   }, [])
 
   const _handleOpenURL = (event) => {
     const { path, queryParams: { userID } } = Linking.parse(event.url);
-    if (path === 'main/home/add' && (userID !== '' && userID !== undefined && userID !== null)) {
-      navigate('AddRose', { shared: true, userID });
+    if (path === 'main/home/add') {
+      if (userID !== '' && userID !== undefined && userID !== null) {
+        navigate('AddRose', { shared: true, userID });
+      } else if (userID === '' || userID === undefined || userID == null) {
+        alert('Looks like you tried to share a user that did not exist /:')
+      }
     }
   }
 
