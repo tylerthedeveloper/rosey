@@ -215,12 +215,13 @@ export default () => {
     tryLocalSignin();
   }, []);
 
-
   // FIXME: Ask again?
   // FIXME: Ask for all permissions here?
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestPermissionsAsync();
+      // console.log('location: ', status);
+      
       // if (status !== 'granted') {
       //   alert('Permission to access location was denied');
       // }
@@ -228,7 +229,7 @@ export default () => {
       // setLocation(location);
       // console.log(location)
     })();
-  }, []);
+  });
 
   // TODO:?
   // useEffect(() => {

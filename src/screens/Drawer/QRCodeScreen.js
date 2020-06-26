@@ -9,13 +9,12 @@ import { BarCodeScanner } from 'expo-barcode-scanner';
 const QRCodeScreen = () => {
 
     const { state: { user } } = useContext(AuthContext);
-    const [hasPermission, setHasPermission] = useState(null);
+    // const [hasPermission, setHasPermission] = useState(null);
     const [scanned, setScanned] = useState(false);
     const [scanPressed, setScanPressed] = useState(false);
 
     const _askForPermissions = async () => {
         const { status } = await BarCodeScanner.requestPermissionsAsync();
-        setHasPermission(status === 'granted');
         if (status === "granted") {
             setScanPressed(true);
         } else if (status !== "granted") {
@@ -24,8 +23,8 @@ const QRCodeScreen = () => {
                 "No camera Permissions",
                 "please go to settings and on add camera permissions manually",
                 [
-                    { text: "cancel", onPress: () => console.log("cancel") },
-                    { text: "Allow", onPress: () => Linking.openURL("app-settings:") },
+                    { text: "Ok", onPress: () => console.log("cancel") },
+                    // { text: "Manual", onPress: () => Linking.openURL("app-settings:") },
                 ],
                 { cancelable: false }
             );
@@ -39,7 +38,7 @@ const QRCodeScreen = () => {
 
     const handleBarCodeScanned = ({ type, data }) => {
         setScanned(true);
-        console.log(type);
+        // console.log(type);
         const prefix = data.substring(0, 52);
         const suffix = data.substring(52);
         if (prefix === "https://rosey-server.herokuapp.com/users/app?userID="
