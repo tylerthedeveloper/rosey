@@ -10,9 +10,16 @@ const FeedbackScreen = () => {
 
     const buttons = [
         {
-            label: "Rate in app store", icon: 'star', onPress: () => {
+            label: "Rate in app store", icon: 'star', onPress: async () => {
                 try {
-                    StoreReview.requestReview();
+                    // StoreReview.requestReview();
+                    // if (StoreReview.isAvailableAsync() && await StoreReview.hasAction()) {
+                    if (StoreReview.isAvailableAsync()) {
+                        StoreReview.requestReview();
+                    }
+                    else {
+                        alert("It looks like your device doesn't support this or you already left a review, thank you! (:")
+                    }
                 } catch (err) {
                     console.log(err.message);
                 }
