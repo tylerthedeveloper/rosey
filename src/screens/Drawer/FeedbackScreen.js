@@ -10,19 +10,16 @@ const FeedbackScreen = () => {
 
     const buttons = [
         {
-            label: "Rate in app store", icon: 'feedback', onPress: () => {
-                StoreReview.requestReview();
+            label: "Rate in app store", icon: 'star', onPress: () => {
+                try {
+                    StoreReview.requestReview();
+                } catch (err) {
+                    console.log(err.message);
+                }
             }
         },
         {
             label: "Chat on imessage or email", icon: 'chat', onPress: () => {
-                // Alert.alert("How would you like to chat?")
-                //     [
-                //         { text: "Ok", onPress: () => console.log("cancel") },
-                //         // { text: "Manual", onPress: () => Linking.openURL("app-settings:") },
-                //     ],
-                //     { cancelable: false }
-                // )
                 Alert.alert(
                     "How would you like to chat?",
                     "I am available via text or email!",
@@ -31,15 +28,14 @@ const FeedbackScreen = () => {
                         { text: "Email", onPress: () => Linking.openURL("mailto:rozycontact@gmail.com") },
                         {
                             text: "Cancel",
-                            // onPress: () => console.log("Cancel Pressed"),
-                            style: "cancel"
+                            style: "destructive"
                         },
                     ],
                     { cancelable: true }
                 );
             }
         },
-        { label: "Support Website", icon: 'feedback', onPress: () => { WebBrowser.openBrowserAsync('http://rozy-website.herokuapp.com/') } },
+        { label: "Support Website", icon: 'help', onPress: () => { WebBrowser.openBrowserAsync('http://rozy-website.herokuapp.com/') } },
     ]
 
     const openMessage = () => { }
@@ -51,7 +47,7 @@ const FeedbackScreen = () => {
             </Headline>
             {
                 buttons.map(({ label, icon, onPress }, index) => (
-                    <Button onPress={onPress} mode={(index % 2) ? "outlined" : "contained"} style={{ marginVertical: 20 }} key={index}>
+                    <Button onPress={onPress} mode={(index % 2) ? "outlined" : "contained"} style={{ marginVertical: 20 }} key={index} icon={icon}>
                         {label}
                     </Button>
                 ))
