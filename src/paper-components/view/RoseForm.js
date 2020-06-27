@@ -20,7 +20,7 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
 }) => {
 
     const {
-        birthday, dateMet, email, homeLocation, name, nickName, notes, phoneNumber, placeMetAt, picture, socialProfiles, tags, work, roseId, _id
+        birthday, dateMet, email, homeLocation, name, nickName, notes, personalSite, phoneNumber, placeMetAt, picture, socialProfiles, tags, work, roseId, _id
     } = user || {};
 
     const { currentLocation, geoCodedLocation } = useCurrentLocation();
@@ -31,9 +31,10 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
     const [updated_email, setEmail] = useState(email);
     const [updated_tags, setTags] = useState(tags || []);
     const [updated_work, setWork] = useState(work);
-    const [updated_name, setName] = useState(name);
+    const [updated_name, setName] = useState(name || '');
     const [updated_notes, setNotes] = useState(notes);
     const [updated_nickName, setNickName] = useState(nickName);
+    const [updated_personalSite, setPersonalSite] = useState(personalSite || '');
     const [updated_phoneNumber, setPhone] = useState(phoneNumber || '');
     const [updated_homeLocation, setUpdated_homeLocation] = useState(homeLocation || {});
     const [updated_placeMetAt, setUpdated_placeMetAt] = useState(placeMetAt || {});
@@ -66,6 +67,7 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
         name: updated_name || '',
         notes: updated_notes || '',
         nickName: updated_nickName || '',
+        personalSite: updated_personalSite || '',
         phoneNumber: updated_phoneNumber || '',
         picture: updated_picture || '',
         socialProfiles: {
@@ -119,6 +121,12 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
             left: "email",
             rightIcon: "email",
             editFunc: setEmail
+        },
+        {
+            value: updated_personalSite, subtitle: 'personal site',
+            left: "web",
+            rightIcon: "search-web",
+            editFunc: setPersonalSite
         },
         {
             value: updated_work, subtitle: 'occupation',
@@ -236,7 +244,6 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
     const placeInputRef = React.createRef();
     /* -------------------------------------------------------------------------- */
 
-
     /* -------------------------------------------------------------------------- */
     /*                         User Card Specifics                                */
     /* -------------------------------------------------------------------------- */
@@ -261,6 +268,9 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
     const isPhoneValid = (updated_phoneNumber.length > 0 && updated_phoneNumber.length !== 10);
     const rowIgnoreArr = ["__v", "_id"]
     const isUserEdited = Constants.default._areObjectsEqual(user, updatedUser, rowIgnoreArr);
+    const addNewRoseRoute = (form_updateFunctionText === "Add new Rose");
+    const canAddNewRose = (updated_name !== undefined && updated_name.length > 0);
+
     // ────────────────────────────────────────────────────────────────────────────────
 
     return (
@@ -396,7 +406,7 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                                         display="default"
                                         style={{ width: '70%', alignSelf: 'center' }}
                                         onChange={(event, value) => {
-                                            console.log('event and value', value)
+                                            {/* console.log('event and value', value) */}
                                             setDateMet(value || updated_dateMet || new Date(Date.now()));
                                             setTimeout(() => setDatemet_Picker(false), 2000);
                                         }}
@@ -429,7 +439,7 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                                 display="default"
                                 style={{ width: '70%', alignSelf: 'center' }}
                                 onChange={(e, value) => {
-                                    console.log('birthday event and value', value)
+                                    {/* console.log('birthday event and value', value) */}
                                     setBirthday(value || updated_birthday || new Date(Date.now()));
                                     setTimeout(() => setBirth_datePicker(false), 2000);
                                 }}
@@ -513,15 +523,28 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                         : null
                 }
                 {(isApiLoading) && <ActivityIndicator animating={true} size={'large'} />}
+                {(!canAddNewRose) ? <Text style={styles.errorMessage}> You should enter a name for this Rose </Text> : null}
                 {(isPhoneValid) ? <Text style={styles.errorMessage}> Phone # must be 10 digits </Text> : null}
                 {(errorMessage) ? <Text style={styles.errorMessage}> {errorMessage} </Text> : null}
-                <Button disabled={isUserEdited || isApiLoading || isPhoneValid}
-                    onPress={() => {
-                        if (!isUserContactCard) _setPlaceMet();
-                        form_updateFunction({ roseObj: updatedUser, callback: () => form_updateFunction_callback(updatedUser) })
-                    }}>
-                    {form_updateFunctionText || 'Save'}
-                </Button>
+                {/* <Button disabled={!canAddNewRose || isUserEdited || isApiLoading || isPhoneValid} */}
+                {
+                    (addNewRoseRoute)
+                        ? <Button disabled={!canAddNewRose || isPhoneValid}
+                            onPress={() => {
+                                if (!isUserContactCard) _setPlaceMet();
+                                form_updateFunction({ roseObj: updatedUser, callback: () => form_updateFunction_callback(updatedUser) })
+                            }}>
+                            {form_updateFunctionText || 'Save'}
+                        </Button>
+                        : <Button disabled={isUserEdited || isApiLoading || isPhoneValid}
+                            onPress={() => {
+                                if (!isUserContactCard) _setPlaceMet();
+                                form_updateFunction({ roseObj: updatedUser, callback: () => form_updateFunction_callback(updatedUser) })
+                            }}>
+                            {form_updateFunctionText || 'Save'}
+                        </Button>
+
+                }
                 <Button
                     onPress={() => {
                         _clearFormData();

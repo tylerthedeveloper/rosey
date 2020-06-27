@@ -12,6 +12,7 @@ const _generateUser = ({ name, email, password, userType }) => {
         name: name || '',
         nickName: '',
         phoneNumber: '',
+        personalSite: '',
         picture: '',
         socialProfiles: {
             facebook: '',
@@ -24,7 +25,6 @@ const _generateUser = ({ name, email, password, userType }) => {
         },
         work: ''
     };
-    // console.log('password', password);
     if (userType === 'user') {
         newUser.password = password;
     } else if (userType !== 'user') {
