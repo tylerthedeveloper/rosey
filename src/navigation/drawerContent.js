@@ -1,4 +1,4 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 import React, { useContext, useEffect } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
@@ -41,6 +41,12 @@ const DrawerContent = (props) => {
         { label: "Contacts", icon: 'contacts', navigateTo: 'ContactsScreen' },
         { label: "Tags", icon: 'tag', navigateTo: 'TagScreen' },
         { label: "QR Code", icon: 'qrcode', navigateTo: 'QRCode' },
+        // { label: "QR Code", icon: 'qrcode', navigateTo: 'QRCode' },
+    ]
+
+    const secondDrawerRow = [
+        { label: "Feedback", icon: 'feedback', navigateTo: 'Feedback' },
+        // { label: "Logout", icon: 'feedback', navigateTo: 'Feedback' },
     ]
 
     return (
@@ -109,6 +115,40 @@ const DrawerContent = (props) => {
                         )
                     }
                 </Drawer.Section>
+                {/* <Drawer.Section style={styles.drawerSection}>
+                    {
+                        secondDrawerRow.map(({ label, icon, navigateTo }, index) => (
+                            <DrawerItem
+                                key={index}
+                                icon={({ color, size }) => (
+                                    <MaterialIcons
+                                        name={icon}
+                                        color={color}
+                                        size={size}
+                                    />
+                                )}
+                                label={label}
+                                labelStyle={{ fontFamily: 'System' }}
+                                style={{ flex: 1 }}
+                                onPress={() => navigation.navigate(navigateTo)}
+                            />)
+                        )
+                    }
+                </Drawer.Section> */}
+                <DrawerItem
+                    icon={({ color, size }) => (
+                        <MaterialIcons
+                            name={'feedback'}
+                            color={color}
+                            size={size}
+                        />
+                    )}
+
+                    label={"Feedback"}
+                    labelStyle={{ fontFamily: 'System' }}
+                    style={{ flex: 1 }}
+                    onPress={() => navigation.navigate('Feedback')}
+                />
                 {/* <Drawer.Section title="Preferences">
                     <TouchableRipple onPress={toggleTheme}>
                         <View style={styles.preference}>

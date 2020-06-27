@@ -9,7 +9,7 @@ import { AuthContext } from '../context/AuthContext';
 import { Context as TagContext } from '../context/TagContext';
 import { theme } from '../core/theme';
 import { AddRoseScreen, RoseDetailScreen } from '../screens';
-import { ContactCardScreen, ContactsScreen, QRCodeScreen, TagScreen } from '../screens/Drawer';
+import { ContactCardScreen, ContactsScreen, FeedbackScreen, QRCodeScreen, TagScreen } from '../screens/Drawer';
 import { BottomTabNavigator } from './Tabs';
 
 import { Context as ContactsContext } from '../context/ContactsContext';
@@ -139,6 +139,11 @@ export const RootStackNavigator = () => {
                 name="QRCode"
                 component={QRCodeScreen}
                 options={{ headerTitle: 'QRCode' }}
+            />
+            <RootStack.Screen
+                name="Feedback"
+                component={FeedbackScreen}
+                options={{ headerTitle: 'Feedback' }}
             />
         </RootStack.Navigator>
     )
