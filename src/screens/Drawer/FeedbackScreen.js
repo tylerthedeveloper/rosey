@@ -12,13 +12,16 @@ const FeedbackScreen = () => {
         {
             label: "Rate in app store", icon: 'star', onPress: async () => {
                 try {
-                    // StoreReview.requestReview();
-                    // if (StoreReview.isAvailableAsync() && await StoreReview.hasAction()) {
-                    if (StoreReview.isAvailableAsync()) {
-                        StoreReview.requestReview();
-                    }
-                    else {
-                        alert("It looks like your device doesn't support this or you already left a review, thank you! (:")
+                    if (Platform.OS === "ios") {
+                        // if (StoreReview.isAvailableAsync() && await StoreReview.hasAction()) {
+                        if (StoreReview.isAvailableAsync()) {
+                            StoreReview.requestReview();
+                        }
+                        else {
+                            alert("It looks like your device doesn't support this or you already left a review, thank you! (:")
+                        }
+                    } else {
+                        WebBrowser.openBrowserAsync("https://play.google.com/store/apps/details?id=com.rozy_app.rozy");
                     }
                 } catch (err) {
                     console.log(err.message);
