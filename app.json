@@ -3,7 +3,6 @@
     "name": "Rozy",
     "slug": "rozy",
     "scheme": "rozy",
-    "sdkVersion": "37.0.0",
     "platforms": [
       "ios",
       "android"

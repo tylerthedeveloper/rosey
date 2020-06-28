@@ -3,6 +3,7 @@ import { Share, StyleSheet } from 'react-native';
 import { Card } from 'react-native-paper';
 import { RoseHeader } from './partial';
 import { RoseForm, RoseView } from './view';
+import Constants from '../constants';
 
 // TODO: Clean props!
 // navigation, props, view_updateFunction, form_secondFunction
@@ -21,32 +22,10 @@ const RoseViewContainer = ({
     const _setEditing = (editing) => setEditing(editing);
     const isUserContactCard = (view_updateFunctionText === 'Update your contact card');
 
-    // let redirectUrl = `http://localhost:3000/users/app'?userID=${user._id}`;
-    const redirectUrl = `https://rosey-server.herokuapp.com/users/app?userID=${user._id}`;
-
-    const shareProfile = async () => {
-        try {
-            if (Platform.OS === "ios") {
-                await Share.share({
-                    title: 'App link',
-                    message: 'Share your contact card with existing friends',
-                    url: redirectUrl
-                });
-            } else if (Platform.OS === "android") {
-                await Share.share({
-                    title: 'App link',
-                    message: `Share your contact card with existing friends: ${redirectUrl}`,
-                });
-            }
-        } catch (error) {
-            alert(error.message);
-        }
-    }
-
     return (
         <>
             <Card style={styles.card}>
-                <RoseHeader {...{ name, picture, homeCity, homeState, homeCountry, isUserContactCard, editing, _setEditing, shareProfile }} />
+                <RoseHeader {...{ name, picture, homeCity, homeState, homeCountry, isUserContactCard, editing, _setEditing, shareProfile: () => Constants._shareProfile(user._id) }} />
             </Card >
             {
                 (!editing)

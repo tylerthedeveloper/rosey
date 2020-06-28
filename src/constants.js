@@ -1,4 +1,5 @@
 import shortid from 'shortid';
+import { Share } from 'react-native';
 
 const _generateUser = ({ name, email, password, userType }) => {
     let newUser = {
@@ -61,9 +62,35 @@ const _areObjectsEqual = (a, b, ignoreArray) => {
     };
     return equality;
 }
+
+const _shareProfile = async (userID) => {
+
+    const redirectUrl = `https://rosey-server.herokuapp.com/users/app?userID=${userID}`;
+
+    try {
+        console.log('share ios');
+        if (Platform.OS === "ios") {
+            await Share.share({
+                title: 'App link',
+                message: 'Share your contact card with existing friends',
+                url: redirectUrl
+            });
+        } else if (Platform.OS === "android") {
+            await Share.share({
+                title: 'App link',
+                message: `Share your contact card with existing friends: ${redirectUrl}`,
+            });
+        }
+    } catch (error) {
+        alert(error.message);
+    }
+
+}
+
 export default {
     _generateUser,
     _areObjectsEqual,
+    _shareProfile,
     my_personal_card: {
         birthday: '',
         dateMet: '',

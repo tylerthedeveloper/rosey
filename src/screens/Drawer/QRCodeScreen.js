@@ -5,6 +5,8 @@ import QRCode from 'react-native-qrcode-svg';
 import { AuthContext } from '../../context/AuthContext';
 import { MyHeader } from '../../paper-components/memo';
 import { BarCodeScanner } from 'expo-barcode-scanner';
+import { MyButton } from '../../paper-components/memo';
+import Constants from '../../constants';
 
 const QRCodeScreen = () => {
 
@@ -66,9 +68,14 @@ const QRCodeScreen = () => {
                 size={200}
                 color={'purple'}
             />
-            <Button onPress={() => _askForPermissions()} mode="contained">
-                Scan a QR Code
-            </Button>
+            <View style={{ alignItems: 'center' }}>
+                <MyButton onPress={() => _askForPermissions()} mode="contained" style={{ marginVertical: 30 }} icon={'camera'}>
+                    Scan a QR Code
+                </MyButton>
+                <MyButton onPress={() => Constants._shareProfile(user._id)} mode="outlined" icon={'account'}>
+                    Share your card
+                </MyButton>
+            </View>
             {
                 (scanPressed)
                     ? <BarCodeScanner
@@ -84,7 +91,7 @@ const QRCodeScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'space-around',
+        justifyContent: 'space-evenly',
         alignItems: 'center',
     },
     Headline: {
