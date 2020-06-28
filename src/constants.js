@@ -1,5 +1,6 @@
 import shortid from 'shortid';
 import { Share } from 'react-native';
+import * as Linking from 'expo-linking';
 
 const _generateUser = ({ name, email, password, userType }) => {
     let newUser = {
@@ -65,10 +66,12 @@ const _areObjectsEqual = (a, b, ignoreArray) => {
 
 const _shareProfile = async (userID) => {
 
-    const redirectUrl = `https://rosey-server.herokuapp.com/users/app?userID=${userID}`;
+    const redirectUrl = Linking.makeUrl('/') + `main/home/add?userID=${userID}`;
+    console.log(redirectUrl);
+    // const redirectUrl = `exp://ve-9ga.tcitrin.rosey-app.exp.direct:80/--/main/home/add?userID=${userID}`;
+    // const redirectUrl = `https://rosey-server.herokuapp.com/users/app?userID=${userID}`;
 
     try {
-        console.log('share ios');
         if (Platform.OS === "ios") {
             await Share.share({
                 title: 'App link',
@@ -84,7 +87,6 @@ const _shareProfile = async (userID) => {
     } catch (error) {
         alert(error.message);
     }
-
 }
 
 export default {

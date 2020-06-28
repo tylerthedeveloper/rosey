@@ -11,6 +11,7 @@ import { theme } from '../core/theme';
 import { AddRoseScreen, RoseDetailScreen } from '../screens';
 import { ContactCardScreen, ContactsScreen, FeedbackScreen, QRCodeScreen, TagScreen } from '../screens/Drawer';
 import { BottomTabNavigator } from './Tabs';
+import SharedResolverScreen from '../screens/SharedResolverScreen';
 
 import { Context as ContactsContext } from '../context/ContactsContext';
 
@@ -139,6 +140,11 @@ export const RootStackNavigator = () => {
                 name="QRCode"
                 component={QRCodeScreen}
                 options={{ headerTitle: 'QRCode' }}
+            />
+            <RootStack.Screen
+                name="SharedResolver"
+                component={SharedResolverScreen}
+                options={{ headerTitle: 'Sharing users' }}
             />
             <RootStack.Screen
                 name="Feedback"

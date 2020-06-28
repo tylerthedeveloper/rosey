@@ -37,7 +37,7 @@ export default () => {
       // console.log('path, user', path, userID);
       if (path === 'main/home/add') {
         if (userID !== '' && userID !== undefined && userID !== null) {
-          setTimeout(() => navigate('AddRose', { shared: true, userID }), 0);
+          setTimeout(() => navigate('SharedResolver', { shared: true, userID }), 0);
         } else if (userID === '' || userID === undefined || userID == null) {
           // Alert()
           alert('Looks like you tried to share a user that did not exist /:')
@@ -50,7 +50,8 @@ export default () => {
     const { path, queryParams: { userID } } = Linking.parse(event.url);
     if (path === 'main/home/add') {
       if (userID !== '' && userID !== undefined && userID !== null) {
-        navigate('AddRose', { shared: true, userID });
+        navigate('SharedResolver', { shared: true, userID });
+        // navigate('AddRose', { shared: true, userID });
       } else if (userID === '' || userID === undefined || userID == null) {
         alert('Looks like you tried to share a user that did not exist /:')
       }
@@ -221,7 +222,7 @@ export default () => {
     (async () => {
       let { status } = await Location.requestPermissionsAsync();
       // console.log('location: ', status);
-      
+
       // if (status !== 'granted') {
       //   alert('Permission to access location was denied');
       // }

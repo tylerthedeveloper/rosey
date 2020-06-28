@@ -14,35 +14,35 @@ const AddRoseScreen = ({ navigation, route }) => {
     const [user, setUser] = useState({});
     const [dialogVisible, setDialogVisible] = useState(false);
 
-    const _getSharedUser = async (userID) => {
-        try {
-            const response = await roseyApi.post(`/users/share`, { userID });
-            const { user } = response.data;
-            _showDialog();
-            setUser(user);
-        } catch (e) {
-            alert('There was a problem loading that user');
-        }
-    }
+    // const _getSharedUser = async (userID) => {
+    //     try {
+    //         const response = await roseyApi.post(`/users/share`, { userID });
+    //         const { user } = response.data;
+    //         _showDialog();
+    //         setUser(user);
+    //     } catch (e) {
+    //         alert('There was a problem loading that user');
+    //     }
+    // }
 
-    const _showDialog = () => setDialogVisible(true);
+    // const _showDialog = () => setDialogVisible(true);
 
-    const _hideDialog = () => setDialogVisible(false);
+    // const _hideDialog = () => setDialogVisible(false);
 
     const callBack = (obj) => navigation.replace('RoseDetail',
         { roseId: obj.roseId }
     );
 
-    const _handleAddSharedRose = () => {
-        addRose({ roseObj: user, callback: () => callBack(user) });
-        _hideDialog();
-    };
+    // const _handleAddSharedRose = () => {
+    //     addRose({ roseObj: user, callback: () => callBack(user) });
+    //     _hideDialog();
+    // };
 
-    useEffect(() => {
-        if (shared && userID !== '' && userID !== undefined) {
-            _getSharedUser(userID);
-        }
-    }, [])
+    // useEffect(() => {
+    //     if (shared && userID !== '' && userID !== undefined) {
+    //         _getSharedUser(userID);
+    //     }
+    // }, [])
 
     return (
         <View style={styles.container}>
@@ -56,7 +56,7 @@ const AddRoseScreen = ({ navigation, route }) => {
                 form_secondFunctionText="Cancel"
                 form_updateFunction_callback={callBack}
             />
-            <Dialog
+            {/* <Dialog
                 visible={dialogVisible}
                 onDismiss={_hideDialog}>
                 <Dialog.Title>Add Rose '{user.name}'</Dialog.Title>
@@ -67,7 +67,7 @@ const AddRoseScreen = ({ navigation, route }) => {
                     <Button onPress={_hideDialog}>Cancel</Button>
                     <Button onPress={_handleAddSharedRose}>Add</Button>
                 </Dialog.Actions>
-            </Dialog>
+            </Dialog> */}
         </View>
     )
 }
