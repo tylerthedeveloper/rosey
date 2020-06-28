@@ -66,10 +66,10 @@ const _areObjectsEqual = (a, b, ignoreArray) => {
 
 const _shareProfile = async (userID) => {
 
-    const redirectUrl = Linking.makeUrl('/') + `main/home/add?userID=${userID}`;
-    console.log(redirectUrl);
+    // const redirectUrl = Linking.makeUrl('/') + `main/home/add?userID=${userID}`;
+    // console.log(redirectUrl);
     // const redirectUrl = `exp://ve-9ga.tcitrin.rosey-app.exp.direct:80/--/main/home/add?userID=${userID}`;
-    // const redirectUrl = `https://rosey-server.herokuapp.com/users/app?userID=${userID}`;
+    const redirectUrl = `https://rosey-server.herokuapp.com/users/app?userID=${userID}`;
 
     try {
         if (Platform.OS === "ios") {
