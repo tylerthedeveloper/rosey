@@ -1,5 +1,6 @@
 import React from 'react';
-import { Linking, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import * as Linking from 'expo-linking';
 import useCalendar from '../../hooks/useCalendar';
 import useContacts from '../../hooks/useContacts';
 import { Button, Divider } from 'react-native-paper';

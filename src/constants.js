@@ -1,6 +1,6 @@
 import shortid from 'shortid';
 import { Share } from 'react-native';
-import * as Linking from 'expo-linking';
+// import * as Linking from 'expo-linking';
 
 const _generateUser = ({ name, email, password, userType }) => {
     let newUser = {

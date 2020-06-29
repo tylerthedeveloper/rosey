@@ -1,6 +1,6 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { Linking } from 'expo';
+import * as Linking from 'expo-linking'
 import * as Location from 'expo-location';
 import React, { useEffect, useMemo, useReducer } from 'react';
 import { Alert, AsyncStorage } from 'react-native';
