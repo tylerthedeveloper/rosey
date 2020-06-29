@@ -267,10 +267,9 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
     /* -------------------------------------------------------------------------- */
     const isPhoneValid = (updated_phoneNumber.length > 0 && updated_phoneNumber.length !== 10);
     const rowIgnoreArr = ["__v", "_id"]
-    const isUserEdited = Constants.default._areObjectsEqual(user, updatedUser, rowIgnoreArr);
+    const isUserNotEdited = Constants.default._areObjectsEqual(user, updatedUser, rowIgnoreArr);
     const addNewRoseRoute = (form_updateFunctionText === "Add new Rose");
     const canAddNewRose = (updated_name !== undefined && updated_name.length > 0);
-
     // ────────────────────────────────────────────────────────────────────────────────
 
     return (
@@ -406,7 +405,7 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                                         display="default"
                                         style={{ width: '70%', alignSelf: 'center' }}
                                         onChange={(event, value) => {
-                                            {/* console.log('event and value', value) */}
+                                            {/* console.log('event and value', value) */ }
                                             setDateMet(value || updated_dateMet || new Date(Date.now()));
                                             setTimeout(() => setDatemet_Picker(false), 2000);
                                         }}
@@ -439,7 +438,7 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                                 display="default"
                                 style={{ width: '70%', alignSelf: 'center' }}
                                 onChange={(e, value) => {
-                                    {/* console.log('birthday event and value', value) */}
+                                    {/* console.log('birthday event and value', value) */ }
                                     setBirthday(value || updated_birthday || new Date(Date.now()));
                                     setTimeout(() => setBirth_datePicker(false), 2000);
                                 }}
@@ -534,14 +533,14 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                                 if (!isUserContactCard) _setPlaceMet();
                                 form_updateFunction({ roseObj: updatedUser, callback: () => form_updateFunction_callback(updatedUser) })
                             }}>
-                            {form_updateFunctionText || 'Save'}
+                            {form_updateFunctionText || 'Add New'}
                         </Button>
-                        : <Button disabled={isUserEdited || isApiLoading || isPhoneValid}
+                        : <Button disabled={isUserNotEdited || isApiLoading || isPhoneValid}
                             onPress={() => {
                                 if (!isUserContactCard) _setPlaceMet();
                                 form_updateFunction({ roseObj: updatedUser, callback: () => form_updateFunction_callback(updatedUser) })
                             }}>
-                            {form_updateFunctionText || 'Save'}
+                            {form_updateFunctionText || 'Save Rose'}
                         </Button>
 
                 }

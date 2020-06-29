@@ -7,14 +7,14 @@ export default () => {
 
     const getReminderPermissions = (async () => {
         const { status } = await Calendar.requestRemindersPermissionsAsync();
-        if (status !== 'granted') {
-            alert('You\'ll need to enable reminder permissions in order to access your calendar');
-        }
+        // FIXME:
+        // if (status !== 'granted') {
+        //     alert('You\'ll need to enable reminder permissions in order to access your calendar');
+        // }
     });
 
     const getRozyCalendar = (async () => {
         const { status } = await Calendar.requestCalendarPermissionsAsync();
-        alert(status)
         if (status === 'granted') {
             const calendars = await Calendar.getCalendarsAsync();
             // calendars.map(cal => console.log(cal.source.name))
