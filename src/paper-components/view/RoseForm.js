@@ -12,6 +12,7 @@ import { MyTextInput } from '../../paper-components/memo';
 import { SocialIcon } from 'react-native-elements'
 import { ActivityIndicator, Colors } from 'react-native-paper';
 import * as Constants from '../../constants';
+import { TouchableWithoutFeedback } from 'react-native'
 
 const RoseForm = ({ user, isApiLoading, errorMessage, props,
     form_updateFunction, form_updateFunctionText,
@@ -272,15 +273,24 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
     const canAddNewRose = (updated_name !== undefined && updated_name.length > 0);
     // ────────────────────────────────────────────────────────────────────────────────
 
+    const DismissKeyboard = ({ children }) => (
+        <TouchableWithoutFeedback
+            onPress={() => Keyboard.dismiss()}> {children}
+        </TouchableWithoutFeedback>
+    );
+
+
     return (
         <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : null}
             keyboardVerticalOffset={80}
             style={{ flex: 1 }}
         >
-            <ScrollView keyboardShouldPersistTaps="always"
+            <ScrollView
                 ref={scrollRef}
                 onContentSizeChange={(contentHeight) => setContentHeight(contentHeight)}
+                keyboardShouldPersistTaps="never" //https://www.codegrepper.com/code-examples/fortran/react-native+on+screen+click+keyboard+dismiss+how+to+stop+it+from+dismussing
+            // https://medium.com/@akshay.s.somkuwar/dismiss-hide-keyboard-on-tap-outside-of-textinput-react-native-b94016f35ff0
             >
                 {/* Social Section */}
                 <Paragraph style={styles.sectionTitle}> Social Media </Paragraph>
@@ -476,7 +486,7 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                             marginBottom: 10
                         }}
                         //onChangeText={() => scrollRef.current?.scrollTo({ y: 2 * contentHeight, animated: true })}
-                        onChangeText={() => scrollRef.current?.scrollToEnd()}
+                        onChangeText={() => scrollRef.current ?.scrollToEnd()}
                     />
                 </Card.Actions>
                 {
@@ -498,7 +508,7 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                                     onSelect={place => _makeLocationObject(place.result, 'place_met', setUpdated_placeMetAt)}
                                     placeHolder={updated_placeMetAt.placeMetAtFormatted_address || geoCodedLocation || "Place you met!"}
                                     language={"en-US"}
-                                    onChangeText={() => scrollRef.current?.scrollToEnd()}
+                                    onChangeText={() => scrollRef.current ?.scrollToEnd()}
                                     textInputProps={{
                                         autoCorrect: false,
                                         fontWeight: 'bold',
@@ -570,9 +580,9 @@ const styles = StyleSheet.create({
     },
     // TODO:
     textInput: {
-        //width: '70%',
-        minWidth: '70%',
-        maxWidth: '90%'
+        width: '70%',
+        // minWidth: '70%',
+        // maxWidth: '80%'
     },
     sectionTitle: {
         fontWeight: 'bold',
