@@ -3,7 +3,6 @@ import { StyleSheet, View } from 'react-native';
 import { Button, Chip } from 'react-native-paper';
 import { Context as TagContext } from '../../context/TagContext';
 import { MyHeader, MyTextInput } from '../../paper-components/memo';
-import { SocialIcon } from 'react-social-icons';
 
 const TagScreen = () => {
 
@@ -15,7 +14,6 @@ const TagScreen = () => {
 
     return (
         <View style={styles.container}>
-            <SocialIcon url="https://twitter.com/jaketrent" />
             <MyHeader style={styles.Headline}> Manager your tags here! </MyHeader>
             <View style={styles.chips}>
                 {

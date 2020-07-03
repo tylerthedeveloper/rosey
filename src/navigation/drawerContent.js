@@ -45,8 +45,8 @@ const DrawerContent = (props) => {
     ]
 
     const secondDrawerRow = [
-        { label: "Feedback", icon: 'feedback', navigateTo: 'Feedback' },
-        // { label: "Logout", icon: 'feedback', navigateTo: 'Feedback' },
+        { label: "Rozy Story", icon: 'book-open-variant', navigateTo: 'RozyStory', type: "MCI" },
+        { label: "Feedback", icon: 'feedback', navigateTo: 'Feedback', type: 'MI' }
     ]
 
     return (
@@ -115,18 +115,24 @@ const DrawerContent = (props) => {
                         )
                     }
                 </Drawer.Section>
-                {/* <Drawer.Section style={styles.drawerSection}>
+                <Drawer.Section style={styles.drawerSection}>
                     {
-                        secondDrawerRow.map(({ label, icon, navigateTo }, index) => (
+                        secondDrawerRow.map(({ label, icon, navigateTo, type }, index) => (
                             <DrawerItem
                                 key={index}
-                                icon={({ color, size }) => (
-                                    <MaterialIcons
-                                        name={icon}
-                                        color={color}
-                                        size={size}
-                                    />
-                                )}
+                                icon={({ color, size }) => {
+                                    return (type == "MCI")
+                                        ? <MaterialCommunityIcons
+                                            name={icon}
+                                            color={color}
+                                            size={size}
+                                        />
+                                        : <MaterialIcons
+                                            name={'feedback'}
+                                            color={color}
+                                            size={size}
+                                        />
+                                }}
                                 label={label}
                                 labelStyle={{ fontFamily: 'System' }}
                                 style={{ flex: 1 }}
@@ -134,20 +140,20 @@ const DrawerContent = (props) => {
                             />)
                         )
                     }
-                </Drawer.Section> */}
+                </Drawer.Section>
                 <DrawerItem
                     icon={({ color, size }) => (
-                        <MaterialIcons
-                            name={'feedback'}
+                        <MaterialCommunityIcons
+                            name={'logout-variant'}
                             color={color}
                             size={size}
                         />
                     )}
 
-                    label={"Feedback"}
+                    label={"Logout"}
                     labelStyle={{ fontFamily: 'System' }}
                     style={{ flex: 1 }}
-                    onPress={() => navigation.navigate('Feedback')}
+                //onPress={() => navigation.navigate('Feedback')}
                 />
                 {/* <Drawer.Section title="Preferences">
                     <TouchableRipple onPress={toggleTheme}>

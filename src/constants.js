@@ -117,5 +117,6 @@ export default {
         tags: ['Friend'],
         work: 'Developer, PM',
         roseId: shortid.generate()
-    }
+    },
+    rozyStoryUrl: 'https://www.medium.com/@tylercitrin'
 };

@@ -9,7 +9,7 @@ import { AuthContext } from '../context/AuthContext';
 import { Context as TagContext } from '../context/TagContext';
 import { theme } from '../core/theme';
 import { AddRoseScreen, RoseDetailScreen } from '../screens';
-import { ContactCardScreen, ContactsScreen, FeedbackScreen, QRCodeScreen, TagScreen } from '../screens/Drawer';
+import { ContactCardScreen, ContactsScreen, FeedbackScreen, QRCodeScreen, RozyStoryScreen, TagScreen } from '../screens/Drawer';
 import { BottomTabNavigator } from './Tabs';
 import SharedResolverScreen from '../screens/SharedResolverScreen';
 
@@ -145,6 +145,11 @@ export const RootStackNavigator = () => {
                 name="SharedResolver"
                 component={SharedResolverScreen}
                 options={{ headerTitle: 'Sharing users' }}
+            />
+            <RootStack.Screen
+                name="RozyStory"
+                component={RozyStoryScreen}
+                options={{ headerTitle: 'Rozy Story' }}
             />
             <RootStack.Screen
                 name="Feedback"
