@@ -13,7 +13,7 @@ const DrawerContent = (props) => {
     const paperTheme = useTheme();
     const { navigation } = props;
 
-    const { state: { user: { name } } } = useContext(AuthContext);
+    const { state: { user: { name } }, signout } = useContext(AuthContext);
     // const { getImportedContacts } = useContext(ContactsContext);
     const { getContactsPermissions } = useContacts();
 
@@ -153,7 +153,7 @@ const DrawerContent = (props) => {
                     label={"Logout"}
                     labelStyle={{ fontFamily: 'System' }}
                     style={{ flex: 1 }}
-                //onPress={() => navigation.navigate('Feedback')}
+                    onPress={() => signout()}
                 />
                 {/* <Drawer.Section title="Preferences">
                     <TouchableRipple onPress={toggleTheme}>

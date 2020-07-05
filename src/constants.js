@@ -46,11 +46,15 @@ const _generateUser = ({ name, email, password, userType }) => {
 
 const _areObjectsEqual = (a, b, ignoreArray) => {
     let equality = true;
+    // console.log(a)
     for (let key of Object.keys(a)) {
         if (!ignoreArray.includes(key)) {
-            if (a[key] === b[key]) {
-                continue;
-            }
+            // if (a[key] === b[key]) {
+            //     continue;
+            // }
+            // if (typeof a[key] === 'object') {
+            //     console.log(key, a[key], b[key])
+            // }
             if (Array.isArray(a[key]) && b[key] !== undefined) {
                 if (!(a[key].sort().toString() == b[key].sort().toString())) return false;
             } else if (typeof a[key] === 'object') {

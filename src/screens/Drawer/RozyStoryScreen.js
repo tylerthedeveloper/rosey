@@ -55,7 +55,7 @@ const styles = StyleSheet.create({
         // flex: 2,
         // flexShrink: 2
         marginTop: 30,
-        paddingBottom: 20
+        marginBottom: 10
     },
     story: {
         flex: 1,

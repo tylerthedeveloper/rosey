@@ -283,13 +283,13 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
     return (
         <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : null}
-            keyboardVerticalOffset={80}
+            keyboardVerticalOffset={85}
             style={{ flex: 1 }}
         >
             <ScrollView
                 ref={scrollRef}
                 onContentSizeChange={(contentHeight) => setContentHeight(contentHeight)}
-                keyboardShouldPersistTaps="never" //https://www.codegrepper.com/code-examples/fortran/react-native+on+screen+click+keyboard+dismiss+how+to+stop+it+from+dismussing
+                keyboardShouldPersistTaps="handled" //https://www.codegrepper.com/code-examples/fortran/react-native+on+screen+click+keyboard+dismiss+how+to+stop+it+from+dismussing
             // https://medium.com/@akshay.s.somkuwar/dismiss-hide-keyboard-on-tap-outside-of-textinput-react-native-b94016f35ff0
             >
                 {/* Social Section */}
@@ -470,13 +470,17 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                     <Avatar.Icon {...props} icon={'crosshairs-gps'} size={40} style={{ marginRight: 10 }} />
                     <PlacesInput
                         googleApiKey={GOOGLE_API_KEY}
-                        onSelect={place => _makeLocationObject(place.result, 'home', setUpdated_homeLocation)}
+                        onSelect={place => {
+                            _makeLocationObject(place.result, 'home', setUpdated_homeLocation)
+                        }}
                         placeHolder={(updated_homeLocation && updated_homeLocation.homeFormatted_address) ? updated_homeLocation.homeFormatted_address : "Home location"}
+                        query={(updated_homeLocation && updated_homeLocation.homeFormatted_address) ? updated_homeLocation.homeFormatted_address : ""}
                         language={"en-US"}
                         textInputProps={{
                             autoCorrect: false,
                             fontWeight: 'bold'
                         }}
+                        // clearQueryOnSelect={true}
                         stylesContainer={{
                             position: 'relative',
                             alignSelf: 'center',
@@ -491,7 +495,7 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                 </Card.Actions>
                 {
                     (!isUserContactCard)
-                        ? <>
+                        ? <View style={{marginBottom: 10}}>
                             <TouchableOpacity
                                 onPress={() => _makeLocationObject({
                                     location: currentLocation, formatted_address: geoCodedLocation, name: ""
@@ -505,7 +509,10 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                                 <Avatar.Icon {...props} icon={'crosshairs-gps'} size={40} style={{ marginRight: 10 }} />
                                 <PlacesInput
                                     googleApiKey={GOOGLE_API_KEY}
-                                    onSelect={place => _makeLocationObject(place.result, 'place_met', setUpdated_placeMetAt)}
+                                    onSelect={place => {
+                                        _makeLocationObject(place.result, 'place_met', setUpdated_placeMetAt)
+                                        console.log(place.result)
+                                    }}
                                     placeHolder={updated_placeMetAt.placeMetAtFormatted_address || geoCodedLocation || "Place you met!"}
                                     language={"en-US"}
                                     onChangeText={() => scrollRef.current ?.scrollToEnd()}
@@ -513,7 +520,8 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                                         autoCorrect: false,
                                         fontWeight: 'bold',
                                     }}
-                                    query={geoCodedLocation}
+                                    query={updated_placeMetAt.placeMetAtFormatted_address || geoCodedLocation}
+                                    // clearQueryOnSelect={true}
                                     stylesContainer={{
                                         position: 'relative',
                                         alignSelf: 'center',
@@ -528,14 +536,16 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                                     }}
                                 />
                             </Card.Actions>
-                        </>
+                        </View>
                         : null
                 }
-                {(isApiLoading) && <ActivityIndicator animating={true} size={'large'} />}
-                {(!canAddNewRose) ? <Text style={styles.errorMessage}> You should enter a name for this Rose </Text> : null}
-                {(isPhoneValid) ? <Text style={styles.errorMessage}> Phone # must be 10 digits </Text> : null}
-                {(errorMessage) ? <Text style={styles.errorMessage}> {errorMessage} </Text> : null}
-                {/* <Button disabled={!canAddNewRose || isUserEdited || isApiLoading || isPhoneValid} */}
+                <View style={styles.errorSection}>
+                    {(isApiLoading) && <ActivityIndicator animating={true} size={'large'} />}
+                    {(!canAddNewRose) ? <Text style={styles.errorMessage}> You should enter a name for this Rose </Text> : null}
+                    {(isPhoneValid) ? <Text style={styles.errorMessage}> Phone # must be 10 digits </Text> : null}
+                    {(errorMessage) ? <Text style={styles.errorMessage}> {errorMessage} </Text> : null}
+                    {/* <Button disabled={!canAddNewRose || isUserEdited || isApiLoading || isPhoneValid} */}
+                </View>
                 {
                     (addNewRoseRoute)
                         ? <Button disabled={!canAddNewRose || isPhoneValid}
@@ -610,6 +620,9 @@ const styles = StyleSheet.create({
     errorMessage: {
         color: 'red',
         margin: 10
+    },
+    errorSection: {
+        alignItems: 'center'
     }
 });
 
