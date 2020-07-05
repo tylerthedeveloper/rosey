@@ -11,31 +11,18 @@ const RozyStoryScreen = () => {
         <View style={styles.container}>
             <ScrollView style={styles.scrollView}>
                 <Text style={styles.story}>
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    Suspendisse vel tellus id dui iaculis porta. Curabitur enim felis,
-                    Feuiat suscipit quam eget, condimentum dapibus eros.
-                    Sed vel neque in felis rutrum pulvinar vel at nibh. Vivamus facilisis,
-                    libero ut scelerisque bibendum, turpis velit rhoncus libero, nec lobortis
-                    est ante sit amet risus. Sed bibendum viverra libero, ac ullamcorper ligula
-                    rhoncus a. Suspendisse ultrices interdum ex sed gravida. Aliquam quis aliquet,
-                    tempus nisi et, eleifend diam. Praesent pretium quam diam, id molestie rutrum eu.
-                    Sed ut nibh vitae nibh volutpat ornare. Suspendisse utnuncpretium, faucibus lectus
-                    vel, congue tellus. Vestibulum eu lacinia dolor. Fusce non purus nec nunc faucibus
-                    vestibulum.
+                    I’ve always loved meeting people spontaneously, developing personal relationships, and making lasting connections.
+                    That’s the story of Rozy. “Rosie” is the nickname of a friend I met in College who helped me improve the way I keep connections alive, 
+                    which inspired me to create this app. Thanks to Rosie, you can now do the same. 
                     {"\n"}
                     {"\n"}
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit.
-                    Suspendisse vel tellus id dui iaculis porta. Curabitur enim felis,
-                    Feuiat suscipit quam eget, condimentum dapibus eros.
-                    Sed vel neque in felis rutrum pulvinar vel at nibh. Vivamus facilisis,
-                    libero ut scelerisque bibendum, turpis velit rhoncus libero, nec lobortis
-                    est ante sit amet risus. Sed bibendum viverra libero, ac ullamcorper ligula
-                    rhoncus a. Suspendisse ultrices interdum ex sed gravida. Aliquam quis aliquet,
-                    tempus nisi et, eleifend diam. Praesent pretium quam diam, id molestie rutrum eu.
-                    Sed ut nibh vitae nibh volutpat ornare. Suspendisse utnuncpretium, faucibus lectus
-                    vel, congue tellus. Vestibulum eu lacinia dolor. Fusce non purus nec nunc faucibus
-                    vestibulum.
-           </Text>
+                    Rosie and I originally became acquantainces at the gym, but never talked. 
+                    Weeks later ended up at the same social gathering and he bet he wouldn’t forget my name, and I would forget his. 
+                    As it would have it, I had forgotten his name by the next day. 
+                    His secret? He wrote down the names of each person he met with a little bit of context immediately after meeting them, on his phone.
+                    I loved this idea so much I built an app for that exact purpose.
+                    Welcome to Rozy, the app that will help you keep connections alive.
+                </Text>
             </ScrollView>
             <MyButton onPress={() => WebBrowser.openBrowserAsync(Constants.rozyStoryUrl)} mode="outlined" icon={'book'}>
                 Check out the full story!

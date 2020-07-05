@@ -511,7 +511,7 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                                     googleApiKey={GOOGLE_API_KEY}
                                     onSelect={place => {
                                         _makeLocationObject(place.result, 'place_met', setUpdated_placeMetAt)
-                                        console.log(place.result)
+                                        // console.log(place.result)
                                     }}
                                     placeHolder={updated_placeMetAt.placeMetAtFormatted_address || geoCodedLocation || "Place you met!"}
                                     language={"en-US"}
