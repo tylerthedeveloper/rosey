@@ -5,17 +5,18 @@ import QRCode from 'react-native-qrcode-svg';
 import { AuthContext } from '../../context/AuthContext';
 import { MyHeader } from '../../paper-components/memo';
 import { BarCodeScanner } from 'expo-barcode-scanner';
+import { MyButton } from '../../paper-components/memo';
+import Constants from '../../constants';
 
 const QRCodeScreen = () => {
 
     const { state: { user } } = useContext(AuthContext);
-    const [hasPermission, setHasPermission] = useState(null);
+    // const [hasPermission, setHasPermission] = useState(null);
     const [scanned, setScanned] = useState(false);
     const [scanPressed, setScanPressed] = useState(false);
 
     const _askForPermissions = async () => {
         const { status } = await BarCodeScanner.requestPermissionsAsync();
-        setHasPermission(status === 'granted');
         if (status === "granted") {
             setScanPressed(true);
         } else if (status !== "granted") {
@@ -24,8 +25,8 @@ const QRCodeScreen = () => {
                 "No camera Permissions",
                 "please go to settings and on add camera permissions manually",
                 [
-                    { text: "cancel", onPress: () => console.log("cancel") },
-                    { text: "Allow", onPress: () => Linking.openURL("app-settings:") },
+                    { text: "Ok", onPress: () => console.log("cancel") },
+                    // { text: "Manual", onPress: () => Linking.openURL("app-settings:") },
                 ],
                 { cancelable: false }
             );
@@ -39,7 +40,7 @@ const QRCodeScreen = () => {
 
     const handleBarCodeScanned = ({ type, data }) => {
         setScanned(true);
-        console.log(type);
+        // console.log(type);
         const prefix = data.substring(0, 52);
         const suffix = data.substring(52);
         if (prefix === "https://rosey-server.herokuapp.com/users/app?userID="
@@ -67,9 +68,14 @@ const QRCodeScreen = () => {
                 size={200}
                 color={'purple'}
             />
-            <Button onPress={() => { _askForPermissions(); }} mode="contained">
-                Scan a QR Code
-            </Button>
+            <View style={{ alignItems: 'center' }}>
+                <MyButton onPress={() => _askForPermissions()} mode="contained" style={{ marginVertical: 30 }} icon={'camera'}>
+                    Scan a QR Code
+                </MyButton>
+                <MyButton onPress={() => Constants._shareProfile(user._id)} mode="outlined" icon={'account'}>
+                    Share your card
+                </MyButton>
+            </View>
             {
                 (scanPressed)
                     ? <BarCodeScanner
@@ -85,7 +91,7 @@ const QRCodeScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'space-around',
+        justifyContent: 'space-evenly',
         alignItems: 'center',
     },
     Headline: {

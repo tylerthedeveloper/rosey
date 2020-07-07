@@ -5,6 +5,16 @@ export default () => {
 
     const [rozyCalendar, setRozyCalendar] = useState({});
 
+    const getReminderPermissions = (async () => {
+        if (Platform.OS === "ios") {
+            const { status } = await Calendar.requestRemindersPermissionsAsync();
+        }
+        // FIXME:
+        // if (status !== 'granted') {
+        //     alert('You\'ll need to enable reminder permissions in order to access your calendar');
+        // }
+    });
+
     const getRozyCalendar = (async () => {
         const { status } = await Calendar.requestCalendarPermissionsAsync();
         if (status === 'granted') {
@@ -72,12 +82,13 @@ export default () => {
             })
                 .then(() => alert("Event successfully added to calendar"))
         } catch (e) {
-            // console.log(e);
+            console.log(e);
             alert("There was a problem adding your event");
         }
     }
 
     useEffect(() => {
+        getReminderPermissions();
         getRozyCalendar();
     }, []);
 

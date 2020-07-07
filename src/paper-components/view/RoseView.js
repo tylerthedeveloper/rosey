@@ -1,5 +1,6 @@
 import React from 'react';
-import { Linking, ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import * as Linking from 'expo-linking';
 import useCalendar from '../../hooks/useCalendar';
 import useContacts from '../../hooks/useContacts';
 import { Button, Divider } from 'react-native-paper';
@@ -12,8 +13,8 @@ const RoseView = ({ user, isApiLoading, view_updateFunction, view_updateFunction
     view_secondFunction, view_secondFunctionText,
     view_updateFunction_callback
 }) => {
-    
-    const { birthday, dateMet, email, homeLocation, name, nickName, notes, phoneNumber, placeMetAt, picture, socialProfiles, tags, work } = user || {};
+
+    const { birthday, dateMet, email, homeLocation, name, nickName, notes, personalSite, phoneNumber, placeMetAt, picture, socialProfiles, tags, work } = user || {};
     const { homeLocationCoords, homeFormatted_address, homeLocationName } = homeLocation || {};
     const { placeMetAtLocationCoords, placeMetAtFormatted_address, placeMetAtName } = placeMetAt || {};
 
@@ -65,6 +66,14 @@ const RoseView = ({ user, isApiLoading, view_updateFunction, view_updateFunction
             rightFunc: () => {
                 Linking.openURL(`mailto:${email}`)
             },
+        },
+        {
+            value: personalSite, subtitle: 'personal site',
+            left: "web",
+            rightIcon: "search-web",
+            rightFunc: () => {
+                Linking.openURL(`${personalSite}`)
+            }
         },
         {
             value: work, subtitle: 'occupation',

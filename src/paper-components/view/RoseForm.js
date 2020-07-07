@@ -11,6 +11,8 @@ import useCurrentLocation from '../../hooks/useCurrentLocation';
 import { MyTextInput } from '../../paper-components/memo';
 import { SocialIcon } from 'react-native-elements'
 import { ActivityIndicator, Colors } from 'react-native-paper';
+import * as Constants from '../../constants';
+import { TouchableWithoutFeedback } from 'react-native'
 
 const RoseForm = ({ user, isApiLoading, errorMessage, props,
     form_updateFunction, form_updateFunctionText,
@@ -19,21 +21,22 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
 }) => {
 
     const {
-        birthday, dateMet, email, homeLocation, name, nickName, notes, phoneNumber, placeMetAt, picture, socialProfiles, tags, work, roseId, _id
+        birthday, dateMet, email, homeLocation, name, nickName, notes, personalSite, phoneNumber, placeMetAt, picture, socialProfiles, tags, work, roseId, _id
     } = user || {};
 
     const { currentLocation, geoCodedLocation } = useCurrentLocation();
     const { state: { tags: contextTags }, addTag } = useContext(TagContext);
 
-    const [updated_birthday, setBirthday] = useState(birthday || new Date(Date.now()));
-    const [updated_dateMet, setDateMet] = useState(dateMet || new Date(Date.now()));
+    const [updated_birthday, setBirthday] = useState((birthday !== undefined) ? birthday : new Date(Date.now()));
+    const [updated_dateMet, setDateMet] = useState((dateMet !== undefined) ? dateMet : new Date(Date.now()));
     const [updated_email, setEmail] = useState(email);
     const [updated_tags, setTags] = useState(tags || []);
     const [updated_work, setWork] = useState(work);
-    const [updated_name, setName] = useState(name);
+    const [updated_name, setName] = useState(name || '');
     const [updated_notes, setNotes] = useState(notes);
     const [updated_nickName, setNickName] = useState(nickName);
-    const [updated_phoneNumber, setPhone] = useState(phoneNumber);
+    const [updated_personalSite, setPersonalSite] = useState(personalSite || '');
+    const [updated_phoneNumber, setPhone] = useState(phoneNumber || '');
     const [updated_homeLocation, setUpdated_homeLocation] = useState(homeLocation || {});
     const [updated_placeMetAt, setUpdated_placeMetAt] = useState(placeMetAt || {});
 
@@ -52,23 +55,20 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
     const [updated_picture, setPicture] = useState(picture);
     // ────────────────────────────────────────────────────────────────────────────────
 
-    // TODO: Convert to one user object?
     const updatedUser = {
         birthday: updated_birthday || new Date(Date.now()),
         dateMet: updated_dateMet || new Date(Date.now()),
         email: updated_email || '',
-        /* -------------------------------------------------------------------------- */
         homeLocation: updated_homeLocation || {
             homeLocationCoords: { latitude: -369, longitude: -369 },
             homeFormatted_address: '',
             homeLocationName: ''
         },
-        placeMetAt: updated_placeMetAt
-        ,
-        /* -------------------------------------------------------------------------- */
+        placeMetAt: updated_placeMetAt,
         name: updated_name || '',
         notes: updated_notes || '',
         nickName: updated_nickName || '',
+        personalSite: updated_personalSite || '',
         phoneNumber: updated_phoneNumber || '',
         picture: updated_picture || '',
         socialProfiles: {
@@ -124,6 +124,12 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
             editFunc: setEmail
         },
         {
+            value: updated_personalSite, subtitle: 'personal site',
+            left: "web",
+            rightIcon: "search-web",
+            editFunc: setPersonalSite
+        },
+        {
             value: updated_work, subtitle: 'occupation',
             left: "briefcase-account",
             rightIcon: "briefcase-plus",
@@ -146,7 +152,6 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
         editSocialEntry: false, type: '', setter: () => null
     });
 
-    // TODO: MOVE OUT?
     const _clearFormData = () => formRows.map(row => row.editFunc(''));
 
     const [birth_datePicker, setBirth_datePicker] = useState(false);
@@ -215,7 +220,6 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                 placeMetAtName: "",
             }
         } else {
-            // console.log('i am set??');
         }
     }
 
@@ -241,7 +245,6 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
     const placeInputRef = React.createRef();
     /* -------------------------------------------------------------------------- */
 
-
     /* -------------------------------------------------------------------------- */
     /*                         User Card Specifics                                */
     /* -------------------------------------------------------------------------- */
@@ -252,27 +255,42 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
         updatedUser.dateMet = undefined;
         updatedUser.placeMetAt = undefined;
         updatedUser.notes = undefined;
-
         // TODO:? KEEP?
         updatedUser.tags = undefined;
         ///
-
         updatedUser.roseId = undefined;
     }
     // ────────────────────────────────────────────────────────────────────────────────
 
-    // FIXME:
-    // console.log(JSON.stringify(user), JSON.stringify(updatedUser));
+
+    /* -------------------------------------------------------------------------- */
+    /*                         Bool checks                                        */
+    /* -------------------------------------------------------------------------- */
+    const isPhoneValid = (updated_phoneNumber.length > 0 && updated_phoneNumber.length !== 10);
+    const rowIgnoreArr = ["__v", "_id"]
+    const isUserNotEdited = Constants.default._areObjectsEqual(user, updatedUser, rowIgnoreArr);
+    const addNewRoseRoute = (form_updateFunctionText === "Add new Rose");
+    const canAddNewRose = (updated_name !== undefined && updated_name.length > 0);
+    // ────────────────────────────────────────────────────────────────────────────────
+
+    const DismissKeyboard = ({ children }) => (
+        <TouchableWithoutFeedback
+            onPress={() => Keyboard.dismiss()}> {children}
+        </TouchableWithoutFeedback>
+    );
+
 
     return (
         <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : null}
-            keyboardVerticalOffset={80}
+            keyboardVerticalOffset={85}
             style={{ flex: 1 }}
         >
-            <ScrollView keyboardShouldPersistTaps="always"
+            <ScrollView
                 ref={scrollRef}
                 onContentSizeChange={(contentHeight) => setContentHeight(contentHeight)}
+                keyboardShouldPersistTaps="handled" //https://www.codegrepper.com/code-examples/fortran/react-native+on+screen+click+keyboard+dismiss+how+to+stop+it+from+dismussing
+            // https://medium.com/@akshay.s.somkuwar/dismiss-hide-keyboard-on-tap-outside-of-textinput-react-native-b94016f35ff0
             >
                 {/* Social Section */}
                 <Paragraph style={styles.sectionTitle}> Social Media </Paragraph>
@@ -334,6 +352,7 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                                     autoCompleteType={"off"}
                                     onChangeText={editFunc}
                                     multiline={multiline}
+                                    disabled={subtitle === "email" && isUserContactCard}
                                     keyboardType={keyboardType}
                                 />
                             </Card.Actions>
@@ -341,27 +360,33 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                     ))
                 }
                 {/* Tag Section */}
-                <Paragraph style={styles.sectionTitle}> Tags (select below) </Paragraph>
-                <View style={styles.chips}>
-                    {
-                        contextTags.map((tag, index) =>
-                            (<Chip mode="outlined" style={styles.chip}
-                                key={tag + index}
-                                icon={'tag'}
-                                selectedColor={'blue'}
-                                selected={updated_tags.includes(tag)}
-                                onPress={() => toggledSelected(tag)}
-                            >
-                                {tag}
-                            </Chip>)
-                        )
-                    }
-                </View>
-                {/* TODO:  learn to center these*/}
-                <MyTextInput value={newTag} onChangeText={setNewTag} style={{ height: 50, marginLeft: 30, width: '100%', textAlign: 'center' }} />
-                <Button onPress={() => _addTag(newTag)} disabled={!newTag}>
-                    Add Tag
-                </Button>
+                {
+                    (!isUserContactCard)
+                        ? <>
+                            <Paragraph style={styles.sectionTitle}> Tags (select below) </Paragraph>
+                            <View style={styles.chips}>
+                                {
+                                    contextTags.map((tag, index) =>
+                                        (<Chip mode="outlined" style={styles.chip}
+                                            key={tag + index}
+                                            icon={'tag'}
+                                            selectedColor={'blue'}
+                                            selected={updated_tags.includes(tag)}
+                                            onPress={() => toggledSelected(tag)}
+                                        >
+                                            {tag}
+                                        </Chip>)
+                                    )
+                                }
+                            </View>
+                            {/* TODO:  learn to center these*/}
+                            <MyTextInput value={newTag} onChangeText={setNewTag} style={{ height: 50, marginLeft: 30, width: '100%', textAlign: 'center' }} />
+                            <Button onPress={() => _addTag(newTag)} disabled={!newTag}>
+                                Add Tag
+                            </Button>
+                        </>
+                        : null
+                }
                 {/*  DATE SECTION */}
                 <Paragraph style={styles.sectionTitle}> Date Info </Paragraph>
                 {
@@ -386,10 +411,11 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                                 (datemet_Picker)
                                     ?
                                     <DateTimePicker
-                                        value={updated_dateMet}
+                                        value={updated_dateMet || new Date(Date.now())}
                                         display="default"
                                         style={{ width: '70%', alignSelf: 'center' }}
                                         onChange={(event, value) => {
+                                            {/* console.log('event and value', value) */ }
                                             setDateMet(value || updated_dateMet || new Date(Date.now()));
                                             setTimeout(() => setDatemet_Picker(false), 2000);
                                         }}
@@ -418,10 +444,11 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                     {
                         (birth_datePicker)
                             ? <DateTimePicker
-                                value={updated_birthday}
+                                value={updated_birthday || new Date(Date.now())}
                                 display="default"
                                 style={{ width: '70%', alignSelf: 'center' }}
                                 onChange={(e, value) => {
+                                    {/* console.log('birthday event and value', value) */ }
                                     setBirthday(value || updated_birthday || new Date(Date.now()));
                                     setTimeout(() => setBirth_datePicker(false), 2000);
                                 }}
@@ -430,7 +457,6 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                     }
                 </View>
                 {/* Location Section */}
-                {/* TODO: preset location.... */}
                 <Paragraph style={styles.sectionTitle}> Location Section (please select below)</Paragraph>
                 <TouchableOpacity
                     onPress={() => _makeLocationObject({
@@ -444,13 +470,17 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                     <Avatar.Icon {...props} icon={'crosshairs-gps'} size={40} style={{ marginRight: 10 }} />
                     <PlacesInput
                         googleApiKey={GOOGLE_API_KEY}
-                        onSelect={place => _makeLocationObject(place.result, 'home', setUpdated_homeLocation)}
+                        onSelect={place => {
+                            _makeLocationObject(place.result, 'home', setUpdated_homeLocation)
+                        }}
                         placeHolder={(updated_homeLocation && updated_homeLocation.homeFormatted_address) ? updated_homeLocation.homeFormatted_address : "Home location"}
+                        query={(updated_homeLocation && updated_homeLocation.homeFormatted_address) ? updated_homeLocation.homeFormatted_address : ""}
                         language={"en-US"}
                         textInputProps={{
                             autoCorrect: false,
                             fontWeight: 'bold'
                         }}
+                        // clearQueryOnSelect={true}
                         stylesContainer={{
                             position: 'relative',
                             alignSelf: 'center',
@@ -460,12 +490,12 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                             marginBottom: 10
                         }}
                         //onChangeText={() => scrollRef.current?.scrollTo({ y: 2 * contentHeight, animated: true })}
-                        onChangeText={() => scrollRef.current?.scrollToEnd()}
+                        onChangeText={() => scrollRef.current ?.scrollToEnd()}
                     />
                 </Card.Actions>
                 {
                     (!isUserContactCard)
-                        ? <>
+                        ? <View style={{marginBottom: 10}}>
                             <TouchableOpacity
                                 onPress={() => _makeLocationObject({
                                     location: currentLocation, formatted_address: geoCodedLocation, name: ""
@@ -479,15 +509,19 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                                 <Avatar.Icon {...props} icon={'crosshairs-gps'} size={40} style={{ marginRight: 10 }} />
                                 <PlacesInput
                                     googleApiKey={GOOGLE_API_KEY}
-                                    onSelect={place => _makeLocationObject(place.result, 'place_met', setUpdated_placeMetAt)}
+                                    onSelect={place => {
+                                        _makeLocationObject(place.result, 'place_met', setUpdated_placeMetAt)
+                                        // console.log(place.result)
+                                    }}
                                     placeHolder={updated_placeMetAt.placeMetAtFormatted_address || geoCodedLocation || "Place you met!"}
                                     language={"en-US"}
-                                    onChangeText={() => scrollRef.current?.scrollToEnd()}
+                                    onChangeText={() => scrollRef.current ?.scrollToEnd()}
                                     textInputProps={{
                                         autoCorrect: false,
                                         fontWeight: 'bold',
                                     }}
-                                    query={geoCodedLocation}
+                                    query={updated_placeMetAt.placeMetAtFormatted_address || geoCodedLocation}
+                                    // clearQueryOnSelect={true}
                                     stylesContainer={{
                                         position: 'relative',
                                         alignSelf: 'center',
@@ -502,18 +536,34 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                                     }}
                                 />
                             </Card.Actions>
-                        </>
+                        </View>
                         : null
                 }
-                {(isApiLoading) && <ActivityIndicator animating={true} size={'large'} />}
-                {(errorMessage) ? <Text style={styles.errorMessage}> {errorMessage} </Text> : null}
-                <Button disabled={JSON.stringify(user) === JSON.stringify(updatedUser) || isApiLoading}
-                    onPress={() => {
-                        if (!isUserContactCard) _setPlaceMet();
-                        form_updateFunction({ roseObj: updatedUser, callback: () => form_updateFunction_callback(updatedUser) })
-                    }}>
-                    {form_updateFunctionText || 'Save'}
-                </Button>
+                <View style={styles.errorSection}>
+                    {(isApiLoading) && <ActivityIndicator animating={true} size={'large'} />}
+                    {(!canAddNewRose) ? <Text style={styles.errorMessage}> You should enter a name for this Rose </Text> : null}
+                    {(isPhoneValid) ? <Text style={styles.errorMessage}> Phone # must be 10 digits </Text> : null}
+                    {(errorMessage) ? <Text style={styles.errorMessage}> {errorMessage} </Text> : null}
+                    {/* <Button disabled={!canAddNewRose || isUserEdited || isApiLoading || isPhoneValid} */}
+                </View>
+                {
+                    (addNewRoseRoute)
+                        ? <Button disabled={!canAddNewRose || isPhoneValid}
+                            onPress={() => {
+                                if (!isUserContactCard) _setPlaceMet();
+                                form_updateFunction({ roseObj: updatedUser, callback: () => form_updateFunction_callback(updatedUser) })
+                            }}>
+                            {form_updateFunctionText || 'Add New'}
+                        </Button>
+                        : <Button disabled={isUserNotEdited || isApiLoading || isPhoneValid}
+                            onPress={() => {
+                                if (!isUserContactCard) _setPlaceMet();
+                                form_updateFunction({ roseObj: updatedUser, callback: () => form_updateFunction_callback(updatedUser) })
+                            }}>
+                            {form_updateFunctionText || 'Save Rose'}
+                        </Button>
+
+                }
                 <Button
                     onPress={() => {
                         _clearFormData();
@@ -540,9 +590,9 @@ const styles = StyleSheet.create({
     },
     // TODO:
     textInput: {
-        //width: '70%',
-        minWidth: '70%',
-        maxWidth: '90%'
+        width: '70%',
+        // minWidth: '70%',
+        // maxWidth: '80%'
     },
     sectionTitle: {
         fontWeight: 'bold',
@@ -570,6 +620,9 @@ const styles = StyleSheet.create({
     errorMessage: {
         color: 'red',
         margin: 10
+    },
+    errorSection: {
+        alignItems: 'center'
     }
 });
 

@@ -25,8 +25,8 @@ const SplashScreen = ({ navigation }) => {
             <TouchableOpacity
                 onPress={() => Linking.openURL(privacyUrl).catch((err) => console.error('An error occurred', err))}
             >
-                <Text style={styles.link}>
-                    Privacy policy
+                <Text textBreakStrategy="simple" style={styles.link}>
+                      Privacy policy  
                 </Text>
             </TouchableOpacity>
         </Background >
@@ -42,9 +42,10 @@ const styles = StyleSheet.create({
         marginBottom: 14,
     },
     link: {
-        fontWeight: 'bold',
         marginTop: 10,
         color: theme.colors.primary,
+        fontWeight: 'bold',
+        fontFamily: 'System'
     },
 });
 

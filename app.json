@@ -3,12 +3,11 @@
     "name": "Rozy",
     "slug": "rozy",
     "scheme": "rozy",
-    "sdkVersion": "37.0.0",
     "platforms": [
       "ios",
       "android"
     ],
-    "version": "1.5.3",
+    "version": "1.5.9",
     "orientation": "portrait",
     "icon": "./assets/app-icon.png",
     "splash": {
@@ -23,13 +22,15 @@
       "**/*"
     ],
     "ios": {
+      "appStoreUrl": "https://apps.apple.com/us/app/rozy/id1511264722",
       "supportsTablet": true,
       "bundleIdentifier": "com.rosey-app.rosey",
-      "buildNumber": "1.3.4",
+      "buildNumber": "1.4.4",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": "no",
         "NSLocationWhenInUseUsageDescription": "Allow Rozy to use your location so you can easily add location to your roses",
         "NSCalendarsUsageDescription": "Allow Rozy to interact with your calendar so you can save special events",
+        "NSRemindersUsageDescription": "Allow Rozy to interact with your reminders so you can recall special events",
         "NSContactsUsageDescription": "Allow Rozy to interact with your contacts so you can import and export your contacts for a more seamless app experience.",
         "NSCameraUsageDescription": "Allow Rozy to use the camera to scan barcodes so you can quickly add other's roses!",
         "LSApplicationQueriesSchemes": [
@@ -45,16 +46,12 @@
     },
     "android": {
       "package": "com.rozy_app.rozy",
-      "versionCode": 11,
+      "versionCode": 17,
       "config": {
         "googleMaps": {
           "apiKey": "AIzaSyA5fMKf-ThAyziy-jqvTl287mPmQrXthzw"
         }
       },
-      "permissions": [
-        "android.permission.READ_CONTACTS",
-        "android.permission.WRITE_CONTACTS"
-      ],
       "intentFilters": [
         {
           "action": "VIEW",
@@ -68,7 +65,17 @@
             "DEFAULT"
           ]
         }
-      ]
+      ],
+      "permissions": [
+        "ACCESS_COARSE_LOCATION",
+        "ACCESS_FINE_LOCATION",
+        "CAMERA",
+        "READ_CALENDAR",
+        "WRITE_CALENDAR",
+        "android.permission.READ_CONTACTS",
+        "android.permission.WRITE_CONTACTS"
+      ],
+      "playStoreUrl": "https://play.google.com/store/apps/details?id=com.rozy_app.rozy"
     }
   }
 }

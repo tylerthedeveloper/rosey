@@ -10,7 +10,7 @@ const MapMarker = ({ props, roseId, coords, address, name, tags, navigationCallb
         <Marker
             coordinate={coords}
             title={name + " @ " + address}
-        //image={require('../../assets/rose-marker.png')}
+            //image={require('../../assets/rose-marker.png')}
         >
             <Image
                 source={require('../../assets/rose-marker.png')}

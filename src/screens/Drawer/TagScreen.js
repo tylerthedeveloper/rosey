@@ -15,16 +15,6 @@ const TagScreen = () => {
     return (
         <View style={styles.container}>
             <MyHeader style={styles.Headline}> Manager your tags here! </MyHeader>
-            {/* <FlatList
-                data={tags}
-                keyExtractor={(item, index) => (item + index)}
-                renderItem={({ item }) => {
-                    return (<Chip mode="outlined" style={styles.chip}
-                        icon={'tag'} >
-                        {item}
-                    </Chip>)
-                }}
-            /> */}
             <View style={styles.chips}>
                 {
                     tags.map((tag, index) =>
