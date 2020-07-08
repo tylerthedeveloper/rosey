@@ -122,5 +122,5 @@ export default {
         work: 'Developer, PM',
         roseId: shortid.generate()
     },
-    rozyStoryUrl: 'https://www.medium.com/@tylercitrin'
+    rozyStoryUrl: 'https://medium.com/@tylercitrin/the-sunday-shortlist-crazy-encounters-life-lessons-and-a-mobile-application-rozy-55aa3068289d'
 };

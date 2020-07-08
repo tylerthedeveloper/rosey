@@ -41,11 +41,11 @@ const styles = StyleSheet.create({
         height: '80%',
         // flex: 2,
         // flexShrink: 2
-        marginTop: 30,
-        marginBottom: 10
+        // marginBottom: 10
     },
     story: {
         flex: 1,
+        marginTop: 20,
         marginHorizontal: 20,
         fontSize: 20,
         // fontFamily: 'Helvetica'

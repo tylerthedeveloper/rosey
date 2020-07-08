@@ -29,7 +29,7 @@ const FeedbackScreen = () => {
             }
         },
         {
-            label: "Chat on imessage or email", icon: 'chat', onPress: () => {
+            label: "Chat on text or email", icon: 'chat', onPress: () => {
                 Alert.alert(
                     "How would you like to chat?",
                     "I am available via text or email!",
