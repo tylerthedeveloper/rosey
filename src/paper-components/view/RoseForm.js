@@ -120,12 +120,14 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
         {
             value: updated_email, subtitle: 'email',
             left: "email",
+            keyboardType: 'email-address',
             rightIcon: "email",
             editFunc: setEmail
         },
         {
             value: updated_personalSite, subtitle: 'personal site',
             left: "web",
+            keyboardType: 'url',
             rightIcon: "search-web",
             editFunc: setPersonalSite
         },
@@ -291,6 +293,8 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                 onContentSizeChange={(contentHeight) => setContentHeight(contentHeight)}
                 keyboardShouldPersistTaps="handled" //https://www.codegrepper.com/code-examples/fortran/react-native+on+screen+click+keyboard+dismiss+how+to+stop+it+from+dismussing
             // https://medium.com/@akshay.s.somkuwar/dismiss-hide-keyboard-on-tap-outside-of-textinput-react-native-b94016f35ff0
+            // TODO: ? keyboardDismissMode={Platform.OS === 'ios' ? 'interactive' : 'on-drag'}
+
             >
                 {/* Social Section */}
                 <Paragraph style={styles.sectionTitle}> Social Media </Paragraph>
@@ -350,8 +354,10 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                                     autoComplete={false}
                                     autoCorrect={false}
                                     autoCompleteType={"off"}
+                                    style={{ flex: 1 }}
                                     onChangeText={editFunc}
                                     multiline={multiline}
+                                    scrollEnabled={false}
                                     disabled={subtitle === "email" && isUserContactCard}
                                     keyboardType={keyboardType}
                                 />
@@ -495,7 +501,7 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                 </Card.Actions>
                 {
                     (!isUserContactCard)
-                        ? <View style={{marginBottom: 10}}>
+                        ? <View style={{ marginBottom: 10 }}>
                             <TouchableOpacity
                                 onPress={() => _makeLocationObject({
                                     location: currentLocation, formatted_address: geoCodedLocation, name: ""
