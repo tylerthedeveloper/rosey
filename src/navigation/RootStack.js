@@ -93,6 +93,7 @@ export const RootStackNavigator = () => {
                                             ? <Image source={require('../../assets/rozy-logo.png')} style={{ height: 45, width: 75 }} />
                                             : <Text style={{ fontFamily: 'monospace' }}> Rozy </Text>
                                 }
+                                
                             />
                         </Appbar.Header>
                     );
