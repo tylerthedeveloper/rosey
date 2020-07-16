@@ -153,7 +153,7 @@ const RoseView = ({ user, isApiLoading, view_updateFunction, view_updateFunction
     return (
         <View style={{ flex: 1 }}>
             {/* Social Section */}
-            <ScrollView style={{ marginBottom: 15, flex: 1 }}>
+            <ScrollView style={{ marginBottom: 15, flex: 1 }} showsVerticalScrollIndicator={false}>
                 <View style={{ marginVertical: 5 }}>
                     <MyShadowCard>
                         <View style={styles.socialMediaSection}>

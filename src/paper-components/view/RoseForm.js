@@ -294,7 +294,7 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                 keyboardShouldPersistTaps="handled" //https://www.codegrepper.com/code-examples/fortran/react-native+on+screen+click+keyboard+dismiss+how+to+stop+it+from+dismussing
             // https://medium.com/@akshay.s.somkuwar/dismiss-hide-keyboard-on-tap-outside-of-textinput-react-native-b94016f35ff0
             // TODO: ? keyboardDismissMode={Platform.OS === 'ios' ? 'interactive' : 'on-drag'}
-
+                showsVerticalScrollIndicator={false}
             >
                 {/* Social Section */}
                 <Paragraph style={styles.sectionTitle}> Social Media </Paragraph>

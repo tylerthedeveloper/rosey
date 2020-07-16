@@ -45,10 +45,18 @@ const FeedbackScreen = () => {
                 );
             }
         },
+        {
+            label: "Get involved in Reddit Discussions", icon: 'chat', onPress: () => {
+                try {
+                    WebBrowser.openBrowserAsync("https://www.reddit.com/r/RozyApp/");
+                } catch (err) {
+                    alert('There was a problem loading your browsers')
+                    console.log(err.message);
+                }
+            }
+        },
         { label: "Support Website", icon: 'help', onPress: () => { WebBrowser.openBrowserAsync('http://rozy-website.herokuapp.com/') } },
     ]
-
-    const openMessage = () => { }
 
     return (
         <View style={styles.container}>
@@ -69,8 +77,9 @@ const FeedbackScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        // justifyContent: 'space-evenly',
+        // justifyContent: 'center',
         alignItems: 'center',
+        // marginTop:
     },
     Headline: {
         marginVertical: 50,
