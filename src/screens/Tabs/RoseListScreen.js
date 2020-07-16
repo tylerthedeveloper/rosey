@@ -112,6 +112,7 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         marginTop: 20,
         marginLeft: 20,
+        marginBottom: 5
     },
     searchBar: {
         minWidth: '65%',

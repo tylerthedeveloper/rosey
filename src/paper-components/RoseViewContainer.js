@@ -4,6 +4,7 @@ import { Card } from 'react-native-paper';
 import { RoseHeader } from './partial';
 import { RoseForm, RoseView } from './view';
 import Constants from '../constants';
+import { MyShadowCard } from './memo';
 
 // TODO: Clean props!
 // navigation, props, view_updateFunction, form_secondFunction
@@ -24,9 +25,9 @@ const RoseViewContainer = ({
 
     return (
         <>
-            <Card style={styles.card}>
+            {/* <MyShadowCard> */}
                 <RoseHeader {...{ name, picture, homeCity, homeState, homeCountry, isUserContactCard, editing, _setEditing, shareProfile: () => Constants._shareProfile(user._id) }} />
-            </Card >
+            {/* </MyShadowCard> */}
             {
                 (!editing)
                     ? <RoseView
@@ -68,6 +69,17 @@ const styles = StyleSheet.create({
         // borderWidth: 1,
         // paddingBottom: 10,
         // flex: 1
+        marginVertical: 20,
+        marginHorizontal: 10,
+        borderWidth: 1,
+        borderRadius: 5,
+        borderColor: '#ddd',
+        borderBottomWidth: 0,
+        shadowColor: '#000000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.9,
+        shadowRadius: 3,
+        elevation: 1,
     }
 })
 

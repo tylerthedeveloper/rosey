@@ -2,6 +2,7 @@ import { useNavigation } from "@react-navigation/native";
 import React from 'react';
 import { StyleSheet, TouchableOpacity } from 'react-native';
 import { Avatar, Card, Paragraph } from 'react-native-paper';
+import { MyShadowCard } from "../memo";
 
 const RoseListItem = ({ rose }) => {
     const navigation = useNavigation();
@@ -9,7 +10,11 @@ const RoseListItem = ({ rose }) => {
     const { homeCity, homeState, homeCountry } = homeLocation || {};
     return (
         <TouchableOpacity style={styles.container} onPress={() => navigation.push('RoseDetail', { roseId: rose.roseId })}>
-            <Card style={{ padding: 5 }}>
+            <MyShadowCard style={{ marginVertical: 0 }}
+                inheritedMarginTop={1}
+                inheritedMarginBottom={1}
+                inheritedMarginHorizontal={5}
+            >
                 <Card.Title
                     style={{ paddingTop: 5 }}
                     left={props => (
@@ -35,7 +40,7 @@ const RoseListItem = ({ rose }) => {
                     <Paragraph> Tags: </Paragraph>
                     <Paragraph> {tags && Array.isArray(tags) && tags.join(', ') || '(Add some tags!)'} </Paragraph>
                 </Card.Actions>
-            </Card>
+            </MyShadowCard>
         </TouchableOpacity >
     )
 }

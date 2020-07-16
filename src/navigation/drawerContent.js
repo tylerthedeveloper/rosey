@@ -37,7 +37,7 @@ const DrawerContent = (props) => {
     });
 
     const drawerRows = [
-        // { label: "Contact Card", icon: 'account-outline', navigateTo: 'ContactCard' },
+        { label: "Contact Card", icon: 'account-outline', navigateTo: 'ContactCard' },
         { label: "Contacts", icon: 'contacts', navigateTo: 'ContactsScreen' },
         { label: "Tags", icon: 'tag', navigateTo: 'TagScreen' },
         { label: "QR Code", icon: 'qrcode', navigateTo: 'QRCode' },

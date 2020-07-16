@@ -8,6 +8,7 @@ import RoseViewField from '../partial/RoseViewField';
 import moment from 'moment';
 import { SocialIcon } from 'react-native-elements'
 import { Tooltip, Text } from 'react-native-elements';
+import { MyShadowCard } from '../memo';
 
 const RoseView = ({ user, isApiLoading, view_updateFunction, view_updateFunctionText,
     view_secondFunction, view_secondFunctionText,
@@ -150,84 +151,97 @@ const RoseView = ({ user, isApiLoading, view_updateFunction, view_updateFunction
     ];
 
     return (
-        <ScrollView style={{ marginBottom: 15 }}>
+        <View style={{ flex: 1 }}>
             {/* Social Section */}
-            <View style={styles.socialMediaSection}>
-                {
-                    socialLinkedIcons.map(({ appUrl, type, value, webUrl }) => (
-                        (value)
-                            ? <TouchableOpacity key={type} style={{ marginHorizontal: 10 }} onPress={() => {
-                                Linking.canOpenURL(appUrl)
-                                    .then((supported) => Linking.openURL((supported) ? appUrl : webUrl))
-                                    .catch((err) => console.error('An error occurred', err))
-                            }}
-                            >
-                                <SocialIcon
-                                    raised
-                                    light
-                                    style={{
-                                        opacity: (value && (appUrl || webUrl)) ? 1 : .4,
-                                    }}
-                                    type={type}
-                                />
-                            </TouchableOpacity>
-                            : <Tooltip key={type} popover={<Text style={{ color: 'white' }}>Edit your profile{"\n"}to add social media</Text>}
-                                containerStyle={{ flexWrap: 'wrap', height: 100 }}
-                            >
-                                <SocialIcon
-                                    raised
-                                    light
-                                    style={{
-                                        opacity: (value && (appUrl || webUrl)) ? 1 : .4,
-                                        marginHorizontal: 10
-                                    }}
-                                    type={type}
-                                />
-                            </Tooltip>
-                    ))
-                }
-            </View>
-            <Divider />
-            {/* Fields Section */}
-            {
-                viewRows.map(({ value, subtitle, left, rightIcon, secondRightIcon, rightFunc, secondRightFunc }) => (
-                    ((isUserContactCard && !contactCardRowsToIgnore.includes(subtitle) || !isUserContactCard))
-                        ? (isUserContactCard)
-                            ? <RoseViewField
-                                key={subtitle}
-                                value={value}
-                                subtitle={subtitle}
-                                left={left}
-                            />
-                            : <RoseViewField
-                                key={subtitle}
-                                value={value}
-                                subtitle={subtitle}
-                                left={left}
-                                rightIcon={rightIcon}
-                                rightFunc={rightFunc}
-                                secondRightIcon={secondRightIcon}
-                                secondRightFunc={secondRightFunc}
-                            />
-                        : null
-                ))
-            }
-            <Button onPress={view_updateFunction}> {view_updateFunctionText} </Button>
-            <Button
-                style={{ marginBottom: 10 }}
-                onPress={() => {
-                    const roseId = user.roseId;
-                    view_secondFunction({ roseId, callback: view_updateFunction_callback })
-                }}
-            > {view_secondFunctionText}
-            </Button>
-        </ScrollView >
+            <ScrollView style={{ marginBottom: 15, flex: 1 }}>
+                <View style={{ marginVertical: 5 }}>
+                    <MyShadowCard>
+                        <View style={styles.socialMediaSection}>
+                            {
+                                socialLinkedIcons.map(({ appUrl, type, value, webUrl }) => (
+                                    (value)
+                                        ? <TouchableOpacity key={type} style={{ marginHorizontal: 10 }} onPress={() => {
+                                            Linking.canOpenURL(appUrl)
+                                                .then((supported) => Linking.openURL((supported) ? appUrl : webUrl))
+                                                .catch((err) => console.error('An error occurred', err))
+                                        }}
+                                        >
+                                            <SocialIcon
+                                                raised
+                                                light
+                                                style={{
+                                                    opacity: (value && (appUrl || webUrl)) ? 1 : .4,
+                                                }}
+                                                type={type}
+                                            />
+                                        </TouchableOpacity>
+                                        : <Tooltip key={type} popover={<Text style={{ color: 'white' }}>Edit your profile{"\n"}to add social media</Text>}
+                                            containerStyle={{ flexWrap: 'wrap', height: 100 }}
+                                        >
+                                            <SocialIcon
+                                                raised
+                                                light
+                                                style={{
+                                                    opacity: (value && (appUrl || webUrl)) ? 1 : .4,
+                                                    marginHorizontal: 10
+                                                }}
+                                                type={type}
+                                            />
+                                        </Tooltip>
+                                ))
+                            }
+                        </View>
+                    </MyShadowCard>
+
+                </View>
+                {/* <Divider /> */}
+                {/* Fields Section */}
+                <MyShadowCard>
+                    {
+                        viewRows.map(({ value, subtitle, left, rightIcon, secondRightIcon, rightFunc, secondRightFunc }) => (
+                            ((isUserContactCard && !contactCardRowsToIgnore.includes(subtitle) || !isUserContactCard))
+                                ? (isUserContactCard)
+                                    ? <RoseViewField
+                                        key={subtitle}
+                                        value={value}
+                                        subtitle={subtitle}
+                                        left={left}
+                                    />
+                                    : <RoseViewField
+                                        key={subtitle}
+                                        value={value}
+                                        subtitle={subtitle}
+                                        left={left}
+                                        rightIcon={rightIcon}
+                                        rightFunc={rightFunc}
+                                        secondRightIcon={secondRightIcon}
+                                        secondRightFunc={secondRightFunc}
+                                    />
+                                : null
+                        ))
+                    }
+                </MyShadowCard>
+
+
+                <View style={{ marginTop: 10 }}>
+                    <Button onPress={view_updateFunction}> {view_updateFunctionText} </Button>
+                    <Button
+                        style={{ marginBottom: 10 }}
+                        onPress={() => {
+                            const roseId = user.roseId;
+                            view_secondFunction({ roseId, callback: view_updateFunction_callback })
+                        }}
+                    > {view_secondFunctionText}
+                    </Button>
+                </View>
+            </ScrollView>
+        </View>
     );
 };
 
 const styles = StyleSheet.create({
     socialMediaSection: {
-        flex: 1,
+        // flex: 1,
         flexWrap: 'wrap',
         flexDirection: 'row',
         justifyContent: 'space-around',

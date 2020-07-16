@@ -2,14 +2,16 @@ import React from 'react';
 import { ImageBackground, StyleSheet } from 'react-native';
 import { Avatar, Card, Paragraph, Title, IconButton } from 'react-native-paper';
 import { theme } from '../../core/theme';
+import { MyShadowCard } from '../memo';
 
 const RoseHeader = ({ name, picture, homeCity, homeState, homeCountry, isUserContactCard, editing, _setEditing, shareProfile }) => (
     // source={{ uri: 'https://picsum.photos/700' }}
-    <ImageBackground
-        // source={require('../../../assets/background_dot_2x.png')}
-        resizeMode="repeat"
-        style={styles.headerBackgroundImage}>
-        <Card.Content style={{ alignSelf: 'center', alignItems: 'center' }}>
+    <MyShadowCard
+    // source={require('../../../assets/background_dot_2x.png')}
+    // resizeMode="repeat"
+    // style={styles.headerBackgroundImage}
+    >
+        <Card.Content style={{ alignSelf: 'center', alignItems: 'center', paddingBottom: 5 }}>
             <Avatar.Image
                 style={styles.avatar}
                 size={100}
@@ -33,10 +35,10 @@ const RoseHeader = ({ name, picture, homeCity, homeState, homeCountry, isUserCon
                 icon="share"
                 size={25}
                 onPress={shareProfile}
-                style={{ right: 10, top: 120, alignSelf: 'flex-end', position: 'absolute' }}
+                style={{ right: 10, alignSelf: 'flex-end', bottom: 0, position: 'absolute' }}
             />
         }
-    </ImageBackground>
+    </MyShadowCard>
 );
 
 const styles = StyleSheet.create({
