@@ -71,6 +71,13 @@ export const RootStackNavigator = () => {
                                         onPress={() => {
                                             navigation.openDrawer();
                                         }}
+                                        style={{
+                                            marginLeft: 10, marginBottom: 10, borderColor: 'white', borderBottomLeftRadius: 30,
+                                            borderBottomRightRadius: 30,
+                                            borderTopRightRadius: 30,
+                                            borderTopLeftRadius: 30,
+                                            borderWidth: 1
+                                        }}
                                     >
                                         {
                                             (initials & !Platform.isPad)
@@ -81,21 +88,29 @@ export const RootStackNavigator = () => {
                                                     source={
                                                         require('../../assets/app-icon.png')
                                                     }
+                                                    style={{
+                                                        // borderColor: 'white', borderBottomLeftRadius: 30,
+                                                        // borderBottomRightRadius: 30,
+                                                        // borderTopRightRadius: 30,
+                                                        // borderTopLeftRadius: 30,
+                                                        // borderWidth: 1
+                                                    }}
                                                     size={50}
                                                 />
                                         }
                                     </TouchableOpacity>
-                                )}
-                            <Appbar.Content
+                                )
+                            }
+                            < Appbar.Content
                                 title={
                                     previous ? title :
                                         (Platform.OS === 'ios')
                                             ? <Image source={require('../../assets/rozy-logo.png')} style={{ height: 45, width: 75 }} />
                                             : <Text style={{ fontFamily: 'monospace' }}> Rozy </Text>
                                 }
-                                
+
                             />
-                        </Appbar.Header>
+                        </Appbar.Header >
                     );
                 }
             }}
@@ -157,6 +172,6 @@ export const RootStackNavigator = () => {
                 component={FeedbackScreen}
                 options={{ headerTitle: 'Feedback' }}
             />
-        </RootStack.Navigator>
+        </RootStack.Navigator >
     )
 };

@@ -585,7 +585,6 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                         _clearFormData();
                         form_secondFunction();
                     }}
-                    style={{}}
                 >
                     {form_secondFunctionText}
                 </Button>
@@ -607,8 +606,6 @@ const styles = StyleSheet.create({
     // TODO:
     textInput: {
         width: '70%',
-        // minWidth: '70%',
-        // maxWidth: '80%'
     },
     sectionTitle: {
         fontWeight: 'bold',

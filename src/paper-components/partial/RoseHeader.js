@@ -52,8 +52,8 @@ const styles = StyleSheet.create({
     //     fontSize: 26,
     // },
     avatar: {
-        borderColor: theme.primary || '#600EE6',
-        borderBottomEndRadius: 44,
+        shadowColor: theme.primary || '#600EE6',
+        shadowOpacity: 1
     },
     userNameText: {
         fontSize: 20,

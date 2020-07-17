@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { FlatList, StyleSheet, ScrollView, View, TouchableOpacity } from 'react-native';
-import { Chip, IconButton, Searchbar, Headline } from 'react-native-paper';
+import { Avatar, Chip, IconButton, Searchbar, Headline } from 'react-native-paper';
 import { Context as TagContext } from '../../context/TagContext';
 import { theme } from '../../core/theme';
 import useListFilters from '../../hooks/useListFilters';
@@ -12,6 +12,7 @@ const RoseListScreen = ({ navigation }) => {
     const { state: { tags } } = useContext(TagContext);
 
     // const { primary, secondary, error } = theme.colors;
+
     const [
         filteredRoses, filterToggle, setFilterToggle, filterItems, searchQuery, setSearchQuery,
         selectedTags, toggledSelected
@@ -111,21 +112,26 @@ const styles = StyleSheet.create({
     firstRow: {
         flexDirection: 'row',
         marginTop: 20,
-        marginLeft: 20,
-        marginBottom: 5
+        // marginLeft: 20,
+        marginBottom: 5,
+        elevation: 5,
+        // marginRight: 20,
+        marginHorizontal: 25
     },
     searchBar: {
         minWidth: '65%',
         maxWidth: '75%',
         flex: 1,
         shadowOffset: {
-            width: 0,
-            height: 0
+            width: 5,
+            height: 5
         },
-        shadowColor: '#ffffff'
+        shadowColor: '#858585',
+        elevation: 5,
+        borderRadius: 20
     },
     filterIcon: {
-        flex: 2
+        // flex: 2,
     },
     filterChips: {
         flexDirection: 'row',
