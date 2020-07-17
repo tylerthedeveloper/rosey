@@ -25,10 +25,10 @@ const RozyStoryScreen = () => {
                         Welcome to Rozy, the app that will help you keep connections alive.
                 </Text>
                 </ScrollView>
-                <View style={{ flex: 1, alignSelf: 'flex-end', }}>
+                <View style={{ flex: 1 }}>
                     <MyButton onPress={() => WebBrowser.openBrowserAsync(Constants.rozyStoryUrl)} mode="outlined" icon={'book'}>
                         Check out the full story!
-                </MyButton>
+                    </MyButton>
                 </View>
             </View>
         </MyShadowCard>

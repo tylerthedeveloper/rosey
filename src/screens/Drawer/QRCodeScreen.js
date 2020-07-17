@@ -3,7 +3,7 @@ import { StyleSheet, View, Linking, Alert } from 'react-native';
 import { Button } from 'react-native-paper';
 import QRCode from 'react-native-qrcode-svg';
 import { AuthContext } from '../../context/AuthContext';
-import { MyHeader } from '../../paper-components/memo';
+import { MyHeader, MyShadowCard } from '../../paper-components/memo';
 import { BarCodeScanner } from 'expo-barcode-scanner';
 import { MyButton } from '../../paper-components/memo';
 import Constants from '../../constants';
@@ -60,39 +60,44 @@ const QRCodeScreen = () => {
     };
 
     return (
-        <View style={styles.container}>
-            <MyHeader style={styles.Headline}> Share your QR Code! </MyHeader>
-            {/* https://www.npmjs.com/package/react-native-qrcode-svg */}
-            <QRCode
-                value={`https://rosey-server.herokuapp.com/users/app?userID=${user._id}`}
-                size={200}
-                color={'purple'}
-            />
-            <View style={{ alignItems: 'center' }}>
-                <MyButton onPress={() => _askForPermissions()} mode="contained" style={{ marginVertical: 30 }} icon={'camera'}>
-                    Scan a QR Code
+        <MyShadowCard inheritedMarginHorizontal={0} inheritedMarginTop={20}>
+            <View style={styles.container}>
+                <MyHeader style={styles.Headline}> Share your QR Code! </MyHeader>
+                {/* https://www.npmjs.com/package/react-native-qrcode-svg */}
+                <QRCode
+                    value={`https://rosey-server.herokuapp.com/users/app?userID=${user._id}`}
+                    size={200}
+                    color={'purple'}
+                />
+                <View style={{ alignItems: 'center' }}>
+                    <MyButton onPress={() => _askForPermissions()} mode="contained" style={{ marginVertical: 30 }} icon={'camera'}>
+                        Scan a QR Code
                 </MyButton>
-                <MyButton onPress={() => Constants._shareProfile(user._id)} mode="outlined" icon={'account'}>
-                    Share your card
+                    <MyButton onPress={() => Constants._shareProfile(user._id)} mode="outlined" icon={'account'}>
+                        Share your card
                 </MyButton>
+                </View>
+                {
+                    (scanPressed)
+                        ? <BarCodeScanner
+                            onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+                            style={StyleSheet.absoluteFillObject}
+                        />
+                        : null
+                }
             </View>
-            {
-                (scanPressed)
-                    ? <BarCodeScanner
-                        onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
-                        style={StyleSheet.absoluteFillObject}
-                    />
-                    : null
-            }
-        </View>
+        </MyShadowCard>
     )
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
+        // flex: 1,
         justifyContent: 'space-evenly',
+        // justifyContent: 'flex-start',
+        height: '95%',
         alignItems: 'center',
+        marginBottom: 20
     },
     Headline: {
     },
