@@ -8,7 +8,7 @@ import PlacesInput from 'react-native-places-input';
 import Spacer from '../../components/Spacer';
 import { Context as TagContext } from '../../context/TagContext';
 import useCurrentLocation from '../../hooks/useCurrentLocation';
-import { MyTextInput } from '../../paper-components/memo';
+import { MyTextInput, MyShadowCard } from '../../paper-components/memo';
 import { SocialIcon } from 'react-native-elements'
 import { ActivityIndicator, Colors } from 'react-native-paper';
 import * as Constants from '../../constants';
@@ -292,259 +292,269 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                 ref={scrollRef}
                 onContentSizeChange={(contentHeight) => setContentHeight(contentHeight)}
                 keyboardShouldPersistTaps="handled" //https://www.codegrepper.com/code-examples/fortran/react-native+on+screen+click+keyboard+dismiss+how+to+stop+it+from+dismussing
-            // https://medium.com/@akshay.s.somkuwar/dismiss-hide-keyboard-on-tap-outside-of-textinput-react-native-b94016f35ff0
-            // TODO: ? keyboardDismissMode={Platform.OS === 'ios' ? 'interactive' : 'on-drag'}
+                // https://medium.com/@akshay.s.somkuwar/dismiss-hide-keyboard-on-tap-outside-of-textinput-react-native-b94016f35ff0
+                // TODO: ? keyboardDismissMode={Platform.OS === 'ios' ? 'interactive' : 'on-drag'}
                 showsVerticalScrollIndicator={false}
             >
                 {/* Social Section */}
                 <Paragraph style={styles.sectionTitle}> Social Media </Paragraph>
-                <View style={styles.socialMediaSection}>
-                    {
-                        socialLinkedIcons.map(({ setter, type, value }) => (
-                            <TouchableOpacity key={type} style={{ marginHorizontal: 10 }}
-                                onPress={() => {
-                                    setCurrentSocialEntry({ setter, type, editSocialEntry: true })
-                                }}
-                            >
-                                <SocialIcon
-                                    raised
-                                    light
-                                    style={{
-                                        opacity: (value) ? 1 : .5
+                <MyShadowCard>
+                    <View style={styles.socialMediaSection}>
+                        {
+                            socialLinkedIcons.map(({ setter, type, value }) => (
+                                <TouchableOpacity key={type} style={{ marginHorizontal: 10 }}
+                                    onPress={() => {
+                                        setCurrentSocialEntry({ setter, type, editSocialEntry: true })
                                     }}
-                                    type={type}
+                                >
+                                    <SocialIcon
+                                        raised
+                                        light
+                                        style={{
+                                            opacity: (value) ? 1 : .5
+                                        }}
+                                        type={type}
+                                    />
+                                </TouchableOpacity>
+                            ))}
+                    </View>
+                    {
+                        // TODO: Different keyboards for whatsap??
+                        // TODO: Combine whatsapp and phone?
+                        (currentSocialEntry.editSocialEntry)
+                            ? <>
+                                {/* <Paragraph style={{ alignSelf: 'center' }}> Click here for help! {_setHelperText(currentSocialEntry.type)}</Paragraph> */}
+                                <Searchbar
+                                    placeholder={_setHelperText(currentSocialEntry.type)}
+                                    style={{ marginHorizontal: 25, marginVertical: 10 }}
+                                    icon={currentSocialEntry.type}
+                                    onChangeText={currentSocialEntry.setter}
+                                    keyboardType={(currentSocialEntry.type !== 'whatsapp') ? "default" : 'phone-pad'}
+                                    returnKeyType={"done"}
+                                    autoCompleteType={"off"}
+                                    autoCorrect={false}
+                                    autoCapitalize={"none"}
+                                    value={eval(`updated_${currentSocialEntry.type}`)}
                                 />
-                            </TouchableOpacity>
-                        ))}
-                </View>
-                {
-                    // TODO: Different keyboards for whatsap??
-                    // TODO: Combine whatsapp and phone?
-                    (currentSocialEntry.editSocialEntry)
-                        ? <>
-                            {/* <Paragraph style={{ alignSelf: 'center' }}> Click here for help! {_setHelperText(currentSocialEntry.type)}</Paragraph> */}
-                            <Searchbar
-                                placeholder={_setHelperText(currentSocialEntry.type)}
-                                style={{ marginHorizontal: 25, marginVertical: 10 }}
-                                icon={currentSocialEntry.type}
-                                onChangeText={currentSocialEntry.setter}
-                                keyboardType={(currentSocialEntry.type !== 'whatsapp') ? "default" : 'phone-pad'}
-                                returnKeyType={"done"}
-                                autoCompleteType={"off"}
-                                autoCorrect={false}
-                                autoCapitalize={"none"}
-                                value={eval(`updated_${currentSocialEntry.type}`)}
-                            />
-                        </>
-                        : null
-                }
+                            </>
+                            : null
+                    }
+                </MyShadowCard>
                 {/* Form Section */}
                 <Paragraph style={styles.sectionTitle}> Personal </Paragraph>
-                {
-                    formRows.map(({ left, subtitle, value, editFunc, keyboardType, autoCapitalize, multiline }) => (
-                        ((isUserContactCard && !contactCardRowsToIgnore.includes(subtitle) || !isUserContactCard))
-                            ? <Card.Actions style={styles.cardContent} key={subtitle} >
-                                <Avatar.Icon {...props} icon={left} size={40} style={{ marginRight: 20 }} />
-                                <TextInput mode="outlined"
-                                    label={subtitle}
-                                    style={styles.textInput}
-                                    // placeholder={value}
-                                    value={value}
-                                    autoCapitalize={autoCapitalize || "none"}
-                                    autoComplete={false}
-                                    autoCorrect={false}
-                                    autoCompleteType={"off"}
-                                    style={{ flex: 1 }}
-                                    onChangeText={editFunc}
-                                    multiline={multiline}
-                                    scrollEnabled={false}
-                                    disabled={subtitle === "email" && isUserContactCard}
-                                    keyboardType={keyboardType}
-                                />
-                            </Card.Actions>
-                            : null
-                    ))
-                }
+                <MyShadowCard>
+                    {
+                        formRows.map(({ left, subtitle, value, editFunc, keyboardType, autoCapitalize, multiline }) => (
+                            ((isUserContactCard && !contactCardRowsToIgnore.includes(subtitle) || !isUserContactCard))
+                                ? <Card.Actions style={styles.cardContent} key={subtitle} >
+                                    <Avatar.Icon {...props} icon={left} size={40} style={{ marginRight: 20 }} />
+                                    <TextInput mode="outlined"
+                                        label={subtitle}
+                                        style={styles.textInput}
+                                        // placeholder={value}
+                                        value={value}
+                                        autoCapitalize={autoCapitalize || "none"}
+                                        autoComplete={false}
+                                        autoCorrect={false}
+                                        autoCompleteType={"off"}
+                                        style={{ flex: 1 }}
+                                        onChangeText={editFunc}
+                                        multiline={multiline}
+                                        scrollEnabled={false}
+                                        disabled={subtitle === "email" && isUserContactCard}
+                                        keyboardType={keyboardType}
+                                    />
+                                </Card.Actions>
+                                : null
+                        ))
+                    }
+                </MyShadowCard>
                 {/* Tag Section */}
                 {
                     (!isUserContactCard)
                         ? <>
                             <Paragraph style={styles.sectionTitle}> Tags (select below) </Paragraph>
-                            <View style={styles.chips}>
-                                {
-                                    contextTags.map((tag, index) =>
-                                        (<Chip mode="outlined" style={styles.chip}
-                                            key={tag + index}
-                                            icon={'tag'}
-                                            selectedColor={'blue'}
-                                            selected={updated_tags.includes(tag)}
-                                            onPress={() => toggledSelected(tag)}
-                                        >
-                                            {tag}
-                                        </Chip>)
-                                    )
-                                }
-                            </View>
-                            {/* TODO:  learn to center these*/}
-                            <MyTextInput value={newTag} onChangeText={setNewTag} style={{ height: 50, marginLeft: 30, width: '100%', textAlign: 'center' }} />
-                            <Button onPress={() => _addTag(newTag)} disabled={!newTag}>
-                                Add Tag
-                            </Button>
+                            <MyShadowCard>
+                                <View style={styles.chips}>
+                                    {
+                                        contextTags.map((tag, index) =>
+                                            (<Chip mode="outlined" style={styles.chip}
+                                                key={tag + index}
+                                                icon={'tag'}
+                                                selectedColor={'blue'}
+                                                selected={updated_tags.includes(tag)}
+                                                onPress={() => toggledSelected(tag)}
+                                            >
+                                                {tag}
+                                            </Chip>)
+                                        )
+                                    }
+                                </View>
+                                {/* TODO:  learn to center these*/}
+                                <MyTextInput value={newTag} onChangeText={setNewTag} style={{ height: 50, marginLeft: 30, width: '100%', textAlign: 'center' }} />
+                                <Button onPress={() => _addTag(newTag)} disabled={!newTag}>
+                                    Add Tag
+                                </Button>
+                            </MyShadowCard>
                         </>
                         : null
                 }
                 {/*  DATE SECTION */}
                 <Paragraph style={styles.sectionTitle}> Date Info </Paragraph>
-                {
-                    (!isUserContactCard)
-                        ? <View style={{ alignItems: 'center' }}>
-                            <Card.Actions style={styles.cardContent}>
-                                <TouchableOpacity onPress={() => setDatemet_Picker(!datemet_Picker)}>
-                                    <Avatar.Icon {...props} icon={'calendar'} size={40} style={{ marginRight: 20 }} />
-                                </TouchableOpacity>
-                                <TouchableOpacity onPress={() => setDatemet_Picker(!datemet_Picker)}
-                                    style={styles.textInput}
-                                >
-                                    <Paragraph style={{ fontStyle: 'italic' }}> Date Met </Paragraph>
-                                    <TextInput
-                                        disabled={true}
-                                        onTouchStart={() => setDatemet_Picker(!datemet_Picker)}
-                                        value={moment(new Date(updated_dateMet)).format('MMM DD, YYYY')}
-                                    />
-                                </TouchableOpacity>
-                            </Card.Actions>
-                            {
-                                (datemet_Picker)
-                                    ?
-                                    <DateTimePicker
-                                        value={updated_dateMet || new Date(Date.now())}
-                                        display="default"
-                                        style={{ width: '70%', alignSelf: 'center' }}
-                                        onChange={(event, value) => {
-                                            {/* console.log('event and value', value) */ }
-                                            setDateMet(value || updated_dateMet || new Date(Date.now()));
-                                            setTimeout(() => setDatemet_Picker(false), 2000);
-                                        }}
-                                    />
-                                    : null
-                            }
-                        </View>
-                        : null
-                }
-                <View style={{ alignItems: 'center' }}>
-                    <Card.Actions style={styles.cardContent}>
-                        <TouchableOpacity onPress={() => setBirth_datePicker(!birth_datePicker)}>
-                            <Avatar.Icon {...props} icon={'calendar'} size={40} style={{ marginRight: 20 }} />
-                        </TouchableOpacity>
-                        <TouchableOpacity
-                            onPress={() => setBirth_datePicker(!birth_datePicker)}
-                            style={styles.textInput}>
-                            <Paragraph style={{ fontStyle: 'italic' }}> Birthday </Paragraph>
-                            <TextInput
-                                onTouchStart={() => setBirth_datePicker(!birth_datePicker)}
-                                disabled={true}
-                                value={moment(new Date(updated_birthday)).format('MMM DD, YYYY')}
-                            />
-                        </TouchableOpacity>
-                    </Card.Actions>
+                <MyShadowCard>
                     {
-                        (birth_datePicker)
-                            ? <DateTimePicker
-                                value={updated_birthday || new Date(Date.now())}
-                                display="default"
-                                style={{ width: '70%', alignSelf: 'center' }}
-                                onChange={(e, value) => {
-                                    {/* console.log('birthday event and value', value) */ }
-                                    setBirthday(value || updated_birthday || new Date(Date.now()));
-                                    setTimeout(() => setBirth_datePicker(false), 2000);
-                                }}
-                            />
+                        (!isUserContactCard)
+                            ? <View style={{ alignItems: 'center' }}>
+                                <Card.Actions style={styles.cardContent}>
+                                    <TouchableOpacity onPress={() => setDatemet_Picker(!datemet_Picker)}>
+                                        <Avatar.Icon {...props} icon={'calendar'} size={40} style={{ marginRight: 20 }} />
+                                    </TouchableOpacity>
+                                    <TouchableOpacity onPress={() => setDatemet_Picker(!datemet_Picker)}
+                                        style={styles.textInput}
+                                    >
+                                        <Paragraph style={{ fontStyle: 'italic' }}> Date Met </Paragraph>
+                                        <TextInput
+                                            disabled={true}
+                                            onTouchStart={() => setDatemet_Picker(!datemet_Picker)}
+                                            value={moment(new Date(updated_dateMet)).format('MMM DD, YYYY')}
+                                        />
+                                    </TouchableOpacity>
+                                </Card.Actions>
+                                {
+                                    (datemet_Picker)
+                                        ?
+                                        <DateTimePicker
+                                            value={updated_dateMet || new Date(Date.now())}
+                                            display="default"
+                                            style={{ width: '70%', alignSelf: 'center' }}
+                                            onChange={(event, value) => {
+                                                {/* console.log('event and value', value) */ }
+                                                setDateMet(value || updated_dateMet || new Date(Date.now()));
+                                                setTimeout(() => setDatemet_Picker(false), 2000);
+                                            }}
+                                        />
+                                        : null
+                                }
+                            </View>
                             : null
                     }
-                </View>
-                {/* Location Section */}
-                <Paragraph style={styles.sectionTitle}> Location Section (please select below)</Paragraph>
-                <TouchableOpacity
-                    onPress={() => _makeLocationObject({
-                        location: currentLocation, formatted_address: geoCodedLocation, name: ""
-                    }, "default_home", setUpdated_homeLocation)}>
-                    <Paragraph style={{ alignSelf: 'center', color: 'blue' }}>
-                        Use location for home
-                    </Paragraph>
-                </TouchableOpacity>
-                <Card.Actions style={styles.cardContent}>
-                    <Avatar.Icon {...props} icon={'crosshairs-gps'} size={40} style={{ marginRight: 10 }} />
-                    <PlacesInput
-                        googleApiKey={GOOGLE_API_KEY}
-                        onSelect={place => {
-                            _makeLocationObject(place.result, 'home', setUpdated_homeLocation)
-                        }}
-                        placeHolder={(updated_homeLocation && updated_homeLocation.homeFormatted_address) ? updated_homeLocation.homeFormatted_address : "Home location"}
-                        query={(updated_homeLocation && updated_homeLocation.homeFormatted_address) ? updated_homeLocation.homeFormatted_address : ""}
-                        language={"en-US"}
-                        textInputProps={{
-                            autoCorrect: false,
-                            fontWeight: 'bold'
-                        }}
-                        // clearQueryOnSelect={true}
-                        stylesContainer={{
-                            position: 'relative',
-                            alignSelf: 'center',
-                            fontWeight: 'bold',
-                            margin: 0,
-                            width: '80%',
-                            marginBottom: 10
-                        }}
-                        //onChangeText={() => scrollRef.current?.scrollTo({ y: 2 * contentHeight, animated: true })}
-                        onChangeText={() => scrollRef.current ?.scrollToEnd()}
-                    />
-                </Card.Actions>
-                {
-                    (!isUserContactCard)
-                        ? <View style={{ marginBottom: 10 }}>
-                            <TouchableOpacity
-                                onPress={() => _makeLocationObject({
-                                    location: currentLocation, formatted_address: geoCodedLocation, name: ""
-                                }, "default_place_met", setUpdated_placeMetAt)}>
-                                <Paragraph style={{ alignSelf: 'center', color: 'blue' }}>
-                                    Use location for place met
-                                </Paragraph>
+                    <View style={{ alignItems: 'center' }}>
+                        <Card.Actions style={styles.cardContent}>
+                            <TouchableOpacity onPress={() => setBirth_datePicker(!birth_datePicker)}>
+                                <Avatar.Icon {...props} icon={'calendar'} size={40} style={{ marginRight: 20 }} />
                             </TouchableOpacity>
-                            <Card.Actions style={styles.cardContent}>
-                                {/* TODO: SET NAME??? */}
-                                <Avatar.Icon {...props} icon={'crosshairs-gps'} size={40} style={{ marginRight: 10 }} />
-                                <PlacesInput
-                                    googleApiKey={GOOGLE_API_KEY}
-                                    onSelect={place => {
-                                        _makeLocationObject(place.result, 'place_met', setUpdated_placeMetAt)
-                                        // console.log(place.result)
-                                    }}
-                                    placeHolder={updated_placeMetAt.placeMetAtFormatted_address || geoCodedLocation || "Place you met!"}
-                                    language={"en-US"}
-                                    onChangeText={() => scrollRef.current ?.scrollToEnd()}
-                                    textInputProps={{
-                                        autoCorrect: false,
-                                        fontWeight: 'bold',
-                                    }}
-                                    query={updated_placeMetAt.placeMetAtFormatted_address || geoCodedLocation}
-                                    // clearQueryOnSelect={true}
-                                    stylesContainer={{
-                                        position: 'relative',
-                                        alignSelf: 'center',
-                                        margin: 0,
-                                        width: '80%',
-                                        marginBottom: 10
-                                    }}
-                                    ref={placeInputRef}
-                                    stylesList={{
-                                        position: 'absolute',
-                                        bottom: (placeInputRef.current) ? placeInputRef.current.height : 0
+                            <TouchableOpacity
+                                onPress={() => setBirth_datePicker(!birth_datePicker)}
+                                style={styles.textInput}>
+                                <Paragraph style={{ fontStyle: 'italic' }}> Birthday </Paragraph>
+                                <TextInput
+                                    onTouchStart={() => setBirth_datePicker(!birth_datePicker)}
+                                    disabled={true}
+                                    value={moment(new Date(updated_birthday)).format('MMM DD, YYYY')}
+                                />
+                            </TouchableOpacity>
+                        </Card.Actions>
+                        {
+                            (birth_datePicker)
+                                ? <DateTimePicker
+                                    value={updated_birthday || new Date(Date.now())}
+                                    display="default"
+                                    style={{ width: '70%', alignSelf: 'center' }}
+                                    onChange={(e, value) => {
+                                        {/* console.log('birthday event and value', value) */ }
+                                        setBirthday(value || updated_birthday || new Date(Date.now()));
+                                        setTimeout(() => setBirth_datePicker(false), 2000);
                                     }}
                                 />
-                            </Card.Actions>
-                        </View>
-                        : null
-                }
+                                : null
+                        }
+                    </View>
+                </MyShadowCard>
+                <Paragraph style={styles.sectionTitle}> Location Section (please select below)</Paragraph>
+                <MyShadowCard>
+                    {/* Location Section */}
+                    <TouchableOpacity
+                        onPress={() => _makeLocationObject({
+                            location: currentLocation, formatted_address: geoCodedLocation, name: ""
+                        }, "default_home", setUpdated_homeLocation)}>
+                        <Paragraph style={{ alignSelf: 'center', color: 'blue' }}>
+                            Use location for home
+                    </Paragraph>
+                    </TouchableOpacity>
+                    <Card.Actions style={styles.cardContent}>
+                        <Avatar.Icon {...props} icon={'crosshairs-gps'} size={40} style={{ marginRight: 10 }} />
+                        <PlacesInput
+                            googleApiKey={GOOGLE_API_KEY}
+                            onSelect={place => {
+                                _makeLocationObject(place.result, 'home', setUpdated_homeLocation)
+                            }}
+                            placeHolder={(updated_homeLocation && updated_homeLocation.homeFormatted_address) ? updated_homeLocation.homeFormatted_address : "Home location"}
+                            query={(updated_homeLocation && updated_homeLocation.homeFormatted_address) ? updated_homeLocation.homeFormatted_address : ""}
+                            language={"en-US"}
+                            textInputProps={{
+                                autoCorrect: false,
+                                fontWeight: 'bold'
+                            }}
+                            // clearQueryOnSelect={true}
+                            stylesContainer={{
+                                position: 'relative',
+                                alignSelf: 'center',
+                                fontWeight: 'bold',
+                                margin: 0,
+                                width: '80%',
+                                marginBottom: 10
+                            }}
+                            //onChangeText={() => scrollRef.current?.scrollTo({ y: 2 * contentHeight, animated: true })}
+                            onChangeText={() => scrollRef.current ?.scrollToEnd()}
+                        />
+                    </Card.Actions>
+                    {
+                        (!isUserContactCard)
+                            ? <View style={{ marginBottom: 10 }}>
+                                <TouchableOpacity
+                                    onPress={() => _makeLocationObject({
+                                        location: currentLocation, formatted_address: geoCodedLocation, name: ""
+                                    }, "default_place_met", setUpdated_placeMetAt)}>
+                                    <Paragraph style={{ alignSelf: 'center', color: 'blue' }}>
+                                        Use location for place met
+                                </Paragraph>
+                                </TouchableOpacity>
+                                <Card.Actions style={styles.cardContent}>
+                                    {/* TODO: SET NAME??? */}
+                                    <Avatar.Icon {...props} icon={'crosshairs-gps'} size={40} style={{ marginRight: 10 }} />
+                                    <PlacesInput
+                                        googleApiKey={GOOGLE_API_KEY}
+                                        onSelect={place => {
+                                            _makeLocationObject(place.result, 'place_met', setUpdated_placeMetAt)
+                                            // console.log(place.result)
+                                        }}
+                                        placeHolder={updated_placeMetAt.placeMetAtFormatted_address || geoCodedLocation || "Place you met!"}
+                                        language={"en-US"}
+                                        onChangeText={() => scrollRef.current ?.scrollToEnd()}
+                                        textInputProps={{
+                                            autoCorrect: false,
+                                            fontWeight: 'bold',
+                                        }}
+                                        query={updated_placeMetAt.placeMetAtFormatted_address || geoCodedLocation}
+                                        // clearQueryOnSelect={true}
+                                        stylesContainer={{
+                                            position: 'relative',
+                                            alignSelf: 'center',
+                                            margin: 0,
+                                            width: '80%',
+                                            marginBottom: 10
+                                        }}
+                                        ref={placeInputRef}
+                                        stylesList={{
+                                            position: 'absolute',
+                                            bottom: (placeInputRef.current) ? placeInputRef.current.height : 0
+                                        }}
+                                    />
+                                </Card.Actions>
+                            </View>
+                            : null
+                    }
+                </MyShadowCard>
                 <View style={styles.errorSection}>
                     {(isApiLoading) && <ActivityIndicator animating={true} size={'large'} />}
                     {(!canAddNewRose) ? <Text style={styles.errorMessage}> You should enter a name for this Rose </Text> : null}
@@ -581,7 +591,7 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                 </Button>
             </ScrollView>
             <Spacer />
-        </KeyboardAvoidingView>
+        </KeyboardAvoidingView >
     );
 }
 
@@ -602,13 +612,15 @@ const styles = StyleSheet.create({
     },
     sectionTitle: {
         fontWeight: 'bold',
-        marginVertical: 10,
+        marginTop: 20,
+        marginBottom: 1,
         marginLeft: 8
     },
     chips: {
         alignItems: 'center',
         alignSelf: 'center',
         flexDirection: 'row',
+        marginTop: 5,
         flexWrap: 'wrap',
         paddingHorizontal: 5,
     },
