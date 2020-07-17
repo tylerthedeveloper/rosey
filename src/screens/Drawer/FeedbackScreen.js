@@ -5,6 +5,7 @@ import { Button, Headline } from 'react-native-paper';
 import * as WebBrowser from 'expo-web-browser';
 import { Alert } from 'react-native';
 import * as StoreReview from 'expo-store-review';
+import { MyShadowCard } from '../../paper-components/memo';
 
 const FeedbackScreen = () => {
 
@@ -59,27 +60,29 @@ const FeedbackScreen = () => {
     ]
 
     return (
-        <View style={styles.container}>
-            <Headline style={styles.Headline}>
-                Thank you for your interest, how would you like to share feedback?
+        <MyShadowCard inheritedMarginHorizontal={0} inheritedMarginTop={20}>
+            <View style={styles.container}>
+                <Headline style={styles.Headline}>
+                    Thank you for your interest, how would you like to share feedback?
             </Headline>
-            {
-                buttons.map(({ label, icon, onPress }, index) => (
-                    <Button onPress={onPress} mode={(index % 2) ? "outlined" : "contained"} style={{ marginVertical: 20 }} key={index} icon={icon}>
-                        {label}
-                    </Button>
-                ))
-            }
-        </View>
+                {
+                    buttons.map(({ label, icon, onPress }, index) => (
+                        <Button onPress={onPress} mode={(index % 2) ? "outlined" : "contained"} style={{ marginVertical: 20 }} key={index} icon={icon}>
+                            {label}
+                        </Button>
+                    ))
+                }
+            </View>
+        </MyShadowCard>
     )
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        // justifyContent: 'center',
+        justifyContent: 'flex-start',
+        height: '95%',
         alignItems: 'center',
-        // marginTop:
+        marginBottom: 20
     },
     Headline: {
         marginVertical: 50,

@@ -10,6 +10,7 @@ const RoseHeader = ({ name, picture, homeCity, homeState, homeCountry, isUserCon
     // source={require('../../../assets/background_dot_2x.png')}
     // resizeMode="repeat"
     // style={styles.headerBackgroundImage}
+    inheritedMarginTop={15}
     >
         <Card.Content style={{ alignSelf: 'center', alignItems: 'center', paddingBottom: 5 }}>
             <Avatar.Image

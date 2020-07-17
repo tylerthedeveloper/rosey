@@ -7,7 +7,7 @@ const MyShadowCard = ({ children, inheritedMarginTop, inheritedMarginBottom, inh
     <Card style={{
         ...styles.card,
         marginHorizontal: inheritedMarginHorizontal || 10,
-        marginTop: inheritedMarginTop || 10,
+        marginTop: inheritedMarginTop || 5,
         marginBottom: inheritedMarginBottom || 5,
     }}>
         {children}
@@ -21,15 +21,15 @@ const styles = StyleSheet.create({
         // flex: 1
         // marginTop: 15,
         // marginBottom: 5,
-        borderWidth: 2,
+        // borderWidth: 5,
+        // borderColor: '#ddd',
         borderRadius: 20,
-        borderColor: '#ddd',
-        borderBottomWidth: 0,
-        shadowColor: '#000000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.7,
+        // borderBottomWidth: 0,
+        shadowColor: '#858585',
+        shadowOffset: { width: 0, height: 5 },
+        shadowOpacity: .5,
         shadowRadius: 3,
-        elevation: 1,
+        elevation: 5,
         // backgroundColor: 'white'
     }
 });
