@@ -36,13 +36,15 @@ const RoseListScreen = ({ navigation }) => {
                 <IconButton
                     icon="tag"
                     onPress={() => setTagToggle(!tagToggle)}
+                    color={'white'}
                     size={25}
-                    style={styles.filterIcon}
+                    style={{...styles.filterIcon, marginLeft: 10}}
                 />
                 <IconButton
                     icon="filter-variant"
                     onPress={() => setFilterToggle(!filterToggle)}
                     size={25}
+                    color={'white'}
                     style={styles.filterIcon}
                 />
             </View>
@@ -120,7 +122,7 @@ const styles = StyleSheet.create({
     },
     searchBar: {
         minWidth: '65%',
-        maxWidth: '75%',
+        maxWidth: '70%',
         flex: 1,
         shadowOffset: {
             width: 5,
@@ -128,10 +130,13 @@ const styles = StyleSheet.create({
         },
         shadowColor: '#858585',
         elevation: 5,
-        borderRadius: 20
+        borderRadius: 20,
+        marginRight: 5
     },
     filterIcon: {
         // flex: 2,
+        backgroundColor: theme.colors.primary,
+        color: 'white'
     },
     filterChips: {
         flexDirection: 'row',

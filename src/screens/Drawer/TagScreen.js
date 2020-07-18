@@ -15,7 +15,7 @@ const TagScreen = () => {
     return (
         <MyShadowCard inheritedMarginHorizontal={0} inheritedMarginTop={20}>
             <View style={styles.container}>
-                <MyHeader style={styles.Headline}> Manage your tags here! </MyHeader>
+                <MyHeader styleProps={{ marginTop: 15, marginBottom: 15 }} > Manage your tags here! </MyHeader>
                 <View style={styles.chips}>
                     {
                         tags.map((tag, index) =>
@@ -34,30 +34,33 @@ const TagScreen = () => {
                     Add Tag
             </Button>
             </View>
-        </MyShadowCard>
+        </MyShadowCard >
     )
 }
 
 const styles = StyleSheet.create({
     container: {
-        // flex: 1,
         justifyContent: 'flex-start',
         height: '95%',
         alignItems: 'center',
-        // width: "100%"
         marginBottom: 20
     },
-    Headline: {
+    headline: {
+        marginTop: 20,
+        marginBottom: 30,
     },
     chips: {
+        marginLeft: 10,
         alignItems: 'center',
+        justifyContent: 'center',
         flexDirection: 'row',
         flexWrap: 'wrap',
         paddingHorizontal: 5,
+        marginBottom: 20
     },
     chip: {
         marginHorizontal: 5,
-        marginVertical: 5
+        marginVertical: 7
     }
 });
 
