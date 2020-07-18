@@ -59,39 +59,39 @@ const RoseListScreen = ({ navigation }) => {
                 </View>
             }
             {
-                (tagToggle) &&
-                <ScrollView style={styles.tags} horizontal
-                    // automaticallyAdjustContentInsets={false}
-                    showsHorizontalScrollIndicator={false}
-                    contentContainerStyle={{
-                        justifyContent: 'space-between',
-                        height: 35,
-                        
-                    }}
-                >
-                    {
-                        (tags && tags.length > 0)
-                            ? tags.map((tag, index) =>
-                                <Chip
-                                    key={tag + index}
-                                    selectedColor={'blue'}
-                                    style={styles.tag}
-                                    onPress={() => toggledSelected(tag)}
-                                    selected={selectedTags.includes(tag)}
-                                //onPress={() => toggledSelected(tag, index)}
-                                //selected={selectedTags.includes(tag + index)}
-                                >{tag}</Chip>
-                            )
-                            : <View style={{
-                                alignItems: 'center',
-                                flexDirection: 'row',
-                            }}>
-                                <Chip onPress={() => navigation.navigate('TagScreen')} selectedColor={'blue'} style={{ alignSelf: 'center' }}>
-                                    No tags - go add some!
+                (tagToggle)
+                    ? (tags && tags.length > 0)
+                        ? <ScrollView style={styles.tags} horizontal
+                            // automaticallyAdjustContentInsets={false}
+                            showsHorizontalScrollIndicator={false}
+                            contentContainerStyle={{
+                                justifyContent: 'center',
+                                height: 35,
+                            }}
+                        >
+                            {
+                                tags.map((tag, index) =>
+                                    <Chip
+                                        key={tag + index}
+                                        selectedColor={'blue'}
+                                        style={styles.tag}
+                                        onPress={() => toggledSelected(tag)}
+                                        selected={selectedTags.includes(tag)}
+                                    //onPress={() => toggledSelected(tag, index)}
+                                    //selected={selectedTags.includes(tag + index)}
+                                    >{tag}</Chip>
+                                )
+                            }
+                        </ScrollView>
+                        : <View style={{
+                            alignItems: 'center',
+                            marginTop: 15
+                        }}>
+                            <Chip onPress={() => navigation.navigate('TagScreen')} selectedColor={'blue'} style={{}}>
+                                No tags - go add some!
                             </Chip>
-                            </View>
-                    }
-                </ScrollView>
+                        </View>
+                    : null
             }
             <View style={styles.content}>
                 {
