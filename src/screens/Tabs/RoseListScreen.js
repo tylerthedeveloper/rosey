@@ -38,7 +38,7 @@ const RoseListScreen = ({ navigation }) => {
                     onPress={() => setTagToggle(!tagToggle)}
                     color={'white'}
                     size={25}
-                    style={{...styles.filterIcon, marginLeft: 10}}
+                    style={{ ...styles.filterIcon, marginLeft: 10 }}
                 />
                 <IconButton
                     icon="filter-variant"
@@ -61,11 +61,12 @@ const RoseListScreen = ({ navigation }) => {
             {
                 (tagToggle) &&
                 <ScrollView style={styles.tags} horizontal
-                    automaticallyAdjustContentInsets={false}
+                    // automaticallyAdjustContentInsets={false}
+                    showsHorizontalScrollIndicator={false}
                     contentContainerStyle={{
-                        justifyContent: 'space-evenly',
-                        flex: 1,
+                        justifyContent: 'space-between',
                         height: 35,
+                        
                     }}
                 >
                     {
@@ -74,15 +75,21 @@ const RoseListScreen = ({ navigation }) => {
                                 <Chip
                                     key={tag + index}
                                     selectedColor={'blue'}
+                                    style={styles.tag}
                                     onPress={() => toggledSelected(tag)}
                                     selected={selectedTags.includes(tag)}
                                 //onPress={() => toggledSelected(tag, index)}
                                 //selected={selectedTags.includes(tag + index)}
                                 >{tag}</Chip>
                             )
-                            : <Chip onPress={() => navigation.navigate('TagScreen')} selectedColor={'blue'}>
-                                No tags - go add some!
+                            : <View style={{
+                                alignItems: 'center',
+                                flexDirection: 'row',
+                            }}>
+                                <Chip onPress={() => navigation.navigate('TagScreen')} selectedColor={'blue'} style={{ alignSelf: 'center' }}>
+                                    No tags - go add some!
                             </Chip>
+                            </View>
                     }
                 </ScrollView>
             }
@@ -141,14 +148,21 @@ const styles = StyleSheet.create({
     filterChips: {
         flexDirection: 'row',
         marginTop: 10,
+        marginBottom: 5,
         justifyContent: 'space-evenly'
     },
     tags: {
         //flexDirection: 'row',
         marginTop: 15,
+        marginHorizontal: 10,
         //flex: 1,
+        marginBottom: 5,
         maxHeight: 40,
     },
+    tag: {
+        marginHorizontal: 10,
+    },
+
     content: {
         flex: 1,
         justifyContent: 'center',

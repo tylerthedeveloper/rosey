@@ -12,6 +12,7 @@ const _generateUser = ({ name, email, password, userType }) => {
             homeLocationName: ''
         },
         name: name || '',
+        notes: '',
         nickName: '',
         phoneNumber: '',
         personalSite: '',
@@ -116,6 +117,7 @@ export default {
             'screen with the plus button in the bottom corner. If you are ' +
             'interested in chatting, feel free to contact me!',
         nickName: 'Tito',
+        personalSite: '',
         phoneNumber: '',
         picture: '',
         tags: ['Friend'],

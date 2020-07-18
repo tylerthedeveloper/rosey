@@ -167,7 +167,7 @@ const RoseView = ({ user, isApiLoading, view_updateFunction, view_updateFunction
                                         }}
                                         >
                                             <SocialIcon
-                                                raised
+                                                // raised
                                                 light
                                                 style={{
                                                     opacity: (value && (appUrl || webUrl)) ? 1 : .4,
@@ -179,7 +179,7 @@ const RoseView = ({ user, isApiLoading, view_updateFunction, view_updateFunction
                                             containerStyle={{ flexWrap: 'wrap', height: 100 }}
                                         >
                                             <SocialIcon
-                                                raised
+                                                // raised
                                                 light
                                                 style={{
                                                     opacity: (value && (appUrl || webUrl)) ? 1 : .4,
@@ -191,12 +191,36 @@ const RoseView = ({ user, isApiLoading, view_updateFunction, view_updateFunction
                                 ))
                             }
                         </View>
+
+                        {/* {
+                            viewRows.map(({ value, subtitle, left, rightIcon, secondRightIcon, rightFunc, secondRightFunc }) => (
+                                ((isUserContactCard && !contactCardRowsToIgnore.includes(subtitle) || !isUserContactCard))
+                                    ? (isUserContactCard)
+                                        ? <RoseViewField
+                                            key={subtitle}
+                                            value={value}
+                                            subtitle={subtitle}
+                                            left={left}
+                                        />
+                                        : <RoseViewField
+                                            key={subtitle}
+                                            value={value}
+                                            subtitle={subtitle}
+                                            left={left}
+                                            rightIcon={rightIcon}
+                                            rightFunc={rightFunc}
+                                            secondRightIcon={secondRightIcon}
+                                            secondRightFunc={secondRightFunc}
+                                        />
+                                    : null
+                            ))
+                        } */}
                     </MyShadowCard>
 
                 </View>
                 {/* <Divider /> */}
                 {/* Fields Section */}
-                <MyShadowCard>
+                <MyShadowCard >
                     {
                         viewRows.map(({ value, subtitle, left, rightIcon, secondRightIcon, rightFunc, secondRightFunc }) => (
                             ((isUserContactCard && !contactCardRowsToIgnore.includes(subtitle) || !isUserContactCard))
@@ -221,8 +245,6 @@ const RoseView = ({ user, isApiLoading, view_updateFunction, view_updateFunction
                         ))
                     }
                 </MyShadowCard>
-
-
                 <View style={{ marginTop: 10 }}>
                     <Button onPress={view_updateFunction}> {view_updateFunctionText} </Button>
                     <Button

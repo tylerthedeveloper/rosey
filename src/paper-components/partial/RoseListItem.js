@@ -3,6 +3,7 @@ import React from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
 import { Avatar, Card, Paragraph, Chip } from 'react-native-paper';
 import { MyShadowCard } from "../memo";
+import { theme } from "../../core/theme";
 
 const RoseListItem = ({ rose, props }) => {
     const navigation = useNavigation();
@@ -27,14 +28,14 @@ const RoseListItem = ({ rose, props }) => {
                     )}
                     title={name}
                     subtitle={homeCity || homeState || homeCountry || "(Somewhere!)"}
-                    right={props => (
-                        <Avatar.Icon
-                            {...props}
-                            size={30}
-                            icon="arrow-right"
-                            style={{ position: 'relative', top: '30%', marginRight: '10%' }}
-                        />
-                    )}
+                // right={props => (
+                //     <Avatar.Icon
+                //         {...props}
+                //         size={30}
+                //         icon="arrow-right"
+                //         style={{ position: 'relative', top: '30%', marginRight: '10%' }}
+                //     />
+                // )}
                 >
 
                 </Card.Title>
@@ -55,6 +56,7 @@ const RoseListItem = ({ rose, props }) => {
                                     (<Chip
                                         key={tag + index}
                                         style={styles.chip}
+                                        selectedColor={'blue'}
                                     >{tag}</Chip>))
                                 : <Paragraph style={{ marginLeft: 10 }}>(Add some tags!)</Paragraph>
                         }
@@ -81,7 +83,8 @@ const styles = StyleSheet.create({
     },
     chip: {
         marginHorizontal: 5,
-        marginTop: 5
+        marginTop: 5,
+        // backgroundColor: '#d3cdef' || theme.colors.error,
     }
 });
 

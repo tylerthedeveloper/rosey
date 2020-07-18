@@ -5,7 +5,7 @@
 import React, { useContext, useState } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 import { ListItem } from 'react-native-elements';
-import { Button, ActivityIndicator } from 'react-native-paper';
+import { Button, ActivityIndicator, Snackbar } from 'react-native-paper';
 import { Context as ContactsContext } from '../../context/ContactsContext';
 import { Context as RoseContext } from '../../context/RoseContext';
 import { MyHeader } from '../../paper-components/memo';
@@ -60,9 +60,10 @@ const ContactsScreen = () => {
         }));
         await batch_addRoses({ contactList, callback: () => alert(`${contactList.length} Contacts added successfully`) });
         await updateImportedContacts(updatedImportedContactIDs);
+        // onToggleSnackBar();
+        // setTimeout(() => setVisible(false), 2000)
         setContactsSelected([]);
     }
-
 
     //     VirtualizedList: You have a large list that is slow to update - make sure your renderItem function renders components that 
     // follow React performance best practices like PureComponent, shouldComponentUpdate, etc. Object {
@@ -99,7 +100,12 @@ const ContactsScreen = () => {
         return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
 
     });
-    // _sortedKeys.map(k => console.log(_allContactList[k]['name']));
+
+    // const [visible, setVisible] = React.useState(false);
+
+    // const onToggleSnackBar = () => setVisible(!visible);
+
+    // const onDismissSnackBar = () => setVisible(false);
 
     return (
         <View style={styles.container}>
@@ -122,6 +128,17 @@ const ContactsScreen = () => {
                 keyExtractor={(id) => (id)}
                 renderItem={({ item }) => _renderItem(item)}
             />
+            {/* <Snackbar
+                visible={visible}
+                onDismiss={onDismissSnackBar}
+                action={{
+                    label: 'Close',
+                    onPress: () => {
+                        setVisible(false);
+                    },
+                }}>
+                Try to add more contacts!
+            </Snackbar> */}
         </View>
     )
 }

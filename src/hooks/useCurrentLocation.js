@@ -25,7 +25,6 @@ export default () => {
         setLocationStatus(true);
         if (status !== 'granted') {
             // FIXME: need to ask again?...
-            // alert('Looks like you tried to access location but it was denied');
         } else {
             const location = await Location.getCurrentPositionAsync({});
             // const promise = new Promise((res, rej) => {

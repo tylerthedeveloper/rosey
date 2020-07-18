@@ -5,6 +5,9 @@ export default () => {
 
     const { state: { roses }, fetchAllRoses } = useContext(RoseContext);
 
+    roses.map(rose => console.log(rose.name, rose.notes))
+    
+
     const [filteredRoses, setFilteredRoses] = useState([...(roses || [])]);
 
     // FIXME: This is just to fill cache!

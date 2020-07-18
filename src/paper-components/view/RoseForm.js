@@ -33,7 +33,7 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
     const [updated_tags, setTags] = useState(tags || []);
     const [updated_work, setWork] = useState(work);
     const [updated_name, setName] = useState(name || '');
-    const [updated_notes, setNotes] = useState(notes);
+    const [updated_notes, setNotes] = useState(notes || '');
     const [updated_nickName, setNickName] = useState(nickName);
     const [updated_personalSite, setPersonalSite] = useState(personalSite || '');
     const [updated_phoneNumber, setPhone] = useState(phoneNumber || '');
@@ -282,11 +282,14 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
     );
 
 
+    const [noteFormHeight, setNoteFormHeight] = useState();
+
+
     return (
         <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : null}
             keyboardVerticalOffset={85}
-            style={{ flex: 1 }}
+            style={{ flex: 1, flexDirection: "column", flexGrow: 1 }}
         >
             <ScrollView
                 ref={scrollRef}
@@ -350,14 +353,17 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                                     <Avatar.Icon {...props} icon={left} size={40} style={{ marginRight: 20 }} />
                                     <TextInput mode="outlined"
                                         label={subtitle}
-                                        style={styles.textInput}
+                                        onContentSizeChange={(event) => setNoteFormHeight(event.nativeEvent.contentSize.height)}
+                                        style={{
+                                            ...styles.textInput,
+                                            // height: (subtitle !== 'notes') ? 45 : Math.min(120, Math.max(60, noteFormHeight))
+                                        }}
                                         // placeholder={value}
                                         value={value}
                                         autoCapitalize={autoCapitalize || "none"}
                                         autoComplete={false}
                                         autoCorrect={false}
                                         autoCompleteType={"off"}
-                                        style={{ flex: 1 }}
                                         onChangeText={editFunc}
                                         multiline={multiline}
                                         scrollEnabled={false}
@@ -477,8 +483,8 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                         onPress={() => _makeLocationObject({
                             location: currentLocation, formatted_address: geoCodedLocation, name: ""
                         }, "default_home", setUpdated_homeLocation)}>
-                        <Paragraph style={{ alignSelf: 'center', color: 'blue' }}>
-                            Use location for home
+                        <Paragraph style={{ alignSelf: 'center', color: 'blue', marginTop: 10 }}>
+                            (Use location for home)
                     </Paragraph>
                     </TouchableOpacity>
                     <Card.Actions style={styles.cardContent}>
@@ -516,7 +522,7 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                                         location: currentLocation, formatted_address: geoCodedLocation, name: ""
                                     }, "default_place_met", setUpdated_placeMetAt)}>
                                     <Paragraph style={{ alignSelf: 'center', color: 'blue' }}>
-                                        Use location for place met
+                                        (Use location for place met)
                                 </Paragraph>
                                 </TouchableOpacity>
                                 <Card.Actions style={styles.cardContent}>
@@ -606,6 +612,7 @@ const styles = StyleSheet.create({
     // TODO:
     textInput: {
         width: '70%',
+        flex: 1
     },
     sectionTitle: {
         fontWeight: 'bold',
