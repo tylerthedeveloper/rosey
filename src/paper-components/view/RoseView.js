@@ -215,36 +215,33 @@ const RoseView = ({ user, isApiLoading, view_updateFunction, view_updateFunction
                                     : null
                             ))
                         } */}
+                        <Divider style={{ marginHorizontal: 30 }} />
+                        {/* Fields Section */}
+                        {
+                            viewRows.map(({ value, subtitle, left, rightIcon, secondRightIcon, rightFunc, secondRightFunc }) => (
+                                ((isUserContactCard && !contactCardRowsToIgnore.includes(subtitle) || !isUserContactCard))
+                                    ? (isUserContactCard)
+                                        ? <RoseViewField
+                                            key={subtitle}
+                                            value={value}
+                                            subtitle={subtitle}
+                                            left={left}
+                                        />
+                                        : <RoseViewField
+                                            key={subtitle}
+                                            value={value}
+                                            subtitle={subtitle}
+                                            left={left}
+                                            rightIcon={rightIcon}
+                                            rightFunc={rightFunc}
+                                            secondRightIcon={secondRightIcon}
+                                            secondRightFunc={secondRightFunc}
+                                        />
+                                    : null
+                            ))
+                        }
                     </MyShadowCard>
-
                 </View>
-                {/* <Divider /> */}
-                {/* Fields Section */}
-                <MyShadowCard >
-                    {
-                        viewRows.map(({ value, subtitle, left, rightIcon, secondRightIcon, rightFunc, secondRightFunc }) => (
-                            ((isUserContactCard && !contactCardRowsToIgnore.includes(subtitle) || !isUserContactCard))
-                                ? (isUserContactCard)
-                                    ? <RoseViewField
-                                        key={subtitle}
-                                        value={value}
-                                        subtitle={subtitle}
-                                        left={left}
-                                    />
-                                    : <RoseViewField
-                                        key={subtitle}
-                                        value={value}
-                                        subtitle={subtitle}
-                                        left={left}
-                                        rightIcon={rightIcon}
-                                        rightFunc={rightFunc}
-                                        secondRightIcon={secondRightIcon}
-                                        secondRightFunc={secondRightFunc}
-                                    />
-                                : null
-                        ))
-                    }
-                </MyShadowCard>
                 <View style={{ marginTop: 10 }}>
                     <Button onPress={view_updateFunction}> {view_updateFunctionText} </Button>
                     <Button

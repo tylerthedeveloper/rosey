@@ -7,21 +7,22 @@ import { MyShadowCard } from '../memo';
 const RoseHeader = ({ name, picture, homeCity, homeState, homeCountry, isUserContactCard, editing, _setEditing, shareProfile }) => (
     // source={{ uri: 'https://picsum.photos/700' }}
     <MyShadowCard
-    // source={require('../../../assets/background_dot_2x.png')}
-    // resizeMode="repeat"
-    // style={styles.headerBackgroundImage}
-    inheritedMarginTop={15}
+        // source={require('../../../assets/background_dot_2x.png')}
+        // resizeMode="repeat"
+        // style={styles.headerBackgroundImage}
+        inheritedMarginTop={15}
     >
         <Card.Content style={{ alignSelf: 'center', alignItems: 'center', paddingBottom: 5 }}>
-            <Avatar.Image
+            <Avatar.Icon
                 style={styles.avatar}
-                size={100}
-                source={{
-                    uri:
-                        (picture && picture.length > 3) ? picture : 'https://image.shutterstock.com/image-vector/people-icon-260nw-522300817.jpg',
-                }}
+                size={90}
+                icon={'account'}
+            // source={{
+            //     uri:
+            //         (picture && picture.length > 3) ? picture : 'https://image.shutterstock.com/image-vector/people-icon-260nw-522300817.jpg',
+            // }}
             />
-            <Title style={styles.userNameText}>{name || 'No-name!'}</Title>
+            <Title style={{ ...styles.userNameText, fontFamily: (Platform.OS === 'android') ? 'sans-serif-light' : 'Avenir-Heavy' }}>{name || 'No-name!'}</Title>
             {/* <Paragraph style={styles.userCityText}>{homeCity || '(city)'}, {homeState || '(state)'}, {homeCountry || '(country)'}</Paragraph> */}
         </Card.Content>
         <IconButton
@@ -52,8 +53,8 @@ const styles = StyleSheet.create({
     //     fontSize: 26,
     // },
     avatar: {
-        shadowColor: theme.primary || '#600EE6',
-        shadowOpacity: 1
+        // shadowColor: theme.primary || '#600EE6',
+        // shadowOpacity: 1
     },
     userNameText: {
         fontSize: 20,
