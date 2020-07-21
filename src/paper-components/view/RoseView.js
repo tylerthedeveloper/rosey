@@ -55,15 +55,15 @@ const RoseView = ({ user, isApiLoading, view_updateFunction, view_updateFunction
             value: _formatPhonenumber(phoneNumber), subtitle: 'phone',
             left: "phone",
             // TODO: country code?
-            rightIcon: "phone",
+            rightIcon: "phone-plus",
             rightFunc: () => { Linking.openURL(`tel:${phoneNumber}`) },
-            secondRightIcon: "message-text",
+            secondRightIcon: "message-plus",
             secondRightFunc: () => { Linking.openURL(`sms:${phoneNumber}`) },
         },
         {
             value: email, subtitle: 'email',
             left: "email",
-            rightIcon: "email",
+            rightIcon: "email-plus",
             rightFunc: () => {
                 Linking.openURL(`mailto:${email}`)
             },
@@ -71,7 +71,7 @@ const RoseView = ({ user, isApiLoading, view_updateFunction, view_updateFunction
         {
             value: personalSite, subtitle: 'personal site',
             left: "web",
-            rightIcon: "search-web",
+            rightIcon: "web",
             rightFunc: () => {
                 Linking.openURL(`${personalSite}`)
             }
@@ -97,19 +97,19 @@ const RoseView = ({ user, isApiLoading, view_updateFunction, view_updateFunction
         {
             value: dateMet ? (moment(dateMet).format('MMM DD, YYYY')) : '(Enter Date met!)', subtitle: 'date met',
             left: "calendar",
-            rightIcon: "calendar-heart",
+            rightIcon: "calendar-plus",
             rightFunc: () => { if (dateMet) createEvent(dateMet, 'date_met', name, placeMetAtFormatted_address) },
         },
         {
             value: birthday ? (moment(birthday).format('MMM DD, YYYY')) : '(Enter Birthday!)', subtitle: 'birthday',
             left: "calendar",
-            rightIcon: "calendar-heart",
+            rightIcon: "calendar-plus",
             rightFunc: () => { if (birthday) createEvent(birthday, 'birthday', name, placeMetAtFormatted_address) },
         },
         {
             value: homeFormatted_address, subtitle: 'home location',
             left: "crosshairs-gps",
-            rightIcon: "crosshairs-gps",
+            rightIcon: "map-marker-plus",
             rightFunc: () => {
                 const url = Platform.select({
                     ios: `maps:0,0?q=${homeFormatted_address}`,
@@ -121,7 +121,7 @@ const RoseView = ({ user, isApiLoading, view_updateFunction, view_updateFunction
         {
             value: placeMetAtFormatted_address, subtitle: 'place met',
             left: "crosshairs-gps",
-            rightIcon: "crosshairs-gps",
+            rightIcon: "map-marker-plus",
             rightFunc: () => {
                 const url = Platform.select({
                     ios: `maps:0,0?q=${placeMetAtFormatted_address}`,
