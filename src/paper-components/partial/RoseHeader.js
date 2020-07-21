@@ -15,7 +15,7 @@ const RoseHeader = ({ name, picture, homeCity, homeState, homeCountry, isUserCon
         <Card.Content style={{ alignSelf: 'center', alignItems: 'center', paddingBottom: 5 }}>
             <Avatar.Icon
                 style={styles.avatar}
-                size={90}
+                size={80}
                 icon={'account'}
             // source={{
             //     uri:

@@ -2,7 +2,7 @@ import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 import React, { useContext, useEffect } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import { Avatar, Caption, Drawer, Paragraph, Title, useTheme } from 'react-native-paper';
+import { Avatar, Caption, Drawer, Paragraph, Title, useTheme, Divider } from 'react-native-paper';
 import Animated from 'react-native-reanimated';
 import { AuthContext } from '../context/AuthContext';
 import useContacts from '../hooks/useContacts';
@@ -95,6 +95,7 @@ const DrawerContent = (props) => {
                         </View>
                     </View> */}
                 </View>
+                <Divider style={{ marginTop: 15, marginHorizontal: 20 }} />
                 <Drawer.Section style={styles.drawerSection}>
                     {
                         drawerRows.map(({ label, icon, navigateTo }, index) => (

@@ -48,7 +48,6 @@ const RoseViewField = ({ value, subtitle, left, rightIcon, secondRightIcon, righ
                     // minHeight: 20,
                 }}
             >
-
                 <View style={{ flexDirection: 'row' }}>
                     <IconButton icon={left} size={25} />
                     {/* <View style={{ flex: 1, marginRight: 8 }}>
@@ -58,7 +57,7 @@ const RoseViewField = ({ value, subtitle, left, rightIcon, secondRightIcon, righ
                         (value && value.length > 0)
                             ? <View style={{ flex: 7 }}>
                                 <Title style={{ color: 'blue', fontFamily: (Platform.OS === 'android') ? 'sans-serif-light' : 'Avenir-Light' }}> {value} </Title>
-                                <Paragraph style={{ marginLeft: 6 }}>{subtitle}</Paragraph>
+                                <Paragraph style={{ marginLeft: 8 }}>{subtitle}</Paragraph>
                             </View>
                             : <View style={{ marginLeft: 10, marginTop: 15, flex: 7 }}>
                                 <Paragraph >{subtitle}</Paragraph>
@@ -67,11 +66,11 @@ const RoseViewField = ({ value, subtitle, left, rightIcon, secondRightIcon, righ
                     {
                         (rightIcon)
                             ? (!secondRightIcon)
-                                ? <View style={{ flex: 1, justifyContent: 'center', flexDirection: 'column', marginRight: 5, }}>
+                                ? <View style={{ ...theme.shadow.iconButtonShadow, flex: 1, justifyContent: 'center', flexDirection: 'column', marginRight: 5, }}>
                                     <IconButton icon={rightIcon} onPress={_onPress} style={styles.filterIcon} color={"white"} />
                                 </View>
-                                : <View style={{ flexDirection: 'row', flex: 3, alignItems: 'flex-start', marginLeft: 0 }}>
-                                    <IconButton icon={secondRightIcon} onPress={_onPressSecond} style={styles.filterIcon} color={"white"} />
+                                : <View style={{ ...theme.shadow.iconButtonShadow, flexDirection: 'row', flex: 3, alignItems: 'flex-start', marginLeft: 0 }}>
+                                    <IconButton icon={secondRightIcon} onPress={_onPressSecond} style={{ ...styles.filterIcon }} color={"white"} />
                                     <IconButton icon={rightIcon} onPress={_onPress} style={styles.filterIcon} color={"white"} />
                                 </View>
                             : <View style={{ flex: 2, marginRight: 5, }}>
@@ -88,11 +87,6 @@ const styles = StyleSheet.create({
     filterIcon: {
         // flex: 2,
         backgroundColor: theme.colors.primary,
-        // shadowColor: 'blue',
-        // shadowOffset: { width: 3, height: 5 },
-        // shadowOpacity: 1,
-        // shadowRadius: 5,
-        // elevation: 5,
     },
 });
 

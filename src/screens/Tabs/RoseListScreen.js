@@ -33,20 +33,25 @@ const RoseListScreen = ({ navigation }) => {
                     onChangeText={setSearchQuery}
                     style={styles.searchBar}
                 />
-                <IconButton
-                    icon="tag"
-                    onPress={() => setTagToggle(!tagToggle)}
-                    color={'white'}
-                    size={25}
-                    style={{ ...styles.filterIcon, marginLeft: 10 }}
-                />
-                <IconButton
-                    icon="filter-variant"
-                    onPress={() => setFilterToggle(!filterToggle)}
-                    size={25}
-                    color={'white'}
-                    style={styles.filterIcon}
-                />
+                <View style={theme.shadow.iconButtonShadow}>
+                    {/* <View style={styles.filterIconContainer}> */}
+                    <IconButton
+                        icon="tag"
+                        onPress={() => setTagToggle(!tagToggle)}
+                        color={'white'}
+                        size={25}
+                        style={{ ...styles.filterIcon, marginLeft: 10 }}
+                    />
+                </View>
+                <View style={theme.shadow.iconButtonShadow}>
+                    <IconButton
+                        icon="filter-variant"
+                        onPress={() => setFilterToggle(!filterToggle)}
+                        size={25}
+                        color={'white'}
+                        style={styles.filterIcon}
+                    />
+                </View>
             </View>
             {
                 (filterToggle) &&
@@ -143,7 +148,7 @@ const styles = StyleSheet.create({
     filterIcon: {
         // flex: 2,
         backgroundColor: theme.colors.primary,
-        color: 'white'
+        // color: 'white',
     },
     filterChips: {
         flexDirection: 'row',

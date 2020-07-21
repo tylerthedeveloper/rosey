@@ -13,4 +13,13 @@ export const theme = {
     secondary: '#00C9DB',
     error: '#f13a59',
   },
+  shadow: {
+    iconButtonShadow: {
+      shadowColor: '#858585',
+      shadowOffset: { width: 3, height: 3 },
+      shadowOpacity: 5,
+      shadowRadius: 5,
+      elevation: 3,
+    }
+  }
 };
