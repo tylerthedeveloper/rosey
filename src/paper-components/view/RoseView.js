@@ -49,7 +49,8 @@ const RoseView = ({ user, isApiLoading, view_updateFunction, view_updateFunction
             value: nickName, subtitle: 'nickname',
             left: "account",
             // rightIcon: "account-plus",
-            rightFunc: () => { },
+            // rightFunc: () => { },
+            rightFunc: null,
         },
         {
             value: _formatPhonenumber(phoneNumber), subtitle: 'phone',
@@ -80,19 +81,22 @@ const RoseView = ({ user, isApiLoading, view_updateFunction, view_updateFunction
             value: work, subtitle: 'occupation',
             left: "briefcase-account",
             // rightIcon: "briefcase-plus",
-            rightFunc: () => { },
+            rightFunc: null,
         },
         {
             value: tags ? ((Array.isArray(tags) && tags.length > 0) ? tags.join(', ') : tags) : '(Add some Tags!)', subtitle: 'tags',
             // value: updated_tags, subtitle: 'Add tags (by commas) ',
             left: "tag",
+            rightFunc: null
             // rightIcon: "tag",
         },
         {
             value: notes, subtitle: 'notes',
             left: "note",
             // rightIcon: "note",
-            rightFunc: () => { },
+            // rightFunc: () => { },
+            rightFunc: null,
+
         },
         {
             value: dateMet ? (moment(dateMet).format('MMM DD, YYYY')) : '(Enter Date met!)', subtitle: 'date met',

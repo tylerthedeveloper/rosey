@@ -16,7 +16,7 @@ const RoseViewContainer = ({
     form_updateFunction_callback
 }) => {
 
-    const { homeLocation, name, picture, tags } = user || {};
+    const { homeLocation, name, picture, phoneNumber, email } = user || {};
     const { homeCity, homeState, homeCountry } = homeLocation || {};
 
     const [editing, setEditing] = useState(false);
@@ -26,7 +26,10 @@ const RoseViewContainer = ({
     return (
         <>
             {/* <MyShadowCard> */}
-                <RoseHeader {...{ name, picture, homeCity, homeState, homeCountry, isUserContactCard, editing, _setEditing, shareProfile: () => Constants._shareProfile(user._id) }} />
+            <RoseHeader {...{
+                name, picture, homeCity, homeState, homeCountry, isUserContactCard, editing, _setEditing, shareProfile: () => Constants._shareProfile(user._id),
+                phoneNumber, email
+            }} />
             {/* </MyShadowCard> */}
             {
                 (!editing)
