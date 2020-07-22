@@ -88,12 +88,12 @@ const RoseViewField = ({ value, subtitle, left, rightIcon, secondRightIcon, righ
 
     // console.log(rightFunc)
     return (<Card.Actions key={value} style={{ marginBottom: 5 }}>
-        <Card.Content style={{ flexDirection: 'column', marginTop: 15, justifyContent: 'center' }}>
+        <Card.Content style={{ flexDirection: 'column', marginTop: 15, justifyContent: 'center', flex: 2 }}>
             <View style={{ flexDirection: 'row' }}>
-                <View>
-                    <IconButton icon={left} onPress={_onPress} style={{ ...styles.filterIcon }} color={"white"} />
+                <View style={{ flex: 1 }}>
+                    <IconButton icon={left} style={{ ...styles.filterIcon }} color={"white"} />
                 </View>
-                <View>
+                <View style={{ flex: 5 }}>
                     {
                         (value && value.length > 0)
                             ? <View style={{ marginLeft: 10 }}>
@@ -114,6 +114,13 @@ const RoseViewField = ({ value, subtitle, left, rightIcon, secondRightIcon, righ
                             </View>
                     }
                 </View>
+                {
+                    (subtitle === "name")
+                        ? <View style={{ flex: 1 }}>
+                            <IconButton icon={rightIcon} onPress={_onPress} />
+                        </View>
+                        : null
+                }
             </View>
         </Card.Content>
     </Card.Actions >
