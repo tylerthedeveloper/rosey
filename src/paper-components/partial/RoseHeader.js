@@ -95,7 +95,7 @@ const RoseHeader = ({ name, picture, homeCity, homeState, homeCountry, isUserCon
                     }
                 </View>
             </Card.Content>
-            {/* <IconButton
+            <IconButton
                     icon={editing ? "close-circle" : "pencil"}
                     size={25}
                     onPress={() => _setEditing(!editing)}
@@ -109,7 +109,7 @@ const RoseHeader = ({ name, picture, homeCity, homeState, homeCountry, isUserCon
                         onPress={shareProfile}
                         style={{ right: 10, alignSelf: 'flex-end', bottom: 0, position: 'absolute' }}
                     />
-                } */}
+                }
         </MyShadowCard>
     );
 }

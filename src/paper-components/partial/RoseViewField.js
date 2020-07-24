@@ -100,7 +100,7 @@ const RoseViewField = ({ value, subtitle, left, rightIcon, secondRightIcon, righ
                                 {
                                     (rightFunc !== null)
                                         ? <TouchableOpacity onPress={_onPress}>
-                                            <Title style={{ color: 'blue', fontFamily: (Platform.OS === 'android') ? 'sans-serif-light' : 'Avenir-Light' }}>{value}</Title>
+                                            <Title style={{ color: theme.colors.primary, fontFamily: (Platform.OS === 'android') ? 'sans-serif-light' : 'Avenir-Light' }}>{value}</Title>
                                             <Paragraph>{subtitle}</Paragraph>
                                         </TouchableOpacity>
                                         : <View>
@@ -131,7 +131,7 @@ const RoseViewField = ({ value, subtitle, left, rightIcon, secondRightIcon, righ
 const styles = StyleSheet.create({
     filterIcon: {
         // flex: 2,
-        backgroundColor: theme.colors.primary,
+        backgroundColor: theme.colors.text,
     },
 });
 

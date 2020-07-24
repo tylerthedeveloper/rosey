@@ -40,14 +40,21 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
     const [updated_homeLocation, setUpdated_homeLocation] = useState(homeLocation || {});
     const [updated_placeMetAt, setUpdated_placeMetAt] = useState(placeMetAt || {});
 
-    const { facebook, linkedin, instagram, medium, snapchat, twitter, whatsapp } = socialProfiles || {};
+    const { facebook, linkedin, instagram, medium, snapchat, twitch, twitter, venmo, whatsapp } = socialProfiles || {};
 
     const [updated_facebook, setFacebook] = useState(facebook || '');
     const [updated_linkedin, setLinkedin] = useState(linkedin || '');
     const [updated_instagram, setInstagram] = useState(instagram || '');
     const [updated_medium, setMedium] = useState(medium || '');
     const [updated_snapchat, setSnapchat] = useState(snapchat || '');
+
+    //// FIXME:
+    //////////////////
+    const [updated_twitch, setTwitch] = useState(twitch || '');
     const [updated_twitter, setTwitter] = useState(twitter || '');
+    const [updated_venmo, setVenmo] = useState(venmo || '');
+    //////////////////
+
     const [updated_whatsapp, setWhatsapp] = useState(whatsapp || '');
 
     // ────────────────────────────────────────────────────────────────────────────────
@@ -511,7 +518,7 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                                 marginBottom: 10
                             }}
                             //onChangeText={() => scrollRef.current?.scrollTo({ y: 2 * contentHeight, animated: true })}
-                            onChangeText={() => scrollRef.current ?.scrollToEnd()}
+                            onChangeText={() => scrollRef.current?.scrollToEnd()}
                         />
                     </Card.Actions>
                     {
@@ -536,7 +543,7 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                                         }}
                                         placeHolder={updated_placeMetAt.placeMetAtFormatted_address || geoCodedLocation || "Place you met!"}
                                         language={"en-US"}
-                                        onChangeText={() => scrollRef.current ?.scrollToEnd()}
+                                        onChangeText={() => scrollRef.current?.scrollToEnd()}
                                         textInputProps={{
                                             autoCorrect: false,
                                             fontWeight: 'bold',

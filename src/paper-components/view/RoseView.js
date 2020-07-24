@@ -3,12 +3,13 @@ import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
 import * as Linking from 'expo-linking';
 import useCalendar from '../../hooks/useCalendar';
 import useContacts from '../../hooks/useContacts';
-import { Button, Divider } from 'react-native-paper';
+import { Button, Divider, IconButton } from 'react-native-paper';
 import RoseViewField from '../partial/RoseViewField';
 import moment from 'moment';
 import { SocialIcon } from 'react-native-elements'
 import { Tooltip, Text } from 'react-native-elements';
 import { MyShadowCard } from '../memo';
+import { theme } from '../../core/theme';
 
 const RoseView = ({ user, isApiLoading, view_updateFunction, view_updateFunctionText,
     view_secondFunction, view_secondFunctionText,
@@ -141,7 +142,7 @@ const RoseView = ({ user, isApiLoading, view_updateFunction, view_updateFunction
 
     // https://app.urlgeni.us/
 
-    const { facebook, linkedin, instagram, medium, snapchat, twitter, whatsapp } = socialProfiles || {};
+    const { facebook, linkedin, instagram, medium, snapchat, twitch, twitter, venmo, whatsapp } = socialProfiles || {};
 
     // https://pureoxygenlabs.com/10-app-url-schemes-for-marketers/
     const socialLinkedIcons = [
@@ -150,7 +151,18 @@ const RoseView = ({ user, isApiLoading, view_updateFunction, view_updateFunction
         { type: 'instagram', value: instagram, appUrl: `instagram://user?username=${instagram}`, webUrl: `https://instagram.com/${instagram}` },
         { type: 'medium', value: medium, appUrl: `https://medium.com/@${medium}`, webUrl: `https://medium.com/@${medium}` },
         { type: 'snapchat', value: snapchat, appUrl: `snapchat://add/${snapchat}`, webUrl: `https://www.snapchat.com/add/${snapchat}` },
+
+
+        // FIXME:
+        //////////////////
+        { type: 'twitch', value: twitch, appUrl: `twitch://${twitch}`, webUrl: `https://twitch.tv/${twitch}` },
+
         { type: 'twitter', value: twitter, appUrl: `twitter://user?screen_name=${twitter}`, webUrl: `https://twitter.com/${twitter}` },
+
+        { type: 'venmo', value: venmo, appUrl: `venmo://users/${twitter}`, webUrl: `https://venmo.com/${venmo}` },
+        //////////////////
+
+
         { type: 'whatsapp', value: whatsapp, appUrl: `https://wa.me/${whatsapp}`, webUrl: `https://wa.me/${whatsapp}` }
     ];
 
@@ -170,27 +182,33 @@ const RoseView = ({ user, isApiLoading, view_updateFunction, view_updateFunction
                                                 .catch((err) => console.error('An error occurred', err))
                                         }}
                                         >
-                                            <SocialIcon
-                                                // raised
-                                                light
-                                                style={{
-                                                    opacity: (value && (appUrl || webUrl)) ? 1 : .4,
-                                                }}
-                                                type={type}
-                                            />
+                                            <View style={theme.shadow.iconButtonShadow}>
+                                                <IconButton
+                                                    style={{
+                                                        opacity: (value && (appUrl || webUrl)) ? 1 : .4,
+                                                        backgroundColor: theme.colors.primary
+                                                    }}
+                                                    icon={type}
+                                                    size={30}
+                                                    color={"white"}
+                                                />
+                                            </View>
                                         </TouchableOpacity>
                                         : <Tooltip key={type} popover={<Text style={{ color: 'white' }}>Edit your profile{"\n"}to add social media</Text>}
                                             containerStyle={{ flexWrap: 'wrap', height: 100 }}
                                         >
-                                            <SocialIcon
-                                                // raised
-                                                light
-                                                style={{
-                                                    opacity: (value && (appUrl || webUrl)) ? 1 : .4,
-                                                    marginHorizontal: 10
-                                                }}
-                                                type={type}
-                                            />
+                                            <View style={theme.shadow.iconButtonShadow}>
+                                                <IconButton
+                                                    style={{
+                                                        opacity: (value && (appUrl || webUrl)) ? 1 : .4,
+                                                        backgroundColor: theme.colors.primary,
+                                                        marginHorizontal: 10
+                                                    }}
+                                                    icon={type}
+                                                    size={30}
+                                                    color={"white"}
+                                                />
+                                            </View>
                                         </Tooltip>
                                 ))
                             }
