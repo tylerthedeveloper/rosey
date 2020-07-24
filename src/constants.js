@@ -23,7 +23,9 @@ const _generateUser = ({ name, email, password, userType }) => {
             instagram: '',
             medium: '',
             snapchat: '',
+            twitch: '',
             twitter: '',
+            venmo: '',
             whatsapp: ''
         },
         work: ''
