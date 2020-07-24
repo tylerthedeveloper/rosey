@@ -79,9 +79,8 @@ const RoseHeader = ({ name, picture, homeCity, homeState, homeCountry, isUserCon
                                 {
                                     headerRowButtons.map(({ headerButtonFunction, headerButtonIcon }) => {
                                         if (headerButtonIcon === 'video-plus' && Platform.OS !== 'ios') return null;
-                                        return (<View>
+                                        return (<View key={headerButtonIcon}>
                                             <IconButton
-                                                key={headerButtonIcon}
                                                 icon={headerButtonIcon}
                                                 onPress={headerButtonFunction}
                                                 color="white"
@@ -96,20 +95,22 @@ const RoseHeader = ({ name, picture, homeCity, homeState, homeCountry, isUserCon
                 </View>
             </Card.Content>
             <IconButton
-                    icon={editing ? "close-circle" : "pencil"}
-                    size={25}
-                    onPress={() => _setEditing(!editing)}
-                    style={{ right: 10, top: 5, alignSelf: 'flex-end', position: 'absolute' }}
+                icon={editing ? "close-circle" : "pencil"}
+                size={20}
+                onPress={() => _setEditing(!editing)}
+                color={'white'}
+                style={{ right: 10, top: 5, alignSelf: 'flex-end', position: 'absolute', backgroundColor: theme.colors.text }}
+            />
+            {
+                (isUserContactCard) &&
+                <IconButton
+                    icon="share"
+                    size={20}
+                    onPress={shareProfile}
+                    color={'white'}
+                    style={{ right: 10, alignSelf: 'flex-end', bottom: 0, position: 'absolute', backgroundColor: theme.colors.text }}
                 />
-                {
-                    (isUserContactCard) &&
-                    <IconButton
-                        icon="share"
-                        size={25}
-                        onPress={shareProfile}
-                        style={{ right: 10, alignSelf: 'flex-end', bottom: 0, position: 'absolute' }}
-                    />
-                }
+            }
         </MyShadowCard>
     );
 }

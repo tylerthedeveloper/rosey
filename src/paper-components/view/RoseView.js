@@ -155,7 +155,7 @@ const RoseView = ({ user, isApiLoading, view_updateFunction, view_updateFunction
 
         // FIXME:
         //////////////////
-        { type: 'twitch', value: twitch, appUrl: `twitch://${twitch}`, webUrl: `https://twitch.tv/${twitch}` },
+        { type: 'twitch', value: twitch, appUrl: `twitch://stream/${twitch}`, webUrl: `https://twitch.tv/${twitch}` },
 
         { type: 'twitter', value: twitter, appUrl: `twitter://user?screen_name=${twitter}`, webUrl: `https://twitter.com/${twitter}` },
 
@@ -182,7 +182,7 @@ const RoseView = ({ user, isApiLoading, view_updateFunction, view_updateFunction
                                                 .catch((err) => console.error('An error occurred', err))
                                         }}
                                         >
-                                            <View style={theme.shadow.iconButtonShadow}>
+                                            <View style={theme.shadow.iconButtonShadow} key={type}>
                                                 <IconButton
                                                     style={{
                                                         opacity: (value && (appUrl || webUrl)) ? 1 : .4,

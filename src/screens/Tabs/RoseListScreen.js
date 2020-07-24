@@ -72,6 +72,7 @@ const RoseListScreen = ({ navigation }) => {
                             contentContainerStyle={{
                                 justifyContent: 'center',
                                 height: 35,
+                                flex: 1
                             }}
                         >
                             {

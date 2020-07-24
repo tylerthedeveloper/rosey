@@ -1,18 +1,16 @@
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
 import React, { useContext, useState } from 'react';
-import { KeyboardAvoidingView, ScrollView, StyleSheet, TouchableOpacity, Text, View } from 'react-native';
+import { KeyboardAvoidingView, ScrollView, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
 import { GOOGLE_API_KEY } from "react-native-dotenv";
-import { Avatar, Button, Card, Chip, Paragraph, TextInput, Searchbar } from 'react-native-paper';
+import { ActivityIndicator, Avatar, Button, Card, Chip, HelperText, IconButton, Paragraph, Searchbar, TextInput } from 'react-native-paper';
 import PlacesInput from 'react-native-places-input';
 import Spacer from '../../components/Spacer';
-import { Context as TagContext } from '../../context/TagContext';
-import useCurrentLocation from '../../hooks/useCurrentLocation';
-import { MyTextInput, MyShadowCard } from '../../paper-components/memo';
-import { SocialIcon } from 'react-native-elements'
-import { ActivityIndicator, Colors } from 'react-native-paper';
 import * as Constants from '../../constants';
-import { TouchableWithoutFeedback } from 'react-native'
+import { Context as TagContext } from '../../context/TagContext';
+import { theme } from '../../core/theme';
+import useCurrentLocation from '../../hooks/useCurrentLocation';
+import { MyShadowCard, MyTextInput } from '../../paper-components/memo';
 
 const RoseForm = ({ user, isApiLoading, errorMessage, props,
     form_updateFunction, form_updateFunctionText,
@@ -29,7 +27,7 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
 
     const [updated_birthday, setBirthday] = useState((birthday !== undefined) ? birthday : new Date(Date.now()));
     const [updated_dateMet, setDateMet] = useState((dateMet !== undefined) ? dateMet : new Date(Date.now()));
-    const [updated_email, setEmail] = useState(email);
+    const [updated_email, setEmail] = useState(email || '');
     const [updated_tags, setTags] = useState(tags || []);
     const [updated_work, setWork] = useState(work);
     const [updated_name, setName] = useState(name || '');
@@ -98,9 +96,34 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
         { type: 'instagram', value: updated_instagram, setter: setInstagram },
         { type: 'medium', value: updated_medium, setter: setMedium },
         { type: 'snapchat', value: updated_snapchat, setter: setSnapchat },
+        { type: 'twitch', value: updated_twitch, setter: setTwitch },
         { type: 'twitter', value: updated_twitter, setter: setTwitter },
+        { type: 'venmo', value: updated_venmo, setter: setVenmo },
         { type: 'whatsapp', value: updated_whatsapp, setter: setWhatsapp }
     ];
+
+
+    /* -------------------------------------------------------------------------- */
+    /*                         Bool checks                                        */
+    /* -------------------------------------------------------------------------- */
+
+    // Validations
+    const isNameValid = !(updated_name.length > 0);
+    const isPhoneValid = (updated_phoneNumber.length > 0 && updated_phoneNumber.length !== 10);
+    const isEmailValid = (updated_email.length > 0 && (!updated_email.includes('@') || !updated_email.includes('.')));
+
+    const rowIgnoreArr = ["__v", "_id"]
+    const isUserNotEdited = Constants.default._areObjectsEqual(user, updatedUser, rowIgnoreArr);
+    const addNewRoseRoute = (form_updateFunctionText === "Add new Rose");
+    const canAddNewRose = (updated_name !== undefined && updated_name.length > 0);
+
+    const errorMessageDict = {
+        email: 'This email seems invalid',
+        name: 'A name is required to create a new rose',
+        phone: 'A valid phone number must contain 10 digits',
+    }
+
+    // ────────────────────────────────────────────────────────────────────────────────
 
     const formRows = [
         {
@@ -108,7 +131,9 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
             left: "account",
             rightIcon: "account-plus",
             editFunc: setName,
-            autoCapitalize: "words"
+            autoCapitalize: "words",
+            isError: isNameValid,
+            rowErrorMessage: errorMessageDict.name
         },
         {
             value: updated_nickName, subtitle: 'nickname',
@@ -122,14 +147,18 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
             left: "phone",
             rightIcon: "phone",
             keyboardType: 'phone-pad',
-            editFunc: setPhone
+            editFunc: setPhone,
+            isError: isPhoneValid,
+            rowErrorMessage: errorMessageDict.phone
         },
         {
             value: updated_email, subtitle: 'email',
             left: "email",
             keyboardType: 'email-address',
             rightIcon: "email",
-            editFunc: setEmail
+            editFunc: setEmail,
+            isError: isEmailValid,
+            rowErrorMessage: errorMessageDict.email
         },
         {
             value: updated_personalSite, subtitle: 'personal site',
@@ -240,7 +269,9 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                 return `Enter username for ${type}`;
             case 'instagram':
             case 'snapchat':
+            case 'twitch':
             case 'twitter':
+            case 'venmo':
                 return `Enter handle for ${type}`;
             case 'whatsapp':
                 return 'Add Intnl number for whatsapp';
@@ -271,16 +302,6 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
     }
     // ────────────────────────────────────────────────────────────────────────────────
 
-
-    /* -------------------------------------------------------------------------- */
-    /*                         Bool checks                                        */
-    /* -------------------------------------------------------------------------- */
-    const isPhoneValid = (updated_phoneNumber.length > 0 && updated_phoneNumber.length !== 10);
-    const rowIgnoreArr = ["__v", "_id"]
-    const isUserNotEdited = Constants.default._areObjectsEqual(user, updatedUser, rowIgnoreArr);
-    const addNewRoseRoute = (form_updateFunctionText === "Add new Rose");
-    const canAddNewRose = (updated_name !== undefined && updated_name.length > 0);
-    // ────────────────────────────────────────────────────────────────────────────────
 
     const DismissKeyboard = ({ children }) => (
         <TouchableWithoutFeedback
@@ -317,13 +338,14 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                                         setCurrentSocialEntry({ setter, type, editSocialEntry: true })
                                     }}
                                 >
-                                    <SocialIcon
-                                        raised
-                                        light
+                                    <IconButton
                                         style={{
-                                            opacity: (value) ? 1 : .5
+                                            opacity: (value) ? 1 : .5,
+                                            backgroundColor: theme.colors.primary
                                         }}
-                                        type={type}
+                                        color={'white'}
+                                        icon={type}
+                                        size={30}
                                     />
                                 </TouchableOpacity>
                             ))}
@@ -354,29 +376,32 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                 <Paragraph style={styles.sectionTitle}> Personal </Paragraph>
                 <MyShadowCard>
                     {
-                        formRows.map(({ left, subtitle, value, editFunc, keyboardType, autoCapitalize, multiline }) => (
+                        formRows.map(({ left, subtitle, value, editFunc, keyboardType, autoCapitalize, multiline, isError, rowErrorMessage }) => (
                             ((isUserContactCard && !contactCardRowsToIgnore.includes(subtitle) || !isUserContactCard))
                                 ? <Card.Actions style={styles.cardContent} key={subtitle} >
-                                    <Avatar.Icon {...props} icon={left} size={40} style={{ marginRight: 20 }} />
-                                    <TextInput mode="outlined"
-                                        label={subtitle}
-                                        onContentSizeChange={(event) => setNoteFormHeight(event.nativeEvent.contentSize.height)}
-                                        style={{
-                                            ...styles.textInput,
-                                            // height: (subtitle !== 'notes') ? 45 : Math.min(120, Math.max(60, noteFormHeight))
-                                        }}
-                                        // placeholder={value}
-                                        value={value}
-                                        autoCapitalize={autoCapitalize || "none"}
-                                        autoComplete={false}
-                                        autoCorrect={false}
-                                        autoCompleteType={"off"}
-                                        onChangeText={editFunc}
-                                        multiline={multiline}
-                                        scrollEnabled={false}
-                                        disabled={subtitle === "email" && isUserContactCard}
-                                        keyboardType={keyboardType}
-                                    />
+                                    <Avatar.Icon {...props} icon={left} size={40} style={{ marginRight: 20, backgroundColor: theme.colors.text, marginTop: -10 }} />
+                                    <View style={{ flexDirection: 'column', width: '100%' }}>
+                                        <TextInput mode="outlined"
+                                            label={subtitle}
+                                            onContentSizeChange={(event) => setNoteFormHeight(event.nativeEvent.contentSize.height)}
+                                            style={{
+                                                ...styles.textInput,
+                                                // height: (subtitle !== 'notes') ? 45 : Math.min(120, Math.max(60, noteFormHeight))
+                                            }}
+                                            // placeholder={value}
+                                            value={value}
+                                            autoCapitalize={autoCapitalize || "none"}
+                                            autoComplete={false}
+                                            autoCorrect={false}
+                                            autoCompleteType={"off"}
+                                            onChangeText={editFunc}
+                                            multiline={multiline}
+                                            scrollEnabled={false}
+                                            disabled={subtitle === "email" && isUserContactCard}
+                                            keyboardType={keyboardType}
+                                        />
+                                        <HelperText type="error" visible={isError} >{rowErrorMessage}</HelperText>
+                                    </View>
                                 </Card.Actions>
                                 : null
                         ))
@@ -388,6 +413,7 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                         ? <>
                             <Paragraph style={styles.sectionTitle}> Tags (select below) </Paragraph>
                             <MyShadowCard>
+
                                 <View style={styles.chips}>
                                     {
                                         contextTags.map((tag, index) =>
@@ -420,7 +446,7 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                             ? <View style={{ alignItems: 'center' }}>
                                 <Card.Actions style={styles.cardContent}>
                                     <TouchableOpacity onPress={() => setDatemet_Picker(!datemet_Picker)}>
-                                        <Avatar.Icon {...props} icon={'calendar'} size={40} style={{ marginRight: 20 }} />
+                                        <Avatar.Icon {...props} icon={'calendar'} size={40} style={{ marginRight: 20, backgroundColor: theme.colors.text }} />
                                     </TouchableOpacity>
                                     <TouchableOpacity onPress={() => setDatemet_Picker(!datemet_Picker)}
                                         style={styles.textInput}
@@ -454,7 +480,7 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                     <View style={{ alignItems: 'center' }}>
                         <Card.Actions style={styles.cardContent}>
                             <TouchableOpacity onPress={() => setBirth_datePicker(!birth_datePicker)}>
-                                <Avatar.Icon {...props} icon={'calendar'} size={40} style={{ marginRight: 20 }} />
+                                <Avatar.Icon {...props} icon={'calendar'} size={40} style={{ marginRight: 20, backgroundColor: theme.colors.text }} />
                             </TouchableOpacity>
                             <TouchableOpacity
                                 onPress={() => setBirth_datePicker(!birth_datePicker)}
@@ -495,7 +521,7 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                     </Paragraph>
                     </TouchableOpacity>
                     <Card.Actions style={styles.cardContent}>
-                        <Avatar.Icon {...props} icon={'crosshairs-gps'} size={40} style={{ marginRight: 10 }} />
+                        <Avatar.Icon {...props} icon={'crosshairs-gps'} size={40} style={{ marginRight: 10, backgroundColor: theme.colors.text }} />
                         <PlacesInput
                             googleApiKey={GOOGLE_API_KEY}
                             onSelect={place => {
@@ -534,7 +560,7 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                                 </TouchableOpacity>
                                 <Card.Actions style={styles.cardContent}>
                                     {/* TODO: SET NAME??? */}
-                                    <Avatar.Icon {...props} icon={'crosshairs-gps'} size={40} style={{ marginRight: 10 }} />
+                                    <Avatar.Icon {...props} icon={'crosshairs-gps'} size={40} style={{ marginRight: 10, backgroundColor: theme.colors.text }} />
                                     <PlacesInput
                                         googleApiKey={GOOGLE_API_KEY}
                                         onSelect={place => {
@@ -631,7 +657,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         alignSelf: 'center',
         flexDirection: 'row',
-        marginTop: 5,
+        marginTop: 10,
         flexWrap: 'wrap',
         paddingHorizontal: 5,
     },
