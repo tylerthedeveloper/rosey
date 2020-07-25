@@ -1,8 +1,10 @@
 // TODO: separate tools and utils?
 
 import shortid from 'shortid';
-import { Share } from 'react-native';
+import { Share, Alert, AsyncStorage } from 'react-native';
 // import * as Linking from 'expo-linking';
+import * as StoreReview from 'expo-store-review';
+import * as WebBrowser from 'expo-web-browser';
 
 const linksDictionary = {
     app_store_url: '',
@@ -90,6 +92,42 @@ const isObjectEmpty = (obj) => {
     return true;
 }
 
+const _provideFeedbackFunction = async () => {
+    try {
+        if (Platform.OS === "ios") {
+            if (StoreReview.isAvailableAsync()) {
+                StoreReview.requestReview();
+                await AsyncStorage.setItem('didIReviewApp', 'true');
+            }
+            else {
+                alert("It looks like your device doesn't support this or you already left a review, thank you! (:")
+            }
+        } else {
+            await AsyncStorage.setItem('didIReviewApp', 'true');
+            WebBrowser.openBrowserAsync(linksDictionary.play_store_url);
+        }
+    } catch (err) {
+        console.log(err.message);
+    }
+}
+
+const _askForFeedbackReview = () => {
+    Alert.alert(
+        "Are you liking Rozy?",
+        "If so, please leave a review",
+        [
+            // { text: "Text", onPress: () => Linking.openURL(`sms:9739029054`) },
+            { text: "Review", onPress: _provideFeedbackFunction },
+            {
+                text: "Cancel",
+                style: "destructive"
+            },
+        ],
+        { cancelable: true }
+    );
+}
+
+
 const _shareProfile = async (userID) => {
 
     // const redirectUrl = Linking.makeUrl('/') + `main/home/add?userID=${userID}`;
@@ -116,10 +154,12 @@ const _shareProfile = async (userID) => {
 }
 
 export default {
+    _askForFeedbackReview,
     _generateUser,
     _areObjectsEqual,
     _shareProfile,
     isObjectEmpty,
+    _provideFeedbackFunction,
     linksDictionary: linksDictionary,
     my_personal_card: {
         birthday: '',

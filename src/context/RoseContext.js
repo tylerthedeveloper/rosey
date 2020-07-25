@@ -41,6 +41,12 @@ const addRose = (dispatch) => async ({ roseObj, callback }) => {
         // FIXME: PULL FROM CURRENT STATE???
         const roses = await AsyncStorage.getItem('roses')
             .then(req => JSON.parse(req));
+        const didIReviewApp = await AsyncStorage.getItem('didIReviewApp');
+        // await AsyncStorage.removeItem('didIReviewApp');
+        // console.log(roses.length, didIReviewApp, didIReviewApp === null, roses.length % 5 === 0 || roses.length % 15 === 0);
+        if (didIReviewApp === null && (roses.length % 5 === 0 || roses.length % 15 === 0)) {
+            Constants._askForFeedbackReview();
+        }
         const updatedRoseList = [...(roses || []), roseObj];
         await AsyncStorage.setItem('roses', JSON.stringify(updatedRoseList));
         dispatch({ type: "add_rose", payload: roseObj });
