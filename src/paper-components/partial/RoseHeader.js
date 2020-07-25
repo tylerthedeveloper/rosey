@@ -57,6 +57,7 @@ const RoseHeader = ({ name, picture, homeCity, homeState, homeCountry, isUserCon
 
     const _handleEmptyField = () => alert('Enter data for that field in order to interact with it.');
 
+
     return (
         <MyShadowCard inheritedMarginTop={15}>
             <Card.Content style={{ alignSelf: 'center', alignItems: 'center', paddingBottom: 5, flex: 0 }}>
@@ -94,13 +95,49 @@ const RoseHeader = ({ name, picture, homeCity, homeState, homeCountry, isUserCon
                     }
                 </View>
             </Card.Content>
-            <IconButton
-                icon={editing ? "close-circle" : "pencil"}
-                size={20}
-                onPress={() => _setEditing(!editing)}
-                color={'white'}
-                style={{ right: 10, top: 5, alignSelf: 'flex-end', position: 'absolute', backgroundColor: theme.colors.text }}
-            />
+            {/* {
+                (!editing) ?
+                    <IconButton
+                        icon={"pencil"}
+                        size={20}
+                        onPress={() => _setEditing(!editing)}
+                        color={'white'}
+                        style={{ right: 10, top: 10, alignSelf: 'flex-end', position: 'absolute', backgroundColor: theme.colors.text }}
+                    />
+                    : <>
+                        <IconButton
+                            icon={"close-circle"}
+                            size={20}
+                            onPress={() => _setEditing(!editing)}
+                            color={'white'}
+                            style={{ right: 55, top: 10, alignSelf: 'flex-end', position: 'absolute', backgroundColor: theme.colors.text }}
+                        />
+                        <IconButton
+                            icon={"content-save"}
+                            size={20}
+                            onPress={() => _setEditing(!editing)}
+                            color={'white'}
+                            style={{ right: 10, top: 10, alignSelf: 'center', position: 'absolute', backgroundColor: theme.colors.text }}
+                        />
+                    </>
+            } */}
+            {
+                (!editing) ?
+                    <IconButton
+                        icon={"pencil"}
+                        size={20}
+                        onPress={() => _setEditing(!editing)}
+                        color={'white'}
+                        style={{ right: 10, top: 10, alignSelf: 'flex-end', position: 'absolute', backgroundColor: theme.colors.text }}
+                    />
+                    : <IconButton
+                        icon={"close-circle"}
+                        size={20}
+                        onPress={() => _setEditing(!editing)}
+                        color={'white'}
+                        style={{ right: 10, top: 10, alignSelf: 'flex-end', position: 'absolute', backgroundColor: theme.colors.text }}
+                    />
+            }
             {
                 (isUserContactCard) &&
                 <IconButton
@@ -125,7 +162,8 @@ const styles = StyleSheet.create({
     //     fontSize: 26,
     // },
     avatar: {
-        // shadowColor: theme.primary || '#600EE6',
+        // shadowColor: theme.colors.primary || '#600EE6',
+        backgroundColor: theme.colors.primary
         // shadowOpacity: 1
     },
     userNameText: {

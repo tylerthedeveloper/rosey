@@ -1,6 +1,17 @@
+// TODO: separate tools and utils?
+
 import shortid from 'shortid';
 import { Share } from 'react-native';
 // import * as Linking from 'expo-linking';
+
+const linksDictionary = {
+    app_store_url: '',
+    feedback_survey_url: 'https://forms.gle/NoamPMmd75N5vmXC7',
+    play_store_url: 'https://play.google.com/store/apps/details?id=com.rozy_app.rozy',
+    reddit_page_url: 'https://www.reddit.com/r/RozyApp/',
+    rozy_blog_url: 'https://medium.com/@tylercitrin/the-sunday-shortlist-crazy-encounters-life-lessons-and-a-mobile-application-rozy-55aa3068289d',
+    rozy_website_url: 'http://rozy-website.herokuapp.com/'
+}
 
 const _generateUser = ({ name, email, password, userType }) => {
     let newUser = {
@@ -71,6 +82,14 @@ const _areObjectsEqual = (a, b, ignoreArray) => {
     return equality;
 }
 
+const isObjectEmpty = (obj) => {
+    for (var prop in obj) {
+        if (obj.hasOwnProperty(prop) && obj[prop] !== NaN)
+            return false;
+    }
+    return true;
+}
+
 const _shareProfile = async (userID) => {
 
     // const redirectUrl = Linking.makeUrl('/') + `main/home/add?userID=${userID}`;
@@ -100,6 +119,8 @@ export default {
     _generateUser,
     _areObjectsEqual,
     _shareProfile,
+    isObjectEmpty,
+    linksDictionary: linksDictionary,
     my_personal_card: {
         birthday: '',
         dateMet: '',
@@ -126,5 +147,5 @@ export default {
         work: 'Developer, PM',
         roseId: shortid.generate()
     },
-    rozyStoryUrl: 'https://medium.com/@tylercitrin/the-sunday-shortlist-crazy-encounters-life-lessons-and-a-mobile-application-rozy-55aa3068289d'
+    // rozyStoryUrl: linksDictionary.rozy_blog_url
 };

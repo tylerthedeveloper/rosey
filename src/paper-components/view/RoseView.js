@@ -176,7 +176,7 @@ const RoseView = ({ user, isApiLoading, view_updateFunction, view_updateFunction
                             {
                                 socialLinkedIcons.map(({ appUrl, type, value, webUrl }) => (
                                     (value)
-                                        ? <TouchableOpacity key={type} style={{ marginHorizontal: 10 }} onPress={() => {
+                                        ? <TouchableOpacity key={type} style={{ marginHorizontal: 7 }} onPress={() => {
                                             Linking.canOpenURL(appUrl)
                                                 .then((supported) => Linking.openURL((supported) ? appUrl : webUrl))
                                                 .catch((err) => console.error('An error occurred', err))
@@ -197,12 +197,11 @@ const RoseView = ({ user, isApiLoading, view_updateFunction, view_updateFunction
                                         : <Tooltip key={type} popover={<Text style={{ color: 'white' }}>Edit your profile{"\n"}to add social media</Text>}
                                             containerStyle={{ flexWrap: 'wrap', height: 100 }}
                                         >
-                                            <View style={theme.shadow.iconButtonShadow}>
+                                            <View style={{ ...theme.shadow.iconButtonShadow, marginHorizontal: 7 }}>
                                                 <IconButton
                                                     style={{
                                                         opacity: (value && (appUrl || webUrl)) ? 1 : .4,
                                                         backgroundColor: theme.colors.primary,
-                                                        marginHorizontal: 10
                                                     }}
                                                     icon={type}
                                                     size={30}
@@ -282,7 +281,7 @@ const RoseView = ({ user, isApiLoading, view_updateFunction, view_updateFunction
 
 const styles = StyleSheet.create({
     socialMediaSection: {
-        // flex: 1,
+        flex: 1,
         flexWrap: 'wrap',
         flexDirection: 'row',
         justifyContent: 'space-around',

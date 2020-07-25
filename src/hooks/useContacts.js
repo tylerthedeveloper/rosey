@@ -1,10 +1,12 @@
 import * as Contacts from 'expo-contacts';
 import { useContext, useState } from 'react';
 import { Context as ContactsContext } from '../context/ContactsContext';
+import { AsyncStorage } from 'react-native';
+import Constants from '../constants';
 
 export default () => {
 
-    const [containerID, setContainerID] = useState({});
+    const [containerID, setContainerID] = useState('');
 
     const { _setContacts } = useContext(ContactsContext);
 
@@ -14,7 +16,9 @@ export default () => {
 
             if (Platform.OS === 'ios') {
                 const containerId = await Contacts.getDefaultContainerIdAsync();
+                console.log('containerId', containerId)
                 setContainerID(containerId);
+                // AsyncStorage.setItem('ios_contacts_containerID', containerId)
             }
 
             const { data } = await Contacts.getContactsAsync();
@@ -88,6 +92,7 @@ export default () => {
 
     // TODO: continue to make helpers ^ 
     const createContact = async (newContact) => {
+        // console.log(AsyncStorage.getItem('ios_contacts_containerID'))
         const {
             birthday, dateMet, email, homeLocation, name, nickName, notes,
             phoneNumber, placeMetAt, picture, socialProfiles, tags, work, roseId
@@ -139,8 +144,8 @@ export default () => {
             label: 'mobile'
         };
         const newContactObj = {};
-        if (_birthday) newContactObj.birthday = _birthday;
-        if (_dateMet) newContactObj.dates = [_dateMet];
+        if (Constants.isObjectEmpty(_birthday)) newContactObj.birthday = _birthday;
+        if (Constants.isObjectEmpty(_dateMet)) newContactObj.dates = [_dateMet];
         if (_firstName) newContactObj.firstName = _firstName;
         if (_middleName) newContactObj.middleName = _middleName;
         if (_lastName) newContactObj.lastName = _lastName;
@@ -151,12 +156,15 @@ export default () => {
         if (tags || notes) newContactObj.note = `Tags: ${tags.join(', ')}${"\n"}${notes}`;
         if (_addresses && _addresses.length > 0) newContactObj.addresses = _addresses;
 
+        console.log(newContactObj)
+
+        // TODO:?
         // socialProfiles: [...(socialProfiles || [])],
 
         await Contacts.addContactAsync(newContactObj, (Platform.OS === 'ios' ? containerID : null))
             .then(success => alert('Contact Successfully added'))
-            // .catch(err => console.log(err))
-            .catch(err => alert('Error adding contact'))
+            .catch(err => console.log(err))
+        // .catch(err => alert('Error adding contact'))
     };
 
     return { getContactsPermissions, createContact };

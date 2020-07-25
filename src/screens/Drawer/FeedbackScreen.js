@@ -6,6 +6,7 @@ import * as WebBrowser from 'expo-web-browser';
 import { Alert } from 'react-native';
 import * as StoreReview from 'expo-store-review';
 import { MyShadowCard } from '../../paper-components/memo';
+import Constants from '../../constants';
 
 const FeedbackScreen = () => {
 
@@ -22,7 +23,7 @@ const FeedbackScreen = () => {
                             alert("It looks like your device doesn't support this or you already left a review, thank you! (:")
                         }
                     } else {
-                        WebBrowser.openBrowserAsync("https://play.google.com/store/apps/details?id=com.rozy_app.rozy");
+                        WebBrowser.openBrowserAsync(Constants.linksDictionary.play_store_url);
                     }
                 } catch (err) {
                     console.log(err.message);
@@ -47,16 +48,26 @@ const FeedbackScreen = () => {
             }
         },
         {
-            label: "Get involved in Reddit Discussions", icon: 'chat', onPress: () => {
+            label: "Get involved in Reddit Discussions", icon: 'reddit', onPress: () => {
                 try {
-                    WebBrowser.openBrowserAsync("https://www.reddit.com/r/RozyApp/");
+                    WebBrowser.openBrowserAsync(Constants.linksDictionary.reddit_page_url);
                 } catch (err) {
                     alert('There was a problem loading your browsers')
                     console.log(err.message);
                 }
             }
         },
-        { label: "Support Website", icon: 'help', onPress: () => { WebBrowser.openBrowserAsync('http://rozy-website.herokuapp.com/') } },
+        {
+            label: "Take a quick feedback survey", icon: 'message-text', onPress: () => {
+                try {
+                    WebBrowser.openBrowserAsync(Constants.linksDictionary.feedback_survey_url);
+                } catch (err) {
+                    alert('There was a problem loading your browsers')
+                    console.log(err.message);
+                }
+            }
+        },
+        { label: "Support Website", icon: 'help-circle-outline', onPress: () => { WebBrowser.openBrowserAsync(Constants.linksDictionary.rozy_website_url) } },
     ]
 
     return (

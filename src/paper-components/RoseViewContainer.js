@@ -23,6 +23,10 @@ const RoseViewContainer = ({
     const _setEditing = (editing) => setEditing(editing);
     const isUserContactCard = (view_updateFunctionText === 'Update your contact card');
 
+    // const { updateContactCard } = useContext(AuthContext);
+    // const { addRose } = useContext(RoseContext);
+    // const functionToSaveCardForUserOrRose = (isUserContactCard) ? updateContactCard : addRose;
+
     return (
         <>
             {/* <MyShadowCard> */}

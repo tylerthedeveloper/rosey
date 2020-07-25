@@ -1,14 +1,25 @@
 import { useNavigation } from "@react-navigation/native";
 import React from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import { Avatar, Card, Paragraph, Chip } from 'react-native-paper';
+import { StyleSheet, TouchableOpacity, View, Text } from 'react-native';
+import { Avatar, Card, Paragraph, Chip, Title } from 'react-native-paper';
 import { MyShadowCard } from "../memo";
 import { theme } from "../../core/theme";
 
 const RoseListItem = ({ rose, props }) => {
     const navigation = useNavigation();
-    const { name, tags, picture, homeLocation } = rose;
-    const { homeCity, homeState, homeCountry } = homeLocation || {};
+    const { name, tags, nickName, picture, placeMetAt } = rose;
+    const { placeMetAtFormatted_address, placeMetAtName } = placeMetAt || {};
+
+    const titleName = (nickName !== '')
+        ? <>
+            <Title style={{ fontFamily: (Platform.OS === 'android') ? 'sans-serif-light' : 'Avenir-Heavy', fontWeight: 'bold' }}> {name},</Title>
+            <Text style={{ fontWeight: "normal", }}> {nickName}</Text>
+        </>
+        : <Title> {name}</Title>
+
+    // TODO: figure out best way to format this based on number of commas
+    const formattedAddress = placeMetAtFormatted_address.substring(0, placeMetAtFormatted_address.indexOf(','))
+
     return (
         <TouchableOpacity style={styles.container} onPress={() => navigation.push('RoseDetail', { roseId: rose.roseId })}>
             <MyShadowCard style={{ marginVertical: 0 }}
@@ -26,8 +37,8 @@ const RoseListItem = ({ rose, props }) => {
                             source={{ uri: (picture && picture.length > 3) ? picture : 'https://picsum.photos/700' }}
                         />
                     )}
-                    title={name}
-                    subtitle={homeCity || homeState || homeCountry || "(Somewhere!)"}
+                    title={titleName}
+                    subtitle={placeMetAtName || formattedAddress || "(Somewhere!)"}
                 // right={props => (
                 //     <Avatar.Icon
                 //         {...props}
