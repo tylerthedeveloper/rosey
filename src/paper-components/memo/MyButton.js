@@ -1,5 +1,5 @@
 import React, { memo } from 'react';
-import { StyleSheet } from 'react-native';
+import { StyleSheet, Text } from 'react-native';
 import { Button as PaperButton } from 'react-native-paper';
 import { theme } from '../../core/theme';
 
@@ -16,7 +16,9 @@ const MyButton = ({ mode, style, children, ...props }) => {
             mode={mode}
             {...props}
         >
-            {children}
+            {/* <Text textBreakStrategy="simple"> */}
+                {children}
+            {/* </Text> */}
         </PaperButton>
     )
 };
