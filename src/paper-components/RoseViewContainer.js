@@ -1,10 +1,13 @@
-import React, { useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { Share, StyleSheet } from 'react-native';
 import { Card } from 'react-native-paper';
 import { RoseHeader } from './partial';
 import { RoseForm, RoseView } from './view';
 import Constants from '../constants';
 import { MyShadowCard } from './memo';
+import { AuthContext } from '../context/AuthContext';
+import { Context as RoseContext } from '../context/RoseContext';
+
 
 // TODO: Clean props!
 // navigation, props, view_updateFunction, form_secondFunction
@@ -26,13 +29,32 @@ const RoseViewContainer = ({
     // const { updateContactCard } = useContext(AuthContext);
     // const { addRose } = useContext(RoseContext);
     // const functionToSaveCardForUserOrRose = (isUserContactCard) ? updateContactCard : addRose;
+    // const headerToContainer = () => alert('aaaaaa')
+
+    // const [_user, set_user] = useState(user)
+    // useEffect(() => {
+    //     console.log(_user.name)
+    // }, [_user])
+
+    const callForm_updateFunction_callback = (obj) => {
+        if (!form_updateFunction_callback) {
+            setEditing(false);
+        } else {
+            form_updateFunction_callback(obj);
+            setEditing(false);
+        }
+    };
+
+    const callFormUpdateFunction = (obj) => {
+        form_updateFunction({ roseObj: obj, callback: () => callForm_updateFunction_callback(obj) });
+    }
 
     return (
         <>
             {/* <MyShadowCard> */}
             <RoseHeader {...{
                 name, picture, homeCity, homeState, homeCountry, isUserContactCard, editing, _setEditing, shareProfile: () => Constants._shareProfile(user._id),
-                phoneNumber, email
+                phoneNumber, email, //headerToContainer
             }} />
             {/* </MyShadowCard> */}
             {
@@ -52,6 +74,7 @@ const RoseViewContainer = ({
                         form_updateFunctionText={form_updateFunctionText}
                         form_secondFunction={() => setEditing(false)}
                         form_secondFunctionText={form_secondFunctionText}
+                        // childStateUserHandler={set_user}
                         // form_updateFunction_callback
                         form_updateFunction_callback={(obj) => {
                             if (!form_updateFunction_callback) {
@@ -61,6 +84,7 @@ const RoseViewContainer = ({
                                 setEditing(false);
                             }
                         }}
+                        saveOrSubmitPassedDownAction={callFormUpdateFunction}
                     />
             }
         </>

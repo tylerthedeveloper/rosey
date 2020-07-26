@@ -11,11 +11,12 @@ import { Context as TagContext } from '../../context/TagContext';
 import { theme } from '../../core/theme';
 import useCurrentLocation from '../../hooks/useCurrentLocation';
 import { MyShadowCard, MyTextInput } from '../../paper-components/memo';
+import { useFocusEffect } from '@react-navigation/native';
 
 const RoseForm = ({ user, isApiLoading, errorMessage, props,
     form_updateFunction, form_updateFunctionText,
     form_secondFunction, form_secondFunctionText,
-    form_updateFunction_callback
+    form_updateFunction_callback, saveOrSubmitPassedDownAction
 }) => {
 
     const {
@@ -46,12 +47,9 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
     const [updated_medium, setMedium] = useState(medium || '');
     const [updated_snapchat, setSnapchat] = useState(snapchat || '');
 
-    //// FIXME:
-    //////////////////
     const [updated_twitch, setTwitch] = useState(twitch || '');
     const [updated_twitter, setTwitter] = useState(twitter || '');
     const [updated_venmo, setVenmo] = useState(venmo || '');
-    //////////////////
 
     const [updated_whatsapp, setWhatsapp] = useState(whatsapp || '');
 
@@ -92,6 +90,12 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
         roseId: roseId || ''
     };
 
+    // const [_updatedUser_Handler, set_updatedUser_Handler] = useState(updatedUser);
+
+    // useFocusEffect(() => {
+    //     childStateUserHandler(updatedUser)
+    // }, [updated_name])
+
     const socialLinkedIcons = [
         { type: 'facebook', value: updated_facebook, setter: setFacebook },
         { type: 'linkedin', value: updated_linkedin, setter: setLinkedin },
@@ -125,6 +129,50 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
         phone: 'A valid phone number must contain 10 digits',
     }
 
+    // console.log(form_secondFunction, saveOrSubmitPassedDownAction)
+
+    //
+    // ─── Custom Buttons   ───────────────────────────────────────────────────────────────────────────
+    //
+
+
+    const addRoseAndDisabled = (!canAddNewRose || isPhoneValid);
+    const editRoseAndDisabled = (!isUserNotEdited || isApiLoading || isPhoneValid)
+    const SaveButton = () => {
+        let bool = false;
+        if (addNewRoseRoute) {
+            bool = addRoseAndDisabled;
+        } else { //if (editRoseAndDisabled) {
+            bool = (isUserNotEdited || isApiLoading || isPhoneValid)
+        }
+        return (<TouchableOpacity onPress={saveFromHeader}
+            disabled={bool}
+        >
+            <Paragraph style={{ ...styles.sectionTitleSaveButton, opacity: (bool) ? .5 : 1 }}> Save </Paragraph>
+        </TouchableOpacity>)
+    }
+
+    const SectionHeader = ({ sectionHeaderText }) => (
+        <View style={{ flexDirection: 'row', flex: 1, justifyContent: 'space-between' }}>
+            <Paragraph style={styles.sectionTitle}> {sectionHeaderText} </Paragraph>
+            <SaveButton />
+        </View >
+    );
+
+    const saveFromHeader = () => {
+        try {
+            if (!isUserContactCard) _setPlaceMet();
+            if (addNewRoseRoute && !addRoseAndDisabled) {
+                console.log('abc')
+                // saveOrSubmitPassedDownAction(updatedUser);
+                form_updateFunction({ roseObj: updatedUser, callback: () => form_updateFunction_callback(updatedUser) });
+            } else if (isUserNotEdited || !isApiLoading || !isPhoneValid) {
+                saveOrSubmitPassedDownAction(updatedUser);
+            }
+        } catch (err) {
+            console.log(err.message)
+        }
+    }
     // ────────────────────────────────────────────────────────────────────────────────
 
     const formRows = [
@@ -304,16 +352,7 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
     }
     // ────────────────────────────────────────────────────────────────────────────────
 
-
-    const DismissKeyboard = ({ children }) => (
-        <TouchableWithoutFeedback
-            onPress={() => Keyboard.dismiss()}> {children}
-        </TouchableWithoutFeedback>
-    );
-
-
     const [noteFormHeight, setNoteFormHeight] = useState();
-
 
     return (
         <KeyboardAvoidingView
@@ -330,7 +369,11 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                 showsVerticalScrollIndicator={false}
             >
                 {/* Social Section */}
-                <Paragraph style={styles.sectionTitle}> Social Media </Paragraph>
+                {/* <View style={{ flexDirection: 'row', flex: 1, justifyContent: 'space-between' }}>
+                    <Paragraph style={styles.sectionTitle}> Social Media </Paragraph>
+                <SaveButton />
+                </View> */}
+                <SectionHeader sectionHeaderText="Social Media" />
                 <MyShadowCard>
                     <View style={styles.socialMediaSection}>
                         {
@@ -375,7 +418,7 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                     }
                 </MyShadowCard>
                 {/* Form Section */}
-                <Paragraph style={styles.sectionTitle}> Personal </Paragraph>
+                <SectionHeader sectionHeaderText="Personal" />
                 <MyShadowCard>
                     {
                         formRows.map(({ left, subtitle, value, editFunc, keyboardType, autoCapitalize, multiline, isError, rowErrorMessage }) => (
@@ -413,7 +456,8 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                 {
                     (!isUserContactCard)
                         ? <>
-                            <Paragraph style={styles.sectionTitle}> Tags (select below) </Paragraph>
+                            {/* <Paragraph style={styles.sectionTitle}> Tags (select below) </Paragraph> */}
+                            <SectionHeader sectionHeaderText="Tags" />
                             <MyShadowCard>
 
                                 <View style={styles.chips}>
@@ -441,7 +485,8 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                         : null
                 }
                 {/*  DATE SECTION */}
-                <Paragraph style={styles.sectionTitle}> Date Info </Paragraph>
+                {/* <Paragraph style={styles.sectionTitle}> Date Info </Paragraph> */}
+                <SectionHeader sectionHeaderText="Date Info" />
                 <MyShadowCard>
                     {
                         (!isUserContactCard)
@@ -511,7 +556,8 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                         }
                     </View>
                 </MyShadowCard>
-                <Paragraph style={styles.sectionTitle}> Location Section (please select below)</Paragraph>
+                {/* <Paragraph style={styles.sectionTitle}> Location Section (please select below)</Paragraph> */}
+                <SectionHeader sectionHeaderText="Location Section (please select below)" />
                 <MyShadowCard>
                     {/* Location Section */}
                     <TouchableOpacity
@@ -606,20 +652,16 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                 {
                     (addNewRoseRoute)
                         ? <Button disabled={!canAddNewRose || isPhoneValid}
-                            onPress={() => {
-                                if (!isUserContactCard) _setPlaceMet();
-                                form_updateFunction({ roseObj: updatedUser, callback: () => form_updateFunction_callback(updatedUser) })
-                            }}>
+                            // onPress={() => saveOrSubmitPassedDownAction(updatedUser)}
+                            onPress={saveFromHeader}
+                        >
                             {form_updateFunctionText || 'Add New'}
                         </Button>
                         : <Button disabled={isUserNotEdited || isApiLoading || isPhoneValid}
-                            onPress={() => {
-                                if (!isUserContactCard) _setPlaceMet();
-                                form_updateFunction({ roseObj: updatedUser, callback: () => form_updateFunction_callback(updatedUser) })
-                            }}>
+                            onPress={saveFromHeader}
+                        >
                             {form_updateFunctionText || 'Save Rose'}
                         </Button>
-
                 }
                 <Button
                     onPress={() => {
@@ -654,6 +696,12 @@ const styles = StyleSheet.create({
         marginTop: 20,
         marginBottom: 1,
         marginLeft: 8
+    },
+    sectionTitleSaveButton: {
+        marginTop: 20,
+        color: 'blue',
+        marginBottom: 1,
+        marginRight: 15
     },
     chips: {
         alignItems: 'center',

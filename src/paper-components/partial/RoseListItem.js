@@ -12,13 +12,15 @@ const RoseListItem = ({ rose, props }) => {
 
     const titleName = (nickName !== '')
         ? <>
-            <Title style={{ fontFamily: (Platform.OS === 'android') ? 'sans-serif-light' : 'Avenir-Heavy', fontWeight: 'bold' }}> {name},</Title>
-            <Text style={{ fontWeight: "normal", }}> {nickName}</Text>
+            <Title style={{ fontFamily: (Platform.OS === 'android') ? 'sans-serif-light' : 'Avenir-Heavy', fontWeight: 'bold' }}>{name} | </Title>
+            <Text style={{ fontWeight: "normal", fontFamily: (Platform.OS === 'android') ? 'sans-serif-light' : 'Avenir-Light' }}>{nickName}</Text>
         </>
-        : <Title> {name}</Title>
+        : <Title>{name}</Title>
 
     // TODO: figure out best way to format this based on number of commas
-    const formattedAddress = placeMetAtFormatted_address.substring(0, placeMetAtFormatted_address.indexOf(','))
+    const formattedAddress = (placeMetAtFormatted_address)
+        ? placeMetAtFormatted_address.substring(0, placeMetAtFormatted_address.indexOf(','))
+        : 'You probably met somewhere!'
 
     return (
         <TouchableOpacity style={styles.container} onPress={() => navigation.push('RoseDetail', { roseId: rose.roseId })}>

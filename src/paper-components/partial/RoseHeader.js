@@ -6,7 +6,7 @@ import { MyShadowCard } from '../memo';
 import * as Linking from 'expo-linking'
 
 const RoseHeader = ({ name, picture, homeCity, homeState, homeCountry, isUserContactCard, editing, _setEditing, shareProfile,
-    phoneNumber, email
+    phoneNumber, email// , headerToContainer
 }) => {
 
     // source={{ uri: 'https://picsum.photos/700' }}
