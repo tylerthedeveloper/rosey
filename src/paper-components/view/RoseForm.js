@@ -163,7 +163,6 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
         try {
             if (!isUserContactCard) _setPlaceMet();
             if (addNewRoseRoute && !addRoseAndDisabled) {
-                console.log('abc')
                 // saveOrSubmitPassedDownAction(updatedUser);
                 form_updateFunction({ roseObj: updatedUser, callback: () => form_updateFunction_callback(updatedUser) });
             } else if (isUserNotEdited || !isApiLoading || !isPhoneValid) {
@@ -245,10 +244,10 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
     const [birth_datePicker, setBirth_datePicker] = useState(false);
     const [datemet_Picker, setDatemet_Picker] = useState(false);
 
-    const toggledSelected = (tag) => {
+    const toggledSelected = (tag, color) => {
         // const str = (tag + idx);
         if (!updated_tags.includes(tag)) {
-            setTags([...updated_tags, tag]);
+            setTags([...updated_tags, { tag, color }]);
         } else {
             const filteredTags = updated_tags.filter(tg => tag !== tg);
             setTags(filteredTags);
@@ -256,9 +255,10 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
     }
 
     const _addTag = (newTag) => {
-        addTag(newTag);
+        const tagObj = { tag: newTag, color: Constants.default.COLORS[updated_tags.length % Constants.default.COLORS.length] };
+        addTag(tagObj);
         setNewTag('')
-        setTags([...updated_tags, newTag]);
+        setTags([...updated_tags, tagObj]);
     }
 
     const [newTag, setNewTag] = useState('');
@@ -462,13 +462,13 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
 
                                 <View style={styles.chips}>
                                     {
-                                        contextTags.map((tag, index) =>
+                                        contextTags.map(({ tag, color }, index) =>
                                             (<Chip mode="outlined" style={styles.chip}
-                                                key={tag + index}
+                                                key={tag + index + color}
                                                 icon={'tag'}
                                                 selectedColor={'blue'}
-                                                selected={updated_tags.includes(tag)}
-                                                onPress={() => toggledSelected(tag)}
+                                                selected={updated_tags.findIndex(tagObj => tagObj.tag === tag) !== -1}
+                                                onPress={() => toggledSelected(tag, color)}
                                             >
                                                 {tag}
                                             </Chip>)

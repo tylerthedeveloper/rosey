@@ -10,6 +10,8 @@ const RoseListItem = ({ rose, props }) => {
     const { name, tags, nickName, picture, placeMetAt } = rose;
     const { placeMetAtFormatted_address, placeMetAtName } = placeMetAt || {};
 
+    // console.log(tags)
+
     const titleName = (nickName !== '')
         ? <>
             <Title style={{ fontFamily: (Platform.OS === 'android') ? 'sans-serif-light' : 'Avenir-Heavy', fontWeight: 'bold' }}>{name} | </Title>
@@ -65,11 +67,11 @@ const RoseListItem = ({ rose, props }) => {
                     <View style={styles.chips}>
                         {
                             (tags !== undefined && Array.isArray(tags) && tags.length > 0)
-                                ? tags.map((tag, index) =>
+                                ? tags.map(({ tag, color }, index) =>
                                     (<Chip
                                         key={tag + index}
-                                        style={styles.chip}
-                                        selectedColor={'blue'}
+                                        style={{ ...styles.chip, color: color }}
+                                        selectedColor={color}
                                     >{tag}</Chip>))
                                 : <Paragraph style={{ marginLeft: 10 }}>(Add some tags!)</Paragraph>
                         }

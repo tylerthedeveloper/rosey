@@ -3,14 +3,15 @@ import { StyleSheet, View } from 'react-native';
 import { Button, Chip } from 'react-native-paper';
 import { Context as TagContext } from '../../context/TagContext';
 import { MyHeader, MyTextInput, MyShadowCard } from '../../paper-components/memo';
+import Constants from '../../constants';
 
 const TagScreen = () => {
 
     const { state: { tags }, addTag, deleteTag } = useContext(TagContext);
 
-    const [newTag, setNewTag] = useState('');
+    // const [tagListLength, setTagListLength] = useState(tags.length);
 
-    // TODO: Fix tag
+    const [newTag, setNewTag] = useState('');
 
     return (
         <MyShadowCard inheritedMarginHorizontal={0} inheritedMarginTop={20}>
@@ -18,10 +19,12 @@ const TagScreen = () => {
                 <MyHeader styleProps={{ marginTop: 15, marginBottom: 15 }} > Manage your tags here! </MyHeader>
                 <View style={styles.chips}>
                     {
-                        tags.map((tag, index) =>
-                            (<Chip mode="outlined" style={styles.chip}
+                        tags.map(({ tag, color }, index) =>
+                            (<Chip mode="outlined" style={{ ...styles.chip, color: color }}
                                 icon={'tag'}
                                 key={tag + index}
+                                selectedColor={color}
+                                mode="outlined"
                                 onClose={() => deleteTag(tag)}
                             >
                                 {tag}
@@ -30,7 +33,7 @@ const TagScreen = () => {
                     }
                 </View>
                 <MyTextInput value={newTag} onChangeText={setNewTag} style={{ height: 50, }} inheritedWidth={'80%'} />
-                <Button onPress={() => { addTag(newTag); setNewTag('') }} disabled={!newTag}>
+                <Button onPress={() => { addTag({ tag: newTag, color: Constants.COLORS[tags.length % Constants.COLORS.length] }); setNewTag('') }} disabled={!newTag}>
                     Add Tag
             </Button>
             </View>

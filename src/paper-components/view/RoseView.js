@@ -103,7 +103,8 @@ const RoseView = ({ user, isApiLoading, view_updateFunction, view_updateFunction
             rightFunc: null,
         },
         {
-            value: tags ? ((Array.isArray(tags) && tags.length > 0) ? tags.join(', ') : tags) : '(Add some Tags!)', subtitle: 'tags',
+            value: tags ? ((Array.isArray(tags) && tags.length > 0) ? tags.map(tg => tg.tag).join(', ') : tags) : '(Add some Tags!)', subtitle: 'tags',
+            // value: tags ? ((Array.isArray(tags) && tags.length > 0) ? tags.join(', ') : tags) : '(Add some Tags!)', subtitle: 'tags',
             // value: updated_tags, subtitle: 'Add tags (by commas) ',
             left: "tag",
             rightFunc: null

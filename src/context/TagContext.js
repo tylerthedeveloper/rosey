@@ -59,11 +59,13 @@ const getInitialTags = (dispatch) => async () => {
 
 
 const addTag = (dispatch) => async (tag) => {
+    // console.log('tag', tag)
     try {
         /* -------------------------------------------------------------------------- */
         // API Section here//
         /* -------------------------------------------------------------------------- */
         // FIXME: PULL FROM CURRENT STATE???
+        // await AsyncStorage.removeItem('tags')
         const tags = await AsyncStorage.getItem('tags')
             .then(req => JSON.parse(req));
         const updatedTagList = [...(tags || []), tag];
@@ -85,8 +87,10 @@ const deleteTag = (dispatch) => async (tag) => {
         const tags = await AsyncStorage.getItem('tags')
             .then(req => JSON.parse(req));
         // TODO: Find first?
-        const updatedTagList = tags.filter(tg => tag !== tg);
-        // console.log(updatedTagList);
+        // TODO: FIXME:
+
+        const updatedTagList = tags.filter(tg => tag !== tg.tag);
+        console.log(tag, updatedTagList);
         await AsyncStorage.setItem('tags', JSON.stringify(updatedTagList));
         dispatch({ type: "delete_tag", payload: updatedTagList });
         // callback();
