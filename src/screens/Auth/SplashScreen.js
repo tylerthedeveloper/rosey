@@ -26,7 +26,7 @@ const SplashScreen = ({ navigation }) => {
                 onPress={() => Linking.openURL(privacyUrl).catch((err) => console.error('An error occurred', err))}
             >
                 <Text textBreak="simple" style={styles.link}>
-                      Privacy policy  
+                    Privacy policy
                 </Text>
             </TouchableOpacity>
         </Background >

@@ -7,6 +7,7 @@ const _handleEmptyField = () => alert('Enter data for that field in order to int
 
 const RoseViewField = ({ value, subtitle, left, rightIcon, secondRightIcon, rightFunc, secondRightFunc }) => {
 
+    console.log(subtitle, rightFunc)
     {/* <Card.Title
             title={value}
             subtitle={subtitle}
@@ -114,13 +115,13 @@ const RoseViewField = ({ value, subtitle, left, rightIcon, secondRightIcon, righ
                             </View>
                     }
                 </View>
-                {
+                {/* {
                     (subtitle === "name")
                         ? <View style={{ flex: 1 }}>
                             <IconButton icon={rightIcon} onPress={_onPress} />
                         </View>
                         : null
-                }
+                } */}
             </View>
         </Card.Content>
     </Card.Actions >

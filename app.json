@@ -74,7 +74,7 @@
         "READ_CALENDAR",
         "WRITE_CALENDAR",
         "android.permission.READ_CONTACTS",
-        "android.permission.WRITE_CONTACTS"
+        "WRITE_CONTACTS"
       ],
       "playStoreUrl": "https://play.google.com/store/apps/details?id=com.rozy_app.rozy"
     }

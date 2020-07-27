@@ -1,5 +1,5 @@
 import React from 'react';
-import { ScrollView, StyleSheet, TouchableOpacity, View } from 'react-native';
+import { ScrollView, StyleSheet, TouchableOpacity, View, Alert } from 'react-native';
 import * as Linking from 'expo-linking';
 import useCalendar from '../../hooks/useCalendar';
 import useContacts from '../../hooks/useContacts';
@@ -37,6 +37,22 @@ const RoseView = ({ user, isApiLoading, view_updateFunction, view_updateFunction
             return formattedNumber;
         }
     }
+
+    const alertOnCLick = (fieldTitle, fieldSubtitle, fieldOptionSuccess, func) => {
+        Alert.alert(
+            fieldTitle,
+            fieldSubtitle,
+            [
+                // { text: "Text", onPress: () => Linking.openURL(`sms:9739029054`) },
+                { text: fieldOptionSuccess, onPress: func },
+                {
+                    text: "Cancel",
+                    style: "destructive"
+                },
+            ],
+            { cancelable: true }
+        );
+    }
     // ────────────────────────────────────────────────────────────────────────────────
 
     const viewRows = [
@@ -44,7 +60,9 @@ const RoseView = ({ user, isApiLoading, view_updateFunction, view_updateFunction
             value: name, subtitle: 'name',
             left: "account",
             rightIcon: "account-plus",
-            rightFunc: () => { createContact(user) },
+            // TODO: when fixing add to contacts
+            rightFunc: null // () => { alertOnCLick('Date Met', 'Do you want to add this date to Calendar?', 'Add to Calendar', () => createEvent(dateMet, 'date_met', name, placeMetAtFormatted_address)) },
+            // alertOnCLick('Date Met', 'Do you want to add this date to Calendar?', 'Add to Calendar', () => createEvent(dateMet, 'date_met', name, placeMetAtFormatted_address))
         },
         {
             value: nickName, subtitle: 'nickname',
@@ -103,13 +121,13 @@ const RoseView = ({ user, isApiLoading, view_updateFunction, view_updateFunction
             value: dateMet ? (moment(dateMet).format('MMM DD, YYYY')) : '(Enter Date met!)', subtitle: 'date met',
             left: "calendar",
             rightIcon: "calendar-plus",
-            rightFunc: () => { if (dateMet) createEvent(dateMet, 'date_met', name, placeMetAtFormatted_address) },
+            rightFunc: () => { if (dateMet) alertOnCLick('Date Met', 'Do you want to add this date to Calendar?', 'Add to Calendar', () => createEvent(dateMet, 'date_met', name, placeMetAtFormatted_address)) },
         },
         {
             value: birthday ? (moment(birthday).format('MMM DD, YYYY')) : '(Enter Birthday!)', subtitle: 'birthday',
             left: "calendar",
             rightIcon: "calendar-plus",
-            rightFunc: () => { if (birthday) createEvent(birthday, 'birthday', name, placeMetAtFormatted_address) },
+            rightFunc: () => { if (birthday) alertOnCLick('Birthday', 'Do you want to add this date to Calendar?', 'Add to Calendar', () => createEvent(birthday, 'birthday', name, placeMetAtFormatted_address)) },
         },
         {
             value: homeFormatted_address, subtitle: 'home location',

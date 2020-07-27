@@ -316,15 +316,15 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
             case 'facebook':
             case 'linkedin':
             case 'medium':
-                return `Enter username for ${type}`;
+                return `${type} username`;
             case 'instagram':
             case 'snapchat':
             case 'twitch':
             case 'twitter':
             case 'venmo':
-                return `Enter handle for ${type}`;
+                return `${type} handle`;
             case 'whatsapp':
-                return 'Add Intnl number for whatsapp';
+                return 'Include Country code';
             default:
                 return `Enter value for ${type}`;
         }
@@ -411,7 +411,7 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                                     autoCompleteType={"off"}
                                     autoCorrect={false}
                                     autoCapitalize={"none"}
-                                    value={eval(`updated_${currentSocialEntry.type}`)}
+                                    value={(currentSocialEntry.type !== 'whatsapp') ? eval(`updated_${currentSocialEntry.type}`) : '+1'}
                                 />
                             </>
                             : null
