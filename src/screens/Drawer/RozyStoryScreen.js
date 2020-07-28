@@ -26,7 +26,7 @@ const RozyStoryScreen = () => {
                 </Text>
                 </ScrollView>
                 <View >
-                    <MyButton onPress={() => WebBrowser.openBrowserAsync(Constants.rozyStoryUrl)} mode="outlined" icon={'book'}>
+                    <MyButton onPress={() => WebBrowser.openBrowserAsync(Constants.linksDictionary.rozy_blog_url)} mode="outlined" icon={'book'}>
                         Check out the full story!
                     </MyButton>
                 </View>
