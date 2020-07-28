@@ -72,14 +72,14 @@ const RoseListScreen = ({ navigation }) => {
                             contentContainerStyle={{
                                 justifyContent: 'center',
                                 height: 35,
-                                flex: 1
+                                // flex: 1
                             }}
                         >
                             {
-                                tags.map((tag, index) =>
+                                tags.map(({tag, color}, index) =>
                                     <Chip
                                         key={tag + index}
-                                        selectedColor={'blue'}
+                                        selectedColor={color}
                                         style={styles.tag}
                                         onPress={() => toggledSelected(tag)}
                                         selected={selectedTags.includes(tag)}

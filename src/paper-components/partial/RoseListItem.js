@@ -78,7 +78,7 @@ const RoseListItem = ({ rose, props }) => {
                     </View>
                 </Card.Actions>
             </MyShadowCard>
-        </TouchableOpacity >
+        </TouchableOpacity>
     )
 }
 
@@ -94,7 +94,6 @@ const styles = StyleSheet.create({
         flexWrap: 'wrap',
         flex: 1,
         flexGrow: 1,
-        marginTop: 10,
     },
     chip: {
         marginHorizontal: 5,

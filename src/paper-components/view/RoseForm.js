@@ -245,11 +245,10 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
     const [datemet_Picker, setDatemet_Picker] = useState(false);
 
     const toggledSelected = (tag, color) => {
-        // const str = (tag + idx);
-        if (!updated_tags.includes(tag)) {
+        if (updated_tags.findIndex(tg => tg.tag === tag) === -1) {
             setTags([...updated_tags, { tag, color }]);
         } else {
-            const filteredTags = updated_tags.filter(tg => tag !== tg);
+            const filteredTags = updated_tags.filter(tg => tg.tag !== tag);
             setTags(filteredTags);
         }
     }

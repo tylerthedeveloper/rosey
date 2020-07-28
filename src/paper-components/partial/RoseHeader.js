@@ -139,7 +139,7 @@ const RoseHeader = ({ name, picture, homeCity, homeState, homeCountry, isUserCon
                     />
             }
             {
-                (isUserContactCard) &&
+                (isUserContactCard && !editing) &&
                 <IconButton
                     icon="share"
                     size={20}

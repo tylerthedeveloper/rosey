@@ -49,6 +49,8 @@ const styles = StyleSheet.create({
         height: '80%',
     },
     story: {
+        marginTop: 5,
+        paddingTop: 5,
         flex: 1,
         marginTop: 20,
         marginHorizontal: 20,
