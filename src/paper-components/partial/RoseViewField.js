@@ -109,7 +109,7 @@ const RoseViewField = ({ value, subtitle, left, rightIcon, secondRightIcon, righ
                                         </View>
                                 }
                             </View>
-                            : <View style={{ marginTop: 15, marginLeft: 8 }}>
+                            : <View style={{ marginTop: 15, marginLeft: 10 }}>
                                 <Paragraph>{subtitle}</Paragraph>
                             </View>
                     }

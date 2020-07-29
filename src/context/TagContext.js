@@ -90,7 +90,6 @@ const deleteTag = (dispatch) => async (tag) => {
         // TODO: FIXME:
 
         const updatedTagList = tags.filter(tg => tag !== tg.tag);
-        console.log(tag, updatedTagList);
         await AsyncStorage.setItem('tags', JSON.stringify(updatedTagList));
         dispatch({ type: "delete_tag", payload: updatedTagList });
         // callback();

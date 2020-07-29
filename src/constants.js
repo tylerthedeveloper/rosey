@@ -87,10 +87,10 @@ const _areObjectsEqual = (a, b, ignoreArray) => {
 
 const COLORS = [
     Colors.amber300,
-    Colors.blue400,
-    Colors.cyan100,
+    Colors.blue500,
+    Colors.cyan500,
     Colors.deepOrange700,
-    Colors.lightGreen200,
+    Colors.lightGreen500,
     Colors.lightBlue800,
     Colors.pink900,
     Colors.purple400,
@@ -98,7 +98,7 @@ const COLORS = [
     Colors.tealA400,
     Colors.amber900,
     Colors.blue900,
-    Colors.deepOrange100,
+    Colors.deepOrange300,
     Colors.lightGreen900,
     Colors.pinkA700,
 ]
