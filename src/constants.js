@@ -206,7 +206,7 @@ export default {
     _shareProfile,
     isObjectEmpty,
     COLORS,
+    my_personal_card,
     _provideFeedbackFunction,
     linksDictionary: linksDictionary,
-    // rozyStoryUrl: linksDictionary.rozy_blog_url
 };
