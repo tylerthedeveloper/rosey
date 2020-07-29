@@ -24,13 +24,13 @@
       "appStoreUrl": "https://apps.apple.com/us/app/rozy/id1511264722",
       "supportsTablet": true,
       "bundleIdentifier": "com.rosey-app.rosey",
-      "buildNumber": "1.5.5",
+      "buildNumber": "1.5.6",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": "no",
-        "NSLocationWhenInUseUsageDescription": "Allow Rozy to use your location so you can easily add location to your roses",
+        "NSLocationWhenInUseUsageDescription": "Allow Rozy to use your location so you can easily add location to your roses to remember where you met them",
         "NSCalendarsUsageDescription": "Allow Rozy to interact with your calendar so you can save special events",
         "NSRemindersUsageDescription": "Allow Rozy to interact with your reminders so you can recall special events",
-        "NSContactsUsageDescription": "Allow Rozy to interact with your contacts so you can import and export your contacts for a more seamless app experience.",
+        "NSContactsUsageDescription": "Allow Rozy to integrate your contacts so you can further personalize and prirotize them in a rose",
         "NSCameraUsageDescription": "Allow Rozy to use the camera to scan barcodes so you can quickly add other's roses!",
         "LSApplicationQueriesSchemes": [
           "fb",
