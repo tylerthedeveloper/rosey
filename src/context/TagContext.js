@@ -3,6 +3,7 @@
 import createDataContext from './createDataContext';
 import { AsyncStorage } from 'react-native';
 //import tagyApi from '../api/tagyApi';
+import Constants from '../constants';
 
 // Reducer
 const TagReducer = (state, action) => {
@@ -49,7 +50,7 @@ const getInitialTags = (dispatch) => async () => {
             dispatch({ type: "get_initial_tags", payload: [...(tags || [])] });
         } else {
             // console.log('there are no tags');
-            dispatch({ type: "get_initial_tags", payload: [] });
+            dispatch({ type: "get_initial_tags", payload: [{ tag: 'Friend', color: Constants.COLORS[0] }] });
         }
     } catch (err) {
         console.log(err.message);

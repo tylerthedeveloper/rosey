@@ -86,6 +86,7 @@ const _areObjectsEqual = (a, b, ignoreArray) => {
 }
 
 const COLORS = [
+    Colors.red700,
     Colors.amber300,
     Colors.blue500,
     Colors.cyan500,
@@ -198,7 +199,7 @@ const my_personal_card = {
     personalSite: '',
     phoneNumber: '',
     picture: '',
-    tags: [{ tag: 'Friend', color: Colors.red500 }],
+    tags: [{ tag: 'Friend', color: Colors[0] }],
     work: 'Developer, PM',
     roseId: shortid.generate()
 };
