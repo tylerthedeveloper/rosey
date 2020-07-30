@@ -16,7 +16,7 @@ export default () => {
 
             if (Platform.OS === 'ios') {
                 const containerId = await Contacts.getDefaultContainerIdAsync();
-                console.log('containerId', containerId)
+                // console.log('containerId', containerId)
                 setContainerID(containerId);
                 // AsyncStorage.setItem('ios_contacts_containerID', containerId)
             }

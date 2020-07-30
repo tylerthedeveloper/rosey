@@ -169,7 +169,7 @@ export default () => {
       },
       // TODO: what about if token exists and user doesnt?
       tryLocalSignin: async () => {
-        console.log('tryLocalSignin');
+        // console.log('tryLocalSignin');
         // await AsyncStorage.removeItem('user');
         // await AsyncStorage.removeItem('token');
         // await AsyncStorage.removeItem('roses');

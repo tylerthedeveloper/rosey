@@ -199,7 +199,7 @@ const my_personal_card = {
     personalSite: '',
     phoneNumber: '',
     picture: '',
-    tags: [{ tag: 'Friend', color: Colors[0] }],
+    tags: [{ tag: 'Friend', color: COLORS[0] }],
     work: 'Developer, PM',
     roseId: shortid.generate()
 };

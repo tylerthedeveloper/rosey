@@ -24,7 +24,7 @@
       "appStoreUrl": "https://apps.apple.com/us/app/rozy/id1511264722",
       "supportsTablet": true,
       "bundleIdentifier": "com.rosey-app.rosey",
-      "buildNumber": "1.5.9",
+      "buildNumber": "1.6.0",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": "no",
         "NSLocationWhenInUseUsageDescription": "Allow Rozy to use your location so you can easily add location to your roses to remember where you met them",
@@ -47,7 +47,7 @@
     },
     "android": {
       "package": "com.rozy_app.rozy",
-      "versionCode": 25,
+      "versionCode": 26,
       "config": {
         "googleMaps": {
           "apiKey": "AIzaSyA5fMKf-ThAyziy-jqvTl287mPmQrXthzw"
