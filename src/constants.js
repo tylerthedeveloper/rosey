@@ -86,6 +86,7 @@ const _areObjectsEqual = (a, b, ignoreArray) => {
 }
 
 const COLORS = [
+    Colors.red700,
     Colors.amber300,
     Colors.blue500,
     Colors.cyan500,
@@ -114,13 +115,17 @@ const isObjectEmpty = (obj) => {
 const _provideFeedbackFunction = async () => {
     try {
         if (Platform.OS === "ios") {
-            if (StoreReview.isAvailableAsync()) {
-                StoreReview.requestReview();
-                await AsyncStorage.setItem('didIReviewApp', 'true');
-            }
-            else {
-                alert("It looks like your device doesn't support this or you already left a review, thank you! (:")
-            }
+            // if (StoreReview.isAvailableAsync()) {
+            //     StoreReview.requestReview();
+            //     await AsyncStorage.setItem('didIReviewApp', 'true');
+            // }
+            // else {
+            //     alert("It looks like your device doesn't support this or you already left a review, thank you! (:")
+            // }
+            StoreReview.requestReview();
+            await AsyncStorage.setItem('didIReviewApp', 'true');
+            // new Promise((res, rej) => setTimeout(() => StoreReview.requestReview(), 500))
+            //     .then(async res => await AsyncStorage.setItem('didIReviewApp', 'true'))
         } else {
             await AsyncStorage.setItem('didIReviewApp', 'true');
             WebBrowser.openBrowserAsync(linksDictionary.play_store_url);
@@ -194,7 +199,7 @@ const my_personal_card = {
     personalSite: '',
     phoneNumber: '',
     picture: '',
-    tags: [{ tag: 'Friend', color: Colors.red500 }],
+    tags: [{ tag: 'Friend', color: Colors[0] }],
     work: 'Developer, PM',
     roseId: shortid.generate()
 };
