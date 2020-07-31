@@ -50,7 +50,9 @@ const getInitialTags = (dispatch) => async () => {
             dispatch({ type: "get_initial_tags", payload: [...(tags || [])] });
         } else {
             // console.log('there are no tags');
-            dispatch({ type: "get_initial_tags", payload: [{ tag: 'Friend', color: Constants.COLORS[0] }] });
+            const tags = [{ tag: 'Friend', color: Constants.COLORS[0] }];
+            await AsyncStorage.setItem('tags', JSON.stringify(tags));
+            dispatch({ type: "get_initial_tags", payload: tags });
         }
     } catch (err) {
         console.log(err.message);
