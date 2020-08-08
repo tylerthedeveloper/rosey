@@ -7,13 +7,12 @@
       "ios",
       "android"
     ],
-    "version": "1.5.9",
+    "version": "1.6.3",
     "orientation": "portrait",
     "icon": "./assets/app-icon.png",
     "splash": {
-      "image": "./assets/app-icon.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#FFF"
+      "image": "./assets/splash_rozy.png",
+      "resizeMode": "cover"
     },
     "updates": {
       "fallbackToCacheTimeout": 0
@@ -25,13 +24,13 @@
       "appStoreUrl": "https://apps.apple.com/us/app/rozy/id1511264722",
       "supportsTablet": true,
       "bundleIdentifier": "com.rosey-app.rosey",
-      "buildNumber": "1.4.4",
+      "buildNumber": "1.6.1",
       "infoPlist": {
         "ITSAppUsesNonExemptEncryption": "no",
-        "NSLocationWhenInUseUsageDescription": "Allow Rozy to use your location so you can easily add location to your roses",
+        "NSLocationWhenInUseUsageDescription": "Allow Rozy to use your location so you can easily add location to your roses to remember where you met them",
         "NSCalendarsUsageDescription": "Allow Rozy to interact with your calendar so you can save special events",
         "NSRemindersUsageDescription": "Allow Rozy to interact with your reminders so you can recall special events",
-        "NSContactsUsageDescription": "Allow Rozy to interact with your contacts so you can import and export your contacts for a more seamless app experience.",
+        "NSContactsUsageDescription": "Allow Rozy to import your contacts (locally) so you can further personalize and prioritize them in a rose",
         "NSCameraUsageDescription": "Allow Rozy to use the camera to scan barcodes so you can quickly add other's roses!",
         "LSApplicationQueriesSchemes": [
           "fb",
@@ -39,14 +38,16 @@
           "instagram",
           "medium",
           "snapchat",
+          "twitch",
           "twitter",
+          "venmo",
           "whatsapp"
         ]
       }
     },
     "android": {
       "package": "com.rozy_app.rozy",
-      "versionCode": 17,
+      "versionCode": 26,
       "config": {
         "googleMaps": {
           "apiKey": "AIzaSyA5fMKf-ThAyziy-jqvTl287mPmQrXthzw"
@@ -73,7 +74,7 @@
         "READ_CALENDAR",
         "WRITE_CALENDAR",
         "android.permission.READ_CONTACTS",
-        "android.permission.WRITE_CONTACTS"
+        "WRITE_CONTACTS"
       ],
       "playStoreUrl": "https://play.google.com/store/apps/details?id=com.rozy_app.rozy"
     }

@@ -3,7 +3,7 @@ import { createStackNavigator } from '@react-navigation/stack';
 import * as Linking from 'expo-linking'
 import * as Location from 'expo-location';
 import React, { useEffect, useMemo, useReducer } from 'react';
-import { Alert, AsyncStorage } from 'react-native';
+import { Alert, AsyncStorage, StatusBar } from 'react-native';
 import ErrorBoundary from 'react-native-error-boundary';
 import { Provider as PaperProvider } from 'react-native-paper';
 // Screens
@@ -20,6 +20,8 @@ import { Provider as ContactProvider } from './src/context/ContactsContext';
 import { Provider as RoseProvider } from './src/context/RoseContext';
 import { Provider as TagProvider } from './src/context/TagContext';
 import theme from './src/core/theme';
+
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 // const prefix = Linking.makeUrl('/');
 
@@ -167,7 +169,7 @@ export default () => {
       },
       // TODO: what about if token exists and user doesnt?
       tryLocalSignin: async () => {
-        console.log('tryLocalSignin');
+        // console.log('tryLocalSignin');
         // await AsyncStorage.removeItem('user');
         // await AsyncStorage.removeItem('token');
         // await AsyncStorage.removeItem('roses');
@@ -255,23 +257,27 @@ export default () => {
               <PaperProvider theme={theme}>
                 {/* https://reactnavigation.org/docs/navigating-without-navigation-prop/ */}
                 {/* <App ref={(navigator) => setNavigator(navigator)} /> */}
-                <NavigationContainer ref={navigationRef} >
-                  <AppStack.Navigator initialRouteName="ResolveAuth" headerMode='none'>
-                    {
-                      state.isLoading ?
-                        <AppStack.Screen name="ResolveAuth" component={ResolveAuthScreen}
-                          options={{ headerTransparent: true, headerTitle: null }}
-                        />
-                        // FIXME: work without TOKEN!
-                        : (state.token === null)
-                          ? <AppStack.Screen name="authStack" component={Auth}
-                            headerMode="none"
+                <SafeAreaProvider>
+                  <NavigationContainer ref={navigationRef} >
+                    <AppStack.Navigator initialRouteName="ResolveAuth" headerMode='none'>
+                      {
+                        state.isLoading ?
+                          <AppStack.Screen name="ResolveAuth" component={ResolveAuthScreen}
                             options={{ headerTransparent: true, headerTitle: null }}
                           />
-                          : <AppStack.Screen name="mainFlow" component={App} />
-                    }
-                  </AppStack.Navigator>
-                </NavigationContainer>
+                          // FIXME: work without TOKEN!
+                          : (state.token === null)
+                            ? <AppStack.Screen name="authStack" component={Auth}
+                              headerMode="none"
+                              options={{ headerTransparent: true, headerTitle: null }}
+                            />
+                            : <AppStack.Screen name="mainFlow" component={App}
+
+                            />
+                      }
+                    </AppStack.Navigator>
+                  </NavigationContainer>
+                </SafeAreaProvider>
               </PaperProvider>
             </TagProvider>
           </ContactProvider>

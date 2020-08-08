@@ -12,6 +12,7 @@ import { AddRoseScreen, RoseDetailScreen } from '../screens';
 import { ContactCardScreen, ContactsScreen, FeedbackScreen, QRCodeScreen, RozyStoryScreen, TagScreen } from '../screens/Drawer';
 import { BottomTabNavigator } from './Tabs';
 import SharedResolverScreen from '../screens/SharedResolverScreen';
+import { Constants } from "expo";
 
 import { Context as ContactsContext } from '../context/ContactsContext';
 
@@ -60,41 +61,61 @@ export const RootStackNavigator = () => {
                                 ? options.title
                                 : scene.route.name;
                     return (
-                        <Appbar.Header theme={{ colors: { primary: theme.colors.primary } }}>
-                            {previous ? (
-                                <Appbar.BackAction
-                                    onPress={navigation.goBack}
-                                    color={'white'}
-                                />
-                            ) : (
-                                    <TouchableOpacity
-                                        onPress={() => {
-                                            navigation.openDrawer();
-                                        }}
-                                    >
-                                        {
-                                            (initials & !Platform.isPad)
-                                                ? <Avatar.Text size={40} label={initials}
-                                                    style={{ borderColor: 'white', borderWidth: 1 }}
-                                                />
-                                                : <Avatar.Image
-                                                    source={
-                                                        require('../../assets/app-icon.png')
-                                                    }
-                                                    size={50}
-                                                />
-                                        }
-                                    </TouchableOpacity>
-                                )}
-                            <Appbar.Content
+                        <Appbar.Header theme={{ colors: { primary: theme.colors.primary } }}
+                        // statusBarHeight={(Platform.OS === 'ios') ? Expo.Constants.statusBarHeight + 3 : 0}
+                            statusBarHeight={Expo.Constants.statusBarHeight + 3}
+                        >
+                            {
+                                previous ? (
+                                    <Appbar.BackAction
+                                        onPress={navigation.goBack}
+                                        color={'white'}
+                                    />
+                                ) : (
+                                        <TouchableOpacity
+                                            onPress={() => {
+                                                navigation.openDrawer();
+                                            }}
+                                            style={{
+                                                marginLeft: 10, marginBottom: 10, borderColor: 'white', borderBottomLeftRadius: 30,
+                                                borderBottomRightRadius: 30,
+                                                borderTopRightRadius: 30,
+                                                borderTopLeftRadius: 30,
+                                                borderWidth: 1
+                                            }}
+                                        >
+                                            {
+                                                (initials & !Platform.isPad)
+                                                    ? <Avatar.Text size={40} label={initials}
+                                                        style={{ borderColor: 'white', borderWidth: 1 }}
+                                                    />
+                                                    : <Avatar.Image
+                                                        source={
+                                                            require('../../assets/app-icon.png')
+                                                        }
+                                                        style={{
+                                                            // borderColor: 'white', borderBottomLeftRadius: 30,
+                                                            // borderBottomRightRadius: 30,
+                                                            // borderTopRightRadius: 30,
+                                                            // borderTopLeftRadius: 30,
+                                                            // borderWidth: 1
+                                                        }}
+                                                        size={50}
+                                                    />
+                                            }
+                                        </TouchableOpacity>
+                                    )
+                            }
+                            < Appbar.Content
                                 title={
                                     previous ? title :
                                         (Platform.OS === 'ios')
                                             ? <Image source={require('../../assets/rozy-logo.png')} style={{ height: 45, width: 75 }} />
                                             : <Text style={{ fontFamily: 'monospace' }}> Rozy </Text>
                                 }
+
                             />
-                        </Appbar.Header>
+                        </Appbar.Header >
                     );
                 }
             }}
@@ -156,6 +177,6 @@ export const RootStackNavigator = () => {
                 component={FeedbackScreen}
                 options={{ headerTitle: 'Feedback' }}
             />
-        </RootStack.Navigator>
+        </RootStack.Navigator >
     )
 };

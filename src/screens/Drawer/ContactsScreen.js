@@ -5,7 +5,7 @@
 import React, { useContext, useState } from 'react';
 import { FlatList, StyleSheet, View } from 'react-native';
 import { ListItem } from 'react-native-elements';
-import { Button } from 'react-native-paper';
+import { Button, ActivityIndicator, Snackbar } from 'react-native-paper';
 import { Context as ContactsContext } from '../../context/ContactsContext';
 import { Context as RoseContext } from '../../context/RoseContext';
 import { MyHeader } from '../../paper-components/memo';
@@ -16,14 +16,18 @@ const ContactsScreen = () => {
     const { batch_addRoses } = useContext(RoseContext);
 
     const [contactsSelected, setContactsSelected] = useState({});
+    const [isLoading, setIsLoading] = useState(false);
     const [_allContactList, _set_allContactList] = useState(_contacts);
 
     const selectAllContacts = () => {
+        setIsLoading(true);
         const _dict = Object.assign({}, ...Object.keys(_allContactList).map((contact) => {
             const ct = _allContactList[contact];
             return { [ct.id]: { ...ct, isImported: true } };
         }));
+        setContactsSelected(_dict);
         _set_allContactList(_dict);
+        setIsLoading(false);
     }
 
     const _selectContact = (item) => {
@@ -56,9 +60,10 @@ const ContactsScreen = () => {
         }));
         await batch_addRoses({ contactList, callback: () => alert(`${contactList.length} Contacts added successfully`) });
         await updateImportedContacts(updatedImportedContactIDs);
+        // onToggleSnackBar();
+        // setTimeout(() => setVisible(false), 2000)
         setContactsSelected([]);
     }
-
 
     //     VirtualizedList: You have a large list that is slow to update - make sure your renderItem function renders components that 
     // follow React performance best practices like PureComponent, shouldComponentUpdate, etc. Object {
@@ -92,11 +97,15 @@ const ContactsScreen = () => {
         // const textB = (_allContactList[b]['name'] !== undefined && _allContactList[b]['name'] !== '') ? _allContactList[b]['name'].toUpperCase() : '';
         const textA = _allContactList[a]['name'].toUpperCase();
         const textB = _allContactList[b]['name'].toUpperCase();
-
         return (textA < textB) ? -1 : (textA > textB) ? 1 : 0;
 
     });
-    // _sortedKeys.map(k => console.log(_allContactList[k]['name']));
+
+    // const [visible, setVisible] = React.useState(false);
+
+    // const onToggleSnackBar = () => setVisible(!visible);
+
+    // const onDismissSnackBar = () => setVisible(false);
 
     return (
         <View style={styles.container}>
@@ -105,6 +114,9 @@ const ContactsScreen = () => {
             >
                 Select all Contacts
             </Button>
+            {
+                isLoading && <ActivityIndicator />
+            }
             <Button onPress={() => { _onPressImportContacts() }}
                 style={{ marginBottom: 10 }}
                 disabled={Object.keys(contactsSelected).length === 0}
@@ -116,6 +128,17 @@ const ContactsScreen = () => {
                 keyExtractor={(id) => (id)}
                 renderItem={({ item }) => _renderItem(item)}
             />
+            {/* <Snackbar
+                visible={visible}
+                onDismiss={onDismissSnackBar}
+                action={{
+                    label: 'Close',
+                    onPress: () => {
+                        setVisible(false);
+                    },
+                }}>
+                Try to add more contacts!
+            </Snackbar> */}
         </View>
     )
 }

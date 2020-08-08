@@ -2,11 +2,12 @@ import React, { memo } from 'react';
 import { StyleSheet, Text } from 'react-native';
 import { theme } from '../../core/theme';
 
-const Header = ({ children }) => (
-    <Text style={styles.header} textBreakStrategy="simple">
+const MyHeader = ({ children, styleProps }) => {
+    return (<Text style={{ ...styles.header, ...styleProps }} textBreakStrategy="simple">
         {children}
     </Text>
-);
+    )
+}
 
 const styles = StyleSheet.create({
     header: {
@@ -19,4 +20,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default memo(Header);
+export default memo(MyHeader);

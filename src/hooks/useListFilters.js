@@ -5,6 +5,8 @@ export default () => {
 
     const { state: { roses }, fetchAllRoses } = useContext(RoseContext);
 
+    // roses.map(rose => console.log(rose.name, rose.notes))
+
     const [filteredRoses, setFilteredRoses] = useState([...(roses || [])]);
 
     // FIXME: This is just to fill cache!
@@ -17,7 +19,6 @@ export default () => {
     const [selectedTags, setSelectedTags] = useState([]);
 
     const toggledSelected = (tag, idx) => {
-        // const str = (tag + idx);
         if (!selectedTags.includes(tag)) {
             setSelectedTags([...selectedTags, tag]);
             filterItems(tag, 'tag', [...selectedTags, tag]);
@@ -29,10 +30,11 @@ export default () => {
     }
 
     const filterItems = (filterValue, filterType, filteredTags) => {
-        // TODO: title CASE?
         if (filterType && filterType == 'tag') {
             const sortedRoses = roses.filter(rose => 
-                filteredTags.every(v => rose.tags.includes(v)));
+                filteredTags.every(v => {
+                    return rose.tags.some(tagObj => tagObj.tag === filterValue)
+                }));
             setFilteredRoses(sortedRoses);
         } else {
             setFilterToggle(false);
