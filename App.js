@@ -23,6 +23,8 @@ import theme from './src/core/theme';
 
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
+import firebase from 'firebase';
+
 // const prefix = Linking.makeUrl('/');
 
 export default () => {
@@ -100,14 +102,14 @@ export default () => {
       case 'clear_error_message':
         return { ...state, errorMessage: '' };
       case 'signout': // TODO: User null??? user: null
-        return { ...state, errorMessage: '', token: null, isLoading: false };
+        return { ...state, errorMessage: '', token: null, isLoading: false, authUser: null };
       case 'need_to_signin':
         return { ...state, isLoading: false };
       default:
         return state;
     }
   },
-    { isLoading: true, token: null, isApiLoading: false, errorMessage: '', user: {} }
+    { isLoading: true, token: null, isApiLoading: false, errorMessage: '', user: {}, authUser: null }
   );
 
   const authContext = useMemo(() => {
@@ -151,6 +153,19 @@ export default () => {
           dispatch({ type: 'add_error', payload: 'Something went wrong with sign in, please check your spelling and try again' });
         }
       },
+      signinWithFirebase: async ({ email, uid }) => {
+        try {
+          // console.log('_user', email, uid)
+          const _user = {
+            email, uid
+          }
+          await AsyncStorage.setItem('authUser', JSON.stringify(_user));
+          dispatch({ type: 'signin', payload: { authUser: _user, user: _user } });
+        } catch (err) {
+          console.log(err.message)
+          dispatch({ type: 'add_error', payload: 'Something went wrong with sign in, please check your spelling and try again' });
+        }
+      },
       updateContactCard: async ({ roseObj, callback }) => {
         try {
           // console.log('updateContactCard')
@@ -169,25 +184,17 @@ export default () => {
       },
       // TODO: what about if token exists and user doesnt?
       tryLocalSignin: async () => {
-        // console.log('tryLocalSignin');
-        // await AsyncStorage.removeItem('user');
-        // await AsyncStorage.removeItem('token');
-        // await AsyncStorage.removeItem('roses');
         try {
-          /* -------------------------------------------------------------------------- */
-          const storageArr = await AsyncStorage.multiGet(['token', 'user']);
-          if (storageArr) {
-            const token = storageArr[0][1];
-            const userObj = storageArr[1][1];
-            // FIXME: will this fail if user never flushed to data cache?
-            if (token !== null && userObj !== null) {
-              // console.log('token and user');
-              dispatch({ type: 'signin', payload: { token, user: JSON.parse(userObj) } });
+          firebase.auth().onAuthStateChanged(async user => {
+            if (user) {
+              const { email, uid } = user;
+              const _user = { email, uid };
+              await AsyncStorage.setItem('authUser', JSON.stringify(_user));
+              dispatch({ type: 'signin', payload: { authUser: _user, user: _user } });
             } else {
-              // console.log('THER IS NO token and user');
               dispatch({ type: 'need_to_signin' });
             }
-          }
+          });
         } catch (err) {
           console.log(err)
           dispatch({ type: 'add_error', payload: 'Something went wrong with sign in' });
@@ -200,10 +207,11 @@ export default () => {
         // console.log('signout')
         try {
           /* -------------------------------------------------------------------------- */
-          await AsyncStorage.removeItem('token'); // FIXME: And user? maybe this is when i should definitely refetch...?
-          // await AsyncStorage.multiRemove(['token', 'user']);
+          // await AsyncStorage.removeItem('token'); // FIXME: And user? maybe this is when i should definitely refetch...?
+          await AsyncStorage.removeItem('authUser'); // FIXME: And user? maybe this is when i should definitely refetch...?
           /* -------------------------------------------------------------------------- */
           // await AsyncStorage.removeItem('user');
+          firebase.auth().signOut();
           dispatch({ type: 'signout' });
         } catch (e) {
           console.log(e.message);
@@ -266,14 +274,12 @@ export default () => {
                             options={{ headerTransparent: true, headerTitle: null }}
                           />
                           // FIXME: work without TOKEN!
-                          : (state.token === null)
+                          : (state.authUser === null)
                             ? <AppStack.Screen name="authStack" component={Auth}
                               headerMode="none"
                               options={{ headerTransparent: true, headerTitle: null }}
                             />
-                            : <AppStack.Screen name="mainFlow" component={App}
-
-                            />
+                            : <AppStack.Screen name="mainFlow" component={App} />
                       }
                     </AppStack.Navigator>
                   </NavigationContainer>

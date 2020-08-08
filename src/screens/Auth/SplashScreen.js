@@ -12,6 +12,24 @@ const SplashScreen = ({ navigation }) => {
             <Text style={styles.text}> Never forget a connection, no matter when, no matter where</Text>
             <MyButton
                 mode="contained"
+                onPress={() => navigation.navigate('PhoneAndEmailStack')}
+            >
+                Continue with Phone / email
+            </MyButton>
+            <MyButton
+                mode="contained"
+                onPress={() => navigation.navigate('PhoneSignup')}
+            >
+                Continue with Facebook
+            </MyButton>
+            <MyButton
+                mode="contained"
+                onPress={() => navigation.navigate('PhoneSignup')}
+            >
+                Continue with Google
+            </MyButton>
+            {/* <MyButton
+                mode="contained"
                 onPress={() => navigation.navigate('Signup')}
             >
                 Register
@@ -21,7 +39,7 @@ const SplashScreen = ({ navigation }) => {
                 onPress={() => navigation.navigate('Signin')}
             >
                 Login
-            </MyButton>
+            </MyButton> */}
             <TouchableOpacity
                 onPress={() => Linking.openURL(privacyUrl).catch((err) => console.error('An error occurred', err))}
             >
