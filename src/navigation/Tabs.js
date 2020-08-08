@@ -2,7 +2,9 @@
 /*                                 Tab Section                                */
 /* -------------------------------------------------------------------------- */
 import React, { useState } from 'react';
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+// import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
+
 import MapScreen from '../screens//Tabs/MapScreen';
 import { FontAwesome } from '@expo/vector-icons';
 import { Portal, FAB } from 'react-native-paper';
@@ -12,7 +14,7 @@ import { theme } from '../core/theme';
 import { useSafeArea } from 'react-native-safe-area-context';
 //import { Dimensions } from 'react-native';
 
-const BottomTabs = createBottomTabNavigator();
+const BottomTabs = createMaterialBottomTabNavigator();
 
 export const BottomTabNavigator = (props) => {
 
@@ -29,7 +31,7 @@ export const BottomTabNavigator = (props) => {
     let fabIcon = 'account-plus';
     let fabActions = [];
     let onStateChange = () => null;
-    
+
     switch (routeName) {
         case 'RoseListStack':
             fabIcon = 'plus';
@@ -67,6 +69,9 @@ export const BottomTabNavigator = (props) => {
             <BottomTabs.Navigator backBehavior="order" initialRouteName="RoseListStack"
                 tabBarOptions={{}}
                 screenOptions={{}}
+                activeColor={"white"}
+                inactiveColor={'#b284be'}
+                barStyle={{ backgroundColor: theme.colors.primary }}
             >
                 <BottomTabs.Screen name="Map"
                     // TODO:
@@ -75,6 +80,7 @@ export const BottomTabNavigator = (props) => {
                         tabBarIcon: ({ color }) => (
                             <FontAwesome
                                 name="map"
+                                color={color}
                                 size={24}
                             />)
                     }}
@@ -94,6 +100,7 @@ export const BottomTabNavigator = (props) => {
                             <FontAwesome
                                 name="list"
                                 size={24}
+                                color={color}
                             />)
                     }} />
             </BottomTabs.Navigator>

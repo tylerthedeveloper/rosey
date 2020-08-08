@@ -17,11 +17,14 @@ export default () => {
 
     Geocoder.init(GOOGLE_API_KEY);
 
+    const [locationStatus, setLocationStatus] = useState(false);
+
     const checkForLocation = async () => {
         const { status } = await Location.requestPermissionsAsync();
+        // console.log(status);
+        setLocationStatus(true);
         if (status !== 'granted') {
             // FIXME: need to ask again?...
-            alert('Permission to access location was denied')
         } else {
             const location = await Location.getCurrentPositionAsync({});
             // const promise = new Promise((res, rej) => {
@@ -38,7 +41,7 @@ export default () => {
 
     useEffect(() => {
         checkForLocation();
-    }, []);
+    }, [GOOGLE_API_KEY, locationStatus]);
 
     return locationObject;
     // return { currentLocation, geoCodedLocation };

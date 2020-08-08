@@ -1,9 +1,9 @@
 import { NavigationContainer } from '@react-navigation/native';
 import { createStackNavigator } from '@react-navigation/stack';
-import { Linking } from 'expo';
+import * as Linking from 'expo-linking'
 import * as Location from 'expo-location';
 import React, { useEffect, useMemo, useReducer } from 'react';
-import { AsyncStorage } from 'react-native';
+import { Alert, AsyncStorage, StatusBar } from 'react-native';
 import ErrorBoundary from 'react-native-error-boundary';
 import { Provider as PaperProvider } from 'react-native-paper';
 // Screens
@@ -21,6 +21,8 @@ import { Provider as RoseProvider } from './src/context/RoseContext';
 import { Provider as TagProvider } from './src/context/TagContext';
 import theme from './src/core/theme';
 
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
+
 // const prefix = Linking.makeUrl('/');
 
 export default () => {
@@ -31,19 +33,30 @@ export default () => {
   }, []);
 
   useEffect(() => {
+    // ANDROID!!!
     Linking.getInitialURL().then(url => {
       const { path, queryParams: { userID } } = Linking.parse(url);
       // console.log('path, user', path, userID);
-      if (path === 'main/home/add' && (userID !== '' && userID !== undefined && userID !== null)) {
-        setTimeout(() => navigate('AddRose', { shared: true, userID }), 0);
+      if (path === 'main/home/add') {
+        if (userID !== '' && userID !== undefined && userID !== null) {
+          setTimeout(() => navigate('SharedResolver', { shared: true, userID }), 0);
+        } else if (userID === '' || userID === undefined || userID == null) {
+          // Alert()
+          alert('Looks like you tried to share a user that did not exist /:')
+        }
       }
     })
   }, [])
 
   const _handleOpenURL = (event) => {
     const { path, queryParams: { userID } } = Linking.parse(event.url);
-    if (path === 'main/home/add' && (userID !== '' && userID !== undefined && userID !== null)) {
-      navigate('AddRose', { shared: true, userID });
+    if (path === 'main/home/add') {
+      if (userID !== '' && userID !== undefined && userID !== null) {
+        navigate('SharedResolver', { shared: true, userID });
+        // navigate('AddRose', { shared: true, userID });
+      } else if (userID === '' || userID === undefined || userID == null) {
+        alert('Looks like you tried to share a user that did not exist /:')
+      }
     }
   }
 
@@ -156,7 +169,7 @@ export default () => {
       },
       // TODO: what about if token exists and user doesnt?
       tryLocalSignin: async () => {
-        console.log('tryLocalSignin');
+        // console.log('tryLocalSignin');
         // await AsyncStorage.removeItem('user');
         // await AsyncStorage.removeItem('token');
         // await AsyncStorage.removeItem('roses');
@@ -205,16 +218,16 @@ export default () => {
     tryLocalSignin();
   }, []);
 
-
   // FIXME: Ask again?
   // FIXME: Ask for all permissions here?
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestPermissionsAsync();
-      if (status !== 'granted') {
-        alert('Permission to access location was denied');
-      }
+      // console.log('location: ', status);
 
+      // if (status !== 'granted') {
+      //   alert('Permission to access location was denied');
+      // }
       // let location = await Location.getCurrentPositionAsync({});
       // setLocation(location);
       // console.log(location)
@@ -244,23 +257,27 @@ export default () => {
               <PaperProvider theme={theme}>
                 {/* https://reactnavigation.org/docs/navigating-without-navigation-prop/ */}
                 {/* <App ref={(navigator) => setNavigator(navigator)} /> */}
-                <NavigationContainer ref={navigationRef} >
-                  <AppStack.Navigator initialRouteName="ResolveAuth" headerMode='none'>
-                    {
-                      state.isLoading ?
-                        <AppStack.Screen name="ResolveAuth" component={ResolveAuthScreen}
-                          options={{ headerTransparent: true, headerTitle: null }}
-                        />
-                        // FIXME: work without TOKEN!
-                        : (state.token === null)
-                          ? <AppStack.Screen name="authStack" component={Auth}
-                            headerMode="none"
+                <SafeAreaProvider>
+                  <NavigationContainer ref={navigationRef} >
+                    <AppStack.Navigator initialRouteName="ResolveAuth" headerMode='none'>
+                      {
+                        state.isLoading ?
+                          <AppStack.Screen name="ResolveAuth" component={ResolveAuthScreen}
                             options={{ headerTransparent: true, headerTitle: null }}
                           />
-                          : <AppStack.Screen name="mainFlow" component={App} />
-                    }
-                  </AppStack.Navigator>
-                </NavigationContainer>
+                          // FIXME: work without TOKEN!
+                          : (state.token === null)
+                            ? <AppStack.Screen name="authStack" component={Auth}
+                              headerMode="none"
+                              options={{ headerTransparent: true, headerTitle: null }}
+                            />
+                            : <AppStack.Screen name="mainFlow" component={App}
+
+                            />
+                      }
+                    </AppStack.Navigator>
+                  </NavigationContainer>
+                </SafeAreaProvider>
               </PaperProvider>
             </TagProvider>
           </ContactProvider>

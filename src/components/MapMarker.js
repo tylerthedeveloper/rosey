@@ -1,8 +1,9 @@
 import React from 'react';
-import { StyleSheet, Text, View, Image } from 'react-native';
+import { Button, StyleSheet, Text, View, Image, Platform } from 'react-native';
 import MapView, { Marker } from 'react-native-maps';
 import { Avatar } from 'react-native-paper';
 import { MyButton } from '../paper-components/memo';
+import { theme } from '../core/theme';
 
 const MapMarker = ({ props, roseId, coords, address, name, tags, navigationCallback }) => {
 
@@ -19,7 +20,6 @@ const MapMarker = ({ props, roseId, coords, address, name, tags, navigationCallb
             />
             <MapView.Callout
                 onPress={() => navigationCallback(roseId)}
-                tooltip={false}
             >
                 <View style={styles.viewStyle}>
                     <View style={{ flexDirection: 'row', marginVertical: 5 }}>
@@ -28,22 +28,26 @@ const MapMarker = ({ props, roseId, coords, address, name, tags, navigationCallb
                             {name || '(no name)'}
                         </Text>
                     </View>
-                    <View style={{ flexDirection: 'row' }}>
+                    <View style={{ flexDirection: 'row', marginBottom: 5 }}>
                         <Avatar.Icon {...props} icon={'tag'} size={25} style={{ marginRight: 10 }} />
                         <Text>
-                            {tags || '(no tags)'}
+                            {tags.join(', ') || '(no tags)'}
                         </Text>
                     </View>
-                    <Text>
+                    {/* <Text>
                         {address}
-                    </Text>
-                    <MyButton
-                        mode="contained"
-                        icon="account-card-details"
-                        onPress={() => navigationCallback(roseId)}
-                    >
-                        View
-                    </MyButton>
+                    </Text> */}
+                    {
+                        (Platform.OS === 'ios')
+                            ? <MyButton
+                                mode="contained"
+                                // icon="account-card-details"
+                                onPress={() => navigationCallback(roseId)}
+                            >
+                                View
+                            </MyButton>
+                            : <Button title="View" color={theme.colors.primary} style={{ marginTop: 20 }} />
+                    }
                 </View>
             </MapView.Callout>
         </Marker>
@@ -52,14 +56,15 @@ const MapMarker = ({ props, roseId, coords, address, name, tags, navigationCallb
 
 const styles = StyleSheet.create({
     viewStyle: {
-        width: 200,
-        height: 210,
+        width: 220,
+        height: 150,
         backgroundColor: "#fff",
-        padding: 20
+        padding: 20,
+        flex: 1
     },
     textStyle: {
         fontSize: 16,
-        alignSelf: 'center',
+        // alignSelf: 'center',
         padding: 5
     }
 });

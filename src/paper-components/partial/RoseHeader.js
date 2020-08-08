@@ -1,43 +1,156 @@
 import React from 'react';
-import { ImageBackground, StyleSheet } from 'react-native';
+import { ImageBackground, StyleSheet, View } from 'react-native';
 import { Avatar, Card, Paragraph, Title, IconButton } from 'react-native-paper';
 import { theme } from '../../core/theme';
+import { MyShadowCard } from '../memo';
+import * as Linking from 'expo-linking'
 
-const RoseHeader = ({ name, picture, homeCity, homeState, homeCountry, isUserContactCard, editing, _setEditing, shareProfile }) => (
-    <ImageBackground
-        // source={{ uri: 'https://picsum.photos/700' }}
-        source={require('../../../assets/background_dot_2x.png')}
-        resizeMode="repeat"
-        style={styles.headerBackgroundImage}>
-        <Card.Content style={{ alignSelf: 'center', alignItems: 'center' }}>
-            <Avatar.Image
-                style={styles.avatar}
-                size={100}
-                source={{
-                    uri:
-                        (picture && picture.length > 3) ? picture : 'https://image.shutterstock.com/image-vector/people-icon-260nw-522300817.jpg',
-                }}
-            />
-            <Title style={styles.userNameText}>{name || 'No-name!'}</Title>
-            {/* <Paragraph style={styles.userCityText}>{homeCity || '(city)'}, {homeState || '(state)'}, {homeCountry || '(country)'}</Paragraph> */}
-        </Card.Content>
-        <IconButton
-            icon={editing ? "close-circle" : "pencil"}
-            size={25}
-            onPress={() => _setEditing(!editing)}
-            style={{ right: 10, top: 5, alignSelf: 'flex-end', position: 'absolute' }}
-        />
+const RoseHeader = ({ name, picture, homeCity, homeState, homeCountry, isUserContactCard, editing, _setEditing, shareProfile,
+    phoneNumber, email// , headerToContainer
+}) => {
+
+    // source={{ uri: 'https://picsum.photos/700' }}
+
+    const headerRowButtons = [
         {
-            (isUserContactCard) &&
-            <IconButton
-                icon="share"
-                size={25}
-                onPress={shareProfile}
-                style={{ right: 10, top: 120, alignSelf: 'flex-end', position: 'absolute' }}
-            />
-        }
-    </ImageBackground>
-);
+            headerButtonIcon: "phone-plus",
+            headerButtonFunction: () => {
+                if (email === '') {
+                    _handleEmptyField();
+                } else {
+                    Linking.openURL(`tel:${phoneNumber}`)
+                }
+            }
+
+        },
+        {
+            headerButtonIcon: "message-plus",
+            headerButtonFunction: () => {
+                if (email === '') {
+                    _handleEmptyField();
+                } else {
+                    Linking.openURL(`sms:${phoneNumber}`)
+                }
+            }
+        },
+        {
+            headerButtonIcon: "video-plus",
+            headerButtonFunction: () => {
+                if (email === '') {
+                    _handleEmptyField();
+                } else {
+                    Linking.openURL(`facetime:${email}`)
+                }
+            }
+        },
+        {
+            headerButtonIcon: "email-plus",
+            headerButtonFunction: () => {
+                if (email === '') {
+                    _handleEmptyField();
+                } else {
+                    Linking.openURL(`mailto:${email}`)
+                }
+            },
+        },
+    ];
+
+    const _handleEmptyField = () => alert('Enter data for that field in order to interact with it.');
+
+
+    return (
+        <MyShadowCard inheritedMarginTop={15}>
+            <Card.Content style={{ alignSelf: 'center', alignItems: 'center', paddingBottom: 5, flex: 0 }}>
+                <View style={{ alignSelf: 'center', alignItems: 'center' }}>
+                    <Avatar.Icon
+                        style={styles.avatar}
+                        size={80}
+                        icon={'account'}
+                    // source={{
+                    //     uri:
+                    //         (picture && picture.length > 3) ? picture : 'https://image.shutterstock.com/image-vector/people-icon-260nw-522300817.jpg',
+                    // }}
+                    />
+                    <Title style={{ ...styles.userNameText, fontFamily: (Platform.OS === 'android') ? 'sans-serif-light' : 'Avenir-Heavy' }}>{name || 'No-name!'}</Title>
+                </View>
+                <View>
+                    {
+                        (!isUserContactCard)
+                            ? <View style={{ marginBottom: 5, flexDirection: 'row', }}>
+                                {
+                                    headerRowButtons.map(({ headerButtonFunction, headerButtonIcon }) => {
+                                        if (headerButtonIcon === 'video-plus' && Platform.OS !== 'ios') return null;
+                                        return (<View key={headerButtonIcon}>
+                                            <IconButton
+                                                icon={headerButtonIcon}
+                                                onPress={headerButtonFunction}
+                                                color="white"
+                                                style={{ marginHorizontal: 20, backgroundColor: theme.colors.backdrop }}
+                                            />
+                                        </View>)
+                                    })
+                                }
+                            </View>
+                            : null
+                    }
+                </View>
+            </Card.Content>
+            {/* {
+                (!editing) ?
+                    <IconButton
+                        icon={"pencil"}
+                        size={20}
+                        onPress={() => _setEditing(!editing)}
+                        color={'white'}
+                        style={{ right: 10, top: 10, alignSelf: 'flex-end', position: 'absolute', backgroundColor: theme.colors.text }}
+                    />
+                    : <>
+                        <IconButton
+                            icon={"close-circle"}
+                            size={20}
+                            onPress={() => _setEditing(!editing)}
+                            color={'white'}
+                            style={{ right: 55, top: 10, alignSelf: 'flex-end', position: 'absolute', backgroundColor: theme.colors.text }}
+                        />
+                        <IconButton
+                            icon={"content-save"}
+                            size={20}
+                            onPress={() => _setEditing(!editing)}
+                            color={'white'}
+                            style={{ right: 10, top: 10, alignSelf: 'center', position: 'absolute', backgroundColor: theme.colors.text }}
+                        />
+                    </>
+            } */}
+            {
+                (!editing) ?
+                    <IconButton
+                        icon={"pencil"}
+                        size={20}
+                        onPress={() => _setEditing(!editing)}
+                        color={'white'}
+                        style={{ right: 10, top: 10, alignSelf: 'flex-end', position: 'absolute', backgroundColor: theme.colors.text }}
+                    />
+                    : <IconButton
+                        icon={"close-circle"}
+                        size={20}
+                        onPress={() => _setEditing(!editing)}
+                        color={'white'}
+                        style={{ right: 10, top: 10, alignSelf: 'flex-end', position: 'absolute', backgroundColor: theme.colors.text }}
+                    />
+            }
+            {
+                (isUserContactCard && !editing) &&
+                <IconButton
+                    icon="share"
+                    size={20}
+                    onPress={shareProfile}
+                    color={'white'}
+                    style={{ right: 10, alignSelf: 'flex-end', bottom: 0, position: 'absolute', backgroundColor: theme.colors.text }}
+                />
+            }
+        </MyShadowCard>
+    );
+}
 
 const styles = StyleSheet.create({
     headerBackgroundImage: {
@@ -49,10 +162,9 @@ const styles = StyleSheet.create({
     //     fontSize: 26,
     // },
     avatar: {
-        borderColor: theme.primary || '#600EE6',
-        borderRadius: 85,
-        borderWidth: 3,
-        marginBottom: 3
+        // shadowColor: theme.colors.primary || '#600EE6',
+        backgroundColor: theme.colors.primary
+        // shadowOpacity: 1
     },
     userNameText: {
         fontSize: 20,

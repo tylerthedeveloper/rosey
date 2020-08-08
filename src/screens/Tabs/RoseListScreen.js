@@ -1,6 +1,6 @@
 import React, { useContext, useState } from 'react';
 import { FlatList, StyleSheet, ScrollView, View, TouchableOpacity } from 'react-native';
-import { Chip, IconButton, Searchbar, Headline } from 'react-native-paper';
+import { Avatar, Chip, IconButton, Searchbar, Headline } from 'react-native-paper';
 import { Context as TagContext } from '../../context/TagContext';
 import { theme } from '../../core/theme';
 import useListFilters from '../../hooks/useListFilters';
@@ -12,6 +12,7 @@ const RoseListScreen = ({ navigation }) => {
     const { state: { tags } } = useContext(TagContext);
 
     // const { primary, secondary, error } = theme.colors;
+
     const [
         filteredRoses, filterToggle, setFilterToggle, filterItems, searchQuery, setSearchQuery,
         selectedTags, toggledSelected
@@ -32,18 +33,25 @@ const RoseListScreen = ({ navigation }) => {
                     onChangeText={setSearchQuery}
                     style={styles.searchBar}
                 />
-                <IconButton
-                    icon="tag"
-                    onPress={() => setTagToggle(!tagToggle)}
-                    size={25}
-                    style={styles.filterIcon}
-                />
-                <IconButton
-                    icon="filter-variant"
-                    onPress={() => setFilterToggle(!filterToggle)}
-                    size={25}
-                    style={styles.filterIcon}
-                />
+                <View style={theme.shadow.iconButtonShadow}>
+                    {/* <View style={styles.filterIconContainer}> */}
+                    <IconButton
+                        icon="tag"
+                        onPress={() => setTagToggle(!tagToggle)}
+                        color={'white'}
+                        size={25}
+                        style={{ ...styles.filterIcon, marginLeft: 10 }}
+                    />
+                </View>
+                <View style={theme.shadow.iconButtonShadow}>
+                    <IconButton
+                        icon="filter-variant"
+                        onPress={() => setFilterToggle(!filterToggle)}
+                        size={25}
+                        color={'white'}
+                        style={styles.filterIcon}
+                    />
+                </View>
             </View>
             {
                 (filterToggle) &&
@@ -56,28 +64,40 @@ const RoseListScreen = ({ navigation }) => {
                 </View>
             }
             {
-                (tagToggle) &&
-                <ScrollView style={styles.tags} horizontal
-                    automaticallyAdjustContentInsets={false}
-                    contentContainerStyle={{
-                        justifyContent: 'space-evenly',
-                        flex: 1,
-                        height: 35,
-                    }}
-                >
-                    {
-                        tags.map((tag, index) =>
-                            <Chip
-                                key={tag + index}
-                                selectedColor={'blue'}
-                                onPress={() => toggledSelected(tag)}
-                                selected={selectedTags.includes(tag)}
-                                //onPress={() => toggledSelected(tag, index)}
-                                //selected={selectedTags.includes(tag + index)}
-                            >{tag}</Chip>
-                        )
-                    }
-                </ScrollView>
+                (tagToggle)
+                    ? (tags && tags.length > 0)
+                        ? <ScrollView style={styles.tags} horizontal
+                            // automaticallyAdjustContentInsets={false}
+                            showsHorizontalScrollIndicator={false}
+                            contentContainerStyle={{
+                                justifyContent: 'center',
+                                height: 35,
+                                // flex: 1
+                            }}
+                        >
+                            {
+                                tags.map(({tag, color}, index) =>
+                                    <Chip
+                                        key={tag + index}
+                                        selectedColor={color}
+                                        style={styles.tag}
+                                        onPress={() => toggledSelected(tag)}
+                                        selected={selectedTags.includes(tag)}
+                                    //onPress={() => toggledSelected(tag, index)}
+                                    //selected={selectedTags.includes(tag + index)}
+                                    >{tag}</Chip>
+                                )
+                            }
+                        </ScrollView>
+                        : <View style={{
+                            alignItems: 'center',
+                            marginTop: 15
+                        }}>
+                            <Chip onPress={() => navigation.navigate('TagScreen')} selectedColor={'blue'} style={{}}>
+                                No tags - go add some!
+                            </Chip>
+                        </View>
+                    : null
             }
             <View style={styles.content}>
                 {
@@ -107,32 +127,48 @@ const styles = StyleSheet.create({
     firstRow: {
         flexDirection: 'row',
         marginTop: 20,
-        marginLeft: 20,
+        // marginLeft: 20,
+        marginBottom: 5,
+        elevation: 5,
+        // marginRight: 20,
+        marginHorizontal: 25
     },
     searchBar: {
         minWidth: '65%',
-        maxWidth: '75%',
+        maxWidth: '70%',
         flex: 1,
         shadowOffset: {
-            width: 0,
-            height: 0
+            width: 5,
+            height: 5
         },
-        shadowColor: '#ffffff'
+        shadowColor: '#858585',
+        elevation: 5,
+        borderRadius: 20,
+        marginRight: 5
     },
     filterIcon: {
-        flex: 2
+        // flex: 2,
+        backgroundColor: theme.colors.primary,
+        // color: 'white',
     },
     filterChips: {
         flexDirection: 'row',
         marginTop: 10,
+        marginBottom: 5,
         justifyContent: 'space-evenly'
     },
     tags: {
         //flexDirection: 'row',
         marginTop: 15,
+        marginHorizontal: 10,
         //flex: 1,
+        marginBottom: 5,
         maxHeight: 40,
     },
+    tag: {
+        marginHorizontal: 10,
+    },
+
     content: {
         flex: 1,
         justifyContent: 'center',

@@ -3,6 +3,7 @@
 import createDataContext from './createDataContext';
 import { AsyncStorage } from 'react-native';
 //import tagyApi from '../api/tagyApi';
+import Constants from '../constants';
 
 // Reducer
 const TagReducer = (state, action) => {
@@ -49,7 +50,9 @@ const getInitialTags = (dispatch) => async () => {
             dispatch({ type: "get_initial_tags", payload: [...(tags || [])] });
         } else {
             // console.log('there are no tags');
-            dispatch({ type: "get_initial_tags", payload: [] });
+            const tags = [{ tag: 'Friend', color: Constants.COLORS[0] }];
+            await AsyncStorage.setItem('tags', JSON.stringify(tags));
+            dispatch({ type: "get_initial_tags", payload: tags });
         }
     } catch (err) {
         console.log(err.message);
@@ -59,11 +62,13 @@ const getInitialTags = (dispatch) => async () => {
 
 
 const addTag = (dispatch) => async (tag) => {
+    // console.log('tag', tag)
     try {
         /* -------------------------------------------------------------------------- */
         // API Section here//
         /* -------------------------------------------------------------------------- */
         // FIXME: PULL FROM CURRENT STATE???
+        // await AsyncStorage.removeItem('tags')
         const tags = await AsyncStorage.getItem('tags')
             .then(req => JSON.parse(req));
         const updatedTagList = [...(tags || []), tag];
@@ -85,8 +90,9 @@ const deleteTag = (dispatch) => async (tag) => {
         const tags = await AsyncStorage.getItem('tags')
             .then(req => JSON.parse(req));
         // TODO: Find first?
-        const updatedTagList = tags.filter(tg => tag !== tg);
-        // console.log(updatedTagList);
+        // TODO: FIXME:
+
+        const updatedTagList = tags.filter(tg => tag !== tg.tag);
         await AsyncStorage.setItem('tags', JSON.stringify(updatedTagList));
         dispatch({ type: "delete_tag", payload: updatedTagList });
         // callback();

@@ -1,8 +1,8 @@
-import { MaterialCommunityIcons } from '@expo/vector-icons';
+import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 import React, { useContext, useEffect } from 'react';
 import { StyleSheet, TouchableOpacity, View } from 'react-native';
-import { Avatar, Caption, Drawer, Paragraph, Title, useTheme } from 'react-native-paper';
+import { Avatar, Caption, Drawer, Paragraph, Title, useTheme, Divider } from 'react-native-paper';
 import Animated from 'react-native-reanimated';
 import { AuthContext } from '../context/AuthContext';
 import useContacts from '../hooks/useContacts';
@@ -13,7 +13,7 @@ const DrawerContent = (props) => {
     const paperTheme = useTheme();
     const { navigation } = props;
 
-    const { state: { user: { name } } } = useContext(AuthContext);
+    const { state: { user: { name } }, signout } = useContext(AuthContext);
     // const { getImportedContacts } = useContext(ContactsContext);
     const { getContactsPermissions } = useContacts();
 
@@ -35,6 +35,19 @@ const DrawerContent = (props) => {
         inputRange: [0, 0.5, 0.7, 0.8, 1],
         outputRange: [-100, -85, -70, -45, 0],
     });
+
+    const drawerRows = [
+        { label: "Contact Card", icon: 'account-outline', navigateTo: 'ContactCard' },
+        { label: "Contacts", icon: 'contacts', navigateTo: 'ContactsScreen' },
+        { label: "Tags", icon: 'tag', navigateTo: 'TagScreen' },
+        { label: "QR Code", icon: 'qrcode', navigateTo: 'QRCode' },
+        // { label: "QR Code", icon: 'qrcode', navigateTo: 'QRCode' },
+    ]
+
+    const secondDrawerRow = [
+        { label: "Rozy Story", icon: 'book-open-variant', navigateTo: 'RozyStory', type: "MCI" },
+        { label: "Feedback", icon: 'feedback', navigateTo: 'Feedback', type: 'MI' }
+    ]
 
     return (
         <DrawerContentScrollView {...props}>
@@ -82,71 +95,67 @@ const DrawerContent = (props) => {
                         </View>
                     </View> */}
                 </View>
+                <Divider style={{ marginTop: 15, marginHorizontal: 20 }} />
                 <Drawer.Section style={styles.drawerSection}>
-                    <DrawerItem
-                        // TODO: understand where this size and color come from
-                        icon={({ color, size }) => (
-                            <MaterialCommunityIcons
-                                name="account-outline"
-                                color={color}
-                                size={size}
-                            />
-                        )}
-                        label="My Contact Card"
-                        onPress={() => navigation.navigate('ContactCard')}
-                    />
-                    <DrawerItem
-                        icon={({ color, size }) => (
-                            <MaterialCommunityIcons
-                                name="contacts"
-                                color={color}
-                                size={size}
-                            />
-                        )}
-                        label="Contacts"
-                        onPress={() => navigation.navigate('ContactsScreen')}
-                    />
-                    <DrawerItem
-                        icon={({ color, size }) => (
-                            <MaterialCommunityIcons
-                                name="tag"
-                                color={color}
-                                size={size}
-                            />
-                        )}
-                        label="Tags"
-                        onPress={() => navigation.navigate('TagScreen')}
-                    />
-                    <DrawerItem
-                        icon={({ color, size }) => (
-                            <MaterialCommunityIcons
-                                name="qrcode"
-                                color={color}
-                                size={size}
-                            />
-                        )}
-                        label="QR Code"
-                        onPress={() => navigation.navigate('QRCode')}
-                    />
-                    {/* <DrawerItem
-                        icon={({ color, size }) => (
-                            <MaterialCommunityIcons name="tune" color={color} size={size} />
-                        )}
-                        label="Preferences"
-                        onPress={() => { }}
-                    />
-                    <DrawerItem
-                        icon={({ color, size }) => (
-                            <MaterialCommunityIcons
-                                name="bookmark-outline"
-                                color={color}
-                                size={size}
-                            />
-                        )}
-                        label="Bookmarks"
-                        onPress={() => { }}
-                    /> */}
+                    {
+                        drawerRows.map(({ label, icon, navigateTo }, index) => (
+                            <DrawerItem
+                                key={index}
+                                icon={({ color, size }) => (
+                                    <MaterialCommunityIcons
+                                        name={icon}
+                                        color={color}
+                                        size={size}
+                                    />
+                                )}
+                                label={label}
+                                labelStyle={{ fontFamily: 'System' }}
+                                style={{ flex: 1 }}
+                                onPress={() => navigation.navigate(navigateTo)}
+                            />)
+                        )
+                    }
                 </Drawer.Section>
+                <Drawer.Section style={styles.drawerSection}>
+                    {
+                        secondDrawerRow.map(({ label, icon, navigateTo, type }, index) => (
+                            <DrawerItem
+                                key={index}
+                                icon={({ color, size }) => {
+                                    return (type == "MCI")
+                                        ? <MaterialCommunityIcons
+                                            name={icon}
+                                            color={color}
+                                            size={size}
+                                        />
+                                        : <MaterialIcons
+                                            name={'feedback'}
+                                            color={color}
+                                            size={size}
+                                        />
+                                }}
+                                label={label}
+                                labelStyle={{ fontFamily: 'System' }}
+                                style={{ flex: 1 }}
+                                onPress={() => navigation.navigate(navigateTo)}
+                            />)
+                        )
+                    }
+                </Drawer.Section>
+                <DrawerItem
+                    icon={({ color, size }) => (
+                        <MaterialCommunityIcons
+                            name={'logout-variant'}
+                            color={color}
+                            size={size}
+                        />
+                    )}
+
+                    label={"Logout"}
+                    labelStyle={{ fontFamily: 'System' }}
+                    style={{ flex: 1 }}
+                    onPress={() => signout()}
+                />
                 {/* <Drawer.Section title="Preferences">
                     <TouchableRipple onPress={toggleTheme}>
                         <View style={styles.preference}>
