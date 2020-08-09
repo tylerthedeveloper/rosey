@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { StyleSheet, Text, ActivityIndicator } from 'react-native';
+import { StyleSheet, Text, ActivityIndicator, View } from 'react-native';
 import { AuthContext } from '../../context/AuthContext';
 import { theme } from '../../core/theme';
 import { Background, MyButton, MyTextInput } from '../../paper-components/memo';
@@ -26,8 +26,9 @@ const EmailSignupScreen = ({ navigation }) => {
                     .collection('users')
                     .doc(uid)
                     .set({ email: email, uid: uid })
+                    .then(() => signinWithFirebase({ email, uid }))
             })
-            .then(() => userSignin())
+            // .then(() => userSignin())
             .catch((error) => {
                 console.log('Error signing user up with email and password! '
                     + error.code + ': ' + error.message);
@@ -55,7 +56,8 @@ const EmailSignupScreen = ({ navigation }) => {
                     signinWithFirebase({ email, uid });
                 }
             } catch (error) {
-                if (isLoading) { setIsLoading(false) }
+                // if (isLoading) { setIsLoading(false) }
+                setIsLoading(false);
                 console.log(error.message)
                 switch (error.code) {
                     case 'auth/user-not-found':
@@ -72,57 +74,55 @@ const EmailSignupScreen = ({ navigation }) => {
     const isDisabled = (isLoading || email.length === 0 || password.length < 6)
 
     return (
-        <Background>
-            <>
-                <MyTextInput label="Email"
-                    value={email}
-                    autoCapitalize="none"
-                    autoCompleteType="email"
-                    textContentType="emailAddress"
-                    keyboardType="email-address"
-                    onChangeText={setEmail}
-                    autoCorrect={false}
-                    returnKeyType={"next"}
-                />
-                <MyTextInput label="Password"
-                    value={password}
-                    onChangeText={setPassword}
-                    autoCorrect={false}
-                    secureTextEntry
-                />
-                {(errorMessage) ? <Text style={styles.errorMessage}> {errorMessage} </Text> : null}
-                {(password.length < 6)
-                    ? <Text style={styles.errorMessage}> Password must be at least 6 characters </Text>
-                    : null
-                }
-                {(isLoading) && <ActivityIndicator animating={true} size={'large'} />}
-                <MyButton
-                    mode="contained"
-                    onPress={() => userSignin()}
-                    disabled={isDisabled}
-                >
-                    Login
+        // <Background>
+        <View style={styles.container}>
+            <MyTextInput label="Email"
+                value={email}
+                autoCapitalize="none"
+                autoCompleteType="email"
+                textContentType="emailAddress"
+                keyboardType="email-address"
+                onChangeText={setEmail}
+                autoCorrect={false}
+                returnKeyType={"next"}
+            />
+            <MyTextInput label="Password"
+                value={password}
+                onChangeText={setPassword}
+                autoCorrect={false}
+                secureTextEntry
+            />
+            {(errorMessage) ? <Text style={styles.errorMessage}> {errorMessage} </Text> : null}
+            {(password.length < 6)
+                ? <Text style={styles.errorMessage}> Password must be at least 6 characters </Text>
+                : null
+            }
+            {(isLoading) && <ActivityIndicator animating={true} size={'large'} />}
+            <MyButton
+                mode="contained"
+                onPress={() => userSignin()}
+                disabled={isDisabled}
+            >
+                Login
                 </MyButton>
-                <MyButton
-                    mode="outlined"
-                    onPress={() => _createUserWithEmailAndPassword()}
-                    disabled={isDisabled}
-                >
-                    Signup
+            <MyButton
+                mode="outlined"
+                onPress={() => _createUserWithEmailAndPassword()}
+                disabled={isDisabled}
+            >
+                Signup
                 </MyButton>
-            </>
-        </Background>
+        </View>
+        // </Background>
     )
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center'
-    },
-    bg: {
-        flex: 1,
-        width: '100%',
+        justifyContent: 'flex-start',
+        marginTop: 20,
+        alignItems: 'center'
     },
     link: {
         fontWeight: 'bold',

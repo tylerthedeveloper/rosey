@@ -6,7 +6,7 @@ import { Background, MyButton, MyTextInput } from '../../paper-components/memo';
 import CountryPicker from "react-native-country-picker-modal";
 import { TextInput } from 'react-native-paper';
 import { FirebaseRecaptchaVerifierModal } from "expo-firebase-recaptcha";
-import * as firebase from "firebase";
+import firebase from 'firebase'
 
 const PhoneSignupScreen = ({ navigation }) => {
 
@@ -29,7 +29,9 @@ const PhoneSignupScreen = ({ navigation }) => {
 
     const sendPhoneCode = async () => {
         if (phoneNumber && callingCode) {
-            if (!isLoading) { setIsLoading(true) }
+            if (!isLoading) {
+                setIsLoading(true)
+            }
             try {
                 const number = callingCode + phoneNumber
                 const phoneProvider = new firebase.auth.PhoneAuthProvider();
@@ -37,16 +39,16 @@ const PhoneSignupScreen = ({ navigation }) => {
                     number,
                     recaptchaVerifier.current
                 );
-                setIsLoading(false);
                 if (verificationId) {
                     // console.log(verificationId)
                     navigation.navigate('PhoneConfirmation', { verificationToken: verificationId });
                 } else {
                     alert('There was a problem sending a code to that number')
                 }
-            } catch (error) {
                 if (isLoading) { setIsLoading(false) }
-                console.log(error)
+            } catch (error) {
+                // if (isLoading) { setIsLoading(false) }
+                setIsLoading(false)
                 switch (error.code) {
                     case 'auth/user-not-found':
                         alert('That email/password combo does not exist. Try again or signing Up');
@@ -62,7 +64,7 @@ const PhoneSignupScreen = ({ navigation }) => {
         }
     }
 
-    const isDisabled = (isLoading || phoneNumber.length < 10)
+    const isDisabled = (isLoading || (phoneNumber.length < 10))
 
     return (
         <View style={styles.container}>
@@ -107,7 +109,7 @@ const PhoneSignupScreen = ({ navigation }) => {
             {(isLoading) && <ActivityIndicator animating={true} size={'large'} />}
             <MyButton
                 mode="contained"
-                onPress={() => sendPhoneCode()}
+                onPress={sendPhoneCode}
                 disabled={isDisabled}
             >
                 Send Code
@@ -118,9 +120,10 @@ const PhoneSignupScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
     container: {
-        justifyContent: 'center',
+        justifyContent: 'flex-start',
         flex: 1,
         alignItems: 'center',
+        marginTop: 50
     },
     row: {
         flexDirection: 'row',

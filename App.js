@@ -24,6 +24,16 @@ import theme from './src/core/theme';
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 import firebase from 'firebase';
+import { firebaseConfig } from './config/firebase';
+
+try {
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
+} catch (e) {
+  console.log(e.message);
+  // firebase.analytics();
+}
 
 // const prefix = Linking.makeUrl('/');
 

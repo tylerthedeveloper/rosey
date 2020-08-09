@@ -3,7 +3,6 @@ import 'firebase/auth';
 // import 'firebase/database';
 import "firebase/firestore";
 
-
 const firebaseConfig = {
     apiKey: "AIzaSyA-eWWlbOoNgpKItmogBNTD3OsXblqVeao",
     authDomain: "rosey-604c6.firebaseapp.com",
@@ -16,11 +15,13 @@ const firebaseConfig = {
 
 try {
     if (!firebase.apps.length) {
+        // console.log('need to init')
         firebase.initializeApp(firebaseConfig);
     }
 } catch (e) {
-    console.log(e);
+    // console.log('alreadt init')
+    console.log(e.message);
     // firebase.analytics();
 }
 
-// export { firebase };a
+export { firebaseConfig };

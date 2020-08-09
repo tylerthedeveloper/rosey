@@ -3,6 +3,7 @@ import { Linking, StyleSheet, Text, TouchableOpacity } from 'react-native';
 import { privacyUrl } from '../../api/landingApi';
 import { theme } from '../../core/theme';
 import { Background, Logo, MyButton, MyHeader } from '../../paper-components/memo';
+import { Button } from 'react-native-paper';
 
 const SplashScreen = ({ navigation }) => {
     return (
@@ -14,7 +15,7 @@ const SplashScreen = ({ navigation }) => {
                 mode="contained"
                 onPress={() => navigation.navigate('PhoneAndEmailStack')}
             >
-                Continue with Phone / email
+                Use phone or email
             </MyButton>
             <MyButton
                 mode="contained"
