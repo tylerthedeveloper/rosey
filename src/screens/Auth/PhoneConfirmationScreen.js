@@ -5,24 +5,33 @@ import { Logo, MyButton, MyHeader, MyTextInput } from '../../paper-components/me
 import { ActivityIndicator, Colors } from 'react-native-paper';
 import firebase from '../../../config/firebase'
 import { theme } from '../../core/theme';
+import Clipboard from "@react-native-community/clipboard";
+import OTPInputView from '@twotalltotems/react-native-otp-input'
 
-const PhoneConfirmationScreen = ({ navigation }) => {
+const PhoneConfirmationScreen = ({ navigation, route }) => {
+
+    const { verificationToken } = route.params;
+    console.log(verificationToken)
 
     const [code, setCode] = useState();
 
     return (
-        <>
+        <View style={styles.container}>
             <MyHeader>
                 Enter Code
             </MyHeader>
-            <View style={styles.buttons}>
-                <MyTextInput
-                    label="Code"
-                    autoCapitalize="none"
-                    autoCompleteType="email"
-                    onChangeText={setCode}
-                    autoCorrect={false}
-                    returnKeyType={"next"}
+            <View>
+                <OTPInputView
+                    style={{ width: '80%', height: 200 }}
+                    pinCount={4}
+                    // code={this.state.code} //You can supply this prop or not. The component will be used as a controlled / uncontrolled component respectively.
+                    // onCodeChanged = {code => { this.setState({code})}}
+                    autoFocusOnLoad
+                    // codeInputFieldStyle={styles.underlineStyleBase}
+                    // codeInputHighlightStyle={styles.underlineStyleHighLighted}
+                    onCodeFilled={(code => {
+                        console.log(`Code is ${code}, you are good to go!`)
+                    })}
                 />
             </View>
             <View style={styles.row}>
@@ -31,17 +40,15 @@ const PhoneConfirmationScreen = ({ navigation }) => {
                     <Text style={styles.link}>Login</Text>
                 </TouchableOpacity>
             </View>
-        </>);
+        </View>);
 }
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'center'
-    },
-    bg: {
-        flex: 1,
-        width: '100%',
+        justifyContent: 'center',
+        alignItems: 'center',
+        // width: '80%'
     },
     link: {
         fontWeight: 'bold',

@@ -8,15 +8,11 @@ import firebase from 'firebase'
 const EmailSignupScreen = ({ navigation }) => {
 
     const { state: { errorMessage, isApiLoading }, signup, clearErrorMessage, signinWithFirebase } = useContext(AuthContext);
-    // useEffect(() => navigation.addListener('focus', clearErrorMessage), []);
 
+    //  TODO: catch invalid email early?
     const [isLoading, setIsLoading] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-
-    const [user, setUser] = useState({});
-
-    //  TODO: catch invalid email early?
 
     const _createUserWithEmailAndPassword = async () => {
         setIsLoading(true)
@@ -53,14 +49,13 @@ const EmailSignupScreen = ({ navigation }) => {
                 const response = await firebase
                     .auth()
                     .signInWithEmailAndPassword(email, password);
+                setIsLoading(false);
                 if (response) {
                     const { email, uid } = response.user;
-                    setIsLoading(false);
                     signinWithFirebase({ email, uid });
                 }
             } catch (error) {
-                // this.setState({ isLoading: false });
-                setIsLoading(false);
+                if (isLoading) { setIsLoading(false) }
                 console.log(error.message)
                 switch (error.code) {
                     case 'auth/user-not-found':
