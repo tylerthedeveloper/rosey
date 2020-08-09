@@ -4,27 +4,43 @@ import { Text } from 'react-native-elements';
 import { Logo, MyButton, MyHeader, MyTextInput } from '../../paper-components/memo';
 import { ActivityIndicator, Colors } from 'react-native-paper';
 import { theme } from '../../core/theme';
-import firebase from 'firebase'
+import * as firebase from "firebase";
 import Clipboard from "@react-native-community/clipboard";
 import OTPInputView from '@twotalltotems/react-native-otp-input'
 
+// FIXME: do i need signinWithFirebase?
+
 const PhoneConfirmationScreen = ({ navigation, route }) => {
 
-    const { verificationToken } = route.params;
-    console.log(verificationToken)
+    const { verificationId } = route.params;
+    console.log('verificationId', verificationId)
 
-    const [code, setCode] = useState();
+    const [verificationCode, setVerificationCode] = useState('');
+    const [message, setMessage] = useState('');
 
-    const submitValidationCode = async () => {
+    const submitValidationCode = async (code) => {
         try {
-            const credential = firebase.auth.PhoneAuthProvider.credential(
-                verificationToken,
-                verificationCode
-            );
-            await firebase.auth().signInWithCredential(credential)
-                .then(res => console.log(res));
+            console.log(verificationCode)
+            if (verificationCode.length === 6) {
+                const credential = firebase.auth.PhoneAuthProvider.credential(
+                    verificationId,
+                    verificationCode
+                );
+                console.log('credential', credential);
+                await firebase.auth().signInWithCredential(credential)
+                    .then(async (res) => {
+                        const { phoneNumber, uid } = res.user;
+                        await firebase
+                            .firestore()
+                            .collection('users')
+                            .doc(uid)
+                            .set({ phoneNumber, uid })
+                            .then(() => signinWithFirebase({ email, uid, phoneNumber }))
+                    });
+            }
         } catch (err) {
-            showMessage({ text: `Error: ${err.message}`, color: "red" });
+            console.log(err.message)
+            setMessage({ text: `Error: ${err.message}`, color: "red" });
         }
     };
 
@@ -38,18 +54,23 @@ const PhoneConfirmationScreen = ({ navigation, route }) => {
                     style={{ width: '80%', height: 150 }}
                     pinCount={6}
                     //You can supply this prop or not. The component will be used as a controlled / uncontrolled component respectively.
-                    // code={verificationToken} 
-                    onCodeChanged={setCode}
+                    // code={verificationId} 
+                    onCodeChanged={setVerificationCode}
                     autoFocusOnLoad
-                    // codeInputFieldStyle={styles.underlineStyleBase}
-                    // codeInputHighlightStyle={styles.underlineStyleHighLightecd}
+                    codeInputFieldStyle={styles.codeInputFieldStyle}
+                    codeInputHighlightStyle={styles.underlineStyleHighLighted}
                     onCodeFilled={(code => {
-                        console.log(`Code is ${code}, you are good to go!`)
-                        // submitValidationCode();
+                        if (code.length === 6) {
+                            submitValidationCode(code);
+                        }
                     })}
                 />
+                {(message !== '') && <Text style={styles.label}></Text>}
             </View>
             <View style={styles.row}>
+                <TouchableOpacity onPress={() => submitValidationCode()}>
+                    <Text style={styles.link}>Submit</Text>
+                </TouchableOpacity>
                 <Text style={styles.label}>Didnt get a code?? </Text>
                 <TouchableOpacity onPress={() => null}>
                     <Text style={styles.link}>Login</Text>
@@ -70,6 +91,19 @@ const styles = StyleSheet.create({
         fontWeight: 'bold',
         color: theme.colors.primary,
     },
+    borderStyleHighLighted: {
+        borderColor: "#03DAC6",
+    },
+    codeInputFieldStyle: {
+        width: 30,
+        height: 45,
+        borderWidth: 0,
+        borderBottomWidth: 1,
+        color: theme.colors.secondary
+    },
+    underlineStyleHighLighted: {
+        borderColor: theme.colors.secondary
+    }
 });
 
 export default PhoneConfirmationScreen;

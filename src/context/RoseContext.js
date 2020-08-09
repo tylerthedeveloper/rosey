@@ -13,7 +13,6 @@ import firebase from 'firebase'
 // FIXME: Try this
 // const uid = firebase.auth().currentUser.uid;
 
-
 const roseReducer = (state, action) => {
     const { payload } = action;
     switch (action.type) {

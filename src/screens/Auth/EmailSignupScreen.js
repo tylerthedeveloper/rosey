@@ -1,11 +1,17 @@
 import React, { useContext, useEffect, useState } from 'react';
-import { StyleSheet, Text, ActivityIndicator, View } from 'react-native';
+import { StyleSheet, Text, ActivityIndicator, View, KeyboardAvoidingView } from 'react-native';
 import { AuthContext } from '../../context/AuthContext';
 import { theme } from '../../core/theme';
 import { Background, MyButton, MyTextInput } from '../../paper-components/memo';
 import firebase from 'firebase'
+import { YellowBox } from 'react-native';
 
 const EmailSignupScreen = ({ navigation }) => {
+
+    YellowBox.ignoreWarnings([
+        'Setting a timer',
+        'Setting a timer for a long period of time'
+    ]);
 
     const { state: { errorMessage, isApiLoading }, signup, clearErrorMessage, signinWithFirebase } = useContext(AuthContext);
 
@@ -32,16 +38,16 @@ const EmailSignupScreen = ({ navigation }) => {
             .catch((error) => {
                 switch (error.code) {
                     case 'auth/user-not-found':
-                        alert('A user with that email does not exist. Try signing Up');
+                        alert('A user with that email does not exist. Try signing up.');
                         break;
                     case 'auth/invalid-email':
-                        alert('Please enter a valid email address');
+                        alert('Please enter a valid email address.');
                         break;
                     case 'auth/email-already-in-use':
-                        alert('That email is already in use');
+                        alert('That email is already in use.');
                         break;
                     default:
-                        alert('There was an unexpected problem with signup');
+                        alert('There was an unexpected problem with signup.');
                         break;
                 }
                 setIsLoading(false);
@@ -68,10 +74,10 @@ const EmailSignupScreen = ({ navigation }) => {
                 console.log(error.message)
                 switch (error.code) {
                     case 'auth/user-not-found':
-                        alert('That email/password combo does not exist. Try again or signing Up');
+                        alert('That email/password combo does not exist. Try again or signing up.');
                         break;
                     case 'auth/invalid-email':
-                        alert('Please enter a valid email address');
+                        alert('Please enter a valid email address.');
                         break;
                 }
             }
@@ -80,46 +86,57 @@ const EmailSignupScreen = ({ navigation }) => {
 
     const isDisabled = (isLoading || email.length === 0 || password.length < 6)
 
+    // const passRef = React.createRef(null);
+
     return (
         // <Background>
-        <View style={styles.container}>
-            <MyTextInput label="Email"
-                value={email}
-                autoCapitalize="none"
-                autoCompleteType="email"
-                textContentType="emailAddress"
-                keyboardType="email-address"
-                onChangeText={setEmail}
-                autoCorrect={false}
-                returnKeyType={"next"}
-            />
-            <MyTextInput label="Password"
-                value={password}
-                onChangeText={setPassword}
-                autoCorrect={false}
-                secureTextEntry
-            />
-            {(errorMessage) ? <Text style={styles.errorMessage}> {errorMessage} </Text> : null}
-            {(password.length < 6)
-                ? <Text style={styles.errorMessage}> Password must be at least 6 characters </Text>
-                : null
-            }
-            {(isLoading) && <ActivityIndicator animating={true} size={'large'} />}
-            <MyButton
-                mode="contained"
-                onPress={() => userSignin()}
-                disabled={isDisabled}
-            >
-                Login
+        <KeyboardAvoidingView style={{ flex: 1 }}>
+            <View style={styles.container}>
+                <MyTextInput label="Email"
+                    value={email}
+                    autoCapitalize="none"
+                    autoCompleteType="email"
+                    textContentType="emailAddress"
+                    keyboardType="email-address"
+                    onChangeText={setEmail}
+                    autoCorrect={false}
+                    returnKeyType={"next"}
+                // onBlur={() => passRef.current.focus()}
+                // onKeyUp={() => passRef.current.focus()}
+                // onSubmitEditing={() => passRef.current._root.focus()}
+
+                />
+                <MyTextInput label="Password"
+                    value={password}
+                    onChangeText={setPassword}
+                    autoCorrect={false}
+                    secureTextEntry
+                // ref={input => { passRef.current = input; }}
+                // ref={passRef}
+
+                />
+                {(errorMessage) ? <Text style={styles.errorMessage}> {errorMessage} </Text> : null}
+                {(password.length < 6)
+                    ? <Text style={styles.errorMessage}> Password must be at least 6 characters </Text>
+                    : null
+                }
+                {(isLoading) && <ActivityIndicator animating={true} size={'large'} />}
+                <MyButton
+                    mode="contained"
+                    onPress={() => userSignin()}
+                    disabled={isDisabled}
+                >
+                    Login
                 </MyButton>
-            <MyButton
-                mode="outlined"
-                onPress={() => _createUserWithEmailAndPassword()}
-                disabled={isDisabled}
-            >
-                Signup
+                <MyButton
+                    mode="outlined"
+                    onPress={() => _createUserWithEmailAndPassword()}
+                    disabled={isDisabled}
+                >
+                    Signup
                 </MyButton>
-        </View>
+            </View>
+        </KeyboardAvoidingView>
         // </Background>
     )
 }

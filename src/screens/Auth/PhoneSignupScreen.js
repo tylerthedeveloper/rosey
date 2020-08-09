@@ -37,13 +37,15 @@ const PhoneSignupScreen = ({ navigation }) => {
                     number,
                     recaptchaVerifier.current
                 );
+                setIsLoading(false);
                 if (verificationId) {
                     // console.log(verificationId)
-                    navigation.navigate('PhoneConfirmation', { verificationToken: verificationId });
+                    // if (isLoading) { setIsLoading(false) }
+                    setNumber('');
+                    navigation.navigate('PhoneConfirmation', { verificationId });
                 } else {
                     alert('There was a problem sending a code to that number')
                 }
-                if (isLoading) { setIsLoading(false) }
             } catch (error) {
                 // if (isLoading) { setIsLoading(false) }
                 console.log(error.message)
@@ -98,6 +100,7 @@ const PhoneSignupScreen = ({ navigation }) => {
                     onChangeText={phoneNumber => setNumber(phoneNumber.replace(/[^0-9]/g, ''))}
                     returnKeyType={"done"}
                     style={{ flex: 4 }}
+                    onSubmitEditing={sendPhoneCode}
                 />
             </View>
             {(errorMessage) ? <Text style={styles.errorMessage}> {errorMessage} </Text> : null}
@@ -112,7 +115,7 @@ const PhoneSignupScreen = ({ navigation }) => {
                 disabled={isDisabled}
             >
                 Send Code
-                </MyButton>
+            </MyButton>
         </View>
     )
 }

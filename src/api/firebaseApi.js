@@ -1,5 +1,9 @@
 import firebase from 'firebase'
 
+// export const createnewFirebaseAccount = async (uid, email, phoneNumber) => {
+//     return await firebase.firestore().collection('users').doc(uid).set({ uid, email, phoneNumber })
+// }
+
 export const getAllRosesFromFirebase = async (uid) => {
     const snapshot = await firebase.firestore().collection('roses').doc(uid).collection('myRoses')
         .get()
@@ -26,3 +30,10 @@ export const deleteRoseFromFirebase = async (uid, roseId) => {
 }
 
 
+// const { email, uid } = response.user;
+// await firebase
+//     .firestore()
+//     .collection('users')
+//     .doc(uid)
+//     .set({ email: email, uid: uid })
+//     .then(() => signinWithFirebase({ email, uid }))

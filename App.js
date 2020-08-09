@@ -32,10 +32,7 @@ try {
   }
 } catch (e) {
   console.log(e.message);
-  // firebase.analytics();
 }
-
-// const prefix = Linking.makeUrl('/');
 
 export default () => {
 
@@ -72,29 +69,27 @@ export default () => {
     }
   }
 
-  // const ref = React.useRef();
-  // const { getInitialState } = useLinking(ref, {
-  //   prefixes: [prefix],
-  //   config: {
-  //     App: {
-  //       path: 'main',
-  //       screens: {
-  //         Home: {
-  //           path: 'home',
-  //           screens: {
-  //             AddRose: 'add'
-  //           }
-  //         },
-  //       }
-  //     }
-  //   }
-  // });
-
   useEffect(() => {
     Linking.addEventListener('url', _handleOpenURL);
     // console.log('listener');
     return () => (Linking.removeEventListener('url', _handleOpenURL));
   }, [])
+
+  // const unsubscriber = firebase.auth().onAuthStateChanged(async (user) => {
+  //   if (user) {
+  //     console.log(user)
+  //     const { email, uid, phoneNumber } = user;
+  //     const _user = { email, uid, phoneNumber };
+  //     await AsyncStorage.setItem('authUser', JSON.stringify(_user));
+  //     dispatch({ type: 'signin', payload: { authUser: _user, user: _user } });
+  //   } else {
+  //     dispatch({ type: 'need_to_signin' });
+  //   }
+  // });
+
+  // useEffect(() => {
+  //   unsubscriber();
+  // }, []);
 
   const [state, dispatch] = useReducer((state, action) => {
     const { payload } = action;
@@ -163,11 +158,11 @@ export default () => {
           dispatch({ type: 'add_error', payload: 'Something went wrong with sign in, please check your spelling and try again' });
         }
       },
-      signinWithFirebase: async ({ email, uid }) => {
+      signinWithFirebase: async ({ email, uid, phoneNumber }) => {
         try {
           // console.log('_user', email, uid)
           const _user = {
-            email, uid
+            email, uid, phoneNumber
           }
           await AsyncStorage.setItem('authUser', JSON.stringify(_user));
           dispatch({ type: 'signin', payload: { authUser: _user, user: _user } });
@@ -197,8 +192,9 @@ export default () => {
         try {
           firebase.auth().onAuthStateChanged(async user => {
             if (user) {
-              const { email, uid } = user;
-              const _user = { email, uid };
+              console.log(user)
+              const { email, uid, phoneNumber } = user;
+              const _user = { email, uid, phoneNumber };
               await AsyncStorage.setItem('authUser', JSON.stringify(_user));
               dispatch({ type: 'signin', payload: { authUser: _user, user: _user } });
             } else {
