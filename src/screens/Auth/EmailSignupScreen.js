@@ -5,6 +5,7 @@ import { theme } from '../../core/theme';
 import { Background, MyButton, MyTextInput } from '../../paper-components/memo';
 import firebase from 'firebase'
 import { YellowBox } from 'react-native';
+import { createnewFirebaseAccount } from '../../api/firebaseApi';
 
 const EmailSignupScreen = ({ navigation }) => {
 
@@ -27,32 +28,11 @@ const EmailSignupScreen = ({ navigation }) => {
             .createUserWithEmailAndPassword(email, password)
             .then(async (response) => {
                 const { email, uid } = response.user;
-                await firebase
-                    .firestore()
-                    .collection('users')
-                    .doc(uid)
-                    .set({ email: email, uid: uid })
-                    .then(() => signinWithFirebase({ email, uid }))
+                await createnewFirebaseAccount({ uid, email })
             })
-            // .then(() => userSignin())
             .catch((error) => {
-                switch (error.code) {
-                    case 'auth/user-not-found':
-                        alert('A user with that email does not exist. Try signing up.');
-                        break;
-                    case 'auth/invalid-email':
-                        alert('Please enter a valid email address.');
-                        break;
-                    case 'auth/email-already-in-use':
-                        alert('That email is already in use.');
-                        break;
-                    default:
-                        alert('There was an unexpected problem with signup.');
-                        break;
-                }
                 setIsLoading(false);
-                console.log('Error signing user up with email and password! '
-                    + error.code + ': ' + error.message);
+                firebaseErrorHandler(error);
             });
     }
 
@@ -66,22 +46,31 @@ const EmailSignupScreen = ({ navigation }) => {
                 setIsLoading(false);
                 if (response) {
                     const { email, uid } = response.user;
-                    signinWithFirebase({ email, uid });
+                    // signinWithFirebase({ email, uid });
                 }
             } catch (error) {
-                // if (isLoading) { setIsLoading(false) }
                 setIsLoading(false);
-                console.log(error.message)
-                switch (error.code) {
-                    case 'auth/user-not-found':
-                        alert('That email/password combo does not exist. Try again or signing up.');
-                        break;
-                    case 'auth/invalid-email':
-                        alert('Please enter a valid email address.');
-                        break;
-                }
+                firebaseErrorHandler(error);
             }
         }
+    }
+
+    // TODO: EXTRACT OUT TO FIREBASE UTILS?
+    const firebaseErrorHandler = (error) => {
+        switch (error.code) {
+            case 'auth/invalid-email':
+                alert('Please enter a valid email address.');
+                break;
+            case 'auth/email-already-in-use':
+                alert('That email is already in use.');
+                break;
+            default:
+                alert('There was an unexpected problem with signup.');
+                break;
+        }
+        setIsLoading(false);
+        console.log('Error signing user up with email and password! '
+            + error.code + ': ' + error.message);
     }
 
     const isDisabled = (isLoading || email.length === 0 || password.length < 6)
@@ -89,7 +78,6 @@ const EmailSignupScreen = ({ navigation }) => {
     // const passRef = React.createRef(null);
 
     return (
-        // <Background>
         <KeyboardAvoidingView style={{ flex: 1 }}>
             <View style={styles.container}>
                 <MyTextInput label="Email"
@@ -137,7 +125,6 @@ const EmailSignupScreen = ({ navigation }) => {
                 </MyButton>
             </View>
         </KeyboardAvoidingView>
-        // </Background>
     )
 }
 

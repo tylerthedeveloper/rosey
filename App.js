@@ -25,6 +25,7 @@ import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 import firebase from 'firebase';
 import { firebaseConfig } from './config/firebase';
+import { YellowBox } from 'react-native';
 
 try {
   if (!firebase.apps.length) {
@@ -35,6 +36,11 @@ try {
 }
 
 export default () => {
+
+  YellowBox.ignoreWarnings([
+    'Setting a timer',
+    'Setting a timer for a long period of time'
+  ]);
 
   useEffect(() => {
     isMountedRef.current = true;
@@ -88,7 +94,10 @@ export default () => {
   // });
 
   // useEffect(() => {
-  //   unsubscriber();
+  //   // unsubscriber();
+  //   return () => {
+  //     unsubscriber();
+  //   };
   // }, []);
 
   const [state, dispatch] = useReducer((state, action) => {
@@ -192,7 +201,7 @@ export default () => {
         try {
           firebase.auth().onAuthStateChanged(async user => {
             if (user) {
-              console.log(user)
+              console.log('tryLocalSigninu', user)
               const { email, uid, phoneNumber } = user;
               const _user = { email, uid, phoneNumber };
               await AsyncStorage.setItem('authUser', JSON.stringify(_user));
@@ -232,7 +241,6 @@ export default () => {
     tryLocalSignin();
   }, []);
 
-  // FIXME: Ask again?
   // FIXME: Ask for all permissions here?
   useEffect(() => {
     (async () => {
@@ -280,7 +288,8 @@ export default () => {
                             options={{ headerTransparent: true, headerTitle: null }}
                           />
                           // FIXME: work without TOKEN!
-                          : (state.authUser === null)
+                          // : (state.authUser === null)
+                          : (firebase.auth().currentUser === null)
                             ? <AppStack.Screen name="authStack" component={Auth}
                               headerMode="none"
                               options={{ headerTransparent: true, headerTitle: null }}

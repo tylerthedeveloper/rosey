@@ -7,6 +7,7 @@ import { theme } from '../../core/theme';
 import * as firebase from "firebase";
 import Clipboard from "@react-native-community/clipboard";
 import OTPInputView from '@twotalltotems/react-native-otp-input'
+import { createnewFirebaseAccount } from '../../api/firebaseApi';
 
 // FIXME: do i need signinWithFirebase?
 
@@ -30,11 +31,12 @@ const PhoneConfirmationScreen = ({ navigation, route }) => {
                 await firebase.auth().signInWithCredential(credential)
                     .then(async (res) => {
                         const { phoneNumber, uid } = res.user;
-                        await firebase
-                            .firestore()
-                            .collection('users')
-                            .doc(uid)
-                            .set({ phoneNumber, uid })
+                        // await firebase
+                        //     .firestore()
+                        //     .collection('users')
+                        //     .doc(uid)
+                        //     .set({ phoneNumber, uid })
+                        await createnewFirebaseAccount({uid, phoneNumber})
                             .then(() => signinWithFirebase({ email, uid, phoneNumber }))
                     });
             }
