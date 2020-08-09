@@ -16,9 +16,7 @@ const PhoneSignupScreen = ({ navigation }) => {
     const firebaseConfig = firebase.apps.length ? firebase.app().options : undefined;
 
     const [isLoading, setIsLoading] = useState(false);
-    //  TODO: catch invalid phone early?
     const [phoneNumber, setNumber] = useState('');
-
     const [country, setCountry] = useState();
     const [callingCode, setCallingCode] = useState('+1');
 
@@ -48,6 +46,7 @@ const PhoneSignupScreen = ({ navigation }) => {
                 if (isLoading) { setIsLoading(false) }
             } catch (error) {
                 // if (isLoading) { setIsLoading(false) }
+                console.log(error.message)
                 setIsLoading(false)
                 switch (error.code) {
                     case 'auth/user-not-found':

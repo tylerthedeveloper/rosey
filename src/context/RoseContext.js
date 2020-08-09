@@ -7,6 +7,8 @@ import { AsyncStorage } from 'react-native';
 import shortid from 'shortid';
 import createDataContext from './createDataContext';
 import Constants from '../constants';
+import { getAllRosesFromFirebase, addRoseToFirebase } from '../api/firebaseApi';
+import firebase from 'firebase'
 
 const roseReducer = (state, action) => {
     const { payload } = action;
@@ -32,22 +34,16 @@ const roseReducer = (state, action) => {
 
 const addRose = (dispatch) => async ({ roseObj, callback }) => {
     try {
-        /* -------------------------------------------------------------------------- */
-        // const response = await roseyApi.post('/roses', roseData);
-        // const newRose = response.data.rose;
-        /* -------------------------------------------------------------------------- */
-        const roseId = (roseObj.name) ? shortid.generate(roseObj.name) : shortid.generate();
-        roseObj.roseId = roseId;
-        // FIXME: PULL FROM CURRENT STATE???
-        const roses = await AsyncStorage.getItem('roses')
-            .then(req => JSON.parse(req));
+        const uid = firebase.auth().currentUser.uid;
+        const response = await addRoseToFirebase(uid, roseObj);
         const didIReviewApp = await AsyncStorage.getItem('didIReviewApp');
-        // await AsyncStorage.removeItem('didIReviewApp');
-        const updatedRoseList = [...(roses || []), roseObj];
-        // console.log(updatedRoseList.length, didIReviewApp, didIReviewApp === null, updatedRoseList.length % 5 === 0 || updatedRoseList.length % 15 === 0);
-        await AsyncStorage.setItem('roses', JSON.stringify(updatedRoseList));
+        // FIXME: This is inefficient!!!!
+        // FIXME: This is inefficient!!!!
+        // MAYBE CAN STORE 'LENGTH IN FIRESTORE... at collection root
+        // FIXME: This is inefficient!!!!A
+        const length = (await getAllRosesFromFirebase(uid)).length
         dispatch({ type: "add_rose", payload: roseObj });
-        if (didIReviewApp === null && updatedRoseList.length !== 10 && (updatedRoseList.length % 5 === 0 || updatedRoseList.length % 12 === 0)) {
+        if (didIReviewApp === null && length !== 10 && (length % 5 === 0 || length % 12 === 0)) {
             Constants._askForFeedbackReview();
         }
         callback(roseObj);
@@ -123,22 +119,12 @@ const editRose = (dispatch) => async ({ roseObj, callback }) => {
 
 const fetchAllRoses = (dispatch) => async () => {
     try {
-        /* -------------------------------------------------------------------------- */
-        // const response = await roseyApi.get('/roses');
-        // const roses = response.data.roses;
-        // dispatch({ type: "fetch_roses", payload: roses });
-        /* -------------------------------------------------------------------------- */
-        const roseStringArray = await AsyncStorage.getItem('roses');
-        if (roseStringArray) {
-            //
-            // ───  ────────────────────────────────────────────────────────────
-            // FIXME: This experimental when needed to reset cache
-            // await AsyncStorage.removeItem('roses');
-            // ────────────────────────────────────────────────────────────────────────────────
-            const roses = JSON.parse(roseStringArray);
+        const uid = firebase.auth().currentUser.uid;
+        const roses = await getAllRosesFromFirebase(uid);
+        if (roses && roses.length) {
             dispatch({ type: "fetch_roses", payload: [...(roses || [])] });
         } else {
-            await AsyncStorage.setItem('roses', JSON.stringify([Constants.my_personal_card]));
+            const response = await addRoseToFirebase(uid, Constants.my_personal_card);
             dispatch({ type: "fetch_roses", payload: [Constants.my_personal_card] });
         }
     } catch (err) {

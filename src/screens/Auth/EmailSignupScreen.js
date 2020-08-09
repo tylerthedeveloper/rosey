@@ -30,8 +30,6 @@ const EmailSignupScreen = ({ navigation }) => {
             })
             // .then(() => userSignin())
             .catch((error) => {
-                console.log('Error signing user up with email and password! '
-                    + error.code + ': ' + error.message);
                 switch (error.code) {
                     case 'auth/user-not-found':
                         alert('A user with that email does not exist. Try signing Up');
@@ -39,7 +37,16 @@ const EmailSignupScreen = ({ navigation }) => {
                     case 'auth/invalid-email':
                         alert('Please enter a valid email address');
                         break;
+                    case 'auth/email-already-in-use':
+                        alert('That email is already in use');
+                        break;
+                    default:
+                        alert('There was an unexpected problem with signup');
+                        break;
                 }
+                setIsLoading(false);
+                console.log('Error signing user up with email and password! '
+                    + error.code + ': ' + error.message);
             });
     }
 
