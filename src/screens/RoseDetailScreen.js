@@ -2,6 +2,8 @@ import React, { useContext } from 'react';
 import { Context as RoseContext } from '../context/RoseContext';
 import RoseViewContainer from '../paper-components/RoseViewContainer';
 
+// FIXME: Should this jsut take the object?
+// FIXME: should this look up in fb?
 const RoseDetailScreen = ({ navigation, route }) => {
 
     const { roseId } = route.params;

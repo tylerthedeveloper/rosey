@@ -8,5 +8,21 @@ export const getAllRosesFromFirebase = async (uid) => {
 }
 
 export const addRoseToFirebase = async (uid, rose) => {
-    return (await firebase.firestore().collection('roses').doc(uid).collection('myRoses').add(rose)).id
+    const refID = await firebase.firestore().collection('roses').doc(uid).collection('myRoses').doc().id;
+    rose.roseId = refID;
+    await firebase.firestore().collection('roses').doc(uid).collection('myRoses').doc(refID).set(rose);
+    return refID;
 }
+
+export const editRoseFromFirebase = async (uid, roseObj) => {
+    return await firebase.firestore().collection('roses').doc(uid).collection('myRoses')
+        .doc(roseObj.roseId)
+        .set(roseObj, { merge: true })
+}
+export const deleteRoseFromFirebase = async (uid, roseId) => {
+    return await firebase.firestore().collection('roses').doc(uid).collection('myRoses')
+        .doc(roseId)
+        .delete()
+}
+
+
