@@ -199,7 +199,7 @@ export default () => {
             if (user) {
               const { uid } = user;
               const userAccount = await getFirebaseAccount(uid);
-              console.log('tryLocalSigninu', userAccount)
+              // console.log('tryLocalSigninu', userAccount)
               dispatch({ type: 'signin', payload: { user: userAccount } });
             } else {
               dispatch({ type: 'need_to_signin' });
