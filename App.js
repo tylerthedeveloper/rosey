@@ -27,6 +27,8 @@ import firebase from 'firebase';
 import { firebaseConfig } from './config/firebase';
 import { YellowBox } from 'react-native';
 
+import { getFirebaseAccount } from './src/api/firebaseApi';
+
 try {
   if (!firebase.apps.length) {
     firebase.initializeApp(firebaseConfig);
@@ -107,10 +109,10 @@ export default () => {
         return { ...state, isApiLoading: true, errorMessage: '' };
       case 'add_error':
         return { ...state, errorMessage: payload, isLoading: false, isApiLoading: false };
-      case 'signup':
-        return { errorMessage: '', token: payload.token, user: payload.user, isLoading: false, isApiLoading: false };
+      // case 'signup':
+      //   return { errorMessage: '', token: payload.token, user: payload.user, isLoading: false, isApiLoading: false };
       case 'signin':
-        return { errorMessage: '', token: payload.token, user: payload.user, isLoading: false, isApiLoading: false };
+        return { errorMessage: '', user: payload.user, isLoading: false, isApiLoading: false };
       case 'update_contact_card':
         return { ...state, user: action.payload, isApiLoading: false, errorMessage: '' };
       case 'clear_error_message':
@@ -128,58 +130,52 @@ export default () => {
 
   const authContext = useMemo(() => {
     return {
-      signup: async ({ name, email, password }) => {
-        try {
-          dispatch({ type: 'set_api_loading' });
-          const _user = Constants._generateUser({ name, email, password, userType: 'user' });
-          // console.log('_user', _user)
-          const response = await roseyApi.post('/auth/signup', { user: _user });
-          const { token, user } = response.data;
-          // console.log(token, user);
-          await AsyncStorage.multiSet([['token', token], ['user', JSON.stringify(user)]]);
-          dispatch({ type: 'signup', payload: { token, user } });
-          // dispatch({ type: 'signup', payload: user });
-        } catch (err) {
-          // FIXME: if necessary, tell user duplicate email 
-          // if (err.message.includes('duplicate')) {
+      // signup: async ({ name, email, password }) => {
+      //   try {
+      //     dispatch({ type: 'set_api_loading' });
+      //     const _user = Constants._generateUser({ name, email, password, userType: 'user' });
+      //     // console.log('_user', _user)
+      //     const response = await roseyApi.post('/auth/signup', { user: _user });
+      //     const { token, user } = response.data;
+      //     // console.log(token, user);
+      //     await AsyncStorage.multiSet([['token', token], ['user', JSON.stringify(user)]]);
+      //     dispatch({ type: 'signup', payload: { token, user } });
+      //     // dispatch({ type: 'signup', payload: user });
+      //   } catch (err) {
+      //     // FIXME: if necessary, tell user duplicate email 
+      //     // if (err.message.includes('duplicate')) {
 
-          // }
-          dispatch({ type: 'add_error', payload: "Something went wrong with sign up, consider trying a different email" });
-        }
-      },
-      // TODO: 
-      // 1. check if user exists locally
-      // share local user...
-      // set timeout
-      // fech API
-      // check if users are different
-      // same == do notjing
-      // different reset
-      signin: async ({ email, password }) => {
-        try {
-          /* -------------------------------------------------------------------------- */
-          dispatch({ type: 'set_api_loading' });
-          const response = await roseyApi.post('/auth/signin', { email, password });
-          const { token, user } = response.data;
-          await AsyncStorage.multiSet([['token', token], ['user', JSON.stringify(user)]]);
-          dispatch({ type: 'signin', payload: { token, user } });
-        } catch (err) {
-          dispatch({ type: 'add_error', payload: 'Something went wrong with sign in, please check your spelling and try again' });
-        }
-      },
-      signinWithFirebase: async ({ email, uid, phoneNumber }) => {
-        try {
-          // console.log('_user', email, uid)
-          const _user = {
-            email, uid, phoneNumber
-          }
-          await AsyncStorage.setItem('authUser', JSON.stringify(_user));
-          dispatch({ type: 'signin', payload: { authUser: _user, user: _user } });
-        } catch (err) {
-          console.log(err.message)
-          dispatch({ type: 'add_error', payload: 'Something went wrong with sign in, please check your spelling and try again' });
-        }
-      },
+      //     // }
+      //     dispatch({ type: 'add_error', payload: "Something went wrong with sign up, consider trying a different email" });
+      //   }
+      // },
+      // signin: async ({ email, password }) => {
+      //   try {
+      //     /* -------------------------------------------------------------------------- */
+      //     dispatch({ type: 'set_api_loading' });
+      //     const response = await roseyApi.post('/auth/signin', { email, password });
+      //     const { token, user } = response.data;
+      //     await AsyncStorage.multiSet([['token', token], ['user', JSON.stringify(user)]]);
+      //     dispatch({ type: 'signin', payload: { token, user } });
+      //   } catch (err) {
+      //     dispatch({ type: 'add_error', payload: 'Something went wrong with sign in, please check your spelling and try again' });
+      //   }
+      // },
+      // fetchOrSetUserFromFirebase: async ({ uid, user }) => {
+      //   console.log('fetchOrSetUserFromFirebase', uid, user)
+      //   try {
+      //     let firebaseUser;
+      //     if (uid && !user) {
+      //       firebaseUser = await getFirebaseAccount(uid);
+      //     } else if (user && !uid) {
+      //       firebaseUser = user;
+      //     }
+      //     dispatch({ type: 'signin', payload: firebaseUser });
+      //   } catch (err) {
+      //     console.log(err.message)
+      //     dispatch({ type: 'add_error', payload: 'Something went wrong with fetching your data' });
+      //   }
+      // },
       updateContactCard: async ({ roseObj, callback }) => {
         try {
           // console.log('updateContactCard')
@@ -199,13 +195,12 @@ export default () => {
       // TODO: what about if token exists and user doesnt?
       tryLocalSignin: async () => {
         try {
-          firebase.auth().onAuthStateChanged(async user => {
+          firebase.auth().onAuthStateChanged(async (user) => {
             if (user) {
-              console.log('tryLocalSigninu', user)
-              const { email, uid, phoneNumber } = user;
-              const _user = { email, uid, phoneNumber };
-              await AsyncStorage.setItem('authUser', JSON.stringify(_user));
-              dispatch({ type: 'signin', payload: { authUser: _user, user: _user } });
+              const { uid } = user;
+              const userAccount = await getFirebaseAccount(uid);
+              console.log('tryLocalSigninu', userAccount)
+              dispatch({ type: 'signin', payload: { user: userAccount } });
             } else {
               dispatch({ type: 'need_to_signin' });
             }

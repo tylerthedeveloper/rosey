@@ -8,6 +8,7 @@ import Constants from '../../constants';
 const TagScreen = () => {
 
     const { state: { tags }, addTag, deleteTag } = useContext(TagContext);
+    // console.log(tags)
 
     // const [tagListLength, setTagListLength] = useState(tags.length);
 

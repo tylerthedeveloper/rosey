@@ -1,11 +1,19 @@
 import firebase from 'firebase'
+import Constants from '../constants';
 
 export const createnewFirebaseAccount = async ({ uid, email, phoneNumber }) => {
-    // console.log(uid, email, phoneNumber)
-    const _user = { uid };
-    if (email && email !== undefined && email.length > 0) _user.email = email;
-    if (phoneNumber && phoneNumber !== undefined && phoneNumber.length > 0) _user.phoneNumber = phoneNumber;
-    return await firebase.firestore().collection('users').doc(uid).set(_user)
+    const _user = Constants._generateUser({ userType: 'user', email, phoneNumber, uid });
+    const doc = firebase.firestore().collection('users').doc(uid);
+    return await doc.set(_user)
+        .then(() => doc.get().then(userToReturn => userToReturn.data()));
+}
+
+export const getFirebaseAccount = async (uid) => {
+    // FIXME: use this link https://stackoverflow.com/questions/49146325/get-firestore-generated-doc-id-after-set
+    // to get the doc 
+    // this helps after SIGNUP to not have to go fetch and ONLY fetch on login
+    return await firebase.firestore().collection('users').doc(uid).get()
+        .then((docRef) => docRef.data())
 }
 
 export const getAllRosesFromFirebase = async (uid) => {
@@ -32,12 +40,3 @@ export const deleteRoseFromFirebase = async (uid, roseId) => {
         .doc(roseId)
         .delete()
 }
-
-
-// const { email, uid } = response.user;
-// await firebase
-//     .firestore()
-//     .collection('users')
-//     .doc(uid)
-//     .set({ email: email, uid: uid })
-//     .then(() => signinWithFirebase({ email, uid }))

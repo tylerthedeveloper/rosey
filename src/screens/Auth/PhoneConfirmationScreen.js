@@ -19,6 +19,7 @@ const PhoneConfirmationScreen = ({ navigation, route }) => {
     const [verificationCode, setVerificationCode] = useState('');
     const [message, setMessage] = useState('');
 
+    // FIXME: CHECK IF account already exists?
     const submitValidationCode = async (code) => {
         try {
             console.log(verificationCode)
@@ -31,13 +32,7 @@ const PhoneConfirmationScreen = ({ navigation, route }) => {
                 await firebase.auth().signInWithCredential(credential)
                     .then(async (res) => {
                         const { phoneNumber, uid } = res.user;
-                        // await firebase
-                        //     .firestore()
-                        //     .collection('users')
-                        //     .doc(uid)
-                        //     .set({ phoneNumber, uid })
-                        await createnewFirebaseAccount({uid, phoneNumber})
-                            .then(() => signinWithFirebase({ email, uid, phoneNumber }))
+                        await createnewFirebaseAccount({ uid, phoneNumber })
                     });
             }
         } catch (err) {

@@ -35,6 +35,7 @@ export const RootStackNavigator = () => {
     // const theme = useTheme(); // TODO:
 
     const { state: { user } } = useContext(AuthContext);
+    const name = (user) ? user.name : '';
 
     const { getInitialTags } = useContext(TagContext);
     const { getImportedContacts } = useContext(ContactsContext);
@@ -62,7 +63,7 @@ export const RootStackNavigator = () => {
                                 : scene.route.name;
                     return (
                         <Appbar.Header theme={{ colors: { primary: theme.colors.primary } }}
-                        // statusBarHeight={(Platform.OS === 'ios') ? Expo.Constants.statusBarHeight + 3 : 0}
+                            // statusBarHeight={(Platform.OS === 'ios') ? Expo.Constants.statusBarHeight + 3 : 0}
                             statusBarHeight={Expo.Constants.statusBarHeight + 3}
                         >
                             {

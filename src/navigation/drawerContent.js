@@ -13,7 +13,9 @@ const DrawerContent = (props) => {
     const paperTheme = useTheme();
     const { navigation } = props;
 
-    const { state: { user: { name } }, signout } = useContext(AuthContext);
+    const { state: { user }, signout } = useContext(AuthContext);
+    const name = (user) ? user.name : '';
+
     // const { getImportedContacts } = useContext(ContactsContext);
     const { getContactsPermissions } = useContacts();
 

@@ -6,6 +6,7 @@ import { Background, MyButton, MyTextInput } from '../../paper-components/memo';
 import firebase from 'firebase'
 import { YellowBox } from 'react-native';
 import { createnewFirebaseAccount } from '../../api/firebaseApi';
+import { TextInput } from 'react-native-paper';
 
 const EmailSignupScreen = ({ navigation }) => {
 
@@ -14,7 +15,7 @@ const EmailSignupScreen = ({ navigation }) => {
         'Setting a timer for a long period of time'
     ]);
 
-    const { state: { errorMessage, isApiLoading }, signup, clearErrorMessage, signinWithFirebase } = useContext(AuthContext);
+    const { state: { errorMessage, isApiLoading }, signup, clearErrorMessage } = useContext(AuthContext);
 
     //  TODO: catch invalid email early?
     const [isLoading, setIsLoading] = useState(false);
@@ -28,7 +29,7 @@ const EmailSignupScreen = ({ navigation }) => {
             .createUserWithEmailAndPassword(email, password)
             .then(async (response) => {
                 const { email, uid } = response.user;
-                await createnewFirebaseAccount({ uid, email })
+                const firebaseUser = await createnewFirebaseAccount({ uid, email });
             })
             .catch((error) => {
                 setIsLoading(false);
@@ -44,10 +45,6 @@ const EmailSignupScreen = ({ navigation }) => {
                     .auth()
                     .signInWithEmailAndPassword(email, password);
                 setIsLoading(false);
-                if (response) {
-                    const { email, uid } = response.user;
-                    // signinWithFirebase({ email, uid });
-                }
             } catch (error) {
                 setIsLoading(false);
                 firebaseErrorHandler(error);
@@ -58,6 +55,9 @@ const EmailSignupScreen = ({ navigation }) => {
     // TODO: EXTRACT OUT TO FIREBASE UTILS?
     const firebaseErrorHandler = (error) => {
         switch (error.code) {
+            case 'auth/user-not-found':
+                alert('There is no user found with that email/password combination');
+                break;
             case 'auth/invalid-email':
                 alert('Please enter a valid email address.');
                 break;
@@ -75,8 +75,6 @@ const EmailSignupScreen = ({ navigation }) => {
 
     const isDisabled = (isLoading || email.length === 0 || password.length < 6)
 
-    // const passRef = React.createRef(null);
-
     return (
         <KeyboardAvoidingView style={{ flex: 1 }}>
             <View style={styles.container}>
@@ -89,18 +87,14 @@ const EmailSignupScreen = ({ navigation }) => {
                     onChangeText={setEmail}
                     autoCorrect={false}
                     returnKeyType={"next"}
-                // onBlur={() => passRef.current.focus()}
-                // onKeyUp={() => passRef.current.focus()}
-                // onSubmitEditing={() => passRef.current._root.focus()}
 
                 />
                 <MyTextInput label="Password"
                     value={password}
+                    // onSubmitEditing={() => (!isDisabled) ? userSignin() : null}
                     onChangeText={setPassword}
                     autoCorrect={false}
                     secureTextEntry
-                // ref={input => { passRef.current = input; }}
-                // ref={passRef}
 
                 />
                 {(errorMessage) ? <Text style={styles.errorMessage}> {errorMessage} </Text> : null}

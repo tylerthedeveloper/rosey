@@ -41,12 +41,9 @@ const getInitialTags = (dispatch) => async () => {
         // API Section here//
         /* -------------------------------------------------------------------------- */
         const tagStringArray = await AsyncStorage.getItem('tags');
-        if (tagStringArray) {
-            // ───  ────────────────────────────────────────────────────────────
-            // FIXME: This experimental when needed to reset cache
-            // await AsyncStorage.removeItem('tags');
-            // ─────────────────────────────────────────────────────────────────
+        if (tagStringArray && tagStringArray.length > 0) {
             const tags = JSON.parse(tagStringArray);
+            // console.log('tagStringArray', tagStringArray, tagStringArray.length)
             dispatch({ type: "get_initial_tags", payload: [...(tags || [])] });
         } else {
             // console.log('there are no tags');

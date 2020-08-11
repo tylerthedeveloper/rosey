@@ -16,7 +16,8 @@ const linksDictionary = {
     rozy_website_url: 'http://rozy-website.herokuapp.com/'
 }
 
-const _generateUser = ({ name, email, password, userType }) => {
+const _generateUser = ({ userType, email, phoneNumber, uid }) => {
+
     let newUser = {
         birthday: new Date(Date.now()),
         email: email || '',
@@ -25,10 +26,10 @@ const _generateUser = ({ name, email, password, userType }) => {
             homeFormatted_address: '',
             homeLocationName: ''
         },
-        name: name || '',
+        name: '',
         notes: '',
         nickName: '',
-        phoneNumber: '',
+        phoneNumber: phoneNumber || '',
         personalSite: '',
         picture: '',
         socialProfiles: {
@@ -42,11 +43,11 @@ const _generateUser = ({ name, email, password, userType }) => {
             venmo: '',
             whatsapp: ''
         },
+        uid,
         work: ''
     };
-    if (userType === 'user') {
-        newUser.password = password;
-    } else if (userType !== 'user') {
+
+    if (userType !== 'user') {
         newUser = {
             ...newUser,
             dateMet: new Date(Date.now()),
