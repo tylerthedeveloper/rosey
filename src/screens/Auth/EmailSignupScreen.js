@@ -17,8 +17,9 @@ const EmailSignupScreen = ({ navigation }) => {
 
     const { state: { errorMessage, isApiLoading }, signup, clearErrorMessage } = useContext(AuthContext);
 
-    //  TODO: catch invalid email early?
     const [isLoading, setIsLoading] = useState(false);
+    
+    //  TODO: catch invalid email early?
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
 
@@ -29,7 +30,7 @@ const EmailSignupScreen = ({ navigation }) => {
             .createUserWithEmailAndPassword(email, password)
             .then(async (response) => {
                 const { email, uid } = response.user;
-                await createnewFirebaseAccount({ uid, email });
+                // await createnewFirebaseAccount({ uid, email });
             })
             .catch((error) => {
                 setIsLoading(false);

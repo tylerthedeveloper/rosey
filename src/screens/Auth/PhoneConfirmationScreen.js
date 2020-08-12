@@ -1,13 +1,10 @@
-import React, { useState } from 'react';
-import { StyleSheet, View, TouchableOpacity } from 'react-native';
-import { Text } from 'react-native-elements';
-import { Logo, MyButton, MyHeader, MyTextInput } from '../../paper-components/memo';
-import { ActivityIndicator, Colors } from 'react-native-paper';
-import { theme } from '../../core/theme';
+import OTPInputView from '@twotalltotems/react-native-otp-input';
 import * as firebase from "firebase";
-import Clipboard from "@react-native-community/clipboard";
-import OTPInputView from '@twotalltotems/react-native-otp-input'
-import { createnewFirebaseAccount, getFirebaseAccount } from '../../api/firebaseApi';
+import React, { useState } from 'react';
+import { StyleSheet, View } from 'react-native';
+import { Text } from 'react-native-elements';
+import { theme } from '../../core/theme';
+import { MyButton, MyHeader } from '../../paper-components/memo';
 
 // FIXME: do i need signinWithFirebase?
 
@@ -17,38 +14,60 @@ const PhoneConfirmationScreen = ({ navigation, route }) => {
 
     const [verificationCode, setVerificationCode] = useState('');
     const [message, setMessage] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
     // FIXME: CHECK IF account already exists?
     const submitValidationCode = async (code) => {
-        try {
-            // console.log(verificationCode)
-            if (verificationCode.length === 6) {
+        if (verificationCode.length === 6) {
+            if (!isLoading) { setIsLoading(true) }
+            setIsLoading(true);
+            try {
                 const credential = firebase.auth.PhoneAuthProvider.credential(
                     verificationId,
                     verificationCode
                 );
                 console.log('credential', credential);
                 await firebase.auth().signInWithCredential(credential)
-                    .then(async (res) => {
-                        const { phoneNumber, uid } = res.user;
-                        const user = await getFirebaseAccount(uid);
-                        console.log('[user]', user)
-                        if (user === undefined || !user) {
-                            await createnewFirebaseAccount({ uid, phoneNumber })
-                        }
-                    });
+                setIsLoading(false);
+            } catch (error) {
+                setIsLoading(false);
+                firebaseErrorHandler(error);
             }
-        } catch (err) {
-            console.log(err.message)
-            setMessage({ text: `Error: ${err.message}`, color: "red" });
+        };
+    }
+
+    // TODO: EXTRACT OUT TO FIREBASE UTILS?
+    const firebaseErrorHandler = (error) => {
+        switch (error.code) {
+            case 'auth/user-not-found':
+                alert('There is no user found with that email/password combination');
+                break;
+            case 'auth/invalid-email':
+                alert('Please enter a valid email address.');
+                break;
+            case 'auth/email-already-in-use':
+                alert('That email is already in use.');
+                break;
+            case 'auth/code-expired':
+                alert('That code has expired, please resend below');
+                break;
+            default:
+                alert('There was an unexpected problem with signup.');
+                break;
         }
-    };
+        setIsLoading(false);
+        console.log('Error signing user up with ' + error.code + ': ' + error.message);
+    }
+
+    const resendCode = () => { }
+
+    const isDisabled = (isLoading || verificationCode.length === 0 || verificationId.length < 6)
 
     return (
         <View style={styles.container}>
             <MyHeader>
                 Enter Code
-                </MyHeader>
+            </MyHeader>
             <View>
                 <OTPInputView
                     style={{ width: '80%', height: 150 }}
@@ -59,23 +78,24 @@ const PhoneConfirmationScreen = ({ navigation, route }) => {
                     autoFocusOnLoad
                     codeInputFieldStyle={styles.codeInputFieldStyle}
                     codeInputHighlightStyle={styles.underlineStyleHighLighted}
-                    onCodeFilled={(code => {
-                        if (code.length === 6) {
-                            submitValidationCode(code);
-                        }
-                    })}
+                    onCodeFilled={(code) => (verificationCode.length === 6) ? submitValidationCode(verificationCode) : null}
                 />
                 {(message !== '') && <Text style={styles.label}></Text>}
             </View>
-            <View style={styles.row}>
-                <TouchableOpacity onPress={() => submitValidationCode()}>
-                    <Text style={styles.link}>Submit</Text>
-                </TouchableOpacity>
-                <Text style={styles.label}>Didnt get a code?? </Text>
-                <TouchableOpacity onPress={() => null}>
-                    <Text style={styles.link}>Login</Text>
-                </TouchableOpacity>
-            </View>
+            <MyButton
+                mode="contained"
+                onPress={submitValidationCode}
+                disabled={isDisabled}
+            >
+                Continue
+            </MyButton>
+            {/* <MyButton
+                mode="contained"
+                onPress={resendCode}
+                disabled={isDisabled}
+            >
+                Resend code
+            </MyButton> */}
         </View>);
 }
 
