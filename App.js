@@ -109,15 +109,13 @@ export default () => {
         return { ...state, isApiLoading: true, errorMessage: '' };
       case 'add_error':
         return { ...state, errorMessage: payload, isLoading: false, isApiLoading: false };
-      // case 'signup':
-      //   return { errorMessage: '', token: payload.token, user: payload.user, isLoading: false, isApiLoading: false };
       case 'signin':
         return { errorMessage: '', user: payload.user, isLoading: false, isApiLoading: false };
       case 'update_contact_card':
         return { ...state, user: action.payload, isApiLoading: false, errorMessage: '' };
       case 'clear_error_message':
         return { ...state, errorMessage: '' };
-      case 'signout': // TODO: User null??? user: null
+      case 'signout':
         return { ...state, errorMessage: '', token: null, isLoading: false, authUser: null };
       case 'need_to_signin':
         return { ...state, isLoading: false };
@@ -125,42 +123,11 @@ export default () => {
         return state;
     }
   },
-    { isLoading: true, token: null, isApiLoading: false, errorMessage: '', user: {}, authUser: null }
+    { isLoading: true, token: null, isApiLoading: false, errorMessage: '', user: { name: '' }, authUser: null }
   );
 
   const authContext = useMemo(() => {
     return {
-      // signup: async ({ name, email, password }) => {
-      //   try {
-      //     dispatch({ type: 'set_api_loading' });
-      //     const _user = Constants._generateUser({ name, email, password, userType: 'user' });
-      //     // console.log('_user', _user)
-      //     const response = await roseyApi.post('/auth/signup', { user: _user });
-      //     const { token, user } = response.data;
-      //     // console.log(token, user);
-      //     await AsyncStorage.multiSet([['token', token], ['user', JSON.stringify(user)]]);
-      //     dispatch({ type: 'signup', payload: { token, user } });
-      //     // dispatch({ type: 'signup', payload: user });
-      //   } catch (err) {
-      //     // FIXME: if necessary, tell user duplicate email 
-      //     // if (err.message.includes('duplicate')) {
-
-      //     // }
-      //     dispatch({ type: 'add_error', payload: "Something went wrong with sign up, consider trying a different email" });
-      //   }
-      // },
-      // signin: async ({ email, password }) => {
-      //   try {
-      //     /* -------------------------------------------------------------------------- */
-      //     dispatch({ type: 'set_api_loading' });
-      //     const response = await roseyApi.post('/auth/signin', { email, password });
-      //     const { token, user } = response.data;
-      //     await AsyncStorage.multiSet([['token', token], ['user', JSON.stringify(user)]]);
-      //     dispatch({ type: 'signin', payload: { token, user } });
-      //   } catch (err) {
-      //     dispatch({ type: 'add_error', payload: 'Something went wrong with sign in, please check your spelling and try again' });
-      //   }
-      // },
       // fetchOrSetUserFromFirebase: async ({ uid, user }) => {
       //   console.log('fetchOrSetUserFromFirebase', uid, user)
       //   try {
@@ -216,11 +183,7 @@ export default () => {
       signout: async () => {
         // console.log('signout')
         try {
-          /* -------------------------------------------------------------------------- */
-          // await AsyncStorage.removeItem('token'); // FIXME: And user? maybe this is when i should definitely refetch...?
           await AsyncStorage.removeItem('authUser'); // FIXME: And user? maybe this is when i should definitely refetch...?
-          /* -------------------------------------------------------------------------- */
-          // await AsyncStorage.removeItem('user');
           firebase.auth().signOut();
           dispatch({ type: 'signout' });
         } catch (e) {
@@ -240,14 +203,6 @@ export default () => {
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestPermissionsAsync();
-      // console.log('location: ', status);
-
-      // if (status !== 'granted') {
-      //   alert('Permission to access location was denied');
-      // }
-      // let location = await Location.getCurrentPositionAsync({});
-      // setLocation(location);
-      // console.log(location)
     })();
   });
 
@@ -282,8 +237,7 @@ export default () => {
                           <AppStack.Screen name="ResolveAuth" component={ResolveAuthScreen}
                             options={{ headerTransparent: true, headerTitle: null }}
                           />
-                          // FIXME: work without TOKEN!
-                          // : (state.authUser === null)
+                          // FIXME:: (state.authUser === null)
                           : (firebase.auth().currentUser === null)
                             ? <AppStack.Screen name="authStack" component={Auth}
                               headerMode="none"

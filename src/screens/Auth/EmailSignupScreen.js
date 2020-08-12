@@ -29,7 +29,7 @@ const EmailSignupScreen = ({ navigation }) => {
             .createUserWithEmailAndPassword(email, password)
             .then(async (response) => {
                 const { email, uid } = response.user;
-                const firebaseUser = await createnewFirebaseAccount({ uid, email });
+                await createnewFirebaseAccount({ uid, email });
             })
             .catch((error) => {
                 setIsLoading(false);

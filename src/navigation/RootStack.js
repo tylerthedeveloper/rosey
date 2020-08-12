@@ -34,8 +34,8 @@ export const RootStackNavigator = () => {
 
     // const theme = useTheme(); // TODO:
 
-    const { state: { user } } = useContext(AuthContext);
-    const name = (user) ? user.name : '';
+    const { state } = useContext(AuthContext);
+    const name = (state && state.user) ? state.user.name : '';
 
     const { getInitialTags } = useContext(TagContext);
     const { getImportedContacts } = useContext(ContactsContext);
@@ -46,7 +46,7 @@ export const RootStackNavigator = () => {
     }, []);
 
     // TODO: Do i care about middle names??
-    let initials = _generateInitials(user.name);
+    let initials = _generateInitials(name);
 
     return (
         <RootStack.Navigator

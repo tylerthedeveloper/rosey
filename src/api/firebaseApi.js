@@ -1,6 +1,11 @@
 import firebase from 'firebase'
 import Constants from '../constants';
 
+//
+// ────────────────────────────────────────────────── I ──────────
+//   :::::: U S E R S : :  :   :    :     :        :          :
+// ────────────────────────────────────────────────────────────
+//
 export const createnewFirebaseAccount = async ({ uid, email, phoneNumber }) => {
     const _user = Constants._generateUser({ userType: 'user', email, phoneNumber, uid });
     const doc = firebase.firestore().collection('users').doc(uid);
@@ -15,14 +20,14 @@ export const getFirebaseAccount = async (uid) => {
     return await firebase.firestore().collection('users').doc(uid).get()
         .then((docRef) => docRef.data())
 }
+// ────────────────────────────────────────────────────────────────────────────────
 
-export const getAllRosesFromFirebase = async (uid) => {
-    const snapshot = await firebase.firestore().collection('roses').doc(uid).collection('myRoses')
-        .get()
-        .then(snapshot => snapshot.docs.map(doc => doc.data()))
-    return snapshot;
-}
 
+//
+// ────────────────────────────────────────────────── II ──────────
+//   :::::: R O S E S : :  :   :    :     :        :          :
+// ────────────────────────────────────────────────────────────
+//
 export const addRoseToFirebase = async (uid, rose) => {
     const refID = await firebase.firestore().collection('roses').doc(uid).collection('myRoses').doc().id;
     rose.roseId = refID;
@@ -40,3 +45,27 @@ export const deleteRoseFromFirebase = async (uid, roseId) => {
         .doc(roseId)
         .delete()
 }
+
+export const getAllRosesFromFirebase = async (uid) => {
+    const snapshot = await firebase.firestore().collection('roses').doc(uid).collection('myRoses')
+        .get()
+        .then(snapshot => snapshot.docs.map(doc => doc.data()))
+    return snapshot;
+}
+// ────────────────────────────────────────────────────────────────────────────────
+
+
+//TODO: should this just go on the user??? in tags: []
+//
+// ──────────────────────────────────────────────── III ──────────
+//   :::::: T A G S : :  :   :    :     :        :          :
+// ──────────────────────────────────────────────────────────
+//
+export const addTagToFirebase = async (uid, tag) => {
+    const refID = await firebase.firestore().collection('roses').doc(uid).collection('myRoses').doc().id;
+    rose.roseId = refID;
+    await firebase.firestore().collection('roses').doc(uid).collection('myRoses').doc(refID).set(rose);
+    return refID;
+}
+// ────────────────────────────────────────────────────────────────────────────────
+

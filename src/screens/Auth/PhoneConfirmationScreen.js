@@ -7,14 +7,13 @@ import { theme } from '../../core/theme';
 import * as firebase from "firebase";
 import Clipboard from "@react-native-community/clipboard";
 import OTPInputView from '@twotalltotems/react-native-otp-input'
-import { createnewFirebaseAccount } from '../../api/firebaseApi';
+import { createnewFirebaseAccount, getFirebaseAccount } from '../../api/firebaseApi';
 
 // FIXME: do i need signinWithFirebase?
 
 const PhoneConfirmationScreen = ({ navigation, route }) => {
 
     const { verificationId } = route.params;
-    console.log('verificationId', verificationId)
 
     const [verificationCode, setVerificationCode] = useState('');
     const [message, setMessage] = useState('');
@@ -22,7 +21,7 @@ const PhoneConfirmationScreen = ({ navigation, route }) => {
     // FIXME: CHECK IF account already exists?
     const submitValidationCode = async (code) => {
         try {
-            console.log(verificationCode)
+            // console.log(verificationCode)
             if (verificationCode.length === 6) {
                 const credential = firebase.auth.PhoneAuthProvider.credential(
                     verificationId,
@@ -32,7 +31,11 @@ const PhoneConfirmationScreen = ({ navigation, route }) => {
                 await firebase.auth().signInWithCredential(credential)
                     .then(async (res) => {
                         const { phoneNumber, uid } = res.user;
-                        await createnewFirebaseAccount({ uid, phoneNumber })
+                        const user = await getFirebaseAccount(uid);
+                        console.log('[user]', user)
+                        if (user === undefined || !user) {
+                            await createnewFirebaseAccount({ uid, phoneNumber })
+                        }
                     });
             }
         } catch (err) {
