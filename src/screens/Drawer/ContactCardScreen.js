@@ -5,7 +5,6 @@ import RoseViewContainer from '../../paper-components/RoseViewContainer';
 const ContactCardScreen = () => {
 
     const { state: { user, isApiLoading, errorMessage }, updateContactCard, signout } = useContext(AuthContext);
-    console.log('user', user)
     return (
         <RoseViewContainer {...{
             user, isApiLoading, errorMessage,

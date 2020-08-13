@@ -166,7 +166,7 @@ export default () => {
             if (user) {
               const { uid, phoneNumber, email } = user;
               let userAccount = await getFirebaseAccount(uid);
-              console.log('[user]', userAccount)
+              // console.log('[user]', userAccount)
               if (userAccount === undefined || !userAccount) {
                 console.log('userAccount === undefined || !userAccount')
                 console.log('[email, phone', uid, email, phoneNumber)

@@ -69,3 +69,11 @@ export const addTagToFirebase = async (uid, tag) => {
 }
 // ────────────────────────────────────────────────────────────────────────────────
 
+
+
+// Photos
+// export const fetchPhotosFromFirebase = async (uid) => {
+//     return await firebase.STORAGE().collection('images').doc(uid);
+// }
+// ────────────────────────────────────────────────────────────────────────────────
+

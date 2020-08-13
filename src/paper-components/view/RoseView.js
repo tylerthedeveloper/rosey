@@ -10,6 +10,7 @@ import { SocialIcon } from 'react-native-elements'
 import { Tooltip, Text } from 'react-native-elements';
 import { MyShadowCard } from '../memo';
 import { theme } from '../../core/theme';
+import PhotoCarousel from '../../components/PhotoCarousel'
 
 const RoseView = ({ user, isApiLoading, view_updateFunction, view_updateFunctionText,
     view_secondFunction, view_secondFunctionText,
@@ -189,7 +190,11 @@ const RoseView = ({ user, isApiLoading, view_updateFunction, view_updateFunction
         <View style={{ flex: 1 }}>
             {/* Social Section */}
             <ScrollView style={{ marginBottom: 15, flex: 1 }} showsVerticalScrollIndicator={false}>
+
                 <View style={{ marginVertical: 5 }}>
+                    <MyShadowCard>
+                        <PhotoCarousel />
+                    </MyShadowCard>
                     <MyShadowCard>
                         <View style={styles.socialMediaSection}>
                             {
@@ -231,6 +236,7 @@ const RoseView = ({ user, isApiLoading, view_updateFunction, view_updateFunction
                                 ))
                             }
                         </View>
+                        
 
                         {/* {
                             viewRows.map(({ value, subtitle, left, rightIcon, secondRightIcon, rightFunc, secondRightFunc }) => (
