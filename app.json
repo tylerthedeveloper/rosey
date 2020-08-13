@@ -32,6 +32,7 @@
         "NSRemindersUsageDescription": "Allow Rozy to interact with your reminders so you can recall special events",
         "NSContactsUsageDescription": "Allow Rozy to import your contacts (locally) so you can further personalize and prioritize them in a rose",
         "NSCameraUsageDescription": "Allow Rozy to use the camera to scan barcodes so you can quickly add other's roses!",
+        "NSPhotoLibraryUsageDescription": "Allow Rozy to access photo library so you can upload photos related to your roses",
         "LSApplicationQueriesSchemes": [
           "fb",
           "linkedin",

@@ -11,13 +11,15 @@ import { Tooltip, Text } from 'react-native-elements';
 import { MyShadowCard } from '../memo';
 import { theme } from '../../core/theme';
 import PhotoCarousel from '../../components/PhotoCarousel'
+import { RoseHeader } from '../partial';
 
 const RoseView = ({ user, isApiLoading, view_updateFunction, view_updateFunctionText,
     view_secondFunction, view_secondFunctionText,
-    view_updateFunction_callback
+    view_updateFunction_callback,
+    editing, _setEditing
 }) => {
 
-    const { birthday, dateMet, email, homeLocation, name, nickName, notes, personalSite, phoneNumber, placeMetAt, picture, socialProfiles, tags, work } = user || {};
+    const { birthday, dateMet, email, homeLocation, name, nickName, notes, personalSite, phoneNumber, placeMetAt, picture, socialProfiles, tags, work, uid } = user || {};
     const { homeLocationCoords, homeFormatted_address, homeLocationName } = homeLocation || {};
     const { placeMetAtLocationCoords, placeMetAtFormatted_address, placeMetAtName } = placeMetAt || {};
 
@@ -176,9 +178,7 @@ const RoseView = ({ user, isApiLoading, view_updateFunction, view_updateFunction
         // FIXME:
         //////////////////
         { type: 'twitch', value: twitch, appUrl: `twitch://stream/${twitch}`, webUrl: `https://twitch.tv/${twitch}` },
-
         { type: 'twitter', value: twitter, appUrl: `twitter://user?screen_name=${twitter}`, webUrl: `https://twitter.com/${twitter}` },
-
         { type: 'venmo', value: venmo, appUrl: `venmo://users/${twitter}`, webUrl: `https://venmo.com/${venmo}` },
         //////////////////
 
@@ -188,6 +188,11 @@ const RoseView = ({ user, isApiLoading, view_updateFunction, view_updateFunction
 
     return (
         <View style={{ flex: 1 }}>
+            <RoseHeader {...{
+                uid, name, picture, homeLocationName, isUserContactCard, editing, _setEditing,
+                phoneNumber, email, //headerToContainer
+            }} />
+
             {/* Social Section */}
             <ScrollView style={{ marginBottom: 15, flex: 1 }} showsVerticalScrollIndicator={false}>
 
@@ -236,7 +241,7 @@ const RoseView = ({ user, isApiLoading, view_updateFunction, view_updateFunction
                                 ))
                             }
                         </View>
-                        
+
 
                         {/* {
                             viewRows.map(({ value, subtitle, left, rightIcon, secondRightIcon, rightFunc, secondRightFunc }) => (

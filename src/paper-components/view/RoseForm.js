@@ -1,6 +1,6 @@
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { KeyboardAvoidingView, ScrollView, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
 import { GOOGLE_API_KEY } from "react-native-dotenv";
 import { ActivityIndicator, Avatar, Button, Card, Chip, HelperText, IconButton, Paragraph, Searchbar, TextInput } from 'react-native-paper';
@@ -12,11 +12,14 @@ import { theme } from '../../core/theme';
 import useCurrentLocation from '../../hooks/useCurrentLocation';
 import { MyShadowCard, MyTextInput } from '../../paper-components/memo';
 import { useFocusEffect } from '@react-navigation/native';
+import * as Permissions from 'expo-permissions';
+import { RoseHeader } from '../partial';
 
 const RoseForm = ({ user, isApiLoading, errorMessage, props,
     form_updateFunction, form_updateFunctionText,
     form_secondFunction, form_secondFunctionText,
-    form_updateFunction_callback, saveOrSubmitPassedDownAction
+    form_updateFunction_callback, saveOrSubmitPassedDownAction,
+    editing, _setEditing
 }) => {
 
     const {
@@ -353,12 +356,53 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
 
     const [noteFormHeight, setNoteFormHeight] = useState();
 
+    const saveFunc = () => {
+        saveFromHeader();
+    }
+
+    const getPermissionAsync = async () => {
+        if (Platform.OS === 'ios') {
+            const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+            console.log(status)
+            if (status !== 'granted') {
+                alert('Sorry, we need camera roll permissions to make this work!');
+            }
+        }
+    }
+
+    const setProfilePhoto = () => {
+        setPicture('https://www.freepngimg.com/thumb/logo/62837-instagram-icons-photography-computer-logo-icon.png');
+    }
+
+    // _pickImage = async () => {
+    //     try {
+    //         let result = await ImagePicker.launchImageLibraryAsync({
+    //             mediaTypes: ImagePicker.MediaTypeOptions.All,
+    //             allowsEditing: true,
+    //             aspect: [4, 3],
+    //             quality: 1,
+    //         });
+    //         if (!result.cancelled) {
+    //             this.setState({ image: result.uri });
+    //         }
+
+    //         console.log(result);
+    //     } catch (E) {
+    //         console.log(E);
+    //     }
+    // };
+
+    useEffect(() => {
+        getPermissionAsync();
+    }, [])
+
     return (
         <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : null}
             keyboardVerticalOffset={85}
             style={{ flex: 1, flexDirection: "column", flexGrow: 1 }}
         >
+            <RoseHeader {...{ name, picture: updated_picture, homeLocationName: updated_homeLocation.homeLocationName, isUserContactCard, editing, _setEditing, phoneNumber, email, saveFunc, setProfilePhoto }} />
             <ScrollView
                 ref={scrollRef}
                 onContentSizeChange={(contentHeight) => setContentHeight(contentHeight)}
