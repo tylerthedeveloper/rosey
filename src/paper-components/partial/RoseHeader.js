@@ -8,7 +8,7 @@ import { theme } from '../../core/theme';
 import { MyShadowCard } from '../memo';
 
 const RoseHeader = ({ uid, name, picture, homeLocationName, isUserContactCard, editing, _setEditing,
-    phoneNumber, email, saveFunc, setProfilePhoto
+    phoneNumber, email, saveFunc, pickProfileImage
 }) => {
 
 
@@ -77,8 +77,8 @@ const RoseHeader = ({ uid, name, picture, homeLocationName, isUserContactCard, e
                             />
                     }
                     {(editing) &&
-                        <TouchableOpacity onPress={setProfilePhoto}>
-                            <Text style={{ color: 'blue', marginTop: 5 }}> Change Photo </Text>
+                        <TouchableOpacity onPress={pickProfileImage}>
+                            <Text style={{ color: 'blue', marginVertical: 10 }}> Change Photo </Text>
                         </TouchableOpacity>
                     }
                     {/* <Title style={{ ...styles.userNameText, fontFamily: (Platform.OS === 'android') ? 'sans-serif-light' : 'Avenir-Heavy' }}>{name || 'No-name!'}</Title> */}

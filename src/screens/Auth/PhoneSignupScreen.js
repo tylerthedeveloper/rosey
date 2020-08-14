@@ -108,7 +108,7 @@ const PhoneSignupScreen = ({ navigation }) => {
                 ? <Text style={styles.errorMessage}> Phone must be 10 digits </Text>
                 : null
             }
-            {(isLoading) && <ActivityIndicator animating={true} size={'large'} />}
+            {(isLoading) && <ActivityIndicator animating={true} size={'large'} color={theme.colors.primary} />}
             <MyButton
                 mode="contained"
                 onPress={sendPhoneCode}

@@ -14,6 +14,10 @@ import { MyShadowCard, MyTextInput } from '../../paper-components/memo';
 import { useFocusEffect } from '@react-navigation/native';
 import * as Permissions from 'expo-permissions';
 import { RoseHeader } from '../partial';
+import * as ImagePicker from 'expo-image-picker';
+import { setProfilePhotoOnFirebase, setRoseProfilePhotoOnFirebase } from '../../api/firebaseApi';
+import firebase from 'firebase'
+import * as FileSystem from 'expo-file-system';
 
 const RoseForm = ({ user, isApiLoading, errorMessage, props,
     form_updateFunction, form_updateFunctionText,
@@ -25,6 +29,8 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
     const {
         birthday, dateMet, email, homeLocation, name, nickName, notes, personalSite, phoneNumber, placeMetAt, picture, socialProfiles, tags, work, roseId, _id
     } = user || {};
+
+    const uid = firebase.auth().currentUser.uid;
 
     const { currentLocation, geoCodedLocation } = useCurrentLocation();
     const { state: { tags: contextTags }, addTag } = useContext(TagContext);
@@ -162,11 +168,23 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
         </View >
     );
 
-    const saveFromHeader = () => {
+    const saveFromHeader = async () => {
         try {
             if (!isUserContactCard) _setPlaceMet();
             if (addNewRoseRoute && !addRoseAndDisabled) {
                 // saveOrSubmitPassedDownAction(updatedUser);
+                // new prmise?
+                if (profileImage && profileImage.length > 0) {
+                    let profilePhotoDownloadUrl = '';
+                    if (isUserContactCard) {
+                        profilePhotoDownloadUrl = await setProfilePhotoOnFirebase(uid, profileImage, { title: 'profile_image' });
+                    } else {
+                        profilePhotoDownloadUrl = await setProfilePhotoOnFirebase(uid, roseId, profileImage, { title: 'profile_image' });
+                    }
+                }
+                setPicture(profilePhotoDownloadUrl)
+                // updatedUser.picture = ... profilePhotoDownloadUrl;
+                console.log(picture, updatedUser)
                 form_updateFunction({ roseObj: updatedUser, callback: () => form_updateFunction_callback(updatedUser) });
             } else if (isUserNotEdited || !isApiLoading || !isPhoneValid) {
                 saveOrSubmitPassedDownAction(updatedUser);
@@ -360,10 +378,16 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
         saveFromHeader();
     }
 
+    /* -------------------------------------------------------------------------- */
+    /*                                Photo Section                               */
+    /* -------------------------------------------------------------------------- */
+
+    const [profileImage, setProfileImage] = useState('');
+
     const getPermissionAsync = async () => {
         if (Platform.OS === 'ios') {
             const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-            console.log(status)
+            // console.log(status)
             if (status !== 'granted') {
                 alert('Sorry, we need camera roll permissions to make this work!');
             }
@@ -371,30 +395,36 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
     }
 
     const setProfilePhoto = () => {
-        setPicture('https://www.freepngimg.com/thumb/logo/62837-instagram-icons-photography-computer-logo-icon.png');
+        _pickImage();
     }
 
-    // _pickImage = async () => {
-    //     try {
-    //         let result = await ImagePicker.launchImageLibraryAsync({
-    //             mediaTypes: ImagePicker.MediaTypeOptions.All,
-    //             allowsEditing: true,
-    //             aspect: [4, 3],
-    //             quality: 1,
-    //         });
-    //         if (!result.cancelled) {
-    //             this.setState({ image: result.uri });
-    //         }
-
-    //         console.log(result);
-    //     } catch (E) {
-    //         console.log(E);
-    //     }
-    // };
+    const pickProfileImage = async () => {
+        try {
+            let result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.All,
+                allowsEditing: true,
+                aspect: [4, 3],
+                quality: 1,
+            });
+            if (!result.cancelled) {
+                setProfileImage(result.uri)
+                setPicture(result.uri)
+                const uploadUri = Platform.OS === 'ios' ? result.uri.replace('file://', '') : result.uri;
+                const File = FileSystem.copyAsync
+                // console.log('result', result)
+                let profilePhotoDownloadUrl = await setRoseProfilePhotoOnFirebase({ uid, roseId, photo: uploadUri, metadata: { title: 'profile_image' } });
+                console.log(profilePhotoDownloadUrl)
+                setPicture(profilePhotoDownloadUrl)
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
 
     useEffect(() => {
         getPermissionAsync();
     }, [])
+    // ────────────────────────────────────────────────────────────────────────────────
 
     return (
         <KeyboardAvoidingView
@@ -402,7 +432,7 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
             keyboardVerticalOffset={85}
             style={{ flex: 1, flexDirection: "column", flexGrow: 1 }}
         >
-            <RoseHeader {...{ name, picture: updated_picture, homeLocationName: updated_homeLocation.homeLocationName, isUserContactCard, editing, _setEditing, phoneNumber, email, saveFunc, setProfilePhoto }} />
+            <RoseHeader {...{ name, picture: updated_picture, homeLocationName: updated_homeLocation.homeLocationName, isUserContactCard, editing, _setEditing, phoneNumber, email, saveFunc, pickProfileImage }} />
             <ScrollView
                 ref={scrollRef}
                 onContentSizeChange={(contentHeight) => setContentHeight(contentHeight)}

@@ -5,6 +5,7 @@ import { StyleSheet, View } from 'react-native';
 import { Text } from 'react-native-elements';
 import { theme } from '../../core/theme';
 import { MyButton, MyHeader } from '../../paper-components/memo';
+import { ActivityIndicator } from 'react-native-paper';
 
 // FIXME: do i need signinWithFirebase?
 
@@ -82,6 +83,7 @@ const PhoneConfirmationScreen = ({ navigation, route }) => {
                 />
                 {(message !== '') && <Text style={styles.label}></Text>}
             </View>
+            {(isLoading) && <ActivityIndicator animating={true} size={'large'} color={theme.colors.primary} />}
             <MyButton
                 mode="contained"
                 onPress={submitValidationCode}

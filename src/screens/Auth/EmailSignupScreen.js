@@ -18,7 +18,7 @@ const EmailSignupScreen = ({ navigation }) => {
     const { state: { errorMessage, isApiLoading }, signup, clearErrorMessage } = useContext(AuthContext);
 
     const [isLoading, setIsLoading] = useState(false);
-    
+
     //  TODO: catch invalid email early?
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -103,7 +103,7 @@ const EmailSignupScreen = ({ navigation }) => {
                     ? <Text style={styles.errorMessage}> Password must be at least 6 characters </Text>
                     : null
                 }
-                {(isLoading) && <ActivityIndicator animating={true} size={'large'} />}
+                {(isLoading) && <ActivityIndicator animating={true} size={'large'} color={theme.colors.primary} />}
                 <MyButton
                     mode="contained"
                     onPress={() => userSignin()}

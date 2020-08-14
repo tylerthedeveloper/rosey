@@ -20,6 +20,12 @@ export const getFirebaseAccount = async (uid) => {
     return await firebase.firestore().collection('users').doc(uid).get()
         .then((docRef) => docRef.data())
 }
+
+export const editFirebaseAccount = async ({ uid, data }) => {
+    const doc = firebase.firestore().collection('users').doc(uid);
+    return await doc.set(data)
+        .then(() => doc.get().then(userToReturn => userToReturn.data()));
+}
 // ────────────────────────────────────────────────────────────────────────────────
 
 
@@ -55,25 +61,57 @@ export const getAllRosesFromFirebase = async (uid) => {
 // ────────────────────────────────────────────────────────────────────────────────
 
 
-//TODO: should this just go on the user??? in tags: []
 //
-// ──────────────────────────────────────────────── III ──────────
-//   :::::: T A G S : :  :   :    :     :        :          :
-// ──────────────────────────────────────────────────────────
+// ──────────────────────────────────────────────────── III ──────────
+//   :::::: P H O T O S : :  :   :    :     :        :          :
+// ──────────────────────────────────────────────────────────────
 //
-export const addTagToFirebase = async (uid, tag) => {
-    const refID = await firebase.firestore().collection('roses').doc(uid).collection('myRoses').doc().id;
-    rose.roseId = refID;
-    await firebase.firestore().collection('roses').doc(uid).collection('myRoses').doc(refID).set(rose);
-    return refID;
+
+/* ---------------------------------- Users --------------------------------- */
+export const setProfilePhotoOnFirebase = async ({ uid, photo, metadata }) => {
+    console.log(photo, metadata)
+    return await firebase.storage().ref(`images/${uid}/profile_photo`).put(photo, metadata)
+        .then(async data => await data.ref.getDownloadURL())
 }
+
+/* ---------------------------------- Roses --------------------------------- */
+export const setRoseProfilePhotoOnFirebase = async ({ uid, roseId, photo, metadata }) => {
+    try {
+
+        const response = await fetch(photo);
+        const blob = await response.blob();
+        // console.log(blob)
+        // console.log('setRoseProfilePhotoOnFirebase', uid, roseId, photo, metadata)
+        return await firebase.storage().ref().child(`images/${uid}/${roseId}/profile_photo`).put(blob, metadata)
+            .then(async data => await data.ref.getDownloadURL())
+    } catch (error) {
+        console.error(error);
+    };
+}
+
+export const fetchPhotosFromFirebase = async (uid) => {
+    return await firebase.STORAGE().collection('images').doc(uid);
+}
+
+/* ---------------------------------- Both ---------------------------------- */
+
+export const addPhotosToFirebase = async (uid, photos) => {
+    // return await firebase.STORAGE().collection('images').doc(uid);
+}
+
+
 // ────────────────────────────────────────────────────────────────────────────────
 
 
 
-// Photos
-// export const fetchPhotosFromFirebase = async (uid) => {
-//     return await firebase.STORAGE().collection('images').doc(uid);
+//TODO: should this just go on the user??? in tags: []
+// export const addTagToFirebase = async (uid, tag) => {
+//     const refID = await firebase.firestore().collection('roses').doc(uid).collection('myRoses').doc().id;
+//     rose.roseId = refID;
+//     await firebase.firestore().collection('roses').doc(uid).collection('myRoses').doc(refID).set(rose);
+//     return refID;
 // }
 // ────────────────────────────────────────────────────────────────────────────────
+
+
 
