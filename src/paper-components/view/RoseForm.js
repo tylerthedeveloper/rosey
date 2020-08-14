@@ -12,6 +12,7 @@ import { theme } from '../../core/theme';
 import useCurrentLocation from '../../hooks/useCurrentLocation';
 import { MyShadowCard, MyTextInput } from '../../paper-components/memo';
 import { useFocusEffect } from '@react-navigation/native';
+import { Dimensions } from "react-native";
 import * as Permissions from 'expo-permissions';
 import { RoseHeader } from '../partial';
 import * as ImagePicker from 'expo-image-picker';
@@ -124,7 +125,8 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
 
     // Validations
     const isNameValid = !(updated_name.length > 0);
-    const isPhoneValid = (updated_phoneNumber.length > 0 && updated_phoneNumber.length !== 10);
+    const isPhoneValid = false;
+    // const isPhoneValid = (updated_phoneNumber.length > 0 && updated_phoneNumber.length >= 8);
     const isEmailValid = (updated_email.length > 0 && (!updated_email.includes('@') || !updated_email.includes('.')));
 
     const rowIgnoreArr = ["__v", "_id"]
@@ -132,19 +134,19 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
     const addNewRoseRoute = (form_updateFunctionText === "Add new Rose");
     const canAddNewRose = (updated_name !== undefined && updated_name.length > 0);
 
+    const [loading, setLoading] = useState(false);
+    const [photoChanged, setPhotoChanged] = useState(false);
+    // ────────────────────────────────────────────────────────────────────────────────
+
     const errorMessageDict = {
         email: 'This email seems invalid',
         name: 'A name is required to create a new rose',
-        phone: 'A valid phone number must contain 10 digits',
+        phone: 'A valid phone number must be at least 8 digits',
     }
-
-    // console.log(form_secondFunction, saveOrSubmitPassedDownAction)
 
     //
     // ─── Custom Buttons   ───────────────────────────────────────────────────────────────────────────
     //
-
-
     const addRoseAndDisabled = (!canAddNewRose || isPhoneValid);
     const editRoseAndDisabled = (!isUserNotEdited || isApiLoading || isPhoneValid)
     const SaveButton = () => {
@@ -168,28 +170,51 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
         </View >
     );
 
+
     const saveFromHeader = async () => {
         try {
             if (!isUserContactCard) _setPlaceMet();
+
+
             if (addNewRoseRoute && !addRoseAndDisabled) {
                 // saveOrSubmitPassedDownAction(updatedUser);
                 // new prmise?
-                if (profileImage && profileImage.length > 0) {
-                    let profilePhotoDownloadUrl = '';
-                    if (isUserContactCard) {
-                        profilePhotoDownloadUrl = await setProfilePhotoOnFirebase(uid, profileImage, { title: 'profile_image' });
-                    } else {
-                        profilePhotoDownloadUrl = await setProfilePhotoOnFirebase(uid, roseId, profileImage, { title: 'profile_image' });
-                    }
-                }
-                setPicture(profilePhotoDownloadUrl)
-                // updatedUser.picture = ... profilePhotoDownloadUrl;
-                console.log(picture, updatedUser)
+                // setLoading(true);
+                // if (profileImage && profileImage.length > 0 && photoChanged) {
+                //     let profilePhotoDownloadUrl = '';
+                //     if (isUserContactCard) {
+                //         profilePhotoDownloadUrl = await setProfilePhotoOnFirebase(uid, profileImage, { title: 'profile_image' });
+                //     } else {
+                //         profilePhotoDownloadUrl = await setProfilePhotoOnFirebase(uid, roseId, profileImage, { title: 'profile_image' });
+                //     }
+                // }
+                // setPicture(profilePhotoDownloadUrl)
+                // // updatedUser.picture = ... profilePhotoDownloadUrl;
+                // console.log(picture, updatedUser)
+                // setLoading(false)
                 form_updateFunction({ roseObj: updatedUser, callback: () => form_updateFunction_callback(updatedUser) });
-            } else if (isUserNotEdited || !isApiLoading || !isPhoneValid) {
+            } else if (!isUserNotEdited && !isApiLoading && !isPhoneValid && !loading) {
+                // console.log('aaai', !isUserNotEdited && !isApiLoading && !isPhoneValid, !loading);
+                setLoading(true);
+                const uploadUri = Platform.OS === 'ios' ? updated_picture.replace('file://', '') : updated_picture;
+                if (uploadUri && uploadUri.length > 0 && picture !== updated_picture) {
+                    let profilePhotoDownloadUrl = '';
+                    if (!isUserContactCard) {
+                        profilePhotoDownloadUrl = await setRoseProfilePhotoOnFirebase({ uid, roseId, photo: uploadUri, metadata: { title: 'profile_image' } });
+                    } else {
+                        profilePhotoDownloadUrl = await setProfilePhotoOnFirebase({ uid, photo: uploadUri, metadata: { title: 'profile_image' } });
+                    }
+                    // setPicture(profilePhotoDownloadUrl)
+                    updatedUser.picture = profilePhotoDownloadUrl;
+                    console.log(updatedUser)
+                }
                 saveOrSubmitPassedDownAction(updatedUser);
+                setLoading(false)
+            } else {
+                setLoading(false);
             }
         } catch (err) {
+            setLoading(false)
             console.log(err.message)
         }
     }
@@ -353,6 +378,9 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
     const [contentHeight, setContentHeight] = useState();
     const scrollRef = React.createRef();
     const placeInputRef = React.createRef();
+    const screenWidth = Math.floor(Dimensions.get('window').width);
+    const screenHeight = Math.floor(Dimensions.get('screen').height);
+
     /* -------------------------------------------------------------------------- */
 
     /* -------------------------------------------------------------------------- */
@@ -407,14 +435,14 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                 quality: 1,
             });
             if (!result.cancelled) {
-                setProfileImage(result.uri)
                 setPicture(result.uri)
-                const uploadUri = Platform.OS === 'ios' ? result.uri.replace('file://', '') : result.uri;
-                const File = FileSystem.copyAsync
                 // console.log('result', result)
-                let profilePhotoDownloadUrl = await setRoseProfilePhotoOnFirebase({ uid, roseId, photo: uploadUri, metadata: { title: 'profile_image' } });
-                console.log(profilePhotoDownloadUrl)
-                setPicture(profilePhotoDownloadUrl)
+                // const uploadUri = Platform.OS === 'ios' ? result.uri.replace('file://', '') : result.uri;
+                // setProfileImage(uploadUri)
+                setPhotoChanged(true);
+                // let profilePhotoDownloadUrl = await setRoseProfilePhotoOnFirebase({ uid, roseId, photo: uploadUri, metadata: { title: 'profile_image' } });
+                // console.log(profilePhotoDownloadUrl)
+                // setPicture(profilePhotoDownloadUrl)
             }
         } catch (error) {
             console.log(error);
@@ -426,6 +454,8 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
     }, [])
     // ────────────────────────────────────────────────────────────────────────────────
 
+
+
     return (
         <KeyboardAvoidingView
             behavior={Platform.OS === "ios" ? "padding" : null}
@@ -433,6 +463,16 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
             style={{ flex: 1, flexDirection: "column", flexGrow: 1 }}
         >
             <RoseHeader {...{ name, picture: updated_picture, homeLocationName: updated_homeLocation.homeLocationName, isUserContactCard, editing, _setEditing, phoneNumber, email, saveFunc, pickProfileImage }} />
+            {(loading) && <ActivityIndicator size='large' color={theme.colors.primary}
+                style={{
+                    position: 'absolute',
+                    // left: screenWidth / 2,
+                    top: '50%',
+                    alignSelf: 'center',
+                    justifyContent: 'center',
+                    zIndex: 3
+                }}
+            />}
             <ScrollView
                 ref={scrollRef}
                 onContentSizeChange={(contentHeight) => setContentHeight(contentHeight)}
@@ -445,7 +485,7 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                 {/* <View style={{ flexDirection: 'row', flex: 1, justifyContent: 'space-between' }}>
                     <Paragraph style={styles.sectionTitle}> Social Media </Paragraph>
                 <SaveButton />
-                </View> */}
+            </View> */}
                 <SectionHeader sectionHeaderText="Social Media" />
                 <MyShadowCard>
                     <View style={styles.socialMediaSection}>
@@ -718,7 +758,7 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                 <View style={styles.errorSection}>
                     {(isApiLoading) && <ActivityIndicator animating={true} size={'large'} />}
                     {(!canAddNewRose) ? <Text style={styles.errorMessage}> You should enter a name for this Rose </Text> : null}
-                    {(isPhoneValid) ? <Text style={styles.errorMessage}> Phone # must be 10 digits </Text> : null}
+                    {(isPhoneValid) ? <Text style={styles.errorMessage}> Phone # must be at least 8 digits </Text> : null}
                     {(errorMessage) ? <Text style={styles.errorMessage}> {errorMessage} </Text> : null}
                     {/* <Button disabled={!canAddNewRose || isUserEdited || isApiLoading || isPhoneValid} */}
                 </View>
@@ -730,7 +770,7 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                         >
                             {form_updateFunctionText || 'Add New'}
                         </Button>
-                        : <Button disabled={isUserNotEdited || isApiLoading || isPhoneValid}
+                        : <Button disabled={isUserNotEdited || isApiLoading || isPhoneValid || loading}
                             onPress={saveFromHeader}
                         >
                             {form_updateFunctionText || 'Save Rose'}

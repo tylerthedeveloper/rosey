@@ -69,19 +69,22 @@ export const getAllRosesFromFirebase = async (uid) => {
 
 /* ---------------------------------- Users --------------------------------- */
 export const setProfilePhotoOnFirebase = async ({ uid, photo, metadata }) => {
-    console.log(photo, metadata)
-    return await firebase.storage().ref(`images/${uid}/profile_photo`).put(photo, metadata)
-        .then(async data => await data.ref.getDownloadURL())
+    try {
+
+        const response = await fetch(photo);
+        const blob = await response.blob();
+        return await firebase.storage().ref(`images/${uid}/profile_photo`).put(blob, metadata)
+            .then(async data => await data.ref.getDownloadURL())
+    } catch (error) {
+        console.error(error);
+    };
 }
 
 /* ---------------------------------- Roses --------------------------------- */
 export const setRoseProfilePhotoOnFirebase = async ({ uid, roseId, photo, metadata }) => {
     try {
-
         const response = await fetch(photo);
         const blob = await response.blob();
-        // console.log(blob)
-        // console.log('setRoseProfilePhotoOnFirebase', uid, roseId, photo, metadata)
         return await firebase.storage().ref().child(`images/${uid}/${roseId}/profile_photo`).put(blob, metadata)
             .then(async data => await data.ref.getDownloadURL())
     } catch (error) {
@@ -89,17 +92,10 @@ export const setRoseProfilePhotoOnFirebase = async ({ uid, roseId, photo, metada
     };
 }
 
-export const fetchPhotosFromFirebase = async (uid) => {
-    return await firebase.STORAGE().collection('images').doc(uid);
-}
-
-/* ---------------------------------- Both ---------------------------------- */
-
+// TODO: How to add multiple???
 export const addPhotosToFirebase = async (uid, photos) => {
     // return await firebase.STORAGE().collection('images').doc(uid);
 }
-
-
 // ────────────────────────────────────────────────────────────────────────────────
 
 
