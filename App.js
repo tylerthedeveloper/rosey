@@ -27,7 +27,7 @@ import firebase from 'firebase';
 import { firebaseConfig } from './config/firebase';
 import { YellowBox } from 'react-native';
 
-import { getFirebaseAccount, createnewFirebaseAccount } from './src/api/firebaseApi';
+import { getFirebaseAccount, createnewFirebaseAccount, editFirebaseAccount } from './src/api/firebaseApi';
 
 try {
   if (!firebase.apps.length) {
@@ -145,11 +145,10 @@ export default () => {
       // },
       updateContactCard: async ({ roseObj, callback }) => {
         try {
-          // console.log('updateContactCard')
+          const uid = firebase.auth().currentUser.uid;
           dispatch({ type: 'set_api_loading' });
-          const response = await roseyApi.post('/users/contact_card', { userObj: roseObj });
-          const { user } = response.data;
-          await AsyncStorage.setItem('user', JSON.stringify(user));
+          const user = await editFirebaseAccount({ uid, data: roseObj });
+          // await AsyncStorage.setItem('user', JSON.stringify(user));
           dispatch({ type: 'update_contact_card', payload: user });
           if (callback) {
             callback();

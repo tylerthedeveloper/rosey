@@ -65,6 +65,9 @@ const _generateUser = ({ userType, email, phoneNumber, uid }) => {
 const _areObjectsEqual = (a, b, ignoreArray) => {
     let equality = true;
     // console.log(a)
+    if (a === null) {
+        return;
+    }
     for (let key of Object.keys(a)) {
         if (!ignoreArray.includes(key)) {
             // if (a[key] === b[key]) {

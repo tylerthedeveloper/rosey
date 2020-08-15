@@ -174,8 +174,6 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
     const saveFromHeader = async () => {
         try {
             if (!isUserContactCard) _setPlaceMet();
-
-
             if (addNewRoseRoute && !addRoseAndDisabled) {
                 // saveOrSubmitPassedDownAction(updatedUser);
                 // new prmise?
@@ -194,7 +192,6 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                 // setLoading(false)
                 form_updateFunction({ roseObj: updatedUser, callback: () => form_updateFunction_callback(updatedUser) });
             } else if (!isUserNotEdited && !isApiLoading && !isPhoneValid && !loading) {
-                // console.log('aaai', !isUserNotEdited && !isApiLoading && !isPhoneValid, !loading);
                 setLoading(true);
                 const uploadUri = Platform.OS === 'ios' ? updated_picture.replace('file://', '') : updated_picture;
                 if (uploadUri && uploadUri.length > 0 && picture !== updated_picture) {
@@ -390,13 +387,17 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
     const isUserContactCard = (form_updateFunctionText === 'Save contact card');
 
     if (isUserContactCard) {
-        updatedUser.dateMet = undefined;
-        updatedUser.placeMetAt = undefined;
-        updatedUser.notes = undefined;
-        // TODO:? KEEP?
-        updatedUser.tags = undefined;
-        ///
-        updatedUser.roseId = undefined;
+        // updatedUser.dateMet = null;
+        // updatedUser.placeMetAt = null;
+        // updatedUser.notes = null;
+        // updatedUser.tags = null;
+        // updatedUser.roseId = null;
+        delete updatedUser.dateMet;
+        delete updatedUser.placeMetAt;
+        delete updatedUser.notes;
+        delete updatedUser.tags;
+        delete updatedUser.roseId;
+
     }
     // ────────────────────────────────────────────────────────────────────────────────
 
