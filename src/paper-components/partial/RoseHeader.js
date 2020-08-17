@@ -8,7 +8,7 @@ import { theme } from '../../core/theme';
 import { MyShadowCard } from '../memo';
 
 const RoseHeader = ({ uid, name, picture, homeLocationName, isUserContactCard, editing, _setEditing,
-    phoneNumber, email, saveFunc, pickProfileImage
+    phoneNumber, email, saveFunc, pickProfileImage, typeOfView
 }) => {
 
 
@@ -76,16 +76,22 @@ const RoseHeader = ({ uid, name, picture, homeLocationName, isUserContactCard, e
                                 source={{ uri: picture }}
                             />
                     }
-                    {(editing) &&
-                        <TouchableOpacity onPress={pickProfileImage}>
-                            <Text style={{ color: 'blue', marginVertical: 10 }}> Change Photo </Text>
-                        </TouchableOpacity>
+                    {
+                        (typeOfView === 'New')
+                            ? <TouchableOpacity onPress={pickProfileImage}>
+                                <Text style={{ color: 'blue', marginVertical: 10 }}> Add Photo </Text>
+                            </TouchableOpacity>
+                            : (!editing)
+                                ? null
+                                : <TouchableOpacity onPress={pickProfileImage}>
+                                    <Text style={{ color: 'blue', marginVertical: 10 }}> Change Photo </Text>
+                                </TouchableOpacity>
                     }
                     {/* <Title style={{ ...styles.userNameText, fontFamily: (Platform.OS === 'android') ? 'sans-serif-light' : 'Avenir-Heavy' }}>{name || 'No-name!'}</Title> */}
                 </View>
                 <View>
                     {
-                        (!isUserContactCard && !editing)
+                        (!isUserContactCard && !editing && typeOfView !== 'New')
                             ? <View style={{ flexDirection: 'row', }}>
                                 {
                                     headerRowButtons.map(({ headerButtonFunction, headerButtonIcon }) => {
@@ -106,30 +112,32 @@ const RoseHeader = ({ uid, name, picture, homeLocationName, isUserContactCard, e
                 </View>
             </Card.Content>
             {
-                (!editing) ?
-                    <IconButton
-                        icon={"pencil"}
-                        size={20}
-                        onPress={() => _setEditing(!editing)}
-                        color={'white'}
-                        style={{ right: 10, top: 10, alignSelf: 'flex-end', position: 'absolute', backgroundColor: theme.colors.text }}
-                    />
-                    : <>
+                (typeOfView !== 'New')
+                    ? (!editing) ?
                         <IconButton
-                            icon={"close-circle"}
+                            icon={"pencil"}
                             size={20}
                             onPress={() => _setEditing(!editing)}
                             color={'white'}
                             style={{ right: 10, top: 10, alignSelf: 'flex-end', position: 'absolute', backgroundColor: theme.colors.text }}
                         />
-                        <IconButton
-                            icon={"content-save"}
-                            size={20}
-                            onPress={saveFunc}
-                            color={'white'}
-                            style={{ right: 10, bottom: 10, alignSelf: 'center', position: 'absolute', backgroundColor: theme.colors.text }}
-                        />
-                    </>
+                        : <>
+                            <IconButton
+                                icon={"close-circle"}
+                                size={20}
+                                onPress={() => _setEditing(!editing)}
+                                color={'white'}
+                                style={{ right: 10, top: 10, alignSelf: 'flex-end', position: 'absolute', backgroundColor: theme.colors.text }}
+                            />
+                            <IconButton
+                                icon={"content-save"}
+                                size={20}
+                                onPress={saveFunc}
+                                color={'white'}
+                                style={{ right: 10, bottom: 10, alignSelf: 'center', position: 'absolute', backgroundColor: theme.colors.text }}
+                            />
+                        </>
+                    : null
             }
             {/* {
                 (!editing) ?

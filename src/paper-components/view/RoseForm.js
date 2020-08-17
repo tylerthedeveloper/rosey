@@ -16,7 +16,7 @@ import { Dimensions } from "react-native";
 import * as Permissions from 'expo-permissions';
 import { RoseHeader } from '../partial';
 import * as ImagePicker from 'expo-image-picker';
-import { setProfilePhotoOnFirebase, setRoseProfilePhotoOnFirebase } from '../../api/firebaseApi';
+import { setProfilePhotoOnFirebase, setRoseProfilePhotoOnFirebase, setAndCreateRoseWithProfilePhotoOnFirebase, addRoseToFirebase } from '../../api/firebaseApi';
 import firebase from 'firebase'
 import * as FileSystem from 'expo-file-system';
 
@@ -65,7 +65,7 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
 
     // ────────────────────────────────────────────────────────────────────────────────
     // TODO: NOT YET USED //
-    const [updated_picture, setPicture] = useState(picture);
+    const [updated_picture, setPicture] = useState(picture || '');
     // ────────────────────────────────────────────────────────────────────────────────
 
     const updatedUser = {
@@ -174,26 +174,23 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
     const saveFromHeader = async () => {
         try {
             if (!isUserContactCard) _setPlaceMet();
+            const uploadUri = Platform.OS === 'ios' ? updated_picture.replace('file://', '') : updated_picture;
             if (addNewRoseRoute && !addRoseAndDisabled) {
-                // saveOrSubmitPassedDownAction(updatedUser);
-                // new prmise?
-                // setLoading(true);
-                // if (profileImage && profileImage.length > 0 && photoChanged) {
-                //     let profilePhotoDownloadUrl = '';
-                //     if (isUserContactCard) {
-                //         profilePhotoDownloadUrl = await setProfilePhotoOnFirebase(uid, profileImage, { title: 'profile_image' });
-                //     } else {
-                //         profilePhotoDownloadUrl = await setProfilePhotoOnFirebase(uid, roseId, profileImage, { title: 'profile_image' });
-                //     }
+                setLoading(true);
+                if (uploadUri && uploadUri.length > 0 && picture !== updated_picture) {
+                    const response = await setAndCreateRoseWithProfilePhotoOnFirebase({ uid, photo: uploadUri, metadata: { title: 'profile_photo' } });
+                    const { downloadUrl, roseId } = response;
+                    updatedUser.picture = downloadUrl;
+                    updatedUser.roseId = roseId;
+                }
+                // else {
+                //     await addRoseToFirebase(uid, updatedUser);
                 // }
-                // setPicture(profilePhotoDownloadUrl)
-                // // updatedUser.picture = ... profilePhotoDownloadUrl;
-                // console.log(picture, updatedUser)
-                // setLoading(false)
+                setLoading(false)
+                // saveOrSubmitPassedDownAction(updatedUser);
                 form_updateFunction({ roseObj: updatedUser, callback: () => form_updateFunction_callback(updatedUser) });
             } else if (!isUserNotEdited && !isApiLoading && !isPhoneValid && !loading) {
                 setLoading(true);
-                const uploadUri = Platform.OS === 'ios' ? updated_picture.replace('file://', '') : updated_picture;
                 if (uploadUri && uploadUri.length > 0 && picture !== updated_picture) {
                     let profilePhotoDownloadUrl = '';
                     if (!isUserContactCard) {
@@ -203,7 +200,7 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                     }
                     // setPicture(profilePhotoDownloadUrl)
                     updatedUser.picture = profilePhotoDownloadUrl;
-                    console.log(updatedUser)
+                    // console.log(updatedUser)
                 }
                 saveOrSubmitPassedDownAction(updatedUser);
                 setLoading(false)
@@ -455,7 +452,20 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
     }, [])
     // ────────────────────────────────────────────────────────────────────────────────
 
-
+    let typeOfView = '';
+    switch (form_updateFunctionText) {
+        case 'Save Rose':
+            typeOfView = 'Rose';
+            break;
+        case 'Add new Rose':
+            typeOfView = 'New';
+            break;
+        case 'Save contact card':
+            typeOfView = 'User';
+            break;
+        default:
+            return ''
+    }
 
     return (
         <KeyboardAvoidingView
@@ -463,7 +473,10 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
             keyboardVerticalOffset={85}
             style={{ flex: 1, flexDirection: "column", flexGrow: 1 }}
         >
-            <RoseHeader {...{ name, picture: updated_picture, homeLocationName: updated_homeLocation.homeLocationName, isUserContactCard, editing, _setEditing, phoneNumber, email, saveFunc, pickProfileImage }} />
+            <RoseHeader {...{
+                name, picture: updated_picture, homeLocationName: updated_homeLocation.homeLocationName, isUserContactCard,
+                editing, _setEditing, phoneNumber, email, saveFunc, pickProfileImage, typeOfView
+            }} />
             {(loading) && <ActivityIndicator size='large' color={theme.colors.primary}
                 style={{
                     position: 'absolute',

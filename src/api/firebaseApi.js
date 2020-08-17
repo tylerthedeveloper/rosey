@@ -35,7 +35,9 @@ export const editFirebaseAccount = async ({ uid, data }) => {
 // ────────────────────────────────────────────────────────────
 //
 export const addRoseToFirebase = async (uid, rose) => {
-    const refID = await firebase.firestore().collection('roses').doc(uid).collection('myRoses').doc().id;
+    const refID = (rose && rose.roseId && rose.roseId !== '')
+        ? rose.roseId
+        : await firebase.firestore().collection('roses').doc(uid).collection('myRoses').doc().id;
     rose.roseId = refID;
     await firebase.firestore().collection('roses').doc(uid).collection('myRoses').doc(refID).set(rose);
     return refID;
@@ -58,6 +60,23 @@ export const getAllRosesFromFirebase = async (uid) => {
         .then(snapshot => snapshot.docs.map(doc => doc.data()))
     return snapshot;
 }
+
+// TODO: IMPROVE THIS
+export const addRoseToFirebaseWithPhoto = async (uid, rose, photo) => {
+    // const refID = await firebase.firestore().collection('roses').doc(uid).collection('myRoses').doc().id;
+    // const setPhotoPromise = await setRoseProfilePhotoOnFirebase({uid, rose: rose.picture, })
+    // rose.roseId = refID;
+    // const setRosePromise = await firebase.firestore().collection('roses').doc(uid).collection('myRoses').doc(refID).set(rose);
+    // Promise.allSettled([setRosePromise, setPhotoPromise]);
+    // return refID;
+    // const refID = firebase.firestore().collection('roses').doc(uid).collection('myRoses').doc().id;
+    // const downloadURL = await setRoseProfilePhotoOnFirebase({ uid, roseId: refID, photo, metadata: { title: 'profile_photo' } })
+    // rose.roseId = refID;
+    // rose.picture = downloadURL;
+    // await firebase.firestore().collection('roses').doc(uid).collection('myRoses').doc(refID).set(rose);
+    // return refID;
+}
+
 // ────────────────────────────────────────────────────────────────────────────────
 
 
@@ -87,6 +106,24 @@ export const setRoseProfilePhotoOnFirebase = async ({ uid, roseId, photo, metada
         const blob = await response.blob();
         return await firebase.storage().ref().child(`images/${uid}/${roseId}/profile_photo`).put(blob, metadata)
             .then(async data => await data.ref.getDownloadURL())
+    } catch (error) {
+        console.error(error);
+    };
+}
+
+export const setAndCreateRoseWithProfilePhotoOnFirebase = async ({ uid, photo, metadata }) => {
+    try {
+        const response = await fetch(photo);
+        const blob = await response.blob();
+        const roseId = firebase.firestore().collection('roses').doc(uid).collection('myRoses').doc().id;
+        console.log('blob', roseId)
+        return await firebase.storage().ref().child(`images/${uid}/${roseId}/profile_photo`).put(blob, metadata)
+            .then(async data => {
+                const downloadUrl = await data.ref.getDownloadURL();
+                return {
+                    downloadUrl, roseId
+                }
+            })
     } catch (error) {
         console.error(error);
     };

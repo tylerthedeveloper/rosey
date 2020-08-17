@@ -1,7 +1,7 @@
 import { MaterialCommunityIcons, MaterialIcons } from '@expo/vector-icons';
 import { DrawerContentScrollView, DrawerItem } from '@react-navigation/drawer';
 import React, { useContext, useEffect } from 'react';
-import { StyleSheet, TouchableOpacity, View } from 'react-native';
+import { StyleSheet, TouchableOpacity, View, Alert } from 'react-native';
 import { Avatar, Caption, Drawer, Paragraph, Title, useTheme, Divider } from 'react-native-paper';
 import Animated from 'react-native-reanimated';
 import { AuthContext } from '../context/AuthContext';
@@ -15,6 +15,18 @@ const DrawerContent = (props) => {
 
     const { state: { user }, signout } = useContext(AuthContext);
     const name = (user) ? user.name : '';
+
+    // const tryToLogOut = () => {
+    //     Alert.alert('Logout',
+    //         'Are you sure you want to logout?',
+    //         [
+    //             { text: "Cancel", style: "destructive" },
+    //             { text: "Logout", onPress: signout },
+    //         ],
+    //         { cancelable: true },
+    //     )
+    // }
+
 
     // const { getImportedContacts } = useContext(ContactsContext);
     const { getContactsPermissions } = useContacts();
@@ -43,7 +55,6 @@ const DrawerContent = (props) => {
         { label: "Contacts", icon: 'contacts', navigateTo: 'ContactsScreen' },
         { label: "Tags", icon: 'tag', navigateTo: 'TagScreen' },
         { label: "QR Code", icon: 'qrcode', navigateTo: 'QRCode' },
-        // { label: "QR Code", icon: 'qrcode', navigateTo: 'QRCode' },
     ]
 
     const secondDrawerRow = [
@@ -144,7 +155,7 @@ const DrawerContent = (props) => {
                         )
                     }
                 </Drawer.Section>
-                <DrawerItem
+                {/* <DrawerItem
                     icon={({ color, size }) => (
                         <MaterialCommunityIcons
                             name={'logout-variant'}
@@ -152,12 +163,11 @@ const DrawerContent = (props) => {
                             size={size}
                         />
                     )}
-
                     label={"Logout"}
                     labelStyle={{ fontFamily: 'System' }}
                     style={{ flex: 1 }}
-                    onPress={() => signout()}
-                />
+                    onPress={tryToLogOut}
+                /> */}
                 {/* <Drawer.Section title="Preferences">
                     <TouchableRipple onPress={toggleTheme}>
                         <View style={styles.preference}>
