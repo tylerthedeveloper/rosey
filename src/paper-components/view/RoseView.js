@@ -196,13 +196,13 @@ const RoseView = ({ user, isApiLoading, view_updateFunction, view_updateFunction
             {/* Social Section */}
             <ScrollView style={{ marginBottom: 15, flex: 1 }} showsVerticalScrollIndicator={false}>
                 <View style={{ marginVertical: 5 }}>
-                    {
+                    {/* {
                         (!isUserContactCard)
                             ? <MyShadowCard>
                                 <PhotoCarousel />
                             </MyShadowCard>
                             : null
-                    }
+                    } */}
                     <MyShadowCard>
                         <View style={styles.socialMediaSection}>
                             {
