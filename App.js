@@ -152,13 +152,13 @@ export default () => {
               let userAccount = await getFirebaseAccount(uid);
               // console.log('[user]', userAccount)
               if (userAccount === undefined || !userAccount) {
-                console.log('userAccount === undefined || !userAccount')
-                console.log('[email, phone', uid, email, phoneNumber)
+                // console.log('userAccount === undefined || !userAccount')
+                // console.log('[email, phone', uid, email, phoneNumber)
                 if (email && email.length > 0 && (phoneNumber === null || !phoneNumber || phoneNumber.length === 0)) {
-                  console.log('email exists');
+                  // console.log('email exists');
                   userAccount = await createnewFirebaseAccount({ uid, email })
                 } else if (phoneNumber && phoneNumber.length > 0 && (email === null || !email || email.length === 0)) {
-                  console.log('phone exists');
+                  // console.log('phone exists');
                   userAccount = await createnewFirebaseAccount({ uid, phoneNumber })
                 }
               }

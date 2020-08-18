@@ -93,6 +93,6 @@ const deleteTag = (dispatch) => async (tagId) => {
 //Main
 export const { Context, Provider } = createDataContext(
     TagReducer, // reducer
-    { addTag, deleteTag, getInitialTags, getTags }, //list of action functions
+    { addTag, deleteTag, getInitialTags }, //list of action functions
     { tags: [], errorMessage: '' } //default state values
 );

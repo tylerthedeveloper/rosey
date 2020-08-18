@@ -150,7 +150,6 @@ export const getTagsFromFirebase = async (uid) => {
 export const addTagToFirebase = async (uid, tag) => {
     const refID = await firebase.firestore().collection('tags').doc(uid).collection('myTags').doc().id;
     tag.tagId = refID;
-    console.log(uid, tag)
     await firebase.firestore().collection('tags').doc(uid).collection('myTags').doc(refID).set(tag);
     return tag;
 }
