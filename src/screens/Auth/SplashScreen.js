@@ -17,7 +17,7 @@ const SplashScreen = ({ navigation }) => {
             >
                 Use phone or email
             </MyButton>
-            <MyButton
+            {/* <MyButton
                 mode="contained"
                 onPress={() => navigation.navigate('PhoneSignup')}
             >
@@ -28,7 +28,7 @@ const SplashScreen = ({ navigation }) => {
                 onPress={() => navigation.navigate('PhoneSignup')}
             >
                 Continue with Google
-            </MyButton>
+            </MyButton> */}
             {/* <MyButton
                 mode="contained"
                 onPress={() => navigation.navigate('Signup')}
