@@ -643,7 +643,8 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                                             onChange={(event, value) => {
                                                 {/* console.log('event and value', value) */ }
                                                 setDateMet(value || updated_dateMet || new Date(Date.now()));
-                                                setTimeout(() => setDatemet_Picker(false), 2000);
+                                                // setTimeout(() => setDatemet_Picker(false), 2000);
+                                                setDatemet_Picker(false)
                                             }}
                                         />
                                         : null
@@ -676,7 +677,8 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                                     onChange={(e, value) => {
                                         {/* console.log('birthday event and value', value) */ }
                                         setBirthday(value || updated_birthday || new Date(Date.now()));
-                                        setTimeout(() => setBirth_datePicker(false), 2000);
+                                        // setTimeout(() => setBirth_datePicker(false), 2000);
+                                        setBirth_datePicker(false)
                                     }}
                                 />
                                 : null

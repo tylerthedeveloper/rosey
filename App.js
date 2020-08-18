@@ -128,21 +128,6 @@ export default () => {
 
   const authContext = useMemo(() => {
     return {
-      // fetchOrSetUserFromFirebase: async ({ uid, user }) => {
-      //   console.log('fetchOrSetUserFromFirebase', uid, user)
-      //   try {
-      //     let firebaseUser;
-      //     if (uid && !user) {
-      //       firebaseUser = await getFirebaseAccount(uid);
-      //     } else if (user && !uid) {
-      //       firebaseUser = user;
-      //     }
-      //     dispatch({ type: 'signin', payload: firebaseUser });
-      //   } catch (err) {
-      //     console.log(err.message)
-      //     dispatch({ type: 'add_error', payload: 'Something went wrong with fetching your data' });
-      //   }
-      // },
       updateContactCard: async ({ roseObj, callback }) => {
         try {
           const uid = firebase.auth().currentUser.uid;

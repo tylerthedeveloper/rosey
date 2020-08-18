@@ -20,13 +20,13 @@ const TagScreen = () => {
                 <MyHeader styleProps={{ marginTop: 15, marginBottom: 15 }} > Manage your tags here! </MyHeader>
                 <View style={styles.chips}>
                     {
-                        tags.map(({ tag, color }, index) =>
+                        tags.map(({ tag, tagId, color }) =>
                             (<Chip mode="outlined" style={{ ...styles.chip, color: color }}
                                 icon={'tag'}
-                                key={tag + index}
+                                key={tagId}
                                 selectedColor={color}
                                 mode="outlined"
-                                onClose={() => deleteTag(tag)}
+                                onClose={() => deleteTag(tagId)}
                             >
                                 {tag}
                             </Chip>)

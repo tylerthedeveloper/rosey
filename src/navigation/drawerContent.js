@@ -6,6 +6,7 @@ import { Avatar, Caption, Drawer, Paragraph, Title, useTheme, Divider } from 're
 import Animated from 'react-native-reanimated';
 import { AuthContext } from '../context/AuthContext';
 import useContacts from '../hooks/useContacts';
+// import { Keyboard, TouchableWithoutFeedback } from 'react-native'
 
 // import { PreferencesContext } from './context/preferencesContext';
 
@@ -77,6 +78,7 @@ const DrawerContent = (props) => {
                     <TouchableOpacity
                         style={{ marginLeft: 10 }}
                         onPress={() => {
+                            // Keyboard.dismiss();
                             navigation.toggleDrawer();
                         }}
                     >

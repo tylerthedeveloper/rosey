@@ -1,17 +1,17 @@
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { FlatList, StyleSheet, ScrollView, View, TouchableOpacity } from 'react-native';
-import { Avatar, Chip, IconButton, Searchbar, Headline } from 'react-native-paper';
+import { Avatar, Chip, IconButton, Searchbar, Headline, TextInput } from 'react-native-paper';
 import { Context as TagContext } from '../../context/TagContext';
 import { theme } from '../../core/theme';
 import useListFilters from '../../hooks/useListFilters';
 import { RoseListItem } from '../../paper-components/partial';
+// import { Keyboard, TouchableWithoutFeedback } from 'react-native'
+// import { NavigationEvents } from 'react-navigation';
 
 const RoseListScreen = ({ navigation }) => {
 
     // TODO: move this to the hook
     const { state: { tags } } = useContext(TagContext);
-
-    // const { primary, secondary, error } = theme.colors;
 
     const [
         filteredRoses, filterToggle, setFilterToggle, filterItems, searchQuery, setSearchQuery,
@@ -20,7 +20,17 @@ const RoseListScreen = ({ navigation }) => {
 
     const [tagToggle, setTagToggle] = useState(false);
 
+    // useEffect(() => {
+    //     const unsubscribe = navigation.addListener('blur', () => {
+    //         console.log('blurred lines')
+    //         Keyboard.dismiss();
+    //     });
+    //     return unsubscribe;
+    // }, [navigation]);
+
+
     return (
+        // <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
         <View style={styles.container}>
             <View style={styles.firstRow}>
                 <Searchbar
@@ -31,6 +41,8 @@ const RoseListScreen = ({ navigation }) => {
                     //iconColor={secondary}
                     value={searchQuery}
                     onChangeText={setSearchQuery}
+                    onBlur={() => Keyboard.dismiss()}
+                    onTouchCancel={() => Keyboard.dismiss()}
                     style={styles.searchBar}
                 />
                 <View style={theme.shadow.iconButtonShadow}>
@@ -76,7 +88,7 @@ const RoseListScreen = ({ navigation }) => {
                             }}
                         >
                             {
-                                tags.map(({tag, color}, index) =>
+                                tags.map(({ tag, color }, index) =>
                                     <Chip
                                         key={tag + index}
                                         selectedColor={color}
@@ -115,6 +127,7 @@ const RoseListScreen = ({ navigation }) => {
                 }
             </View>
         </View >
+        // </TouchableWithoutFeedback>
     )
 }
 

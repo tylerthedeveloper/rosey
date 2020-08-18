@@ -136,14 +136,28 @@ export const addPhotosToFirebase = async (uid, photos) => {
 // ────────────────────────────────────────────────────────────────────────────────
 
 
+//
+// ──────────────────────────────────────────────── IV ──────────
+//   :::::: T A G S : :  :   :    :     :        :          :
+// ──────────────────────────────────────────────────────────
+//
+export const getTagsFromFirebase = async (uid) => {
+    return await firebase.firestore().collection('tags').doc(uid).collection('myTags')
+        .get()
+        .then(snapshot => snapshot.docs.map(doc => doc.data()))
+}
 
-//TODO: should this just go on the user??? in tags: []
-// export const addTagToFirebase = async (uid, tag) => {
-//     const refID = await firebase.firestore().collection('roses').doc(uid).collection('myRoses').doc().id;
-//     rose.roseId = refID;
-//     await firebase.firestore().collection('roses').doc(uid).collection('myRoses').doc(refID).set(rose);
-//     return refID;
-// }
+export const addTagToFirebase = async (uid, tag) => {
+    const refID = await firebase.firestore().collection('tags').doc(uid).collection('myTags').doc().id;
+    tag.tagId = refID;
+    console.log(uid, tag)
+    await firebase.firestore().collection('tags').doc(uid).collection('myTags').doc(refID).set(tag);
+    return tag;
+}
+
+export const deleteTagFromFirebase = async (uid, tagId) => {
+    return await firebase.firestore().collection('tags').doc(uid).collection('myTags').doc(tagId).delete();
+}
 // ────────────────────────────────────────────────────────────────────────────────
 
 
