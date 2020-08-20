@@ -11,6 +11,7 @@ import Constants from '../../constants';
 const QRCodeScreen = () => {
 
     const { state: { user } } = useContext(AuthContext);
+
     // const [hasPermission, setHasPermission] = useState(null);
     const [scanned, setScanned] = useState(false);
     const [scanPressed, setScanPressed] = useState(false);
@@ -38,9 +39,13 @@ const QRCodeScreen = () => {
     //     askForPermissions();
     // }, []);
 
+    // TODO:PLEASE
+    // const URL = "https://a5257a3df6b6.ngrok.io/users/app?userID=
+    const URL = "https://rosey-server.herokuapp.com/users/app?userID=";
+
     const handleBarCodeScanned = ({ type, data }) => {
         setScanned(true);
-        // console.log(type);
+        console.log(data);
         const prefix = data.substring(0, 52);
         const suffix = data.substring(52);
         if (prefix === "https://rosey-server.herokuapp.com/users/app?userID="
@@ -59,13 +64,17 @@ const QRCodeScreen = () => {
         }
     };
 
+    const { uid } = user;
+    // console.log('uid', uid)
+
     return (
         <MyShadowCard inheritedMarginHorizontal={0} inheritedMarginTop={20}>
             <View style={styles.container}>
                 <MyHeader style={styles.Headline}> Share your QR Code! </MyHeader>
                 {/* https://www.npmjs.com/package/react-native-qrcode-svg */}
                 <QRCode
-                    value={`https://rosey-server.herokuapp.com/users/app?userID=${user._id}`}
+                    // value={`https://rosey-server.herokuapp.com/users/app?userID=${uid}`}
+                    value={URL + uid}
                     size={200}
                     color={'purple'}
                 />
@@ -73,7 +82,7 @@ const QRCodeScreen = () => {
                     <MyButton onPress={() => _askForPermissions()} mode="contained" style={{ marginVertical: 30 }} icon={'camera'}>
                         Scan a QR Code
                 </MyButton>
-                    <MyButton onPress={() => Constants._shareProfile(user._id)} mode="outlined" icon={'account'}>
+                    <MyButton onPress={() => Constants._shareProfile(uid)} mode="outlined" icon={'account'}>
                         Share your card
                 </MyButton>
                 </View>

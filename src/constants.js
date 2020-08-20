@@ -156,12 +156,15 @@ const _askForFeedbackReview = () => {
 }
 
 
-const _shareProfile = async (userID) => {
+const _shareProfile = async (uid) => {
 
     // const redirectUrl = Linking.makeUrl('/') + `main/home/add?userID=${userID}`;
     // console.log(redirectUrl);
     // const redirectUrl = `exp://ve-9ga.tcitrin.rosey-app.exp.direct:80/--/main/home/add?userID=${userID}`;
-    const redirectUrl = `https://rosey-server.herokuapp.com/users/app?userID=${userID}`;
+    
+    // TODO:PLEASE
+    const redirectUrl = `https://rosey-server.herokuapp.com/users/app?uid=${uid}`;
+    // const redirectUrl = `https://a5257a3df6b6.ngrok.io/users/app?uid=${uid}`;
 
     try {
         if (Platform.OS === "ios") {

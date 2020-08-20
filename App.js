@@ -52,12 +52,12 @@ export default () => {
   useEffect(() => {
     // ANDROID!!!
     Linking.getInitialURL().then(url => {
-      const { path, queryParams: { userID } } = Linking.parse(url);
-      // console.log('path, user', path, userID);
+      const { path, queryParams: { uid } } = Linking.parse(url);
+      console.log('[getInitialURL], path, user', path, uid, path === 'main/home/add');
       if (path === 'main/home/add') {
-        if (userID !== '' && userID !== undefined && userID !== null) {
-          setTimeout(() => navigate('SharedResolver', { shared: true, userID }), 0);
-        } else if (userID === '' || userID === undefined || userID == null) {
+        if (uid !== '' && uid !== undefined && uid !== null) {
+          setTimeout(() => navigate('SharedResolver', { shared: true, uid }), 0);
+        } else if (uid === '' || uid === undefined || uid == null) {
           // Alert()
           alert('Looks like you tried to share a user that did not exist /:')
         }
@@ -66,12 +66,13 @@ export default () => {
   }, [])
 
   const _handleOpenURL = (event) => {
-    const { path, queryParams: { userID } } = Linking.parse(event.url);
+    const { path, queryParams: { uid } } = Linking.parse(event.url);
+    console.log('[_handleOpenURL], path, user', path, uid, path === 'main/home/add');
     if (path === 'main/home/add') {
-      if (userID !== '' && userID !== undefined && userID !== null) {
-        navigate('SharedResolver', { shared: true, userID });
+      if (uid !== '' && uid !== undefined && uid !== null) {
+        navigate('SharedResolver', { shared: true, uid });
         // navigate('AddRose', { shared: true, userID });
-      } else if (userID === '' || userID === undefined || userID == null) {
+      } else if (uid === '' || uid === undefined || uid == null) {
         alert('Looks like you tried to share a user that did not exist /:')
       }
     }
