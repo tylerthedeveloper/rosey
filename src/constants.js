@@ -13,6 +13,7 @@ const linksDictionary = {
     play_store_url: 'https://play.google.com/store/apps/details?id=com.rozy_app.rozy',
     reddit_page_url: 'https://www.reddit.com/r/RozyApp/',
     rozy_blog_url: 'https://medium.com/@tylercitrin/the-sunday-shortlist-crazy-encounters-life-lessons-and-a-mobile-application-rozy-55aa3068289d',
+    rozy_server_url: 'https://rosey-server.herokuapp.com/',
     rozy_website_url: 'http://rozy-website.herokuapp.com/'
 }
 
