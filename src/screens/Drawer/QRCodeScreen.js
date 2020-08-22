@@ -61,12 +61,13 @@ const QRCodeScreen = () => {
     const handleBarCodeScanned = ({ type, data }) => {
         setScanned(true);
         setVisible(false)
-        const prefix = data.substring(0, 52);
-        const suffix = data.substring(52);
+        const prefix = data.substring(0, 49);
+        const suffix = data.substring(49);
         setScanned(false)
+        // console.log(prefix, suffix, URL, prefix === URL)
         // TODO:P
         // if (prefix && suffix) {
-        if (prefix === URL && suffix) {
+        if (prefix === URL && suffix !== '') {
             // alert('Successes!')
             setScanPressed(false);
             try {

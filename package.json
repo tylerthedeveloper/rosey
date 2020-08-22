@@ -6,7 +6,9 @@
     "ios": "expo start --ios",
     "web": "expo start --web",
     "eject": "expo eject",
-    "plop": "plop"
+    "plop": "plop",
+    "ios-build": "expo build:ios -t archive --provisioning-profile-path ./rozy.mobileprovision  --apple-id $EXPO_APPLE_ID --config ./app.json",
+    "ios-upload": "expo upload:ios --latest --apple-id $EXPO_APPLE_ID --apple-id-password $EXPO_APPLE_PASSWORD --config ./app.json"
   },
   "dependencies": {
     "@react-native-community/clipboard": "^1.2.3",
