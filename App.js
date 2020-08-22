@@ -66,8 +66,10 @@ export default () => {
   }, [])
 
   const _handleOpenURL = (event) => {
-    const { path, queryParams: { uid } } = Linking.parse(event.url);
-    console.log('[_handleOpenURL], path, user', path, uid, path === 'main/home/add');
+    const { path, queryParams } = Linking.parse(event.url);
+    console.log(queryParams)
+    const uid = queryParams.uid;
+    console.log('[_handleOpenURL], path, user', path, `Uid: [${uid} ]`, path === 'main/home/add');
     if (path === 'main/home/add') {
       if (uid !== '' && uid !== undefined && uid !== null) {
         navigate('SharedResolver', { shared: true, uid });

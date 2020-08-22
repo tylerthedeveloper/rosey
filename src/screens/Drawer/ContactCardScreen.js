@@ -6,7 +6,11 @@ import { Alert } from 'react-native';
 const ContactCardScreen = () => {
 
     const { state: { user, isApiLoading, errorMessage }, updateContactCard, signout } = useContext(AuthContext);
-
+    
+    // TODO:P
+    // console.log(user.uid)
+    
+    
     const tryToLogOut = () => {
         Alert.alert('Logout',
             'Are you sure you want to logout?',

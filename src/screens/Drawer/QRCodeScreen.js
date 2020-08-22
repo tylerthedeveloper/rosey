@@ -11,6 +11,9 @@ const QRCodeScreen = () => {
 
     const { state: { user } } = useContext(AuthContext);
 
+    // TODO:P
+    // console.log(user.uid)
+
     // const [hasPermission, setHasPermission] = useState(null);
     const [scanned, setScanned] = useState(false);
     const [scanPressed, setScanPressed] = useState(false);
@@ -51,8 +54,8 @@ const QRCodeScreen = () => {
 
     const { uid } = user;
     // TODO:PLEASE
-    // const URL = "https://a5257a3df6b6.ngrok.io/users/app?userID=
-    const URL = Constants.linksDictionary.rozy_server_url + "users/app?userID=";
+    // const URL = "https://cf2416e4d3a1.ngrok.io/users/app?uid="
+    const URL = Constants.linksDictionary.rozy_server_url + "users/app?uid=";
     const full_URL = URL + uid;
 
     const handleBarCodeScanned = ({ type, data }) => {
@@ -61,6 +64,8 @@ const QRCodeScreen = () => {
         const prefix = data.substring(0, 52);
         const suffix = data.substring(52);
         setScanned(false)
+        // TODO:P
+        // if (prefix && suffix) {
         if (prefix === URL && suffix) {
             // alert('Successes!')
             setScanPressed(false);

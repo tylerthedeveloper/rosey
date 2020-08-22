@@ -11,6 +11,8 @@ const RoseHeader = ({ uid, name, picture, homeLocationName, isUserContactCard, e
     phoneNumber, email, saveFunc, pickProfileImage, typeOfView
 }) => {
 
+    // TODO:P
+    // console.log(uid)
 
     const headerRowButtons = [
         {
