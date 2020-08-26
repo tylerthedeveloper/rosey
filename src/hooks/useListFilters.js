@@ -11,6 +11,7 @@ export default () => {
 
     // FIXME: This is just to fill cache!
     useEffect(() => {
+        console.log('fetch all roses')
         fetchAllRoses();
     }, []);
 

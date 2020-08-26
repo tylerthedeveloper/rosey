@@ -41,8 +41,8 @@ const RoseListScreen = ({ navigation }) => {
                     //iconColor={secondary}
                     value={searchQuery}
                     onChangeText={setSearchQuery}
-                    onBlur={() => Keyboard.dismiss()}
-                    onTouchCancel={() => Keyboard.dismiss()}
+                    // onBlur={() => Keyboard.dismiss()}
+                    // onTouchCancel={() => Keyboard.dismiss()}
                     style={styles.searchBar}
                 />
                 <View style={theme.shadow.iconButtonShadow}>

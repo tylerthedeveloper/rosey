@@ -36,8 +36,8 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
     const { currentLocation, geoCodedLocation } = useCurrentLocation();
     const { state: { tags: contextTags }, addTag } = useContext(TagContext);
 
-    const [updated_birthday, setBirthday] = useState((birthday !== undefined) ? birthday : new Date(Date.now()));
-    const [updated_dateMet, setDateMet] = useState((dateMet !== undefined) ? dateMet : new Date(Date.now()));
+    const [updated_birthday, setBirthday] = useState((birthday !== undefined && birthday !== '') ? birthday : new Date(Date.now()));
+    const [updated_dateMet, setDateMet] = useState((dateMet !== undefined && dateMet !== '') ? dateMet : new Date(Date.now()));
     const [updated_email, setEmail] = useState(email || '');
     const [updated_tags, setTags] = useState(tags || []);
     const [updated_work, setWork] = useState(work);
