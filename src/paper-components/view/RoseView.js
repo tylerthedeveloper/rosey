@@ -41,6 +41,7 @@ const RoseView = ({ user, isApiLoading, view_updateFunction, view_updateFunction
         }
     }
 
+    // TODO: move to utils?
     const alertOnCLick = (fieldTitle, fieldSubtitle, fieldOptionSuccess, func) => {
         Alert.alert(
             fieldTitle,
@@ -57,6 +58,9 @@ const RoseView = ({ user, isApiLoading, view_updateFunction, view_updateFunction
         );
     }
     // ────────────────────────────────────────────────────────────────────────────────
+    const _birthday = (birthday?.seconds) ? birthday.toDate() : birthday
+    const _dateMet = (dateMet?.seconds) ? dateMet.toDate() : dateMet
+    console.log(birthday, _birthday, _dateMet)
 
     const viewRows = [
         {
@@ -122,16 +126,16 @@ const RoseView = ({ user, isApiLoading, view_updateFunction, view_updateFunction
 
         },
         {
-            value: dateMet ? (moment(dateMet).format('MMM DD, YYYY')) : '(Enter Date met!)', subtitle: 'date met',
+            value: _dateMet ? (moment(_dateMet).format('MMM DD, YYYY')) : '(Enter Date met!)', subtitle: 'date met',
             left: "calendar",
             rightIcon: "calendar-plus",
-            rightFunc: () => { if (dateMet) alertOnCLick('Date Met', 'Do you want to add this date to Calendar?', 'Add to Calendar', () => createEvent(dateMet, 'date_met', name, placeMetAtFormatted_address)) },
+            rightFunc: () => { if (_dateMet) alertOnCLick('Date Met', 'Do you want to add this date to Calendar?', 'Add to Calendar', () => createEvent(_dateMet, 'date_met', name, placeMetAtFormatted_address)) },
         },
         {
-            value: birthday ? (moment(birthday).format('MMM DD, YYYY')) : '(Enter Birthday!)', subtitle: 'birthday',
+            value: _birthday ? (moment(_birthday).format('MMM DD, YYYY')) : '(Enter Birthday!)', subtitle: 'birthday',
             left: "calendar",
             rightIcon: "calendar-plus",
-            rightFunc: () => { if (birthday) alertOnCLick('Birthday', 'Do you want to add this date to Calendar?', 'Add to Calendar', () => createEvent(birthday, 'birthday', name, placeMetAtFormatted_address)) },
+            rightFunc: () => { if (_birthday) alertOnCLick('Birthday', 'Do you want to add this date to Calendar?', 'Add to Calendar', () => createEvent(_birthday, 'birthday', name, placeMetAtFormatted_address)) },
         },
         {
             value: homeFormatted_address, subtitle: 'home location',

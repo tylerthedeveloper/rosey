@@ -162,7 +162,7 @@ const _shareProfile = async (uid) => {
     // const redirectUrl = Linking.makeUrl('/') + `main/home/add?userID=${userID}`;
     // console.log(redirectUrl);
     // const redirectUrl = `exp://ve-9ga.tcitrin.rosey-app.exp.direct:80/--/main/home/add?userID=${userID}`;
-    
+
     // TODO:PLEASE
     const redirectUrl = `https://rosey-server.herokuapp.com/users/app?uid=${uid}`;
     // const redirectUrl = `https://a5257a3df6b6.ngrok.io/users/app?uid=${uid}`;
@@ -186,8 +186,8 @@ const _shareProfile = async (uid) => {
 }
 
 const my_personal_card = {
-    birthday: '',
-    dateMet: '',
+    birthday: new Date(814801910000),
+    dateMet: new Date(),
     email: 'rozycontact@gmail.com',
     homeLocation: {
         homeLocationCoords: { latitude: 47.6062, longitude: -122.332 },

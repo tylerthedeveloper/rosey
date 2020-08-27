@@ -137,6 +137,7 @@ export default () => {
           dispatch({ type: 'set_api_loading' });
           const user = await editFirebaseAccount({ uid, data: roseObj });
           // await AsyncStorage.setItem('user', JSON.stringify(user));
+          // console.log('user', user.birthday)
           dispatch({ type: 'update_contact_card', payload: user });
           if (callback) {
             callback();

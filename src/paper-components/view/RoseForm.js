@@ -32,12 +32,28 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
     } = user || {};
 
     const uid = firebase.auth().currentUser.uid;
-
     const { currentLocation, geoCodedLocation } = useCurrentLocation();
     const { state: { tags: contextTags }, addTag } = useContext(TagContext);
+    // console.log('birth1', birthday)
+    const [updated_birthday, setBirthday] = useState(() => {
+        if (birthday !== undefined && birthday) {
+            if (birthday?.seconds) return birthday.toDate()
+            else return birthday;
+        } else {
+            return new Date(Date.now())
+        }
+    });
+    // console.log('birth2', updated_birthday)
+    const [updated_dateMet, setDateMet] = useState(() => {
+        if (dateMet !== undefined && dateMet) {
+            if (dateMet?.seconds) return dateMet.toDate()
+            else return dateMet;
+        } else {
+            return new Date(Date.now())
+        }
+    });
 
-    const [updated_birthday, setBirthday] = useState((birthday !== undefined && birthday !== '') ? birthday : new Date(Date.now()));
-    const [updated_dateMet, setDateMet] = useState((dateMet !== undefined && dateMet !== '') ? dateMet : new Date(Date.now()));
+
     const [updated_email, setEmail] = useState(email || '');
     const [updated_tags, setTags] = useState(tags || []);
     const [updated_work, setWork] = useState(work);
@@ -69,8 +85,8 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
     // ────────────────────────────────────────────────────────────────────────────────
 
     const updatedUser = {
-        birthday: updated_birthday || new Date(Date.now()),
-        dateMet: updated_dateMet || new Date(Date.now()),
+        birthday: updated_birthday,
+        dateMet: updated_dateMet,
         email: updated_email || '',
         homeLocation: updated_homeLocation || {
             homeLocationCoords: { latitude: -369, longitude: -369 },
@@ -637,12 +653,11 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                                     (datemet_Picker)
                                         ?
                                         <DateTimePicker
-                                            value={updated_dateMet || new Date(Date.now())}
+                                            value={updated_dateMet}
                                             display="default"
                                             style={{ width: '70%', alignSelf: 'center' }}
                                             onChange={(event, value) => {
-                                                {/* console.log('event and value', value) */ }
-                                                setDateMet(value || updated_dateMet || new Date(Date.now()));
+                                                setDateMet(value)
                                                 // setTimeout(() => setDatemet_Picker(false), 2000);
                                                 setDatemet_Picker(false)
                                             }}
@@ -664,19 +679,22 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                                 <TextInput
                                     onTouchStart={() => setBirth_datePicker(!birth_datePicker)}
                                     disabled={true}
-                                    value={moment(new Date(updated_birthday)).format('MMM DD, YYYY')}
+                                    value={moment(updated_birthday).format('MMM DD, YYYY')}
                                 />
                             </TouchableOpacity>
                         </Card.Actions>
                         {
                             (birth_datePicker)
                                 ? <DateTimePicker
-                                    value={updated_birthday || new Date(Date.now())}
+                                    value={updated_birthday}
                                     display="default"
                                     style={{ width: '70%', alignSelf: 'center' }}
                                     onChange={(e, value) => {
-                                        {/* console.log('birthday event and value', value) */ }
-                                        setBirthday(value || updated_birthday || new Date(Date.now()));
+                                        console.log('birthday value', value, new Date(value).getTime(), Date.now())
+                                        setBirthday(value)
+                                        // if (value) setBirthday(value);
+                                        // else if (!value && updated_birthday !== '') setBirthday(updated_birthday);
+                                        // else setBirthday(Date.now());
                                         // setTimeout(() => setBirth_datePicker(false), 2000);
                                         setBirth_datePicker(false)
                                     }}
