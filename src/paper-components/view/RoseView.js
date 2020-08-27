@@ -60,7 +60,7 @@ const RoseView = ({ user, isApiLoading, view_updateFunction, view_updateFunction
     // ────────────────────────────────────────────────────────────────────────────────
     const _birthday = (birthday?.seconds) ? birthday.toDate() : birthday
     const _dateMet = (dateMet?.seconds) ? dateMet.toDate() : dateMet
-    console.log(birthday, _birthday, _dateMet)
+    // console.log(birthday, _birthday, _dateMet)
 
     const viewRows = [
         {

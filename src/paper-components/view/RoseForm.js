@@ -147,6 +147,8 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
 
     const rowIgnoreArr = ["__v", "_id"]
     const isUserNotEdited = Constants.default._areObjectsEqual(user, updatedUser, rowIgnoreArr);
+    // console.log('isUserNotEdited', updated_birthday, isUserNotEdited, user, updatedUser)
+
     const addNewRoseRoute = (form_updateFunctionText === "Add new Rose");
     const canAddNewRose = (updated_name !== undefined && updated_name.length > 0);
 
@@ -690,7 +692,7 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                                     display="default"
                                     style={{ width: '70%', alignSelf: 'center' }}
                                     onChange={(e, value) => {
-                                        console.log('birthday value', value, new Date(value).getTime(), Date.now())
+                                        // console.log('birthday value', value, new Date(value).getTime(), Date.now())
                                         setBirthday(value)
                                         // if (value) setBirthday(value);
                                         // else if (!value && updated_birthday !== '') setBirthday(updated_birthday);

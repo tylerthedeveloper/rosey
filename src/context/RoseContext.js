@@ -123,6 +123,8 @@ const fetchAllRoses = (dispatch) => async () => {
         if (roses && roses.length) {
             dispatch({ type: "fetch_roses", payload: [...(roses || [])] });
         } else {
+            // FIXME: What if you delete tyler will it come back?
+            // TODO: first login!?
             const response = await addRoseToFirebase(uid, Constants.my_personal_card);
             dispatch({ type: "fetch_roses", payload: [Constants.my_personal_card] });
         }

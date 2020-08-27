@@ -66,7 +66,7 @@ const _generateUser = ({ userType, email, phoneNumber, uid }) => {
 const _areObjectsEqual = (a, b, ignoreArray) => {
     let equality = true;
     // console.log(a)
-    if (a === null) {
+    if (a === null || b === null) {
         return;
     }
     for (let key of Object.keys(a)) {
@@ -80,8 +80,15 @@ const _areObjectsEqual = (a, b, ignoreArray) => {
             if (Array.isArray(a[key]) && b[key] !== undefined) {
                 if (!(a[key].sort().toString() == b[key].sort().toString())) return false;
             } else if (typeof a[key] === 'object') {
-                equality = _areObjectsEqual(a[key], b[key], ignoreArray)
-                if (!equality) break;
+                if (key === 'birthday' || key === 'dateMet') {
+                    // console.log(key, new Date(a[key].seconds * 1000), b[key])
+                    // equality = (new Date(a[key].seconds * 1000) === b[key]);
+                    // equality = _areObjectsEqual(new Date(a[key].seconds * 1000), b[key], ignoreArray)
+                    if (new Date(a[key].seconds * 1000).toDateString() !== b[key].toDateString()) return false;
+                } else {
+                    equality = _areObjectsEqual(a[key], b[key], ignoreArray)
+                }
+                if (!equality) return false;
             } else if (a[key] !== b[key]) {
                 return false;
             }
@@ -207,9 +214,20 @@ const my_personal_card = {
     personalSite: '',
     phoneNumber: '',
     picture: '',
+    socialProfiles: {
+        facebook: "",
+        instagram: "",
+        linkedin: "",
+        medium: "",
+        snapchat: "",
+        twitch: "",
+        twitter: "",
+        venmo: "",
+        whatsapp: "",
+    },
     tags: [{ tag: 'Friend', color: COLORS[0] }],
     work: 'Developer, PM',
-    roseId: shortid.generate()
+    roseId: ''//shortid.generate()
 };
 
 export default {
