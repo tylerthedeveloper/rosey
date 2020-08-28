@@ -14,6 +14,7 @@ const RoseHeader = ({ uid, name, picture, homeLocationName, isUserContactCard, e
     // TODO:P
     // console.log(uid)
 
+
     const headerRowButtons = [
         {
             headerButtonIcon: "phone-plus",

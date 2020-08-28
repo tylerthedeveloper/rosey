@@ -28,10 +28,11 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
 }) => {
 
     const {
-        birthday, dateMet, email, homeLocation, name, nickName, notes, personalSite, phoneNumber, placeMetAt, picture, socialProfiles, tags, work, roseId, _id
+        birthday, dateMet, email, homeLocation, name, nickName, notes, personalSite, phoneNumber,
+        placeMetAt, picture, socialProfiles, tags, work, roseId, _id, uid
     } = user || {};
 
-    const uid = firebase.auth().currentUser.uid;
+    // const uid = firebase.auth().currentUser.uid;
     const { currentLocation, geoCodedLocation } = useCurrentLocation();
     const { state: { tags: contextTags }, addTag } = useContext(TagContext);
     // console.log('birth1', birthday)
@@ -113,7 +114,8 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
         },
         tags: updated_tags || [],
         work: updated_work || '',
-        roseId: roseId || ''
+        roseId: roseId || '',
+        uid: uid || firebase.auth().currentUser.uid
     };
 
     // const [_updatedUser_Handler, set_updatedUser_Handler] = useState(updatedUser);
@@ -133,7 +135,6 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
         { type: 'venmo', value: updated_venmo, setter: setVenmo },
         { type: 'whatsapp', value: updated_whatsapp, setter: setWhatsapp }
     ];
-
 
     /* -------------------------------------------------------------------------- */
     /*                         Bool checks                                        */

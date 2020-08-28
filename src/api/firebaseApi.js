@@ -8,8 +8,9 @@ import Constants from '../constants';
 //
 export const createnewFirebaseAccount = async ({ uid, email, phoneNumber }) => {
     const _user = Constants._generateUser({ userType: 'user', email, phoneNumber, uid });
-    const doc = firebase.firestore().collection('users').doc(uid);
+    const doc = await firebase.firestore().collection('users').doc(uid);
     _user.roseId = doc.id;
+    _user.uid = uid;
     return await doc.set(_user)
         .then(() => doc.get().then(userToReturn => userToReturn.data()));
 }
