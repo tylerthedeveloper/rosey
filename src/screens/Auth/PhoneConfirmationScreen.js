@@ -19,12 +19,12 @@ const PhoneConfirmationScreen = ({ navigation, route }) => {
 
     // FIXME: CHECK IF account already exists?
     const submitValidationCode = async (code) => {
-        if (verificationCode.length === 6) {
+        if (code.length === 6) {
             setIsLoading(true);
             try {
                 const credential = firebase.auth.PhoneAuthProvider.credential(
                     verificationId,
-                    verificationCode
+                    code
                 );
                 // console.log('credential', credential);
                 await firebase.auth().signInWithCredential(credential)
@@ -78,7 +78,9 @@ const PhoneConfirmationScreen = ({ navigation, route }) => {
                     autoFocusOnLoad
                     codeInputFieldStyle={styles.codeInputFieldStyle}
                     codeInputHighlightStyle={styles.underlineStyleHighLighted}
-                    onCodeFilled={(code) => submitValidationCode(verificationCode)}
+                    onCodeFilled={(code) => {
+                        submitValidationCode(code)
+                    }}
                 // onCodeFilled={(code) => (verificationCode.length === 6) ? submitValidationCode(verificationCode) : null}
                 />
                 {(message !== '') && <Text style={styles.label}></Text>}
