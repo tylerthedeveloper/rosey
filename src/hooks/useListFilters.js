@@ -32,10 +32,16 @@ export default () => {
 
     const filterItems = (filterValue, filterType, filteredTags) => {
         if (filterType && filterType == 'tag') {
-            const sortedRoses = roses.filter(rose => 
+            // if (selectedTags.length === 0) {
+            //     console.log('ken 0 ')
+            //     setFilteredRoses([...roses]);
+            // }
+            const sortedRoses = roses.filter(({ tags }) =>
                 filteredTags.every(v => {
-                    return rose.tags.some(tagObj => tagObj.tag === filterValue)
+                    // return tags.includes(v)
+                    return tags.some(tagObj => tagObj.tag === v)
                 }));
+                // tags.every(tagObj => filteredTags.includes(tagObj.tag)))
             setFilteredRoses(sortedRoses);
         } else {
             setFilterToggle(false);
@@ -59,10 +65,10 @@ export default () => {
                     rose.nickName.toLowerCase().includes(lower);
             });
             setFilteredRoses([...(matchingRoses || [])])
-        } else {
+        } else if (selectedTags.length === 0) {
             setFilteredRoses([...roses]);
         }
-    }, [roses, searchQuery]);
+    }, [roses, searchQuery, selectedTags]);
 
     return [
         filteredRoses, filterToggle, setFilterToggle,
