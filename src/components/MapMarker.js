@@ -19,19 +19,21 @@ const MapMarker = ({ props, roseId, coords, address, name, tags, navigationCallb
                 resizeMode="contain"
             />
             <MapView.Callout
+                style={{  }}
                 onPress={() => navigationCallback(roseId)}
             >
                 <View style={styles.viewStyle}>
-                    <View style={{ flexDirection: 'row', marginVertical: 5 }}>
+                    <View style={{ flexDirection: 'row', marginVertical: 5, alignItems: 'center' }}>
                         <Avatar.Icon {...props} icon={'account-circle'} size={25} style={{ marginRight: 10 }} />
                         <Text>
                             {name || '(no name)'}
                         </Text>
                     </View>
-                    <View style={{ flexDirection: 'row', marginBottom: 5 }}>
+                    <View style={{ flexDirection: 'row', marginBottom: 5, alignItems: 'center' }}>
                         <Avatar.Icon {...props} icon={'tag'} size={25} style={{ marginRight: 10 }} />
                         <Text>
-                            {tags.join(', ') || '(no tags)'}
+                            {/* {tags.join(', ') || '(no tags)'} */}
+                            {tags.map(tag => tag.tag).join(', ') || '(no tags)'}
                         </Text>
                     </View>
                     {/* <Text>
@@ -57,10 +59,14 @@ const MapMarker = ({ props, roseId, coords, address, name, tags, navigationCallb
 const styles = StyleSheet.create({
     viewStyle: {
         width: 220,
-        height: 150,
+        // height: 150,
         backgroundColor: "#fff",
         padding: 20,
-        flex: 1
+        // alignSelf: 'center',
+        alignItems: 'center',
+        // justifyContent: 'center',
+        flexDirection: 'column'
+        // flex: 1
     },
     textStyle: {
         fontSize: 16,
