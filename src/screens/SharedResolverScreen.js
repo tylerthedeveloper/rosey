@@ -10,19 +10,19 @@ const SharedResolverScreen = ({ navigation, route }) => {
 
     const { addRose } = useContext(RoseContext);
 
-    const { shared, userID } = route.params || {};
-    console.log(shared, userID)
+    const { shared, uid } = route.params || {};
+    // console.log(shared, uid)
     const [user, setUser] = useState({});
     const [dialogVisible, setDialogVisible] = useState(false);
 
-    const _getSharedUser = async (userID) => {
+    const _getSharedUser = async (uid) => {
         try {
-            const response = await roseyApi.post(`/users/share`, { userID });
+            const response = await roseyApi.post(`/users/share`, { uid });
             const { user } = response.data;
-            _showDialog();
             setUser(user);
+            _showDialog();
         } catch (e) {
-            alert('There was a problem loading that user');
+            alert('There was a problem loading that user' + e.message);
         }
     }
 
@@ -45,8 +45,8 @@ const SharedResolverScreen = ({ navigation, route }) => {
     };
 
     useEffect(() => {
-        if (shared && userID !== '' && userID !== undefined) {
-            _getSharedUser(userID);
+        if (shared && uid !== '' && uid !== undefined) {
+            _getSharedUser(uid);
         } else {
             navigation.navigate('RoseList');
         }
@@ -58,7 +58,7 @@ const SharedResolverScreen = ({ navigation, route }) => {
             <Dialog
                 visible={dialogVisible}
                 onDismiss={_hideDialog}>
-                <Dialog.Title>Add Rose '{user.name}'</Dialog.Title>
+                <Dialog.Title>Add Rose '{user.name || user.email || user.phoneNumber}' </Dialog.Title>
                 <Dialog.Content>
                     <Paragraph>This is will create a new rose for the rose shared with you</Paragraph>
                 </Dialog.Content>

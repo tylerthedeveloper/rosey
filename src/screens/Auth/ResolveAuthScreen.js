@@ -1,5 +1,6 @@
 import React from 'react';
 import { ActivityIndicator, StyleSheet, View } from 'react-native';
+import { theme } from '../../core/theme';
 
 const ResolveAuthScreen = () => {
 
@@ -7,6 +8,7 @@ const ResolveAuthScreen = () => {
         <View style={styles.container}>
             <ActivityIndicator
                 size="large"
+                color={theme.colors.primary}
             />
         </View>
     )

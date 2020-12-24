@@ -1,15 +1,19 @@
+import * as Linking from 'expo-linking';
 import React from 'react';
-import { ImageBackground, StyleSheet, View } from 'react-native';
-import { Avatar, Card, Paragraph, Title, IconButton } from 'react-native-paper';
+import { StyleSheet, Text, View } from 'react-native';
+import { TouchableOpacity } from 'react-native-gesture-handler';
+import { Avatar, Card, IconButton } from 'react-native-paper';
+import Constants from '../../constants';
 import { theme } from '../../core/theme';
 import { MyShadowCard } from '../memo';
-import * as Linking from 'expo-linking'
 
-const RoseHeader = ({ name, picture, homeCity, homeState, homeCountry, isUserContactCard, editing, _setEditing, shareProfile,
-    phoneNumber, email// , headerToContainer
+const RoseHeader = ({ uid, name, picture, homeLocationName, isUserContactCard, editing, _setEditing,
+    phoneNumber, email, saveFunc, pickProfileImage, typeOfView
 }) => {
 
-    // source={{ uri: 'https://picsum.photos/700' }}
+    // TODO:P
+    // console.log(uid)
+
 
     const headerRowButtons = [
         {
@@ -57,26 +61,41 @@ const RoseHeader = ({ name, picture, homeCity, homeState, homeCountry, isUserCon
 
     const _handleEmptyField = () => alert('Enter data for that field in order to interact with it.');
 
-
     return (
+
         <MyShadowCard inheritedMarginTop={15}>
             <Card.Content style={{ alignSelf: 'center', alignItems: 'center', paddingBottom: 5, flex: 0 }}>
                 <View style={{ alignSelf: 'center', alignItems: 'center' }}>
-                    <Avatar.Icon
-                        style={styles.avatar}
-                        size={80}
-                        icon={'account'}
-                    // source={{
-                    //     uri:
-                    //         (picture && picture.length > 3) ? picture : 'https://image.shutterstock.com/image-vector/people-icon-260nw-522300817.jpg',
-                    // }}
-                    />
-                    <Title style={{ ...styles.userNameText, fontFamily: (Platform.OS === 'android') ? 'sans-serif-light' : 'Avenir-Heavy' }}>{name || 'No-name!'}</Title>
+                    {
+                        (!picture || picture.length === 0)
+                            ? < Avatar.Icon
+                                style={styles.avatar}
+                                size={80}
+                                icon={'account'}
+                            />
+                            : < Avatar.Image
+                                size={80}
+                                style={{ backgroundColor: 'white', borderWidth: 1, borderColor: 'blue' }}
+                                source={{ uri: picture }}
+                            />
+                    }
+                    {
+                        (typeOfView === 'New')
+                            ? <TouchableOpacity onPress={pickProfileImage}>
+                                <Text style={{ color: 'blue', marginVertical: 10 }}> Add Photo </Text>
+                            </TouchableOpacity>
+                            : (!editing)
+                                ? null
+                                : <TouchableOpacity onPress={pickProfileImage}>
+                                    <Text style={{ color: 'blue', marginVertical: 10 }}> Change Photo </Text>
+                                </TouchableOpacity>
+                    }
+                    {/* <Title style={{ ...styles.userNameText, fontFamily: (Platform.OS === 'android') ? 'sans-serif-light' : 'Avenir-Heavy' }}>{name || 'No-name!'}</Title> */}
                 </View>
                 <View>
                     {
-                        (!isUserContactCard)
-                            ? <View style={{ marginBottom: 5, flexDirection: 'row', }}>
+                        (!isUserContactCard && !editing && typeOfView !== 'New')
+                            ? <View style={{ flexDirection: 'row', }}>
                                 {
                                     headerRowButtons.map(({ headerButtonFunction, headerButtonIcon }) => {
                                         if (headerButtonIcon === 'video-plus' && Platform.OS !== 'ios') return null;
@@ -95,33 +114,35 @@ const RoseHeader = ({ name, picture, homeCity, homeState, homeCountry, isUserCon
                     }
                 </View>
             </Card.Content>
-            {/* {
-                (!editing) ?
-                    <IconButton
-                        icon={"pencil"}
-                        size={20}
-                        onPress={() => _setEditing(!editing)}
-                        color={'white'}
-                        style={{ right: 10, top: 10, alignSelf: 'flex-end', position: 'absolute', backgroundColor: theme.colors.text }}
-                    />
-                    : <>
-                        <IconButton
-                            icon={"close-circle"}
-                            size={20}
-                            onPress={() => _setEditing(!editing)}
-                            color={'white'}
-                            style={{ right: 55, top: 10, alignSelf: 'flex-end', position: 'absolute', backgroundColor: theme.colors.text }}
-                        />
-                        <IconButton
-                            icon={"content-save"}
-                            size={20}
-                            onPress={() => _setEditing(!editing)}
-                            color={'white'}
-                            style={{ right: 10, top: 10, alignSelf: 'center', position: 'absolute', backgroundColor: theme.colors.text }}
-                        />
-                    </>
-            } */}
             {
+                (typeOfView !== 'New')
+                    ? (!editing) ?
+                        <IconButton
+                            icon={"pencil"}
+                            size={20}
+                            onPress={() => _setEditing(!editing)}
+                            color={'white'}
+                            style={{ right: 10, top: 10, alignSelf: 'flex-end', position: 'absolute', backgroundColor: theme.colors.text }}
+                        />
+                        : <>
+                            <IconButton
+                                icon={"close-circle"}
+                                size={20}
+                                onPress={() => _setEditing(!editing)}
+                                color={'white'}
+                                style={{ right: 10, top: 10, alignSelf: 'flex-end', position: 'absolute', backgroundColor: theme.colors.text }}
+                            />
+                            <IconButton
+                                icon={"content-save"}
+                                size={20}
+                                onPress={saveFunc}
+                                color={'white'}
+                                style={{ right: 10, bottom: 10, alignSelf: 'center', position: 'absolute', backgroundColor: theme.colors.text }}
+                            />
+                        </>
+                    : null
+            }
+            {/* {
                 (!editing) ?
                     <IconButton
                         icon={"pencil"}
@@ -137,13 +158,13 @@ const RoseHeader = ({ name, picture, homeCity, homeState, homeCountry, isUserCon
                         color={'white'}
                         style={{ right: 10, top: 10, alignSelf: 'flex-end', position: 'absolute', backgroundColor: theme.colors.text }}
                     />
-            }
+            } */}
             {
                 (isUserContactCard && !editing) &&
                 <IconButton
                     icon="share"
                     size={20}
-                    onPress={shareProfile}
+                    onPress={() => Constants._shareProfile(uid)}
                     color={'white'}
                     style={{ right: 10, alignSelf: 'flex-end', bottom: 0, position: 'absolute', backgroundColor: theme.colors.text }}
                 />
@@ -163,8 +184,9 @@ const styles = StyleSheet.create({
     // },
     avatar: {
         // shadowColor: theme.colors.primary || '#600EE6',
-        backgroundColor: theme.colors.primary
         // shadowOpacity: 1
+        backgroundColor: theme.colors.primary,
+        marginBottom: 5
     },
     userNameText: {
         fontSize: 20,

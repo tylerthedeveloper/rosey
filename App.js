@@ -23,9 +23,26 @@ import theme from './src/core/theme';
 
 import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
-// const prefix = Linking.makeUrl('/');
+import firebase from 'firebase';
+import { firebaseConfig } from './config/firebase';
+import { YellowBox } from 'react-native';
+
+import { getFirebaseAccount, createnewFirebaseAccount, editFirebaseAccount } from './src/api/firebaseApi';
+
+try {
+  if (!firebase.apps.length) {
+    firebase.initializeApp(firebaseConfig);
+  }
+} catch (e) {
+  console.log(e.message);
+}
 
 export default () => {
+
+  YellowBox.ignoreWarnings([
+    'Setting a timer',
+    'Setting a timer for a long period of time'
+  ]);
 
   useEffect(() => {
     isMountedRef.current = true;
@@ -35,12 +52,12 @@ export default () => {
   useEffect(() => {
     // ANDROID!!!
     Linking.getInitialURL().then(url => {
-      const { path, queryParams: { userID } } = Linking.parse(url);
-      // console.log('path, user', path, userID);
+      const { path, queryParams: { uid } } = Linking.parse(url);
+      console.log('[getInitialURL], path, user', path, uid, path === 'main/home/add');
       if (path === 'main/home/add') {
-        if (userID !== '' && userID !== undefined && userID !== null) {
-          setTimeout(() => navigate('SharedResolver', { shared: true, userID }), 0);
-        } else if (userID === '' || userID === undefined || userID == null) {
+        if (uid !== '' && uid !== undefined && uid !== null) {
+          setTimeout(() => navigate('SharedResolver', { shared: true, uid }), 0);
+        } else if (uid === '' || uid === undefined || uid == null) {
           // Alert()
           alert('Looks like you tried to share a user that did not exist /:')
         }
@@ -49,40 +66,44 @@ export default () => {
   }, [])
 
   const _handleOpenURL = (event) => {
-    const { path, queryParams: { userID } } = Linking.parse(event.url);
+    const { path, queryParams } = Linking.parse(event.url);
+    console.log(queryParams)
+    const uid = queryParams.uid;
+    console.log('[_handleOpenURL], path, user', path, `Uid: [${uid} ]`, path === 'main/home/add');
     if (path === 'main/home/add') {
-      if (userID !== '' && userID !== undefined && userID !== null) {
-        navigate('SharedResolver', { shared: true, userID });
+      if (uid !== '' && uid !== undefined && uid !== null) {
+        navigate('SharedResolver', { shared: true, uid });
         // navigate('AddRose', { shared: true, userID });
-      } else if (userID === '' || userID === undefined || userID == null) {
+      } else if (uid === '' || uid === undefined || uid == null) {
         alert('Looks like you tried to share a user that did not exist /:')
       }
     }
   }
-
-  // const ref = React.useRef();
-  // const { getInitialState } = useLinking(ref, {
-  //   prefixes: [prefix],
-  //   config: {
-  //     App: {
-  //       path: 'main',
-  //       screens: {
-  //         Home: {
-  //           path: 'home',
-  //           screens: {
-  //             AddRose: 'add'
-  //           }
-  //         },
-  //       }
-  //     }
-  //   }
-  // });
 
   useEffect(() => {
     Linking.addEventListener('url', _handleOpenURL);
     // console.log('listener');
     return () => (Linking.removeEventListener('url', _handleOpenURL));
   }, [])
+
+  // const unsubscriber = firebase.auth().onAuthStateChanged(async (user) => {
+  //   if (user) {
+  //     console.log(user)
+  //     const { email, uid, phoneNumber } = user;
+  //     const _user = { email, uid, phoneNumber };
+  //     await AsyncStorage.setItem('authUser', JSON.stringify(_user));
+  //     dispatch({ type: 'signin', payload: { authUser: _user, user: _user } });
+  //   } else {
+  //     dispatch({ type: 'need_to_signin' });
+  //   }
+  // });
+
+  // useEffect(() => {
+  //   // unsubscriber();
+  //   return () => {
+  //     unsubscriber();
+  //   };
+  // }, []);
 
   const [state, dispatch] = useReducer((state, action) => {
     const { payload } = action;
@@ -91,73 +112,32 @@ export default () => {
         return { ...state, isApiLoading: true, errorMessage: '' };
       case 'add_error':
         return { ...state, errorMessage: payload, isLoading: false, isApiLoading: false };
-      case 'signup':
-        return { errorMessage: '', token: payload.token, user: payload.user, isLoading: false, isApiLoading: false };
       case 'signin':
-        return { errorMessage: '', token: payload.token, user: payload.user, isLoading: false, isApiLoading: false };
+        return { errorMessage: '', user: payload.user, isLoading: false, isApiLoading: false };
       case 'update_contact_card':
         return { ...state, user: action.payload, isApiLoading: false, errorMessage: '' };
       case 'clear_error_message':
         return { ...state, errorMessage: '' };
-      case 'signout': // TODO: User null??? user: null
-        return { ...state, errorMessage: '', token: null, isLoading: false };
+      case 'signout':
+        return { ...state, errorMessage: '', token: null, isLoading: false, authUser: null };
       case 'need_to_signin':
         return { ...state, isLoading: false };
       default:
         return state;
     }
   },
-    { isLoading: true, token: null, isApiLoading: false, errorMessage: '', user: {} }
+    { isLoading: true, token: null, isApiLoading: false, errorMessage: '', user: { name: '' }, authUser: null }
   );
 
   const authContext = useMemo(() => {
     return {
-      signup: async ({ name, email, password }) => {
-        try {
-          dispatch({ type: 'set_api_loading' });
-          const _user = Constants._generateUser({ name, email, password, userType: 'user' });
-          // console.log('_user', _user)
-          const response = await roseyApi.post('/auth/signup', { user: _user });
-          const { token, user } = response.data;
-          // console.log(token, user);
-          await AsyncStorage.multiSet([['token', token], ['user', JSON.stringify(user)]]);
-          dispatch({ type: 'signup', payload: { token, user } });
-          // dispatch({ type: 'signup', payload: user });
-        } catch (err) {
-          // FIXME: if necessary, tell user duplicate email 
-          // if (err.message.includes('duplicate')) {
-
-          // }
-          dispatch({ type: 'add_error', payload: "Something went wrong with sign up, consider trying a different email" });
-        }
-      },
-      // TODO: 
-      // 1. check if user exists locally
-      // share local user...
-      // set timeout
-      // fech API
-      // check if users are different
-      // same == do notjing
-      // different reset
-      signin: async ({ email, password }) => {
-        try {
-          /* -------------------------------------------------------------------------- */
-          dispatch({ type: 'set_api_loading' });
-          const response = await roseyApi.post('/auth/signin', { email, password });
-          const { token, user } = response.data;
-          await AsyncStorage.multiSet([['token', token], ['user', JSON.stringify(user)]]);
-          dispatch({ type: 'signin', payload: { token, user } });
-        } catch (err) {
-          dispatch({ type: 'add_error', payload: 'Something went wrong with sign in, please check your spelling and try again' });
-        }
-      },
       updateContactCard: async ({ roseObj, callback }) => {
         try {
-          // console.log('updateContactCard')
+          const uid = firebase.auth().currentUser.uid;
           dispatch({ type: 'set_api_loading' });
-          const response = await roseyApi.post('/users/contact_card', { userObj: roseObj });
-          const { user } = response.data;
-          await AsyncStorage.setItem('user', JSON.stringify(user));
+          const user = await editFirebaseAccount({ uid, data: roseObj });
+          // await AsyncStorage.setItem('user', JSON.stringify(user));
+          // console.log('user', user.birthday)
           dispatch({ type: 'update_contact_card', payload: user });
           if (callback) {
             callback();
@@ -169,25 +149,28 @@ export default () => {
       },
       // TODO: what about if token exists and user doesnt?
       tryLocalSignin: async () => {
-        // console.log('tryLocalSignin');
-        // await AsyncStorage.removeItem('user');
-        // await AsyncStorage.removeItem('token');
-        // await AsyncStorage.removeItem('roses');
         try {
-          /* -------------------------------------------------------------------------- */
-          const storageArr = await AsyncStorage.multiGet(['token', 'user']);
-          if (storageArr) {
-            const token = storageArr[0][1];
-            const userObj = storageArr[1][1];
-            // FIXME: will this fail if user never flushed to data cache?
-            if (token !== null && userObj !== null) {
-              // console.log('token and user');
-              dispatch({ type: 'signin', payload: { token, user: JSON.parse(userObj) } });
+          firebase.auth().onAuthStateChanged(async (user) => {
+            if (user) {
+              const { uid, phoneNumber, email } = user;
+              let userAccount = await getFirebaseAccount(uid);
+              // console.log('[user]', userAccount)
+              if (userAccount === undefined || !userAccount) {
+                // console.log('userAccount === undefined || !userAccount')
+                // console.log('[email, phone', uid, email, phoneNumber)
+                if (email && email.length > 0 && (phoneNumber === null || !phoneNumber || phoneNumber.length === 0)) {
+                  // console.log('email exists');
+                  userAccount = await createnewFirebaseAccount({ uid, email })
+                } else if (phoneNumber && phoneNumber.length > 0 && (email === null || !email || email.length === 0)) {
+                  // console.log('phone exists');
+                  userAccount = await createnewFirebaseAccount({ uid, phoneNumber })
+                }
+              }
+              dispatch({ type: 'signin', payload: { user: userAccount } });
             } else {
-              // console.log('THER IS NO token and user');
               dispatch({ type: 'need_to_signin' });
             }
-          }
+          });
         } catch (err) {
           console.log(err)
           dispatch({ type: 'add_error', payload: 'Something went wrong with sign in' });
@@ -199,11 +182,8 @@ export default () => {
       signout: async () => {
         // console.log('signout')
         try {
-          /* -------------------------------------------------------------------------- */
-          await AsyncStorage.removeItem('token'); // FIXME: And user? maybe this is when i should definitely refetch...?
-          // await AsyncStorage.multiRemove(['token', 'user']);
-          /* -------------------------------------------------------------------------- */
-          // await AsyncStorage.removeItem('user');
+          await AsyncStorage.removeItem('authUser'); // FIXME: And user? maybe this is when i should definitely refetch...?
+          firebase.auth().signOut();
           dispatch({ type: 'signout' });
         } catch (e) {
           console.log(e.message);
@@ -218,19 +198,10 @@ export default () => {
     tryLocalSignin();
   }, []);
 
-  // FIXME: Ask again?
   // FIXME: Ask for all permissions here?
   useEffect(() => {
     (async () => {
       let { status } = await Location.requestPermissionsAsync();
-      // console.log('location: ', status);
-
-      // if (status !== 'granted') {
-      //   alert('Permission to access location was denied');
-      // }
-      // let location = await Location.getCurrentPositionAsync({});
-      // setLocation(location);
-      // console.log(location)
     })();
   });
 
@@ -265,15 +236,13 @@ export default () => {
                           <AppStack.Screen name="ResolveAuth" component={ResolveAuthScreen}
                             options={{ headerTransparent: true, headerTitle: null }}
                           />
-                          // FIXME: work without TOKEN!
-                          : (state.token === null)
+                          // FIXME:: (state.authUser === null)
+                          : (firebase.auth().currentUser === null)
                             ? <AppStack.Screen name="authStack" component={Auth}
                               headerMode="none"
                               options={{ headerTransparent: true, headerTitle: null }}
                             />
-                            : <AppStack.Screen name="mainFlow" component={App}
-
-                            />
+                            : <AppStack.Screen name="mainFlow" component={App} />
                       }
                     </AppStack.Navigator>
                   </NavigationContainer>
