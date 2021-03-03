@@ -1,24 +1,29 @@
-import React, { useContext, useEffect, useState } from 'react';
-import { StyleSheet, View, Linking, Alert } from 'react-native';
-import { Button } from 'react-native-paper';
-import QRCode from 'react-native-qrcode-svg';
-import { AuthContext } from '../../context/AuthContext';
-import { MyHeader, MyShadowCard } from '../../paper-components/memo';
 import { BarCodeScanner } from 'expo-barcode-scanner';
-import { MyButton } from '../../paper-components/memo';
+import React, { useContext, useState } from 'react';
+import { Alert, Linking, StyleSheet, View } from 'react-native';
+import { Button, Modal, Portal, Provider } from 'react-native-paper';
+import QRCode from 'react-native-qrcode-svg';
 import Constants from '../../constants';
+import { AuthContext } from '../../context/AuthContext';
+import { MyButton, MyHeader, MyShadowCard } from '../../paper-components/memo';
 
 const QRCodeScreen = () => {
 
     const { state: { user } } = useContext(AuthContext);
+
+    // TODO:P
+    // console.log(user.uid)
+
     // const [hasPermission, setHasPermission] = useState(null);
     const [scanned, setScanned] = useState(false);
     const [scanPressed, setScanPressed] = useState(false);
+    const [visible, setVisible] = React.useState(false);
 
     const _askForPermissions = async () => {
         const { status } = await BarCodeScanner.requestPermissionsAsync();
         if (status === "granted") {
             setScanPressed(true);
+            setVisible(true)
         } else if (status !== "granted") {
             // await BarCodeScanner.requestPermissionsAsync();
             Alert.alert(
@@ -34,17 +39,35 @@ const QRCodeScreen = () => {
         }
     }
 
+    // const showModal = () => setVisible(true);
+
+    // const hideModal = () => {
+    //     setVisible(false);
+    //     setScanPressed(false);
+    // }
+
+
     // useEffect(() => {
     //     askForPermissions();
     // }, []);
 
+
+    const { uid } = user;
+    // TODO:PLEASE
+    // const URL = "https://cf2416e4d3a1.ngrok.io/users/app?uid="
+    const URL = Constants.linksDictionary.rozy_server_url + "users/app?uid=";
+    const full_URL = URL + uid;
+
     const handleBarCodeScanned = ({ type, data }) => {
         setScanned(true);
-        // console.log(type);
-        const prefix = data.substring(0, 52);
-        const suffix = data.substring(52);
-        if (prefix === "https://rosey-server.herokuapp.com/users/app?userID="
-            && suffix && suffix.length === 24) {
+        setVisible(false)
+        const prefix = data.substring(0, 49);
+        const suffix = data.substring(49);
+        setScanned(false)
+        // console.log(prefix, suffix, URL, prefix === URL)
+        // TODO:P
+        // if (prefix && suffix) {
+        if (prefix === URL && suffix !== '') {
             // alert('Successes!')
             setScanPressed(false);
             try {
@@ -54,10 +77,12 @@ const QRCodeScreen = () => {
                 alert('There was a problem loading that QR Code /:')
             }
         } else {
-            alert("That didnt seem like a valid Rozy QR Code, please try a different one")
             setScanPressed(false);
+            alert("That didnt seem like a valid Rozy QR Code, please try a different one")
         }
     };
+
+    // console.log('url', uid)
 
     return (
         <MyShadowCard inheritedMarginHorizontal={0} inheritedMarginTop={20}>
@@ -65,7 +90,8 @@ const QRCodeScreen = () => {
                 <MyHeader style={styles.Headline}> Share your QR Code! </MyHeader>
                 {/* https://www.npmjs.com/package/react-native-qrcode-svg */}
                 <QRCode
-                    value={`https://rosey-server.herokuapp.com/users/app?userID=${user._id}`}
+                    // value={`https://rosey-server.herokuapp.com/users/app?userID=${uid}`}
+                    value={full_URL}
                     size={200}
                     color={'purple'}
                 />
@@ -73,20 +99,38 @@ const QRCodeScreen = () => {
                     <MyButton onPress={() => _askForPermissions()} mode="contained" style={{ marginVertical: 30 }} icon={'camera'}>
                         Scan a QR Code
                 </MyButton>
-                    <MyButton onPress={() => Constants._shareProfile(user._id)} mode="outlined" icon={'account'}>
+                    <MyButton onPress={() => Constants._shareProfile(uid)} mode="outlined" icon={'account'}>
                         Share your card
                 </MyButton>
                 </View>
                 {
+                    // (scanPressed)
+                    //     ? <Provider>
+                    //         <Portal>
+                    //             <Modal visible={visible} onDismiss={hideModal}>
+                    //                 <View style={{ flex: 1 }}>
+                    //                     <BarCodeScanner
+                    //                         onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
+                    //                     style={StyleSheet.absoluteFillObject}
+                    //                     // style={{ height: '70%', width: '70%' }}
+                    //                     />
+                    //                 </View>
+                    //             </Modal>
+                    //         </Portal>
+                    //     </Provider>
+                    //     : null
                     (scanPressed)
-                        ? <BarCodeScanner
+                        ?
+                        <BarCodeScanner
                             onBarCodeScanned={scanned ? undefined : handleBarCodeScanned}
                             style={StyleSheet.absoluteFillObject}
+                        // style={{ height: '70%', width: '70%' }}
                         />
                         : null
                 }
-            </View>
-        </MyShadowCard>
+                {/* {scanned && <Button title={'Tap to Scan Again'} onPress={() => setScanned(false)} />} */}
+            </View >
+        </MyShadowCard >
     )
 }
 

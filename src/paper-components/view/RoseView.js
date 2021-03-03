@@ -10,13 +10,16 @@ import { SocialIcon } from 'react-native-elements'
 import { Tooltip, Text } from 'react-native-elements';
 import { MyShadowCard } from '../memo';
 import { theme } from '../../core/theme';
+import PhotoCarousel from '../../components/PhotoCarousel'
+import { RoseHeader } from '../partial';
 
 const RoseView = ({ user, isApiLoading, view_updateFunction, view_updateFunctionText,
     view_secondFunction, view_secondFunctionText,
-    view_updateFunction_callback
+    view_updateFunction_callback,
+    editing, _setEditing
 }) => {
 
-    const { birthday, dateMet, email, homeLocation, name, nickName, notes, personalSite, phoneNumber, placeMetAt, picture, socialProfiles, tags, work } = user || {};
+    const { birthday, dateMet, email, homeLocation, name, nickName, notes, personalSite, phoneNumber, placeMetAt, picture, socialProfiles, tags, work, uid } = user || {};
     const { homeLocationCoords, homeFormatted_address, homeLocationName } = homeLocation || {};
     const { placeMetAtLocationCoords, placeMetAtFormatted_address, placeMetAtName } = placeMetAt || {};
 
@@ -38,6 +41,7 @@ const RoseView = ({ user, isApiLoading, view_updateFunction, view_updateFunction
         }
     }
 
+    // TODO: move to utils?
     const alertOnCLick = (fieldTitle, fieldSubtitle, fieldOptionSuccess, func) => {
         Alert.alert(
             fieldTitle,
@@ -54,6 +58,9 @@ const RoseView = ({ user, isApiLoading, view_updateFunction, view_updateFunction
         );
     }
     // ────────────────────────────────────────────────────────────────────────────────
+    const _birthday = (birthday?.seconds) ? birthday.toDate() : birthday
+    const _dateMet = (dateMet?.seconds) ? dateMet.toDate() : dateMet
+    // console.log(birthday, _birthday, _dateMet)
 
     const viewRows = [
         {
@@ -119,16 +126,16 @@ const RoseView = ({ user, isApiLoading, view_updateFunction, view_updateFunction
 
         },
         {
-            value: dateMet ? (moment(dateMet).format('MMM DD, YYYY')) : '(Enter Date met!)', subtitle: 'date met',
+            value: _dateMet ? (moment(_dateMet).format('MMM DD, YYYY')) : '(Enter Date met!)', subtitle: 'date met',
             left: "calendar",
             rightIcon: "calendar-plus",
-            rightFunc: () => { if (dateMet) alertOnCLick('Date Met', 'Do you want to add this date to Calendar?', 'Add to Calendar', () => createEvent(dateMet, 'date_met', name, placeMetAtFormatted_address)) },
+            rightFunc: () => { if (_dateMet) alertOnCLick('Date Met', 'Do you want to add this date to Calendar?', 'Add to Calendar', () => createEvent(_dateMet, 'date_met', name, placeMetAtFormatted_address)) },
         },
         {
-            value: birthday ? (moment(birthday).format('MMM DD, YYYY')) : '(Enter Birthday!)', subtitle: 'birthday',
+            value: _birthday ? (moment(_birthday).format('MMM DD, YYYY')) : '(Enter Birthday!)', subtitle: 'birthday',
             left: "calendar",
             rightIcon: "calendar-plus",
-            rightFunc: () => { if (birthday) alertOnCLick('Birthday', 'Do you want to add this date to Calendar?', 'Add to Calendar', () => createEvent(birthday, 'birthday', name, placeMetAtFormatted_address)) },
+            rightFunc: () => { if (_birthday) alertOnCLick('Birthday', 'Do you want to add this date to Calendar?', 'Add to Calendar', () => createEvent(_birthday, 'birthday', name, placeMetAtFormatted_address)) },
         },
         {
             value: homeFormatted_address, subtitle: 'home location',
@@ -175,9 +182,7 @@ const RoseView = ({ user, isApiLoading, view_updateFunction, view_updateFunction
         // FIXME:
         //////////////////
         { type: 'twitch', value: twitch, appUrl: `twitch://stream/${twitch}`, webUrl: `https://twitch.tv/${twitch}` },
-
         { type: 'twitter', value: twitter, appUrl: `twitter://user?screen_name=${twitter}`, webUrl: `https://twitter.com/${twitter}` },
-
         { type: 'venmo', value: venmo, appUrl: `venmo://users/${twitter}`, webUrl: `https://venmo.com/${venmo}` },
         //////////////////
 
@@ -187,9 +192,21 @@ const RoseView = ({ user, isApiLoading, view_updateFunction, view_updateFunction
 
     return (
         <View style={{ flex: 1 }}>
+            <RoseHeader {...{
+                uid, name, picture, homeLocationName, isUserContactCard, editing, _setEditing,
+                phoneNumber, email, //headerToContainer
+            }} />
+
             {/* Social Section */}
             <ScrollView style={{ marginBottom: 15, flex: 1 }} showsVerticalScrollIndicator={false}>
                 <View style={{ marginVertical: 5 }}>
+                    {/* {
+                        (!isUserContactCard)
+                            ? <MyShadowCard>
+                                <PhotoCarousel />
+                            </MyShadowCard>
+                            : null
+                    } */}
                     <MyShadowCard>
                         <View style={styles.socialMediaSection}>
                             {
@@ -231,6 +248,7 @@ const RoseView = ({ user, isApiLoading, view_updateFunction, view_updateFunction
                                 ))
                             }
                         </View>
+
 
                         {/* {
                             viewRows.map(({ value, subtitle, left, rightIcon, secondRightIcon, rightFunc, secondRightFunc }) => (

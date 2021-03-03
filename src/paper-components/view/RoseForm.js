@@ -1,6 +1,6 @@
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { KeyboardAvoidingView, ScrollView, StyleSheet, Text, TouchableOpacity, TouchableWithoutFeedback, View } from 'react-native';
 import { GOOGLE_API_KEY } from "react-native-dotenv";
 import { ActivityIndicator, Avatar, Button, Card, Chip, HelperText, IconButton, Paragraph, Searchbar, TextInput } from 'react-native-paper';
@@ -12,22 +12,49 @@ import { theme } from '../../core/theme';
 import useCurrentLocation from '../../hooks/useCurrentLocation';
 import { MyShadowCard, MyTextInput } from '../../paper-components/memo';
 import { useFocusEffect } from '@react-navigation/native';
+import { Dimensions } from "react-native";
+import * as Permissions from 'expo-permissions';
+import { RoseHeader } from '../partial';
+import * as ImagePicker from 'expo-image-picker';
+import { setProfilePhotoOnFirebase, setRoseProfilePhotoOnFirebase, setAndCreateRoseWithProfilePhotoOnFirebase, addRoseToFirebase } from '../../api/firebaseApi';
+import firebase from 'firebase'
+import * as FileSystem from 'expo-file-system';
 
 const RoseForm = ({ user, isApiLoading, errorMessage, props,
     form_updateFunction, form_updateFunctionText,
     form_secondFunction, form_secondFunctionText,
-    form_updateFunction_callback, saveOrSubmitPassedDownAction
+    form_updateFunction_callback, saveOrSubmitPassedDownAction,
+    editing, _setEditing
 }) => {
 
     const {
-        birthday, dateMet, email, homeLocation, name, nickName, notes, personalSite, phoneNumber, placeMetAt, picture, socialProfiles, tags, work, roseId, _id
+        birthday, dateMet, email, homeLocation, name, nickName, notes, personalSite, phoneNumber,
+        placeMetAt, picture, socialProfiles, tags, work, roseId, _id, uid
     } = user || {};
 
+    // const uid = firebase.auth().currentUser.uid;
     const { currentLocation, geoCodedLocation } = useCurrentLocation();
     const { state: { tags: contextTags }, addTag } = useContext(TagContext);
+    // console.log('birth1', birthday)
+    const [updated_birthday, setBirthday] = useState(() => {
+        if (birthday !== undefined && birthday) {
+            if (birthday?.seconds) return birthday.toDate()
+            else return birthday;
+        } else {
+            return new Date(Date.now())
+        }
+    });
+    // console.log('birth2', updated_birthday)
+    const [updated_dateMet, setDateMet] = useState(() => {
+        if (dateMet !== undefined && dateMet) {
+            if (dateMet?.seconds) return dateMet.toDate()
+            else return dateMet;
+        } else {
+            return new Date(Date.now())
+        }
+    });
 
-    const [updated_birthday, setBirthday] = useState((birthday !== undefined) ? birthday : new Date(Date.now()));
-    const [updated_dateMet, setDateMet] = useState((dateMet !== undefined) ? dateMet : new Date(Date.now()));
+
     const [updated_email, setEmail] = useState(email || '');
     const [updated_tags, setTags] = useState(tags || []);
     const [updated_work, setWork] = useState(work);
@@ -55,12 +82,12 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
 
     // ────────────────────────────────────────────────────────────────────────────────
     // TODO: NOT YET USED //
-    const [updated_picture, setPicture] = useState(picture);
+    const [updated_picture, setPicture] = useState(picture || '');
     // ────────────────────────────────────────────────────────────────────────────────
 
     const updatedUser = {
-        birthday: updated_birthday || new Date(Date.now()),
-        dateMet: updated_dateMet || new Date(Date.now()),
+        birthday: updated_birthday,
+        dateMet: updated_dateMet,
         email: updated_email || '',
         homeLocation: updated_homeLocation || {
             homeLocationCoords: { latitude: -369, longitude: -369 },
@@ -87,7 +114,8 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
         },
         tags: updated_tags || [],
         work: updated_work || '',
-        roseId: roseId || ''
+        roseId: roseId || '',
+        uid: uid || firebase.auth().currentUser.uid
     };
 
     // const [_updatedUser_Handler, set_updatedUser_Handler] = useState(updatedUser);
@@ -108,34 +136,36 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
         { type: 'whatsapp', value: updated_whatsapp, setter: setWhatsapp }
     ];
 
-
     /* -------------------------------------------------------------------------- */
     /*                         Bool checks                                        */
     /* -------------------------------------------------------------------------- */
 
     // Validations
     const isNameValid = !(updated_name.length > 0);
-    const isPhoneValid = (updated_phoneNumber.length > 0 && updated_phoneNumber.length !== 10);
+    const isPhoneValid = false;
+    // const isPhoneValid = (updated_phoneNumber.length > 0 && updated_phoneNumber.length >= 8);
     const isEmailValid = (updated_email.length > 0 && (!updated_email.includes('@') || !updated_email.includes('.')));
 
     const rowIgnoreArr = ["__v", "_id"]
     const isUserNotEdited = Constants.default._areObjectsEqual(user, updatedUser, rowIgnoreArr);
+    // console.log('isUserNotEdited', updated_birthday, isUserNotEdited, user, updatedUser)
+
     const addNewRoseRoute = (form_updateFunctionText === "Add new Rose");
     const canAddNewRose = (updated_name !== undefined && updated_name.length > 0);
+
+    const [loading, setLoading] = useState(false);
+    const [photoChanged, setPhotoChanged] = useState(false);
+    // ────────────────────────────────────────────────────────────────────────────────
 
     const errorMessageDict = {
         email: 'This email seems invalid',
         name: 'A name is required to create a new rose',
-        phone: 'A valid phone number must contain 10 digits',
+        phone: 'A valid phone number must be at least 8 digits',
     }
-
-    // console.log(form_secondFunction, saveOrSubmitPassedDownAction)
 
     //
     // ─── Custom Buttons   ───────────────────────────────────────────────────────────────────────────
     //
-
-
     const addRoseAndDisabled = (!canAddNewRose || isPhoneValid);
     const editRoseAndDisabled = (!isUserNotEdited || isApiLoading || isPhoneValid)
     const SaveButton = () => {
@@ -159,16 +189,45 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
         </View >
     );
 
-    const saveFromHeader = () => {
+
+    const saveFromHeader = async () => {
         try {
             if (!isUserContactCard) _setPlaceMet();
+            const uploadUri = Platform.OS === 'ios' ? updated_picture.replace('file://', '') : updated_picture;
             if (addNewRoseRoute && !addRoseAndDisabled) {
+                setLoading(true);
+                if (uploadUri && uploadUri.length > 0 && picture !== updated_picture) {
+                    const response = await setAndCreateRoseWithProfilePhotoOnFirebase({ uid, photo: uploadUri, metadata: { title: 'profile_photo' } });
+                    const { downloadUrl, roseId } = response;
+                    updatedUser.picture = downloadUrl;
+                    updatedUser.roseId = roseId;
+                }
+                // else {
+                //     await addRoseToFirebase(uid, updatedUser);
+                // }
+                setLoading(false)
                 // saveOrSubmitPassedDownAction(updatedUser);
                 form_updateFunction({ roseObj: updatedUser, callback: () => form_updateFunction_callback(updatedUser) });
-            } else if (isUserNotEdited || !isApiLoading || !isPhoneValid) {
+            } else if (!isUserNotEdited && !isApiLoading && !isPhoneValid && !loading) {
+                setLoading(true);
+                if (uploadUri && uploadUri.length > 0 && picture !== updated_picture) {
+                    let profilePhotoDownloadUrl = '';
+                    if (!isUserContactCard) {
+                        profilePhotoDownloadUrl = await setRoseProfilePhotoOnFirebase({ uid, roseId, photo: uploadUri, metadata: { title: 'profile_image' } });
+                    } else {
+                        profilePhotoDownloadUrl = await setProfilePhotoOnFirebase({ uid, photo: uploadUri, metadata: { title: 'profile_image' } });
+                    }
+                    // setPicture(profilePhotoDownloadUrl)
+                    updatedUser.picture = profilePhotoDownloadUrl;
+                    // console.log(updatedUser)
+                }
                 saveOrSubmitPassedDownAction(updatedUser);
+                setLoading(false)
+            } else {
+                setLoading(false);
             }
         } catch (err) {
+            setLoading(false)
             console.log(err.message)
         }
     }
@@ -332,6 +391,9 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
     const [contentHeight, setContentHeight] = useState();
     const scrollRef = React.createRef();
     const placeInputRef = React.createRef();
+    const screenWidth = Math.floor(Dimensions.get('window').width);
+    const screenHeight = Math.floor(Dimensions.get('screen').height);
+
     /* -------------------------------------------------------------------------- */
 
     /* -------------------------------------------------------------------------- */
@@ -341,17 +403,88 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
     const isUserContactCard = (form_updateFunctionText === 'Save contact card');
 
     if (isUserContactCard) {
-        updatedUser.dateMet = undefined;
-        updatedUser.placeMetAt = undefined;
-        updatedUser.notes = undefined;
-        // TODO:? KEEP?
-        updatedUser.tags = undefined;
-        ///
-        updatedUser.roseId = undefined;
+        // updatedUser.dateMet = null;
+        // updatedUser.placeMetAt = null;
+        // updatedUser.notes = null;
+        // updatedUser.tags = null;
+        // updatedUser.roseId = null;
+        delete updatedUser.dateMet;
+        delete updatedUser.placeMetAt;
+        delete updatedUser.notes;
+        delete updatedUser.tags;
+        delete updatedUser.roseId;
+
     }
     // ────────────────────────────────────────────────────────────────────────────────
 
     const [noteFormHeight, setNoteFormHeight] = useState();
+
+    const saveFunc = () => {
+        saveFromHeader();
+    }
+
+    /* -------------------------------------------------------------------------- */
+    /*                                Photo Section                               */
+    /* -------------------------------------------------------------------------- */
+
+    const [profileImage, setProfileImage] = useState('');
+
+    const getPermissionAsync = async () => {
+        if (Platform.OS === 'ios') {
+            const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+            // console.log(status)
+            if (status !== 'granted') {
+                alert('Sorry, we need camera roll permissions to make this work!');
+            }
+        }
+    }
+
+    const setProfilePhoto = () => {
+        _pickImage();
+    }
+
+    const pickProfileImage = async () => {
+        try {
+            let result = await ImagePicker.launchImageLibraryAsync({
+                mediaTypes: ImagePicker.MediaTypeOptions.All,
+                allowsEditing: true,
+                aspect: [4, 3],
+                quality: 1,
+            });
+            if (!result.cancelled) {
+                setPicture(result.uri)
+                // console.log('result', result)
+                // const uploadUri = Platform.OS === 'ios' ? result.uri.replace('file://', '') : result.uri;
+                // setProfileImage(uploadUri)
+                setPhotoChanged(true);
+                // let profilePhotoDownloadUrl = await setRoseProfilePhotoOnFirebase({ uid, roseId, photo: uploadUri, metadata: { title: 'profile_image' } });
+                // console.log(profilePhotoDownloadUrl)
+                // setPicture(profilePhotoDownloadUrl)
+            }
+        } catch (error) {
+            console.log(error);
+        }
+    };
+
+    useEffect(() => {
+        getPermissionAsync();
+    }, [])
+    // ────────────────────────────────────────────────────────────────────────────────
+
+    let typeOfView = '';
+    switch (form_updateFunctionText) {
+        case 'Save Rose':
+            typeOfView = 'Rose';
+            break;
+        case 'Add new Rose':
+            typeOfView = 'New';
+            break;
+        case 'Save contact card':
+            typeOfView = 'User';
+            break;
+        default:
+            return ''
+    }
 
     return (
         <KeyboardAvoidingView
@@ -359,6 +492,20 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
             keyboardVerticalOffset={85}
             style={{ flex: 1, flexDirection: "column", flexGrow: 1 }}
         >
+            <RoseHeader {...{
+                name, picture: updated_picture, homeLocationName: updated_homeLocation.homeLocationName, isUserContactCard,
+                editing, _setEditing, phoneNumber, email, saveFunc, pickProfileImage, typeOfView
+            }} />
+            {(loading) && <ActivityIndicator size='large' color={theme.colors.primary}
+                style={{
+                    position: 'absolute',
+                    // left: screenWidth / 2,
+                    top: '50%',
+                    alignSelf: 'center',
+                    justifyContent: 'center',
+                    zIndex: 3
+                }}
+            />}
             <ScrollView
                 ref={scrollRef}
                 onContentSizeChange={(contentHeight) => setContentHeight(contentHeight)}
@@ -371,7 +518,7 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                 {/* <View style={{ flexDirection: 'row', flex: 1, justifyContent: 'space-between' }}>
                     <Paragraph style={styles.sectionTitle}> Social Media </Paragraph>
                 <SaveButton />
-                </View> */}
+            </View> */}
                 <SectionHeader sectionHeaderText="Social Media" />
                 <MyShadowCard>
                     <View style={styles.socialMediaSection}>
@@ -509,13 +656,13 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                                     (datemet_Picker)
                                         ?
                                         <DateTimePicker
-                                            value={updated_dateMet || new Date(Date.now())}
+                                            value={updated_dateMet}
                                             display="default"
                                             style={{ width: '70%', alignSelf: 'center' }}
                                             onChange={(event, value) => {
-                                                {/* console.log('event and value', value) */ }
-                                                setDateMet(value || updated_dateMet || new Date(Date.now()));
-                                                setTimeout(() => setDatemet_Picker(false), 2000);
+                                                setDateMet(value)
+                                                // setTimeout(() => setDatemet_Picker(false), 2000);
+                                                setDatemet_Picker(false)
                                             }}
                                         />
                                         : null
@@ -535,20 +682,24 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                                 <TextInput
                                     onTouchStart={() => setBirth_datePicker(!birth_datePicker)}
                                     disabled={true}
-                                    value={moment(new Date(updated_birthday)).format('MMM DD, YYYY')}
+                                    value={moment(updated_birthday).format('MMM DD, YYYY')}
                                 />
                             </TouchableOpacity>
                         </Card.Actions>
                         {
                             (birth_datePicker)
                                 ? <DateTimePicker
-                                    value={updated_birthday || new Date(Date.now())}
+                                    value={updated_birthday}
                                     display="default"
                                     style={{ width: '70%', alignSelf: 'center' }}
                                     onChange={(e, value) => {
-                                        {/* console.log('birthday event and value', value) */ }
-                                        setBirthday(value || updated_birthday || new Date(Date.now()));
-                                        setTimeout(() => setBirth_datePicker(false), 2000);
+                                        // console.log('birthday value', value, new Date(value).getTime(), Date.now())
+                                        setBirthday(value)
+                                        // if (value) setBirthday(value);
+                                        // else if (!value && updated_birthday !== '') setBirthday(updated_birthday);
+                                        // else setBirthday(Date.now());
+                                        // setTimeout(() => setBirth_datePicker(false), 2000);
+                                        setBirth_datePicker(false)
                                     }}
                                 />
                                 : null
@@ -644,7 +795,7 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                 <View style={styles.errorSection}>
                     {(isApiLoading) && <ActivityIndicator animating={true} size={'large'} />}
                     {(!canAddNewRose) ? <Text style={styles.errorMessage}> You should enter a name for this Rose </Text> : null}
-                    {(isPhoneValid) ? <Text style={styles.errorMessage}> Phone # must be 10 digits </Text> : null}
+                    {(isPhoneValid) ? <Text style={styles.errorMessage}> Phone # must be at least 8 digits </Text> : null}
                     {(errorMessage) ? <Text style={styles.errorMessage}> {errorMessage} </Text> : null}
                     {/* <Button disabled={!canAddNewRose || isUserEdited || isApiLoading || isPhoneValid} */}
                 </View>
@@ -656,7 +807,7 @@ const RoseForm = ({ user, isApiLoading, errorMessage, props,
                         >
                             {form_updateFunctionText || 'Add New'}
                         </Button>
-                        : <Button disabled={isUserNotEdited || isApiLoading || isPhoneValid}
+                        : <Button disabled={isUserNotEdited || isApiLoading || isPhoneValid || loading}
                             onPress={saveFromHeader}
                         >
                             {form_updateFunctionText || 'Save Rose'}

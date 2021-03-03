@@ -1,4 +1,4 @@
-import React, { useContext, useEffect } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { AuthContext } from '../../context/AuthContext';
 import { theme } from '../../core/theme';
@@ -26,6 +26,12 @@ const SignupScreen = ({ navigation }) => {
                     <Text style={styles.link}>Login</Text>
                 </TouchableOpacity>
             </View>
+            {(errorMessage) ? <Text style={styles.errorMessage}> {errorMessage} </Text> : null}
+            {/* {(password.length < 6)
+                ? <Text style={styles.errorMessage}> {passwordError} </Text>
+                : null
+            } */}
+            {(isApiLoading) && <ActivityIndicator animating={true} size={'large'} />}
         </Background>
     )
 }
@@ -45,4 +51,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default SignupScreen;
+export default SignupScreen

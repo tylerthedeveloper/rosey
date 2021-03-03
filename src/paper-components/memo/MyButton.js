@@ -25,7 +25,7 @@ const MyButton = ({ mode, style, children, ...props }) => {
 
 const styles = StyleSheet.create({
     button: {
-        width: '90%',
+        width: '80%',
         marginVertical: 10,
     },
     text: {

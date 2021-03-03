@@ -52,10 +52,10 @@ const RoseViewContainer = ({
     return (
         <>
             {/* <MyShadowCard> */}
-            <RoseHeader {...{
+            {/* <RoseHeader {...{
                 name, picture, homeCity, homeState, homeCountry, isUserContactCard, editing, _setEditing, shareProfile: () => Constants._shareProfile(user._id),
                 phoneNumber, email, //headerToContainer
-            }} />
+            }} /> */}
             {/* </MyShadowCard> */}
             {
                 (!editing)
@@ -63,7 +63,8 @@ const RoseViewContainer = ({
                         {...{
                             // view_updateFunction, seconf... TODO:
                             user, isApiLoading, view_updateFunction: () => setEditing(true), view_updateFunctionText,
-                            view_secondFunction, view_secondFunctionText, view_updateFunction_callback
+                            view_secondFunction, view_secondFunctionText, view_updateFunction_callback,
+                            editing, _setEditing
                         }}
                     />
                     : <RoseForm
@@ -85,6 +86,7 @@ const RoseViewContainer = ({
                             }
                         }}
                         saveOrSubmitPassedDownAction={callFormUpdateFunction}
+                        {...{ editing, _setEditing }}
                     />
             }
         </>
